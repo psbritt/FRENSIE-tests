@@ -29,19 +29,19 @@ void si_slab()
 
   // Create the silicon volume
   TGeoVolume* si_slab_volume =
-    geom->MakeSphere( "CUBE", med_1, 5.0, 5.0, 0.0002 );
+    geom->MakeBox( "SLAB", med_1, 5.0, 5.0, 0.0002 );
 
   si_slab_volume->SetUniqueID( 1 );
 
   // Create the void volume
-  TGeoVolume* void_cube_volume = geom->MakeBox(
-                                             "CUBE", void_med, 2.55, 2.55, 2.0 );
+  TGeoVolume* void_cube_volume =
+    geom->MakeBox( "CUBE", void_med, 2.55, 2.55, 2.0 );
 
   void_cube_volume->SetUniqueID( 2 );
 
   // Create the graveyard volume
-  TGeoVolume* graveyard_volume = geom->MakeBox(
-                                   "GRAVEYARD", graveyard_med, 3.5, 3.5, 3.5 );
+  TGeoVolume* graveyard_volume =
+    geom->MakeBox( "TERMINAL", graveyard_med, 3.5, 3.5, 3.5 );
 
   graveyard_volume->SetUniqueID( 3 );
 
