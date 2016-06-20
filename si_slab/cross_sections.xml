@@ -1,0 +1,16 @@
+<ParameterList name="ANONYMOUS">
+  <ParameterList id="0" name="alias map"/>
+  <ParameterList id="113382" name="Si-Native">
+    <Parameter docString="" id="113372" isDefault="false" isUsed="true" name="photoatomic_file_path" type="string" value="epr_14_native.xml"/>
+    <Parameter docString="" id="113373" isDefault="false" isUsed="true" name="photoatomic_file_type" type="string" value="Native"/>
+    <Parameter docString="" id="113374" isDefault="false" isUsed="true" name="photoatomic_table_name" type="string" value=""/>
+    <Parameter docString="" id="113375" isDefault="false" isUsed="true" name="photoatomic_file_start_line" type="int" value="-1"/>
+    <Parameter docString="" id="113376" isDefault="false" isUsed="true" name="electroatomic_file_path" type="string" value="epr_14_native.xml"/>
+    <Parameter docString="" id="113377" isDefault="false" isUsed="true" name="electroatomic_file_type" type="string" value="Native"/>
+    <Parameter docString="" id="113378" isDefault="false" isUsed="true" name="electroatomic_table_name" type="string" value=""/>
+    <Parameter docString="" id="113379" isDefault="false" isUsed="true" name="electroatomic_file_start_line" type="int" value="-1"/>
+    <Parameter docString="" id="113380" isDefault="false" isUsed="true" name="atomic_number" type="int" value="14"/>
+    <Parameter docString="" id="113381" isDefault="false" isUsed="true" name="atomic_weight_ratio" type="double" value="2.78446999999999996e+01"/>
+  </ParameterList>
+  <Validators/>
+</ParameterList>

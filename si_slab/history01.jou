@@ -1,0 +1,5 @@
+#!python
+cubit.cmd('set node constraint on')
+cubit.cmd('reset')
+cubit.cmd('reset')
+cubit.cmd('open "/home/ljkerst/software/frensie/test/silicon15kev/si_slab.cub"')
