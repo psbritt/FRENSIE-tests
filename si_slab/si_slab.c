@@ -6,7 +6,7 @@
 //!
 //---------------------------------------------------------------------------//
 
-void h_sphere()
+void si_slab()
 {
   // Set up manager of the geometry world
   gSystem->Load( "libGeom" );
