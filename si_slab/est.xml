@@ -44,15 +44,4 @@
     </ParameterList>
   </ParameterList>
 
-  <ParameterList name="Si Slab Pulse Height">
-    <Parameter name="Id" type="unsigned int" value="5"/>
-    <Parameter name="Type" type="string" value="Cell Pulse Height"/>
-    <Parameter name="Particle Type" type="string" value="Electron"/>
-    <Parameter name="Multiplier" type="double" value="1.0"/>
-    <Parameter name="Cells" type="Array" value="{1}"/>
-    <ParameterList name="Bins">
-      <Parameter name="Energy Bins" type="Array" value="{1.0e-6, 50i, 0.015}"/>
-    </ParameterList>
-  </ParameterList>
-
 </ParameterList>
