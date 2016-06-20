@@ -29,7 +29,7 @@ void si_slab()
 
   // Create the silicon volume
   TGeoVolume* si_slab_volume =
-    geom->MakeBox( "SLAB", med_1, 5.0, 5.0, 0.0002 );
+    geom->MakeBox( "SLAB", med_1, 2.5, 2.5, 0.0002 );
 
   si_slab_volume->SetUniqueID( 1 );
 
