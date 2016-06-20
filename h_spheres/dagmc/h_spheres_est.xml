@@ -1,0 +1,65 @@
+<ParameterList name="Estimators">
+
+  <ParameterList name="Flux on sphere surfaces">
+    <Parameter name="Id" type="unsigned int" value="1"/>
+    <Parameter name="Type" type="string" value="surface.flux"/>
+    <Parameter name="Particle Type" type="string" value="Electron"/>
+    <Parameter name="Multiplier" type="double" value="1.0"/>
+    <ParameterList name="Bins">
+      <Parameter name="Energy Bins" type="Array(double)"
+		 value="{ 1e-6,
+                  5e-6,
+                  1.0e-5,
+                  1.5e-5,
+                  2.0e-5,
+                  2.5e-5,
+                  3.0e-5,
+                  3.5e-5,
+                  4.0e-5,
+                  4.5e-5,
+                  5.0e-5,
+                  5.5e-5,
+                  6.0e-5,
+                  6.5e-5,
+                  7.0e-5,
+                  7.5e-5,
+                  8.0e-5,
+                  8.5e-5,
+                  9.0e-5,
+                  9.5e-5,
+                  1.00e-4}"/>
+    </ParameterList>
+  </ParameterList>
+
+  <ParameterList name="Current on sphere surfaces">
+    <Parameter name="Id" type="unsigned int" value="2"/>
+    <Parameter name="Type" type="string" value="surface.current"/>
+    <Parameter name="Particle Type" type="string" value="Electron"/>
+    <Parameter name="Multiplier" type="double" value="1.0"/>
+    <ParameterList name="Bins">
+      <Parameter name="Energy Bins" type="Array(double)"
+		 value="{ 1e-6,
+                  5e-6,
+                  1.0e-5,
+                  1.5e-5,
+                  2.0e-5,
+                  2.5e-5,
+                  3.0e-5,
+                  3.5e-5,
+                  4.0e-5,
+                  4.5e-5,
+                  5.0e-5,
+                  5.5e-5,
+                  6.0e-5,
+                  6.5e-5,
+                  7.0e-5,
+                  7.5e-5,
+                  8.0e-5,
+                  8.5e-5,
+                  9.0e-5,
+                  9.5e-5,
+                  1.00e-4}"/>
+    </ParameterList>
+  </ParameterList>
+
+</ParameterList>
