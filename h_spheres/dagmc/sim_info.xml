@@ -5,6 +5,6 @@
     <Parameter name="Histories" type="unsigned int" value="1000000"/>
   </ParameterList>
   <ParameterList name="Electron Properties">
- <Parameter name="Elastic Cutoff Angle Cosine" type="double" value="1.0"/>
+ <Parameter name="Elastic Cutoff Angle Cosine" type="double" value="0.9"/>
   </ParameterList>
 </ParameterList>
