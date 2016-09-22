@@ -1,5 +1,5 @@
 1900 0 7 0           
-10 Cubit 14.0 17 ACIS 22.0.2 Linux 24 Tue Jun 21 09:36:55 2016 
+10 Cubit 14.0 17 ACIS 22.0.2 Linux 24 Thu Sep 22 13:02:53 2016 
 1 9.9999999999999995e-07 1e-10 
 body $7 -1 -1 $-1 $8 $-1 $9 T -0.0025000000000000001 -0.0025000000000000001 -0.0025000000000000001 0.0025000000000000001 0.0025000000000000001 0.0025000000000000001 #
 body $10 -1 -1 $-1 $11 $-1 $12 T -0.002 -0.002 -0.002 0.002 0.002 0.002 #
@@ -70,32 +70,32 @@ face $90 -1 -1 $-1 $91 $92 $45 $-1 $93 forward single T -50 -50 50 50 50 50 F #
 simple-snl-attrib $-1 -1 $94 $47 $26 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @9 ENTITY_ID 0 3 19 -2147483648 -1 #
 shell $-1 -1 -1 $-1 $-1 $-1 $95 $-1 $26 T -50 -50 -50 50 50 50 #
 face $96 -1 -1 $-1 $97 $98 $48 $-1 $99 forward single T -50.5 -50.5 50.5 50.5 50.5 50.5 F #
-simple-snl-attrib $-1 -1 $-1 $49 $8 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @14 mat_1_rho_0.01 0 7 1 3 198087296 0 0 0 0 #
+simple-snl-attrib $-1 -1 $-1 $49 $8 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @15 mat_1_rho_0.001 0 7 1 3 1917199193 0 0 0 0 #
 face $100 -1 -1 $-1 $-1 $-1 $50 $-1 $101 reversed single T -0.002 -0.002 -0.002 0.002 0.002 0.002 F #
 integer_attrib-name_attrib-gen-attrib $-1 -1 $102 $-1 $51 2 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 @8 CUBIT_ID 1 #
 sphere-surface $-1 -1 -1 $-1 0 0 0 0.0025000000000000001 1 0 0 0 0 1 forward_v I I I I #
-simple-snl-attrib $-1 -1 $-1 $52 $11 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @14 mat_1_rho_0.01 0 7 1 3 198087296 1 0 0 0 #
+simple-snl-attrib $-1 -1 $-1 $52 $11 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @15 mat_1_rho_0.001 0 7 1 3 1917199193 1 0 0 0 #
 face $103 -1 -1 $-1 $-1 $-1 $53 $-1 $104 reversed single T -0.0015 -0.0015 -0.0015 0.0015 0.0015 0.0015 F #
 integer_attrib-name_attrib-gen-attrib $-1 -1 $105 $-1 $54 2 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 @8 CUBIT_ID 3 #
 sphere-surface $-1 -1 -1 $-1 0 0 0 0.002 1 0 0 0 0 1 forward_v I I I I #
-simple-snl-attrib $-1 -1 $-1 $55 $14 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @14 mat_1_rho_0.01 0 7 1 3 198087296 2 0 0 0 #
+simple-snl-attrib $-1 -1 $-1 $55 $14 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @15 mat_1_rho_0.001 0 7 1 3 1917199193 2 0 0 0 #
 face $106 -1 -1 $-1 $-1 $-1 $56 $-1 $107 reversed single T -0.001 -0.001 -0.001 0.001 0.001 0.001 F #
 integer_attrib-name_attrib-gen-attrib $-1 -1 $108 $-1 $57 2 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 @8 CUBIT_ID 6 #
 sphere-surface $-1 -1 -1 $-1 0 0 0 0.0015 1 0 0 0 0 1 forward_v I I I I #
-simple-snl-attrib $-1 -1 $-1 $58 $17 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @14 mat_1_rho_0.01 0 7 1 3 198087296 3 0 0 0 #
+simple-snl-attrib $-1 -1 $-1 $58 $17 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @15 mat_1_rho_0.001 0 7 1 3 1917199193 3 0 0 0 #
 face $109 -1 -1 $-1 $-1 $-1 $59 $-1 $110 reversed single T -0.00050000000000000001 -0.00050000000000000001 -0.00050000000000000001 0.00050000000000000001 0.00050000000000000001 0.00050000000000000001 F #
 integer_attrib-name_attrib-gen-attrib $-1 -1 $111 $-1 $60 2 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 @8 CUBIT_ID 9 #
 sphere-surface $-1 -1 -1 $-1 0 0 0 0.001 1 0 0 0 0 1 forward_v I I I I #
-simple-snl-attrib $-1 -1 $-1 $61 $20 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @14 mat_1_rho_0.01 0 7 1 3 198087296 4 0 0 0 #
+simple-snl-attrib $-1 -1 $-1 $61 $20 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @15 mat_1_rho_0.001 0 7 1 3 1917199193 4 0 0 0 #
 integer_attrib-name_attrib-gen-attrib $-1 -1 $112 $-1 $62 2 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 @8 CUBIT_ID 12 #
 sphere-surface $-1 -1 -1 $-1 0 0 0 0.00050000000000000001 1 0 0 0 0 1 forward_v I I I I #
-simple-snl-attrib $-1 -1 $-1 $63 $23 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @14 mat_1_rho_0.01 0 7 1 3 198087296 5 0 0 0 #
+simple-snl-attrib $-1 -1 $-1 $63 $23 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @15 mat_1_rho_0.001 0 7 1 3 1917199193 5 0 0 0 #
 face $113 -1 -1 $-1 $-1 $-1 $64 $-1 $114 reversed single T -0.0025000000000000001 -0.0025000000000000001 -0.0025000000000000001 0.0025000000000000001 0.0025000000000000001 0.0025000000000000001 F #
 integer_attrib-name_attrib-gen-attrib $-1 -1 $115 $-1 $65 2 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 @8 CUBIT_ID 14 #
 face $116 -1 -1 $-1 $117 $118 $45 $-1 $119 reversed single T -50 -50 -50 50 50 -50 F #
 loop $-1 -1 -1 $-1 $-1 $120 $65 T -50 -50 50 50 50 50 unknown #
 plane-surface $-1 -1 -1 $-1 0 0 50 0 0 1 1 0 0 forward_v I I I I #
-simple-snl-attrib $-1 -1 $121 $66 $26 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @16 termination.cell 0 7 1 2 1842143262 0 0 0 0 #
+simple-snl-attrib $-1 -1 $121 $66 $26 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 2 @5 GROUP @16 termination.cell 0 7 1 2 1995874991 0 0 0 0 #
 face $122 -1 -1 $-1 $123 $124 $67 $-1 $125 reversed single T -50 -50 50 50 50 50 F #
 integer_attrib-name_attrib-gen-attrib $-1 -1 $126 $-1 $68 2 1 1 1 1 1 1 1 1 1 1 1 1 1 0 1 1 1 @8 CUBIT_ID 28 #
 face $127 -1 -1 $-1 $128 $129 $48 $-1 $130 reversed single T -50.5 -50.5 -50.5 50.5 50.5 -50.5 F #
@@ -172,14 +172,14 @@ coedge $-1 -1 -1 $-1 $131 $226 $229 $230 forward $98 $-1 #
 coedge $-1 -1 -1 $-1 $231 $232 $131 $169 reversed $233 $-1 #
 edge $234 -1 -1 $-1 $235 -50.5 $236 50.5 $168 $237 forward @7 unknown T 50.5 -50.5 50.5 50.5 50.5 50.5 #
 simple-snl-attrib $-1 -1 $238 $132 $70 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @9 ENTITY_ID 0 3 3 -2147483648 -1 #
-simple-snl-attrib $-1 -1 $239 $133 $51 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 6 7 952711450 1758172546 0 0 0 0 0 0 #
+simple-snl-attrib $-1 -1 $239 $133 $51 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 4 5 200838687 1399963727 0 0 0 0 0 0 #
 simple-snl-attrib $-1 -1 $240 $134 $74 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @9 ENTITY_ID 0 3 6 -2147483648 -1 #
-simple-snl-attrib $-1 -1 $241 $135 $54 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 6 7 952711450 1758172546 1 1 0 0 0 0 #
+simple-snl-attrib $-1 -1 $241 $135 $54 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 4 5 200838687 1399963727 1 1 0 0 0 0 #
 simple-snl-attrib $-1 -1 $242 $136 $78 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @9 ENTITY_ID 0 3 9 -2147483648 -1 #
-simple-snl-attrib $-1 -1 $243 $137 $57 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 6 7 952711450 1758172546 2 2 0 0 0 0 #
+simple-snl-attrib $-1 -1 $243 $137 $57 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 4 5 200838687 1399963727 2 2 0 0 0 0 #
 simple-snl-attrib $-1 -1 $244 $138 $82 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @9 ENTITY_ID 0 3 12 -2147483648 -1 #
-simple-snl-attrib $-1 -1 $245 $139 $60 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 6 7 952711450 1758172546 3 3 0 0 0 0 #
-simple-snl-attrib $-1 -1 $246 $140 $62 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 6 7 952711450 1758172546 4 4 0 0 0 0 #
+simple-snl-attrib $-1 -1 $245 $139 $60 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 4 5 200838687 1399963727 3 3 0 0 0 0 #
+simple-snl-attrib $-1 -1 $246 $140 $62 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 4 5 200838687 1399963727 4 4 0 0 0 0 #
 simple-snl-attrib $-1 -1 $247 $141 $89 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @9 ENTITY_ID 0 3 1 -2147483648 -1 #
 simple-snl-attrib $-1 -1 $-1 $142 $65 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @13 MERGE_PARTNER 0 4 1773740748 1 13 1 #
 simple-snl-attrib $-1 -1 $248 $143 $91 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @9 ENTITY_ID 0 3 15 1378063411 0 #
@@ -239,16 +239,16 @@ integer_attrib-name_attrib-gen-attrib $-1 -1 $340 $-1 $169 2 1 1 1 1 1 1 1 1 1 1
 vertex $341 -1 -1 $-1 $169 $342 #
 vertex $343 -1 -1 $-1 $169 $344 #
 straight-curve $-1 -1 -1 $-1 50.5 0 50.5 0 1 0 I I #
-simple-snl-attrib $-1 -1 $345 $170 $70 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 6 7 952711450 1758172546 1 1 0 0 0 0 #
+simple-snl-attrib $-1 -1 $345 $170 $70 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 4 5 200838687 1399963727 1 1 0 0 0 0 #
 simple-snl-attrib $-1 -1 $-1 $171 $51 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @13 MERGE_PARTNER 0 4 715824074 1 1 1 #
-simple-snl-attrib $-1 -1 $346 $172 $74 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 6 7 952711450 1758172546 2 2 0 0 0 0 #
+simple-snl-attrib $-1 -1 $346 $172 $74 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 4 5 200838687 1399963727 2 2 0 0 0 0 #
 simple-snl-attrib $-1 -1 $-1 $173 $54 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @13 MERGE_PARTNER 0 4 2054184597 -1 4 0 #
-simple-snl-attrib $-1 -1 $347 $174 $78 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 6 7 952711450 1758172546 3 3 0 0 0 0 #
+simple-snl-attrib $-1 -1 $347 $174 $78 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 4 5 200838687 1399963727 3 3 0 0 0 0 #
 simple-snl-attrib $-1 -1 $-1 $175 $57 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @13 MERGE_PARTNER 0 4 543051458 -1 7 0 #
-simple-snl-attrib $-1 -1 $348 $176 $82 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 6 7 952711450 1758172546 4 4 0 0 0 0 #
+simple-snl-attrib $-1 -1 $348 $176 $82 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 4 5 200838687 1399963727 4 4 0 0 0 0 #
 simple-snl-attrib $-1 -1 $-1 $177 $60 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @13 MERGE_PARTNER 0 4 2051142099 -1 10 0 #
 simple-snl-attrib $-1 -1 $-1 $178 $62 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @13 MERGE_PARTNER 0 4 1756273051 -1 13 0 #
-simple-snl-attrib $-1 -1 $349 $179 $89 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 6 7 952711450 1758172546 0 0 0 0 0 0 #
+simple-snl-attrib $-1 -1 $349 $179 $89 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 3 @5 GROUP @26 estimator_1.surface.flux.e @29 estimator_2.surface.current.e 0 11 2 4 5 200838687 1399963727 0 0 0 0 0 0 #
 simple-snl-attrib $-1 -1 $-1 $181 $91 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @13 MERGE_PARTNER 0 4 2135289240 1 15 1 #
 simple-snl-attrib $-1 -1 $350 $182 $117 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @9 ENTITY_ID 0 3 16 1378063411 1 #
 simple-snl-attrib $-1 -1 $351 $183 $145 1 1 1 1 1 1 1 1 1 1 1 1 0 1 0 1 1 1 @17 NEW_SIMPLE_ATTRIB 1 @9 UNIQUE_ID 0 1 343767396 #
