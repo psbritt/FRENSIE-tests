@@ -7,7 +7,7 @@
     <Parameter name="Multiplier" type="double" value="1.0"/>
     <ParameterList name="Bins">
       <Parameter name="Energy Bins" type="Array"
-		 value="{ 1e-6, 1e-5, 1e-4, 5e-4, 198i, 1.00000e-1}"/>
+		 value="{ 1e-5, 1e-4, 5e-4, 198i, 1.00000e-1}"/>
     </ParameterList>
   </ParameterList>
 
@@ -18,7 +18,7 @@
     <Parameter name="Multiplier" type="double" value="1.0"/>
     <ParameterList name="Bins">
       <Parameter name="Energy Bins" type="Array"
-		 value="{ 1e-6, 1e-5, 1e-4, 5e-4, 198i, 1.00000e-1}"/>
+		 value="{ 1e-5, 1e-4, 5e-4, 198i, 1.00000e-1}"/>
     </ParameterList>
   </ParameterList>
 

@@ -22,6 +22,9 @@
 *.jou*
 *.bin
 *~
+*.inpo
+*.inpr
+*.inpm
 results/
 continue_run.xml
 CMakeFiles

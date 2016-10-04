@@ -6,7 +6,7 @@
     <Parameter name="Particle Type" type="string" value="Electron"/>
     <ParameterList name="Bins">
       <Parameter name="Energy Bins" type="Array"
-		 value="{ 1.0e-6, 1.0e-5,5.0e-5, 198i, 1.000e-2}"/>
+		 value="{ 1.0e-5,5.0e-5, 198i, 1.000e-2}"/>
     </ParameterList>
   </ParameterList>
 

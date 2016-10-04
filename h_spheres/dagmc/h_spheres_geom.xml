@@ -1,7 +1,7 @@
 <ParameterList name="Geometry">
   
   <Parameter name="Handler" type="string" value="DagMC"/>
-  <Parameter name="CAD File" type="string" value="spheres_infinite_medium_less_den.sat"/>
+  <Parameter name="CAD File" type="string" value="h_spheres_1kev.sat"/>
   <Parameter name="Facet Tolerance" type="double" value="1e-3"/>
 
   <Parameter name="Use Fast Id Lookup" type="bool" value="True"/>
