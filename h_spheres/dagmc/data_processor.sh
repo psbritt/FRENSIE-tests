@@ -11,11 +11,16 @@ ENERGY="${ENERGY}kev"
 echo "You entered: $ENERGY"
 
 # Set cross_section.xml directory path.
+TODAY=$(date +%Y-%m-%d)
+DIR="results/${TODAY}"
+echo "Files will be located in $DIR"
+mkdir -p $DIR
+
 H5="h_spheres_${ENERGY}.h5"
-FLUX_ENERGY_BINS="results/${ENERGY}_flux_bins.txt"
-CURRENT_ENERGY_BINS="results/${ENERGY}_current_bins.txt"
-FLUX="results/${ENERGY}_flux"
-CURRENT="results/${ENERGY}_current"
+FLUX_ENERGY_BINS="results/${TODAY}/${ENERGY}_flux_bins.txt"
+CURRENT_ENERGY_BINS="results/${TODAY}/${ENERGY}_current_bins.txt"
+FLUX="results/${TODAY}/${ENERGY}_flux"
+CURRENT="results/${TODAY}/${ENERGY}_current"
 
 if [ -f $H5 ];
 then
@@ -47,8 +52,17 @@ then
 
     rm $FLUX_ENERGY_BINS $CURRENT_ENERGY_BINS
 
-    plot="plot_${ENERGY}.p"
+    DATE=$(date +%b%d)
+    NEW_NAME="../../../results/facemc/h_spheres_${ENERGY}_${DATE}.h5"
+
+    NEW_RUN_INFO="continue_run_${ENERGY}_${DATE}.xml"
+    mv $H5 $NEW_NAME
+    mv continue_run.xml $NEW_RUN_INFO
+
+    cd $DIR
+    plot="../../plot_${ENERGY}.p"
     gnuplot $plot
+
 else
    echo "File $H5 does not exist."
 fi

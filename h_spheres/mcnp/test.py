@@ -1,23 +1,29 @@
 #! /usr/bin/env python
 import pandas
 import numpy as np
+import datetime
 
+today = datetime.date.today()
+date = today
+filename = "results/" + str(date) + "/10kev_flux_10.txt"
 colnames = ['energy', 'tally', 'sigma']
-data = pandas.read_csv('results/1kev_flux_10.txt', names=colnames, sep=' ')
+data = pandas.read_csv(filename, names=colnames, sep=' ', skiprows=1)
 energy = data.energy.tolist()
 tally = data.tally.tolist()
 sigma = data.sigma.tolist()
+print "energy = ", energy[0], "\ttally = ", tally[0], "\tsigma = ", sigma[0]
 print "energy = ", energy[2], "\ttally = ", tally[2], "\tsigma = ", sigma[2]
 print "energy = ", energy[198], "\ttally = ", tally[198], "\tsigma = ", sigma[198]
 
 print len(energy)
 
 
-data2 = pandas.read_csv('../dagmc/results/1kev_flux_12.txt', names=colnames, sep=' ', skiprows=1)
+data2 = pandas.read_csv('../dagmc/results/10kev_flux_12.txt', names=colnames, sep=' ', skiprows=1)
 energy2 = data2.energy.tolist()
 tally2 = data2.tally.tolist()
 sigma2 = data2.sigma.tolist()
 
+print "energy = ", energy2[0], "\ttally = ", tally2[0], "\tsigma = ", sigma2[0]
 print "energy = ", energy2[2], "\ttally = ", tally2[2], "\tsigma = ", sigma2[2]
 print "energy = ", energy2[198], "\ttally = ", tally2[198], "\tsigma = ", sigma2[198]
 
@@ -26,7 +32,8 @@ ratio = []
 ratio_sigma = []
 dist = []
 ratio_file = open('test.txt', 'w')
-ratio_file.write("Energy\tRatio\tSigma\n")
+header = "Energy\tRatio\tSigma\t" + str(today) +"\n"
+ratio_file.write(header)
 for i in range(0, len(energy2)):
     if tally2[i] == tally[i]:
         ratio.append( 1.0 )

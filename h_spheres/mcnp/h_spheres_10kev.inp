@@ -16,7 +16,7 @@ c sphere surfaces of different radii
 15   so    50.0
 
 mode p e $ Run in photon-electron mode to get low energy physics
-nps    1e7 $ Number of particles
+nps    1e6 $ Number of particles
 sdef   pos = 0 0 0  erg = 0.01  par = e $ Mono-energetic electron beam
 c
 m1     1000.12p   1.0 $ Material def for hydrogen from the erp (.12p) library
@@ -31,10 +31,15 @@ f11:e  11
 f21:e  12
 f31:e  13
 f41:e  14
+c
 e0     1e-5 5e-5 198i 0.01 $ Specify the electron energy bins
 c
-dbcn 17j 2
-CUT:P J 1.0e-01 $ Set photon cutoff to 100 keV
-CUT:E J 1.5e-05 $ Set electron cutoff to 15 eV
-PHYS:E 0.01 1 0 1 10J 0.1
+dbcn 17j 2 $ Turn on analog mode
+c
+CUT:P J 1e-1 $ Set photon cutoff to 100 keV
+CUT:E J 1.5e-5 $ Set electron cutoff to 15 eV
+c
+c Max energy, p's makes e's, e's make p's, brem dist, skip 10, analog start energy
+PHYS:E 0.01 1 1 1 10J 0.1
+c
 prdmp  j  1e7  1   1

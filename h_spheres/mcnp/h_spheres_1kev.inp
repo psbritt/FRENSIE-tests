@@ -7,6 +7,7 @@ electrons in room temp hydrogen
 105   1    0.001      -15 14      imp:n=1
 999   0               +15         imp:n=0
 
+c sphere surfaces of different radii
 10   so    0.0005
 11   so    0.0010
 12   so    0.0015
@@ -14,11 +15,11 @@ electrons in room temp hydrogen
 14   so    0.0025
 15   so    50.0
 
-mode p e
-nps    1e6
-sdef   pos = 0 0 0  erg = 0.001  par = e
+mode p e $ Run in photon-electron mode to get low energy physics
+nps    1e7 $ Number of particles
+sdef   pos = 0 0 0  erg = 0.001  par = e $ Mono-energetic electron beam
 c
-m1     1000.12p   1.0
+m1     1000.12p   1.0 $ Material def for hydrogen from the erp (.12p) library
 c
 f02:e  10
 f12:e  11
@@ -30,10 +31,15 @@ f11:e  11
 f21:e  12
 f31:e  13
 f41:e  14
-e0     1.0e-5 197i 0.001
 c
-dbcn 17j 2
-CUT:P J 1.0e-02 $ Set photon cutoff to 10 keV
-CUT:E J 1.5e-05 $ Set electron cutoff to 15 eV
-PHYS:E 0.001 1 1 1 10J 0.001
+e0     1e-5 197i 0.001 $ Specify the electron energy bins
+c
+dbcn 17j 2 $ Turn on analog mode
+c
+CUT:P J 1e-2 $ Set photon cutoff to 10 keV
+CUT:E J 1.5e-5 $ Set electron cutoff to 15 eV
+c
+c Max energy, p's makes e's, e's make p's, brem dist, skip 10, analog start energy
+PHYS:E 0.001 1 1 1 10J 0.1
+c
 prdmp  j  1e7  1   1

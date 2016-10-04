@@ -1,4 +1,13 @@
 #! /usr/bin/env python
+import datetime
+import os
+import shutil
+
+today = datetime.date.today()
+directory = "./results/"+str(today)+"/"
+
+if not os.path.isdir(directory):
+    os.mkdir(directory)
 
 energy = input("Enter the energy to process in keV (1, 10, 100): ")
 
@@ -19,8 +28,10 @@ with open(mcnp_output) as data:
 
         # go through the current and flux estimators
         for j in estimator_list:
-            name = "results/"+str(energy)+"kev_"+j+"_"+i+".txt"
+            name = "results/"+str(today)+"/"+str(energy)+"kev_"+j+"_"+i+".txt"
             file = open(name, 'w')
+            header = "Energy     "+j+"        Sigma\t"+str(today)+"\n"
+            file.write(header)
             # Skips text before the beginning of the interesting block:
             for line in data:
                 if line.startswith(start):
@@ -34,3 +45,7 @@ with open(mcnp_output) as data:
                 line = line.lstrip()
                 line = line.replace('   ',' ')
                 file.write(line)
+
+date = today.strftime("%b%d")
+new_name = "../../../results/mcnp/h_spheres_"+str(energy)+"kev_"+date+".inpo"
+shutil.copy(mcnp_output,new_name)
