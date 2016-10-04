@@ -1,0 +1,39 @@
+electrons in room temp hydrogen
+100   1    0.001      -10         imp:n=1
+101   1    0.001      -11 10      imp:n=1
+102   1    0.001      -12 11      imp:n=1
+103   1    0.001      -13 12      imp:n=1
+104   1    0.001      -14 13      imp:n=1
+105   1    0.001      -15 14      imp:n=1
+999   0               +15         imp:n=0
+
+10   so    0.0005
+11   so    0.0010
+12   so    0.0015
+13   so    0.0020
+14   so    0.0025
+15   so    50.0
+
+mode p e
+nps    1e6
+sdef   pos = 0 0 0  erg = 0.001  par = e
+c
+m1     1000.12p   1.0
+c
+f02:e  10
+f12:e  11
+f22:e  12
+f32:e  13
+f42:e  14
+f01:e  10
+f11:e  11
+f21:e  12
+f31:e  13
+f41:e  14
+e0     1.0e-5 197i 0.001
+c
+dbcn 17j 2
+CUT:P J 1.0e-02 $ Set photon cutoff to 10 keV
+CUT:E J 1.5e-05 $ Set electron cutoff to 15 eV
+PHYS:E 0.001 1 1 1 10J 0.001
+prdmp  j  1e7  1   1
