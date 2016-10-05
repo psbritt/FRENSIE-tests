@@ -20,32 +20,25 @@ else
     mkdir -p $DIR
 
     H5="h_spheres_${ENERGY}.h5"
-    FLUX_ENERGY_BINS="${DIR}/${ENERGY}_flux_bins.txt"
-    CURRENT_ENERGY_BINS="${DIR}/${ENERGY}_current_bins.txt"
-    FLUX="${DIR}/${ENERGY}_flux"
-    CURRENT="${DIR}/${ENERGY}_current"
+    FLUX="${DIR}/${ENERGY}_track_flux"
 
     if [ -f $H5 ];
     then
-        for i in 1 3 6 9 12
+        for i in 1 2 3 4 5
         do
             file=${FLUX}_${i}.txt
             # Extract the flux data
             ./edump.py -f $H5 -e 1 -i ${i} -b Energy > $file
-
-            file=${CURRENT}_${i}.txt
-            # Extract the current data
-            ./edump.py -f $H5 -e 2 -i ${i} -b Energy > $file
         done
         echo "Files will be located in $DIR"
 
         DATE=$(date +%b%d)
 
-        NEW_NAME="../../../results/facemc/h_spheres_${ENERGY}_${DATE}.h5"
-        NEW_RUN_INFO="../../../results/facemc/continue_run_${ENERGY}_${DATE}.xml"
+        NEW_NAME="../../../results/root/h_spheres_${ENERGY}_${DATE}.h5"
+        NEW_RUN_INFO="../../../results/root/continue_run_${ENERGY}_${DATE}.xml"
 
-        mv $H5 $NEW_NAME
-        mv continue_run.xml $NEW_RUN_INFO
+        cp $H5 $NEW_NAME
+        cp continue_run.xml $NEW_RUN_INFO
 
         cd $DIR
         plot="../../plot_${ENERGY}.p"

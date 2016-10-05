@@ -6,6 +6,8 @@
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
 CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
+TODAY=$(date +%Y-%m-%d)
+OUTPUT_DIR="./results/${TODAY}/"
 
 echo -n "Enter the energy to process in keV (1, 10, 100) > "
 read INPUT
@@ -16,8 +18,8 @@ echo "You entered: $ENERGY"
 NAME="h_spheres_${ENERGY}.inp"
 
 echo "Running MCNP6:"
-mcnp6 n="$NAME" tasks = 12
+/home/software/mcnp6.1.1/bin/mcnp611_linux_x86_64_omp n="$NAME" tasks 8
 
 echo "Processing the results:"
-echo $INPUT | ./data_processor.py
-
+echo $INPUT | ./data_processor.py -d ${OUTPUT_DIR}
+echo "The processed data is located at: ${directory}"

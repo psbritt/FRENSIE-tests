@@ -83,3 +83,45 @@ set ylabel "Current"
 plot "1kev_current_14.txt" every ::1 title "" with errorbars
 clear
 
+# Plot Track Length Flux
+set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500 
+set output '1kev_track_flux_100.png'
+set title "Track-length Flux for cold Hydrogen sphere of radius 0.0005 cm" 
+set xlabel "Energy (MeV)" 
+set ylabel "Track-length Flux" 
+#set arrow from 0,1 to 0.01,1 nohead
+plot "1kev_track_flux_100.txt" every ::1 title "" with errorbars
+clear
+set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500 
+set output '1kev_track_flux_101.png'
+set title "Track-length Flux for cold Hydrogen sphere of radius 0.001 cm" 
+set xlabel "Energy (MeV)" 
+set ylabel "Track-length Flux" 
+#set arrow from 0,1 to 0.01,1 nohead
+plot "1kev_track_flux_101.txt" every ::1 title "" with errorbars
+clear
+set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500 
+set output '1kev_track_flux_102.png'
+set title "Track-length Flux for cold Hydrogen sphere of radius 0.0015 cm" 
+set xlabel "Energy (MeV)" 
+set ylabel "Track-length Flux" 
+#set arrow from 0,1 to 0.01,1 nohead
+plot "1kev_track_flux_102.txt" every ::1 title "" with errorbars
+clear
+set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500 
+set output '1kev_track_flux_103.png'
+set title "Track-length Flux for cold Hydrogen sphere of radius 0.002 cm" 
+set xlabel "Energy (MeV)" 
+set ylabel "Track-length Flux" 
+#set arrow from 0,1 to 0.01,1 nohead
+plot "1kev_track_flux_103.txt" every ::1 title "" with errorbars
+clear
+set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500 
+set output '1kev_track_flux_104.png'
+set title "Track-length Flux for cold Hydrogen sphere of radius 0.0025 cm" 
+set xlabel "Energy (MeV)" 
+set ylabel "Track-length Flux" 
+#set arrow from 0,1 to 0.01,1 nohead
+plot "1kev_track_flux_104.txt" every ::1 title "" with errorbars
+clear
+

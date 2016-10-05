@@ -8,7 +8,7 @@
       <Parameter name="Position" type="Array(double)" value="{0.0,0.0,0.0}"/>
     </ParameterList>
 
-    <Parameter name="Energy Distribution" type="Delta Distribution" value="{1e-3}"/>
+    <Parameter name="Energy Distribution" type="Delta Distribution" value="{1e-1}"/>
   </ParameterList>
 
 </ParameterList>

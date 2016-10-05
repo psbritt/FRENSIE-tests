@@ -16,21 +16,26 @@ c sphere surfaces of different radii
 15   so    50.0
 
 mode p e $ Run in photon-electron mode to get low energy physics
-nps    1e6 $ Number of particles
+nps    1e8 $ Number of particles
 sdef   pos = 0 0 0  erg = 0.01  par = e $ Mono-energetic electron beam
 c
 m1     1000.12p   1.0 $ Material def for hydrogen from the erp (.12p) library
 c
-f02:e  10
-f12:e  11
-f22:e  12
-f32:e  13
-f42:e  14
-f01:e  10
-f11:e  11
-f21:e  12
-f31:e  13
-f41:e  14
+f04:e  100 $ average flux in cell (f4)
+f14:e  101 $ average flux in cell (f4)
+f24:e  102 $ average flux in cell (f4)
+f34:e  103 $ average flux in cell (f4)
+f44:e  104 $ average flux in cell (f4)
+f02:e  10 $ average surface flux (f2)
+f12:e  11 $ average surface flux (f2)
+f22:e  12 $ average surface flux (f2)
+f32:e  13 $ average surface flux (f2)
+f42:e  14 $ average surface flux (f2)
+f01:e  10 $ surface current (f1)
+f11:e  11 $ surface current (f1)
+f21:e  12 $ surface current (f1)
+f31:e  13 $ surface current (f1)
+f41:e  14 $ surface current (f1)
 c
 e0     1e-5 5e-5 198i 0.01 $ Specify the electron energy bins
 c

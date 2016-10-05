@@ -10,11 +10,16 @@ CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
 echo -n "Enter the energy to process in keV (1, 10, 100) > "
 read INPUT
 ENERGY="${INPUT}kev"
-echo "You entered: $ENERGY"
-
-# Set cross_section.xml directory path.
 NAME="h_spheres_"
-GEOM="${NAME}geom_${ENERGY}.xml"
+
+# Set .xml paths.
+if [ $INPUT -eq 1 ];
+then
+    GEOM="${NAME}geom_${ENERGY}.xml"
+else
+    GEOM="${NAME}geom.xml"
+fi
+
 MAT="${NAME}mat.xml"
 RSP="${NAME}rsp_fn.xml"
 EST="${NAME}est_${ENERGY}.xml"
