@@ -6,14 +6,24 @@
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
 CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
+FRENSIE=/home/lkersting/frensie
+#FRENSIE=/home/lkersting/research/frensie-repos/aprobinson
+
+THREADS="12"
+if [ "$#" -eq 1 ];
+then
+    # Set the number of threads used
+    THREADS="$1"
+fi
 
 echo -n "Enter the energy to process in keV (1, 10, 100) > "
 read INPUT
 ENERGY="${INPUT}kev"
 echo "You entered: $ENERGY"
 
-# Set cross_section.xml directory path.
 NAME="h_spheres_"
+
+# .xml directory paths.
 GEOM="${NAME}geom_${ENERGY}.xml"
 MAT="${NAME}mat.xml"
 RSP="${NAME}rsp_fn.xml"
@@ -22,13 +32,21 @@ SOURCE="${NAME}source_${ENERGY}.xml"
 NAME="${NAME}${ENERGY}"
 
 
-echo "Running Facemc:"
-../../../../bin/facemc --sim_info=sim_info.xml --geom_def=$GEOM --mat_def=$MAT --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME --threads=12
+echo "Running Facemc with ${THREADS} threads:"
+${FRENSIE}/bin/facemc --sim_info=sim_info.xml --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME --threads=${THREADS}
 
 echo "Processing the results:"
 
 TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
+NAME=${NAME}.h5
+NEW_NAME="${DIR}/${NAME}"
+NEW_RUN_INFO="${DIR}/continue_run_${ENERGY}.xml"
+mkdir -p $DIR
+mv ${NAME} ${NEW_NAME}
+mv continue_run.xml ${NEW_RUN_INFO}
 
-echo $INPUT | ./data_processor.sh ${DIR}
+cd ${DIR}
+
+echo $INPUT | ../../data_processor.sh ./
 

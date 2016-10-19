@@ -7,9 +7,18 @@
 EXTRA_ARGS=$@
 CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
 
+THREADS="12"
+if [ "$#" -eq 1 ];
+then
+    # Set the number of threads used
+    THREADS="$1"
+fi
+
 echo -n "Enter the energy to process in keV (1, 10, 100) > "
 read INPUT
 ENERGY="${INPUT}kev"
+echo "You entered: $ENERGY"
+
 NAME="h_spheres_"
 
 # Set .xml paths.
@@ -27,13 +36,21 @@ SOURCE="${NAME}source_${ENERGY}.xml"
 NAME="${NAME}${ENERGY}"
 
 
-echo "Running Facemc:"
-../../../../bin/facemc --sim_info=sim_info.xml --geom_def=$GEOM --mat_def=$MAT --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME --threads=12
+echo "Running Facemc with ${THREADS} threads:"
+../../../../bin/facemc --sim_info=sim_info.xml --geom_def=$GEOM --mat_def=$MAT --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME --threads=${THREADS}
 
 echo "Processing the results:"
 
 TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
+NAME=${NAME}.h5
+NEW_NAME="${DIR}/${NAME}"
+NEW_RUN_INFO="${DIR}/continue_run_${ENERGY}.xml"
+mkdir -p $DIR
+mv ${NAME} ${NEW_NAME}
+mv continue_run.xml ${NEW_RUN_INFO}
 
-echo $INPUT | ./data_processor.sh ${DIR}
+cd ${DIR}
+
+echo $INPUT | ../../data_processor.sh ./ 
 

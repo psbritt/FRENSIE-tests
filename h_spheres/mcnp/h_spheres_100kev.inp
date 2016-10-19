@@ -41,8 +41,9 @@ e0     1e-5 1e-4 5e-4 198i 0.1 $ Specify the electron energy bins
 c
 dbcn 17j 2 $ Turn on analog mode
 c
-CUT:P J 1.0 $ Set photon cutoff to 1 MeV
-CUT:E J 1.5e-05 $ Set electron cutoff to 15 eV
+CUT:P J 1e-1 $ Set photon cutoff to 100 keV
+CUT:E J 1.5e-5 $ Set electron cutoff to 15 eV
+c
 c Max energy, p's makes e's, e's make p's, brem dist, skip 10, analog start energy
 PHYS:E 0.1 1 1 1 10J 0.1
 c

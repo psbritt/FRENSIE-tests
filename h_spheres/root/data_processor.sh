@@ -4,6 +4,7 @@
 ##---------------------------------------------------------------------------##
 
 EXTRA_ARGS=$@
+TESTING_DIR="/home/lkersting/frensie/testing/frensie-tests"
 
 if [ "$#" -ne 1 ];
 then
@@ -28,20 +29,12 @@ else
         do
             file=${FLUX}_${i}.txt
             # Extract the flux data
-            ./edump.py -f $H5 -e 1 -i ${i} -b Energy > $file
+            ${TESTING_DIR}/edump.py -f $H5 -e 1 -i ${i} -b Energy > $file
         done
         echo "Files will be located in $DIR"
 
-        DATE=$(date +%b%d)
-
-        NEW_NAME="../../../results/root/h_spheres_${ENERGY}_${DATE}.h5"
-        NEW_RUN_INFO="../../../results/root/continue_run_${ENERGY}_${DATE}.xml"
-
-        cp $H5 $NEW_NAME
-        cp continue_run.xml $NEW_RUN_INFO
-
-        cd $DIR
-        plot="../../plot_${ENERGY}.p"
+	cd ${DIR}
+        plot="${TESTING_DIR}/h_spheres/root/plot_${ENERGY}.p"
         gnuplot $plot
 
     else
