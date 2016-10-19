@@ -46,13 +46,13 @@ mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc --sim_info=sim_info.xml --geom_def=$
 echo "Processing the results:"
 
 # Move file to the test results folder
-NAME=${NAME}.h5
-NEW_NAME="${DIR}/${NAME}"
-NEW_RUN_INFO="${DIR}/continue_run_${ENERGY}.xml"
+#NAME=${NAME}.h5
+#NEW_NAME="${DIR}/${NAME}"
+#NEW_RUN_INFO="${DIR}/continue_run_${ENERGY}.xml"
 
-mv ${NAME} ${NEW_NAME}
-mv continue_run.xml ${NEW_RUN_INFO}
+#mv ${NAME} ${NEW_NAME}
+#mv continue_run.xml ${NEW_RUN_INFO}
 
-cd ${DIR}
+#cd ${DIR}
 
-echo $INPUT | ../../data_processor.sh ./
+#echo $INPUT | ../../data_processor.sh ./
