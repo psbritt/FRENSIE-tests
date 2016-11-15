@@ -4,7 +4,7 @@
 ##---------------------------------------------------------------------------##
 
 EXTRA_ARGS=$@
-TESTING_DIR="/home/lkersting/frensie/testing/frensie-tests"
+TESTING_DIR="/home/lkersting/frensie/frensie-tests"
 
 if [ "$#" -ne 1 ];
 then
@@ -31,9 +31,8 @@ else
             # Extract the flux data
             ${TESTING_DIR}/edump.py -f $H5 -e 1 -i ${i} -b Energy > $file
         done
-        echo "Files will be located in $DIR"
 
-	cd ${DIR}
+    cd ${DIR}
         plot="${TESTING_DIR}/h_spheres/root/plot_${ENERGY}.p"
         gnuplot $plot
 

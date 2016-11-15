@@ -4,7 +4,7 @@
 ##---------------------------------------------------------------------------##
 
 EXTRA_ARGS=$@
-TESTING_DIR="/home/lkersting/frensie/testing/frensie-tests"
+TESTING_DIR="/home/lkersting/frensie/frensie-tests"
 
 if [ "$#" -ne 1 ];
 then

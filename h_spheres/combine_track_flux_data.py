@@ -13,11 +13,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hm:f:",["mdir=","fdir="])
     except getopt.GetoptError:
-        print 'data_extractor.py -m <mcnpinputdir> -f <facemcinputdir'
+        print 'combine_track_flux_data.py -m <mcnpinputdir> -f <facemcinputdir'
         sys.exit(1)
     for opt, arg in opts:
         if opt == '-h':
-            print 'data_extractor.py -m <mcnpinputdir> -f <facemcinputdir'
+            print 'combine_track_flux_datar.py -m <mcnpinputdir> -f <facemcinputdir'
             sys.exit(1)
         elif opt in ("-m", "--mdir"):
             mcnpinputdir = arg

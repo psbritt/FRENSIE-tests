@@ -2,7 +2,7 @@
 
   <ParameterList name="General Properties">
     <Parameter name="Mode" type="string" value="Electron"/>
-    <Parameter name="Histories" type="unsigned int" value="100000"/>
+    <Parameter name="Histories" type="unsigned int" value="1000000"/>
   </ParameterList>
   <ParameterList name="Electron Properties">
  <Parameter name="Max Electron Energy" type="double" value="1.0e-1"/>

@@ -49,4 +49,5 @@ mv continue_run.xml ${NEW_RUN_INFO}
 cd ${DIR}
 
 echo $INPUT | ../../data_processor.sh ./
+echo "Results will be in ./${DIR}"
 
