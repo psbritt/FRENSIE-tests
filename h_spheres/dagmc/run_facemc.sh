@@ -6,8 +6,8 @@
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
 CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
-FRENSIE=/home/lkersting/frensie
-#FRENSIE=/home/lkersting/research/frensie-repos/aprobinson
+#FRENSIE=/home/lkersting/frensie
+FRENSIE=/home/lkersting/research/frensie-repos/lkersting
 
 THREADS="12"
 if [ "$#" -eq 1 ];
