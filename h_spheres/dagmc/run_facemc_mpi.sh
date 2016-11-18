@@ -1,7 +1,7 @@
 #!/bin/sh
 # This file is named run_facemc_mpi.sh
 #SBATCH --partition=univ2
-#SBATCH --time=0-12:00:00
+#SBATCH --time=0-24:00:00
 #SBATCH --nodes=5
 #SBATCH --ntasks-per-node=20
 #SBATCH --mem-per-cpu=4000
@@ -40,7 +40,7 @@ mkdir -p $DIR
 
 THREADS="100"
 echo "Running Facemc with ${THREADS} threads:"
-mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc_mpi --sim_info=sim_info.xml --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME > ${DIR}/${NAME}.txt 2>&1
+mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=sim_info.xml --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME > ${DIR}/${NAME}.txt 2>&1
 
 echo "Moving the results:"
 
