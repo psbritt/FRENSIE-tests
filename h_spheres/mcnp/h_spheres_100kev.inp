@@ -1,11 +1,11 @@
 electrons in room temp hydrogen
-100   1    0.01      -10         imp:n=1
-101   1    0.01      -11 10      imp:n=1
-102   1    0.01      -12 11      imp:n=1
-103   1    0.01      -13 12      imp:n=1
-104   1    0.01      -14 13      imp:n=1
-105   1    0.01      -15 14      imp:n=1
-999   0              +15         imp:n=0
+100   1    0.1      -10         imp:n=1
+101   1    0.1      -11 10      imp:n=1
+102   1    0.1      -12 11      imp:n=1
+103   1    0.1      -13 12      imp:n=1
+104   1    0.1      -14 13      imp:n=1
+105   1    0.1      -15 14      imp:n=1
+999   0             +15         imp:n=0
 
 c sphere surfaces of different radii
 10   so    0.0005
@@ -16,7 +16,7 @@ c sphere surfaces of different radii
 15   so    50.0
 
 mode p e $ Run in photon-electron mode to get low energy physics
-nps    1e8 $ Number of particles
+nps    1e6 $ Number of particles
 sdef   pos = 0 0 0  erg = 0.1  par = e $ Mono-energetic electron beam
 c
 m1     1000.12p   1.0 $ Material def for hydrogen from the erp (.12p) library
