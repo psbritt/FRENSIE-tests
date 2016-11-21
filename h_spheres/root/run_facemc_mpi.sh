@@ -26,13 +26,7 @@ echo "You entered: $ENERGY"
 NAME="h_spheres_"
 
 # Set .xml paths.
-if [ $INPUT -eq 1 ];
-then
-    GEOM="${NAME}geom_${ENERGY}.xml"
-else
-    GEOM="${NAME}geom.xml"
-fi
-
+GEOM="${NAME}geom_${ENERGY}.xml"
 MAT="${NAME}mat.xml"
 RSP="${NAME}rsp_fn.xml"
 EST="${NAME}est_${ENERGY}.xml"

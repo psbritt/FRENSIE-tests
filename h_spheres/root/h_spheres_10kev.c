@@ -1,22 +1,22 @@
 //---------------------------------------------------------------------------//
 //!
-//! \file   h_spheres.c
+//! \file   h_spheres_10kev.c
 //! \author Luke Kersting
 //! \brief  Geometry for Electron H-1 sphere verification problem
 //!
 //---------------------------------------------------------------------------//
 
-void h_spheres()
+void h_spheres_10kev()
 {
   // Set up manager of the geometry world
   gSystem->Load( "libGeom" );
 
   TGeoManager* geom = new TGeoManager(
-                   "h_spheres",
+                   "h_spheres_10kev",
                    "Geometry for the electron H-1 spheres at room temp test prob.");
 
   // Create the hydrogen material
-  TGeoMaterial* mat_1 = new TGeoMaterial( "mat_1", 1, 1, -0.01 );
+  TGeoMaterial* mat_1 = new TGeoMaterial( "mat_1", 1, 1, 0.01 );
   TGeoMedium* med_1 = new TGeoMedium( "med_1", 2, mat_1 );
 
   // Create the void material
@@ -96,7 +96,7 @@ void h_spheres()
   // h_sphere_volume5->Draw();
 
   // Export the geometry
-  geom->Export( "h_spheres.root" );
+  geom->Export( "h_spheres_10kev.root" );
 
   // Finished
   exit(0);
