@@ -36,6 +36,15 @@ def main(argv):
             print "Making directory",directory
             os.makedirs(directory)
 
+        # Move file to output directory
+        new_name = str(directory)+str(base)
+        shutil.move(mcnp_output,new_name+".inpo")
+        shutil.move(base+".inpm",new_name+".inpm")
+        shutil.move(base+".inpr",new_name+".inpr")
+
+        # Move to output data directory
+        os.chdir(directory)
+
         today = datetime.date.today()
         # Read the mcnp data file for surface tallys
         with open(mcnp_output) as data:
@@ -45,7 +54,7 @@ def main(argv):
 
                 # go through the current and flux estimators
                 for j in estimator_list:
-                    name = str(directory)+str(energy)+"kev_"+j+"_"+i+".txt"
+                    name = str(energy)+"kev_"+j+"_"+i+".txt"
                     file = open(name, 'w')
                     header = "# Energy   "+j+" \t   Sigma\t"+str(today)+"\n"
                     file.write(header)
@@ -69,7 +78,7 @@ def main(argv):
                 start=" cell  "+i
 
                 # go through the current and flux estimators
-                name = str(directory)+str(energy)+"kev_track_flux_"+i+".txt"
+                name = str(energy)+"kev_track_flux_"+i+".txt"
                 file = open(name, 'w')
                 header = "# Energy   "+"Track Flux  "+"Sigma\t"+str(today)+"\n"
                 file.write(header)
@@ -87,16 +96,7 @@ def main(argv):
                     line = line.replace('   ',' ')
                     file.write(line)
 
-        date = today.strftime("%b%d")
-        new_name = "../../../results/mcnp/"+str(base)+"_"+date+".inpo"
-        shutil.copy(mcnp_output,new_name)
-        if os.path.isfile(base+".inpm"):
-            os.remove(base+".inpm")
-        if os.path.isfile(base+".inpr"):
-            os.remove(base+".inpr")
-
-        # Move to output data directory
-        os.chdir(directory)
+        # Plot results
         plot = "../../plot_"+str(energy)+"kev.p"
         call(["gnuplot", plot])
 
