@@ -26,7 +26,6 @@
     <Parameter name="Id" type="unsigned int" value="3"/>
     <Parameter name="Type" type="string" value="Cell Track-Length Flux"/>
     <Parameter name="Particle Type" type="string" value="Electron"/>
-    <Parameter name="Cells" type="Array" value="1"/>
     <Parameter name="Multiplier" type="double" value="1.0"/>
     <ParameterList name="Bins">
       <Parameter name="Energy Bins" type="Array"
