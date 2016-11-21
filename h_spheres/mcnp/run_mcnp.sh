@@ -21,12 +21,22 @@ read INPUT
 ENERGY="${INPUT}kev"
 echo "You entered: $ENERGY"
 
-# Set cross_section.xml directory path.
+# Set the input file name
 NAME="h_spheres_${ENERGY}.inp"
 
 echo "Running MCNP6:"
 /home/software/mcnp6.1.1/bin/mcnp611_linux_x86_64_omp n="$NAME" tasks ${THREADS}
 
+NEW_NAME=${OUTPUT_DIR}${NAME}
+
+# Move output files to test directory
+mv ${NAME}o ${NEW_NAME}o
+mv ${NAME}r ${NEW_NAME}r
+mv ${NAME}m ${NEW_NAME}m
+
+# Move to output directory
+cd ${OUTPUT_DIR}
+
 echo "Processing the results:"
-echo $INPUT | ./data_processor.py -d ${OUTPUT_DIR}
-echo "The processed data is located at: ${directory}"
+echo $INPUT | ./data_processor.py -d ./
+echo "The processed data is located at: ${OUTPUT_DIR}"
