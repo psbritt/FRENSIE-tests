@@ -31,7 +31,7 @@ MAT="${NAME}mat.xml"
 RSP="${NAME}rsp_fn.xml"
 EST="${NAME}est_${ENERGY}.xml"
 SOURCE="${NAME}source_${ENERGY}.xml"
-NAME="${NAME}${ENERGY}"
+NAME="${NAME}${ENERGY}_Native"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
