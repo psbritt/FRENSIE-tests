@@ -1,11 +1,11 @@
 electrons in room temp hydrogen
-100   1    1      -10         imp:n=1
-101   1    1      -11 10      imp:n=1
-102   1    1      -12 11      imp:n=1
-103   1    1      -13 12      imp:n=1
-104   1    1      -14 13      imp:n=1
-105   1    1      -15 14      imp:n=1
-999   0           +15         imp:n=0
+100   1    0.1      -10         imp:n=1
+101   1    0.1      -11 10      imp:n=1
+102   1    0.1      -12 11      imp:n=1
+103   1    0.1      -13 12      imp:n=1
+104   1    0.1      -14 13      imp:n=1
+105   1    0.1      -15 14      imp:n=1
+999   0             +15         imp:n=0
 
 c sphere surfaces of different radii
 10   so    0.0005
