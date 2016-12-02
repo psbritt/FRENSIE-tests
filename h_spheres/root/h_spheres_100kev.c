@@ -16,7 +16,7 @@ void h_spheres_100kev()
                    "Geometry for the electron H-1 spheres at room temp test prob.");
 
   // Create the hydrogen material
-  TGeoMaterial* mat_1 = new TGeoMaterial( "mat_1", 1, 1, 1.0 );
+  TGeoMaterial* mat_1 = new TGeoMaterial( "mat_1", 1, 1, 0.1 );
   TGeoMedium* med_1 = new TGeoMedium( "med_1", 2, mat_1 );
 
   // Create the void material
