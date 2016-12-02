@@ -1,8 +1,8 @@
 #!/bin/sh
 # This file is named run_facemc_mpi.sh
 #SBATCH --partition=univ2                # Use the newer infrastructure
-#SBATCH --time=0-12:00:00
-#SBATCH --nodes=5
+#SBATCH --time=0-20:00:00
+#SBATCH --nodes=3
 #SBATCH --ntasks-per-node=20
 #SBATCH --mem-per-cpu=4000
 
@@ -38,7 +38,7 @@ TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
 mkdir -p $DIR
 
-THREADS="100"
+THREADS="60"
 echo "Running Facemc with ${THREADS} threads:"
 mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=sim_info.xml --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME > ${DIR}/${NAME}.txt 2>&1
 
