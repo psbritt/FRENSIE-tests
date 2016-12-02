@@ -15,8 +15,8 @@
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
 CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
-#FRENSIE=/home/lkersting/research/frensie-repos/lkersting
-FRENSIE=/home/lkersting/frensie
+FRENSIE=/home/lkersting/research/frensie-repos/lkersting
+#FRENSIE=/home/lkersting/frensie
 
 THREADS="12"
 if [ "$#" -eq 1 ];
@@ -68,7 +68,7 @@ NAME="al_${NAME}"
 echo "Running Facemc with ${THREADS} threads:"
 ${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME --threads=${THREADS}
 
-echo "Processing the results:"
+#echo "Processing the results:"
 
 TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
@@ -81,6 +81,6 @@ mv continue_run.xml ${NEW_RUN_INFO}
 
 cd ${DIR}
 
-echo $INPUT | ../../data_processor.sh ${NAME}
+bash ../../../data_processor.sh ${NAME}
 echo "Results will be in ./${DIR}"
 

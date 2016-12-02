@@ -15,8 +15,8 @@ else
     FILE=$1
 
     H5="${FILE}.h5"
-    TL_FLUX="${FILE}_flux"
-    SURFACE_CURRENT="${FILE}_surface_current"
+    TL_FLUX="${FILE}_cell_flux"
+    SURFACE_CURRENT="${FILE}_current"
 
     if [ -f $H5 ];
     then
@@ -24,10 +24,10 @@ else
         do
             output=${SURFACE_CURRENT}_${i}.txt
             # Extract the surface current data
-            ${TESTING_DIR}/edump.py -f $H5 -e 1 -i ${i} -b Energy > $output
+            ${TESTING_DIR}/edump.py -f $H5 -e 1 -i ${i} -b Cosine > $output
         done
 
-        output=${TL_FLUX}_${i}.txt
+        output=${TL_FLUX}.txt
         # Extract the current data
         ${TESTING_DIR}/edump.py -f $H5 -e 2 -i total -b Energy > $output
     else

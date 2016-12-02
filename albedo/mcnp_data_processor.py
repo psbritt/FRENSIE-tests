@@ -76,69 +76,31 @@ def main(argv):
                 name = base+"_"+i+".txt"
                 file = open(name, 'w')
                 header = "# Angle     Current     Sigma\t"+str(today)+"\n"
+                total_number_of_angles = 3
+                number_of_angles = 0
                 file.write(header)
                 # Skips text before the beginning of the interesting block:
                 for line in data:
                     if line.startswith(start):
-                        break
-                # Reads text until the end of the block:
-                for line in data:  # This keeps reading the file
-                    line = line.strip()
-                    line = line.replace('angle  bin:  -1.          to  ','')
-                    line = line.replace(' mu',' ')
-                    line+=data.next().strip()+'\n'
-                    file.write(line)
-                    break
-
-                # Skips text before the beginning of the interesting block:
-                for line in data:
-                    if line.startswith(start):
-                        break
-                # Reads text until the end of the block:
-                for line in data:  # This keeps reading the file
-                    line = line.strip()
-                    line = line.replace('angle  bin:   9.90000E-01 to  ','')
-                    line = line.replace(' mu',' ')
-                    line+=data.next().strip()
-                    file.write(line)
-                    break
+                        line = data.next().strip()
+                        if number_of_angles == 0:
+                            print number_of_angles, ": ",line
+                            line = line.replace('angle  bin:  -1.          to  ','')
+                        elif number_of_angles == 1:
+                            print number_of_angles, ": ",line
+                            line = line.replace('angle  bin:   0.00000E+00 to  ','')
+                        elif number_of_angles == 2:
+                            print number_of_angles, ": ",line
+                            line = line.replace('angle  bin:   9.90000E-01 to  ','')
+                        line = line.replace(' mu',' ')
+                        line+=data.next().strip()+'\n'
+                        file.write(line)
+                        print line
+                        number_of_angles+=1
+                        if number_of_angles == total_number_of_angles:
+                            break
                 file.close()
 
-            # go through all surface tallies
-            for i in surface_list:
-                start=" surface  "+i
-
-                # go through the current estimators first angle
-                name = base+"_"+i+"_full.txt"
-                file = open(name, 'w')
-                header = "# Angle     Current     Sigma\t"+str(today)+"\n"
-                file.write(header)
-                # Skips text before the beginning of the interesting block:
-                for line in data:
-                    if line.startswith(start):
-                        break
-                # Reads text until the end of the block:
-                for line in data:  # This keeps reading the file
-                    line = line.strip()
-                    line = line.replace('angle  bin:  -1.          to  ','')
-                    line = line.replace(' mu',' ')
-                    line+=data.next().strip()+'\n'
-                    file.write(line)
-                    break
-
-                # Skips text before the beginning of the interesting block:
-                for line in data:
-                    if line.startswith(start):
-                        break
-                # Reads text until the end of the block:
-                for line in data:  # This keeps reading the file
-                    line = line.strip()
-                    line = line.replace('angle  bin:   0.00000E+00 to  ','')
-                    line = line.replace(' mu',' ')
-                    line+=data.next().strip()
-                    file.write(line)
-                    break
-                file.close()
         # Plot results
 #        plot = "../../plot_"+base+".p"
 #        call(["gnuplot", plot])

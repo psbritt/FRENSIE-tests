@@ -60,7 +60,7 @@ c Source
 c --------------------
 c monodirectional, monoenergetic 0.005 MeV point source located
 c just before the the edge of the shield
-SDEF  ERG=0.005 POS=-15 0 0 DIR=1 VEC=1 0 0 PAR=e
+SDEF  ERG=0.005 POS=-20 0 0 DIR=1 VEC=1 0 0 PAR=e
 c --------------------
 c Job Control
 c --------------------
@@ -70,19 +70,11 @@ c run for 1e6 histories
 nps 1e6
 c Surface current on front surface
 f11:e 100
-c11  0.99 1
+c11  0 0.99 1
 c
 c Surface current on back surface
 f21:e 101
-c21  0.99 1
-c
-c Surface current on front surface (FULL ANGLES)
-f31:e 100
-c31  0 1
-c
-c Surface current on back surface (FULL ANGLES)
-f41:e 101
-c41  0 1
+c21  0 0.99 1
 c
 c Cell track length flux for additional verification
 F4:e  10
