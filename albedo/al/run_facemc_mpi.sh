@@ -1,6 +1,13 @@
-#!/bin/bash
+#!/bin/sh
+# This file is named run_facemc_mpi.sh
+#SBATCH --partition=univ2
+#SBATCH --time=0-72:00:00
+#SBATCH --nodes=5
+#SBATCH --ntasks-per-node=20
+#SBATCH --mem-per-cpu=4000
+
 ##---------------------------------------------------------------------------##
-## FACEMC test runner
+## ---------------------------- FACEMC test runner --------------------------##
 ##---------------------------------------------------------------------------##
 ## Validation runs comparing FRENSIE and MCNP.
 ## The electron albedo is found for a semi-infinite aluminum slab. Since the
@@ -10,27 +17,27 @@
 ## uses a different interpolation scheme than MCNP. 3. Using Native data in 
 ## moment preserving mode, which should give a less acurate answer while
 ## decreasing run time.
+
+##---------------------------------------------------------------------------##
+## ------------------------------- COMMANDS ---------------------------------##
 ##---------------------------------------------------------------------------##
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
-FRENSIE=/home/lkersting/research/frensie-repos/lkersting
-#FRENSIE=/home/lkersting/frensie
+CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
+FRENSIE=/home/lkersting/frensie
 
-THREADS="12"
+INPUT="1"
 if [ "$#" -eq 1 ];
 then
-    # Set the number of threads used
-    THREADS="$1"
+    # Set the file type (1 = ACE, 2 = Native, 3 = Moment Preserving)
+    INPUT="$1"
 fi
 
 NAME="ace"
 MAT="mat_ace.xml"
 INFO="sim_info.xml"
 
-echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
-read INPUT
 if [ ${INPUT} -eq 1 ]
 then
     # Use ACE data
@@ -66,21 +73,20 @@ NAME="al_${NAME}"
 
 TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
-mkdir -p $DIR
+H5=${NAME}.h5
 
+THREADS="100"
 echo "Running Facemc with ${THREADS} threads:"
-${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME --threads=${THREADS} > ${DIR}/${NAME}.txt 2>&1
+mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME --threads=${THREADS} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Processing the results:"
 
+# Move file to the test results folder
 H5=${NAME}.h5
 NEW_NAME="${DIR}/${H5}"
 NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
+
 mv ${H5} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
 
-cd ${DIR}
-
-bash ../../../data_processor.sh ${NAME}
 echo "Results will be in ./${DIR}"
-

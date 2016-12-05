@@ -1,6 +1,6 @@
 <ParameterList name="Estimators">
 
-    <ParameterList name="Surface Current Estimator">
+    <ParameterList name="Surface Current Estimator 1">
         <Parameter name="Id" type="unsigned int" value="1"/>
         <Parameter name="Type" type="string" value="Surface Current"/>
         <Parameter name="Particle Type" type="string" value="Electron"/>
@@ -10,8 +10,18 @@
         </ParameterList>
     </ParameterList>
 
-    <ParameterList name="Cell Track Length Flux Estimator">
+    <ParameterList name="Surface Current Estimator 2">
         <Parameter name="Id" type="unsigned int" value="2"/>
+        <Parameter name="Type" type="string" value="Surface Current"/>
+        <Parameter name="Particle Type" type="string" value="Electron"/>
+        <Parameter name="Surfaces" type="Array" value="{4, 6}"/>
+        <ParameterList name="Bins">
+            <Parameter name="Cosine Bins" type="Array" value="{-1.0, 0.0, 1.0}"/>
+        </ParameterList>
+    </ParameterList>
+
+    <ParameterList name="Cell Track Length Flux Estimator">
+        <Parameter name="Id" type="unsigned int" value="3"/>
         <Parameter name="Type" type="string" value="Cell Track-Length Flux"/>
         <Parameter name="Particle Type" type="string" value="Electron"/>
         <Parameter name="Cells" type="Array" value="{1}"/>

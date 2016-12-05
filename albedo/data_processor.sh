@@ -22,14 +22,18 @@ else
     then
         for i in 4 6
         do
-            output=${SURFACE_CURRENT}_${i}.txt
+            output=${SURFACE_CURRENT}_1_${i}.txt
             # Extract the surface current data
             ${TESTING_DIR}/edump.py -f $H5 -e 1 -i ${i} -b Cosine > $output
+
+            output=${SURFACE_CURRENT}_2_${i}.txt
+            # Extract the surface current data
+            ${TESTING_DIR}/edump.py -f $H5 -e 2 -i ${i} -b Cosine > $output
         done
 
         output=${TL_FLUX}.txt
         # Extract the current data
-        ${TESTING_DIR}/edump.py -f $H5 -e 2 -i total -b Energy > $output
+        ${TESTING_DIR}/edump.py -f $H5 -e 3 -i total -b Energy > $output
     else
        echo "File $H5 does not exist."
     fi
