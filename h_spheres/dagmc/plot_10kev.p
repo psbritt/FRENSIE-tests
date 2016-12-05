@@ -1,5 +1,7 @@
 reset
 clear
+
+## ---------- Plot Flux ---------- ##
 set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500 
 set output '10kev_flux_12.png'
 set title "Flux for cold Hydrogen sphere of radius 0.0005 cm" 
@@ -41,7 +43,7 @@ set ylabel "Flux"
 plot "10kev_flux_1.txt" title "" with errorbars
 clear
 
-# Plot Current
+## ---------- Plot Current ---------- ##
 set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500 
 set output '10kev_current_12.png'
 set title "Current for cold Hydrogen sphere of radius 0.0005 cm" 
@@ -83,3 +85,44 @@ set ylabel "Current"
 plot "10kev_current_1.txt" title "" with errorbars
 clear
 
+## ---------- Plot Track Length Flux ---------- ##
+set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500 
+set output '10kev_track_flux_13.png'
+set title "Flux for cold Hydrogen sphere of radius 0.0005 cm" 
+set xlabel "Energy (MeV)" 
+set ylabel "Flux" 
+#set arrow from 0,1 to 0.01,1 nohead
+plot "10kev_track_flux_13.txt" title "" with errorbars
+clear
+set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500 
+set output '10kev_track_flux_12.png'
+set title "Flux for cold Hydrogen sphere of radius 0.001 cm" 
+set xlabel "Energy (MeV)" 
+set ylabel "Flux" 
+#set arrow from 0,1 to 0.01,1 nohead
+plot "10kev_track_flux_12.txt" title "" with errorbars
+clear
+set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500 
+set output '10kev_track_flux_9.png'
+set title "Flux for cold Hydrogen sphere of radius 0.0015 cm" 
+set xlabel "Energy (MeV)" 
+set ylabel "Flux" 
+#set arrow from 0,1 to 0.01,1 nohead
+plot "10kev_track_flux_9.txt" title "" with errorbars
+clear
+set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500 
+set output '10kev_track_flux_6.png'
+set title "Flux for cold Hydrogen sphere of radius 0.002 cm" 
+set xlabel "Energy (MeV)" 
+set ylabel "Flux" 
+#set arrow from 0,1 to 0.01,1 nohead
+plot "10kev_track_flux_6.txt" title "" with errorbars
+clear
+set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500 
+set output '10kev_track_flux_3.png'
+set title "Flux for cold Hydrogen sphere of radius 0.0025 cm" 
+set xlabel "Energy (MeV)" 
+set ylabel "Flux" 
+#set arrow from 0,1 to 0.01,1 nohead
+plot "10kev_track_flux_3.txt" title "" with errorbars
+clear
