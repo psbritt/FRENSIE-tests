@@ -31,18 +31,19 @@ EST="${NAME}est_${ENERGY}.xml"
 SOURCE="${NAME}source_${ENERGY}.xml"
 NAME="${NAME}${ENERGY}"
 
+# Make directory for the test results
+TODAY=$(date +%Y-%m-%d)
+DIR="results/${TODAY}"
+mkdir -p $DIR
 
 echo "Running Facemc with ${THREADS} threads:"
-${FRENSIE}/bin/facemc --sim_info=sim_info.xml --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME --threads=${THREADS}
+${FRENSIE}/bin/facemc --sim_info=sim_info.xml --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME --threads=${THREADS} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Processing the results:"
 
-TODAY=$(date +%Y-%m-%d)
-DIR="results/${TODAY}"
 NAME=${NAME}.h5
 NEW_NAME="${DIR}/${NAME}"
 NEW_RUN_INFO="${DIR}/continue_run_${ENERGY}.xml"
-mkdir -p $DIR
 mv ${NAME} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
 

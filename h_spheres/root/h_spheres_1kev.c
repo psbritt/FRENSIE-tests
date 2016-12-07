@@ -10,22 +10,29 @@ void h_spheres_1kev()
 {
   // Set up manager of the geometry world
   gSystem->Load( "libGeom" );
-
   TGeoManager* geom = new TGeoManager(
                    "h_spheres_1kev",
                    "Geometry for the electron H-1 spheres at room temp test prob.");
 
-  // Create the hydrogen material
+//---------------------------------------------------------------------------//
+// Material Definitions
+//---------------------------------------------------------------------------//
+
+  // Hydrogen material
   TGeoMaterial* mat_1 = new TGeoMaterial( "mat_1", 1, 1, 0.001 );
   TGeoMedium* med_1 = new TGeoMedium( "med_1", 2, mat_1 );
 
-  // Create the void material
+  // Void material
   TGeoMaterial* void_mat = new TGeoMaterial( "void", 0, 0, 0 );
   TGeoMedium* void_med = new TGeoMedium( "void_med", 1, void_mat );
 
-  // Create the graveyard
+  // Graveyard (terminal)
   TGeoMaterial* graveyard_mat = new TGeoMaterial( "graveyard", 0, 0, 0 );
   TGeoMedium* graveyard_med = new TGeoMedium( "graveyard", 3, graveyard_mat );
+
+//---------------------------------------------------------------------------//
+// Volume Definitions
+//---------------------------------------------------------------------------//
 
   // Create the hydrogen volume 1
   TGeoVolume* h_sphere_volume1 =
@@ -69,6 +76,10 @@ void h_spheres_1kev()
 
   graveyard_volume->SetUniqueID( 7 );
 
+//---------------------------------------------------------------------------//
+// Heirarchy (Volume) Definitions
+//---------------------------------------------------------------------------//
+
   // Place the hydrogen sphere 1 inside of hydrogen sphere 2
   h_sphere_volume2->AddNode( h_sphere_volume1, 1 );
 
@@ -86,7 +97,13 @@ void h_spheres_1kev()
 
   // Place the void sphere inside of the graveyard
   graveyard_volume->AddNode( void_sphere_volume, 1 );
+
+  // Set the graveyard to be the top volume (rest-of-universe)
   geom->SetTopVolume( graveyard_volume );
+
+//---------------------------------------------------------------------------//
+// Export and Drawing Capabilities
+//---------------------------------------------------------------------------//
 
   // Close the geometry
   geom->SetTopVisible();

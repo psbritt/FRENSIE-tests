@@ -29,21 +29,15 @@ def main(argv):
     base = "h_spheres_"+str(energy)+"kev"
     mcnp_output = base+".inpo"
 
-    # Check if file exists
-    if os.path.isfile(mcnp_output):
-        # Check if the ouput directory exists and make if necessary
-        if not os.path.isdir(directory):
-            print "Making directory",directory
-            os.makedirs(directory)
-
-        # Move file to output directory
-        new_name = str(directory)+str(base)
-        shutil.move(mcnp_output,new_name+".inpo")
-        shutil.move(base+".inpm",new_name+".inpm")
-        shutil.move(base+".inpr",new_name+".inpr")
-
+    # Check if the ouput directory exists
+    if not os.path.isdir(directory):
+       print "Directory: ",directory," does not exist!"
+    else:
         # Move to output data directory
         os.chdir(directory)
+
+    # Check if file exists
+    if os.path.isfile(mcnp_output):
 
         today = datetime.date.today()
         # Read the mcnp data file for surface tallys
@@ -101,7 +95,7 @@ def main(argv):
         call(["gnuplot", plot])
 
     else:
-        print "File ",mcnp_output," does not exist!"
+        print "File: ",mcnp_output," does not exist!"
 
 if __name__ == "__main__":
    main(sys.argv[1:])

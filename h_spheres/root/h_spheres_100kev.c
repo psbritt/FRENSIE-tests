@@ -27,6 +27,10 @@ void h_spheres_100kev()
   TGeoMaterial* graveyard_mat = new TGeoMaterial( "graveyard", 0, 0, 0 );
   TGeoMedium* graveyard_med = new TGeoMedium( "graveyard", 3, graveyard_mat );
 
+//---------------------------------------------------------------------------//
+// Volume Definitions
+//---------------------------------------------------------------------------//
+
   // Create the hydrogen volume 1
   TGeoVolume* h_sphere_volume1 =
     geom->MakeSphere( "SPHERE1", med_1, 0.0, 0.0005 );
@@ -69,6 +73,10 @@ void h_spheres_100kev()
 
   graveyard_volume->SetUniqueID( 7 );
 
+//---------------------------------------------------------------------------//
+// Heirarchy (Volume) Definitions
+//---------------------------------------------------------------------------//
+
   // Place the hydrogen sphere 1 inside of hydrogen sphere 2
   h_sphere_volume2->AddNode( h_sphere_volume1, 1 );
 
@@ -86,7 +94,13 @@ void h_spheres_100kev()
 
   // Place the void sphere inside of the graveyard
   graveyard_volume->AddNode( void_sphere_volume, 1 );
+
+  // Set the graveyard to be the top volume (rest-of-universe)
   geom->SetTopVolume( graveyard_volume );
+
+//---------------------------------------------------------------------------//
+// Export and Drawing Capabilities
+//---------------------------------------------------------------------------//
 
   // Close the geometry
   geom->SetTopVisible();
@@ -103,5 +117,5 @@ void h_spheres_100kev()
 }
 
 //---------------------------------------------------------------------------//
-// end h_sphere.c
+// end h_sphere_100kev.c
 //---------------------------------------------------------------------------//
