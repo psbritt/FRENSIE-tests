@@ -1,7 +1,7 @@
 #!/bin/sh
 # This file is named run_facemc_mpi.sh
 #SBATCH --partition=univ2                # Use the newer infrastructure
-#SBATCH --time=0-20:00:00
+#SBATCH --time=3-00:00:00
 #SBATCH --nodes=3
 #SBATCH --ntasks-per-node=20
 #SBATCH --mem-per-cpu=4000
