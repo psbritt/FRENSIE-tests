@@ -6,7 +6,7 @@
 EXTRA_ARGS=$@
 TESTING_DIR="/home/lkersting/frensie/frensie-tests"
 
-if [ "$#" -ne 1 ];
+if [ "$#" -lt 1 ];
 then
     echo "The output directory is required. $# arguments provided!"
     echo "run:  ./data_processor.sh <directory>"
@@ -20,11 +20,11 @@ else
     DIR=$1
     mkdir -p $DIR
 
-    H5="h_spheres_${ENERGY}.h5"
-    FLUX_ENERGY_BINS="${DIR}/${ENERGY}_flux_bins.txt"
-    CURRENT_ENERGY_BINS="${DIR}/${ENERGY}_current_bins.txt"
+    NAME_EXTENSION=$2
+    H5="h_spheres_${ENERGY}${NAME_EXTENSION}.h5"
     FLUX="${DIR}/${ENERGY}_flux"
     CURRENT="${DIR}/${ENERGY}_current"
+    TRACK_FLUX="${DIR}/${ENERGY}_track_flux"
 
     if [ -f $H5 ];
     then
@@ -38,7 +38,13 @@ else
             # Extract the current data
             ${TESTING_DIR}/edump.py -f $H5 -e 2 -i ${i} -b Energy > $file
         done
-        echo "Files will be located in $DIR"
+
+        for i in 3 6 9 12 13
+        do
+            file=${TRACK_FLUX}_${i}.txt
+            # Extract the track length flux data
+            ${TESTING_DIR}/edump.py -f $H5 -e 3 -i ${i} -b Energy > $file
+        done
 
         cd $DIR
         plot="${TESTING_DIR}/h_spheres/dagmc/plot_${ENERGY}.p"

@@ -6,7 +6,7 @@
 EXTRA_ARGS=$@
 TESTING_DIR="/home/lkersting/frensie/frensie-tests"
 
-if [ "$#" -ne 1 ];
+if [ "$#" -lt 1 ];
 then
     echo "The output directory is required. $# arguments provided!"
     echo "run:  ./data_processor.sh <directory>"
@@ -20,6 +20,8 @@ else
     DIR=$1
     mkdir -p $DIR
 
+    NAME_EXTENSION=$2
+    ENERGY=${ENERGY}${NAME_EXTENSION}
     H5="h_spheres_${ENERGY}.h5"
     FLUX="${DIR}/${ENERGY}_track_flux"
 
