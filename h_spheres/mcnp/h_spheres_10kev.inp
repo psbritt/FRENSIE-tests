@@ -1,11 +1,11 @@
 electrons in room temp hydrogen
-100   1    0.01      -10         imp:n=1 $ Inner most sphere r=0.0005
-101   1    0.01      -11 10      imp:n=1 $ 2nd sphere r=0.0010
-102   1    0.01      -12 11      imp:n=1 $ 3rd sphere r=0.0015
-103   1    0.01      -13 12      imp:n=1 $ 4th sphere r=0.0020
-104   1    0.01      -14 13      imp:n=1 $ Outer most sphere r=0.0025
-105   0              -15 14      imp:n=1 $ Void outside of spheres
-999   0              +15         imp:n=0 $ Graveyard
+100   1    0.01      -10         imp:e=1 $ Inner most sphere r=0.0005
+101   1    0.01      -11 10      imp:e=1 $ 2nd sphere r=0.0010
+102   1    0.01      -12 11      imp:e=1 $ 3rd sphere r=0.0015
+103   1    0.01      -13 12      imp:e=1 $ 4th sphere r=0.0020
+104   1    0.01      -14 13      imp:e=1 $ Outer most sphere r=0.0025
+105   0              -15 14      imp:e=1 $ Void outside of spheres
+999   0              +15         imp:e=0 $ Graveyard
 
 c sphere surfaces of different radii
 10   so    0.0005
