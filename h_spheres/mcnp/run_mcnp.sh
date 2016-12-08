@@ -41,5 +41,5 @@ mv ${NAME}m ${NEW_NAME}m
 # Move to output directory
 cd ${DIR}
 
-echo $INPUT | ./data_processor.py -d ./
+echo $INPUT | ../../data_processor.py -d ./
 echo "The processed data is located at: ${DIR}"
