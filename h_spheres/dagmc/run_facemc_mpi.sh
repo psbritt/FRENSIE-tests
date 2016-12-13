@@ -1,7 +1,7 @@
 #!/bin/sh
 # This file is named run_facemc_mpi.sh
 #SBATCH --partition=univ2
-#SBATCH --time=7-00:00:00
+#SBATCH --time=4-00:00:00
 #SBATCH --nodes=5
 #SBATCH --ntasks-per-node=20
 #SBATCH --mem-per-cpu=4000
@@ -31,7 +31,7 @@ MAT="${NAME}mat.xml"
 RSP="${NAME}rsp_fn.xml"
 EST="${NAME}est_${ENERGY}.xml"
 SOURCE="${NAME}source_${ENERGY}.xml"
-NAME="${NAME}${ENERGY}_Native"
+NAME="${NAME}${ENERGY}"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
