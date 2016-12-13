@@ -26,8 +26,7 @@
     <Parameter name="Particle Type" type="string" value="Electron"/>
     <Parameter name="Multiplier" type="double" value="1.0"/>
     <ParameterList name="Bins">
-      <Parameter name="Energy Bins" type="Array"
-		 value="{ 1e-5, 197i, 1.000e-3}"/>
+      <Parameter name="Energy Bins" type="Array" value="{ 1e-5, 197i, 1e-3}"/>
     </ParameterList>
   </ParameterList>
 
