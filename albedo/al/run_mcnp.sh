@@ -21,14 +21,15 @@ fi
 NAME="mcnp.in"
 OUTPUT="mcnp."
 
+mkdir -p $OUTPUT_DIR
+
 echo "Running MCNP6:"
 echo "${MCNP6} i=${NAME} n=${OUTPUT} tasks ${THREADS}"
-${MCNP6} i=${NAME} n=${OUTPUT} tasks ${THREADS}
+${MCNP6} i=${NAME} n=${OUTPUT} tasks ${THREADS} > ${OUTPUT_DIR}/${OUTPUT}txt 2>&1
 
 NEW_NAME=${OUTPUT_DIR}${OUTPUT}
 
 # Move output files to test directory
-mkdir -p $OUTPUT_DIR
 mv ${OUTPUT}o ${NEW_NAME}o
 mv ${OUTPUT}r ${NEW_NAME}r
 mv ${OUTPUT}m ${NEW_NAME}m

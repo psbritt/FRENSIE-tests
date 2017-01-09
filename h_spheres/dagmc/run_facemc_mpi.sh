@@ -21,7 +21,7 @@ then
 fi
 
 ENERGY="${INPUT}kev"
-echo "You entered: $ENERGY"
+echo "You entered: ${ENERGY}"
 
 NAME="h_spheres_"
 
@@ -36,12 +36,14 @@ NAME="${NAME}${ENERGY}"
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
-mkdir -p $DIR
+mkdir -p ${DIR}
 
 THREADS="100"
-echo "Running Facemc with ${THREADS} threads:"
-mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=sim_info.xml --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME > ${DIR}/${NAME}.txt 2>&1
+RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=sim_info.xml --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
 
+echo "Running Facemc with ${THREADS} threads:"
+echo ${RUN}
+${RUN} > ${DIR}/${NAME}.txt 2>&1
 echo "Moving the results:"
 
 # Move file to the test results folder
