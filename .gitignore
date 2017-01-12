@@ -26,6 +26,7 @@
 *.inpr
 *.inpm
 results/
+results_linlin/
 continue_run.xml
 CMakeFiles
 CMakeCache.txt

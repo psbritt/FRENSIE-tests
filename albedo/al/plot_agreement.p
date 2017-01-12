@@ -13,11 +13,12 @@ set ylabel "Reflection Coef"
 #set yrange[0.0:0.18]
 #set ytics( '' 0.90, 0.95, 1.0, 1.05, '' 1.10 )
 #set arrow from 1e-3,1.0 to 10.0,1.0 nohead lc rgb"red" lt 2 lw 1
+set key center
 plot "combined_reflections.txt" using 1:2:3 with errorbars title "MCNP",\
      "combined_reflections.txt" using 1:4:5 with errorbars title "FACEMC-ACE",\
      "combined_reflections.txt" using 1:6:7 with errorbars title "FACEMC-Native",\
      "combined_reflections.txt" using 1:8:9 with errorbars title "FACEMC-Moments",\
      "combined_reflections.txt" using 1:10 title "Experimental",
-set key
 replot
+unset key
 unset multiplot
