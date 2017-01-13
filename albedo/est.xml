@@ -6,7 +6,7 @@
         <Parameter name="Particle Type" type="string" value="Electron"/>
         <Parameter name="Surfaces" type="Array" value="{4, 6}"/>
         <ParameterList name="Bins">
-            <Parameter name="Cosine Bins" type="Array" value="{-1.0, -0.99, 0.0, 1.0}"/>
+            <Parameter name="Cosine Bins" type="Array" value="{-1.0, -0.99, 0.0, 1.0}"/>            
         </ParameterList>
     </ParameterList>
 
@@ -26,7 +26,7 @@
         <Parameter name="Particle Type" type="string" value="Electron"/>
         <Parameter name="Cells" type="Array" value="{1}"/>
         <ParameterList name="Bins">
-            <Parameter name="Energy Bins" type="Array" value="{1e-3, 99l, 0.002}"/>
+            <Parameter name="Energy Bins" type="Array" value="{1e-6, 99l, 10.2}"/>
         </ParameterList>
     </ParameterList>
 

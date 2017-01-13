@@ -69,7 +69,7 @@ GEOM="geom.xml"
 SOURCE="source.xml"
 RSP="../rsp_fn.xml"
 EST="../est.xml"
-NAME="al_2000_${NAME}"
+NAME="al_10200000_${NAME}"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
