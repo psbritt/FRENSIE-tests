@@ -69,6 +69,8 @@ else
 fi
 
 # .xml file paths.
+python ../est.py -e ${ENERGY}
+python source.py -e ${ENERGY}
 MAT="mat.xml"
 INFO="sim_info.xml"
 GEOM="geom.xml"
