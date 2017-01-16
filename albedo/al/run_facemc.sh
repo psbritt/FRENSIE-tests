@@ -26,8 +26,13 @@ then
 fi
 
 NAME="ace"
-MAT="mat_ace.xml"
-INFO="sim_info.xml"
+ELEMENT="Al"
+ENERGY="0.005"
+ENERGY_EV=$(echo $ENERGY*1000000 |bc)
+ENERGY_EV=${ENERGY_EV%.*}
+
+python ../est.py -e ${ENERGY}
+python source.py -e ${ENERGY}
 
 echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
 read INPUT
@@ -35,22 +40,22 @@ if [ ${INPUT} -eq 1 ]
 then
     # Use ACE data
     NAME="ace"
-    MAT="mat_ace.xml"
-    INFO="sim_info.xml"
+    python mat.py -n ${ELEMENT} -t ${NAME}
+    python sim_info.py -e ${ENERGY} -c 1.0
     echo "Using ACE data!"
 elif [ ${INPUT} -eq 2 ]
 then
     # Use Native analog data
     NAME="native"
-    MAT="mat_native.xml"
-    INFO="sim_info.xml"
+    python mat.py -n ${ELEMENT} -t "linlin"
+    python sim_info.py -e ${ENERGY} -c 1.0
     echo "Using Native analog data!"
 elif [ ${INPUT} -eq 3 ]
 then
     # Use Native Moment Preserving data
     NAME="moments"
-    MAT="mat_native.xml"
-    INFO="sim_info_moments.xml"
+    python mat.py -n ${ELEMENT} -t "linlin"
+    python sim_info.py -e ${ENERGY} -c 0.9
     echo "Using Native Moment Preserving data!"
 else
     # Default to ACE data
@@ -58,11 +63,13 @@ else
 fi
 
 # .xml file paths.
+MAT="mat.xml"
+INFO="sim_info.xml"
 GEOM="geom.xml"
 SOURCE="source.xml"
 RSP="../rsp_fn.xml"
 EST="../est.xml"
-NAME="al_${NAME}"
+NAME="al_${NAME}_${ENERGY_EV}"
 
 TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
