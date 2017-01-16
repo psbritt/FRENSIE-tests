@@ -1,8 +1,8 @@
 #!/bin/sh
 # This file is named run_facemc_mpi.sh
 #SBATCH --partition=univ2
-#SBATCH --time=7-00:00:00
-#SBATCH --nodes=5
+#SBATCH --time=0-20:00:00
+#SBATCH --nodes=3
 #SBATCH --ntasks-per-node=20
 #SBATCH --mem-per-cpu=4000
 
@@ -34,11 +34,15 @@ then
     INPUT="$1"
 fi
 
-NAME="ace"
+# Changing variables
+ENERGY=".002"
+THREADS="60"
 ELEMENT="Al"
-ENERGY="0.005"
+
+
 ENERGY_EV=$(echo $ENERGY*1000000 |bc)
 ENERGY_EV=${ENERGY_EV%.*}
+NAME="ace"
 
 if [ ${INPUT} -eq 1 ]
 then
@@ -84,7 +88,6 @@ TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
 mkdir -p $DIR
 
-THREADS="100"
 echo "Running Facemc with ${THREADS} threads:"
 RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
 echo ${RUN}
