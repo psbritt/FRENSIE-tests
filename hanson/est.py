@@ -1,22 +1,12 @@
 #! /usr/bin/env python
 import argparse as ap
-import lxml.etree as ET
+import xml.etree.ElementTree as ET
+from ElementTree_pretty import prettify
 
 # Set up the argument parser
-description = "This script allows one to write the est.xml file for FACEMC. "\
-              "The input parameter is the source energy."
-
-parser = ap.ArgumentParser(description=description)
-
-energy_msg = "the source energy (in MeV)"
-parser.add_argument('-e', help=energy_msg, required=True)
-
-# Parse the user's arguments
-user_args = parser.parse_args()
-energy = user_args.e
+description = "This script allows one to write the est.xml file for FACEMC."
 
 root = ET.Element("ParameterList", name="Simulation Info")
-
 
 parameter_1 = ET.SubElement(root, "ParameterList", name="Surface Current Estimator 1")
 
@@ -29,7 +19,8 @@ ET.SubElement(parameter_1, "Parameter", name="Particle Type", type="string", val
 ET.SubElement(parameter_1, "Parameter", name="Surfaces", type="Array", value="{4, 6}")
 
 sub_list_1 = ET.SubElement(parameter_1, "ParameterList", name="Bins")
-ET.SubElement(sub_list_1, "Parameter", name="Cosine Bins", type="Array", value="{-1.0, -0.99, 0.0, 1.0}")
+ET.SubElement(sub_list_1, "Parameter", name="Cosine Bins", type="Array", value="{\
+-1.0, 0.0, 0.939692620785908, 0.965925826289068, 0.984807753012208, 0.990268068741570, 0.994521895368273, 0.995396198367179, 0.996194698091746,0.996917333733128, 0.997564050259824, 0.998134798421867, 0.998629534754574 , 0.999048221581858, 0.999390827019096, 0.999657324975557, 0.999847695156391, 0.999961923064171, 1.0}")
 
 
 parameter_2 = ET.SubElement(root, "ParameterList", name="Surface Current Estimator 2")
@@ -57,8 +48,8 @@ ET.SubElement(parameter_3, "Parameter", name="Particle Type", type="string", val
 ET.SubElement(parameter_3, "Parameter", name="Cells", type="Array", value="{1}")
 
 sub_list_3 = ET.SubElement(parameter_3, "ParameterList", name="Bins")
-ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value="{1.5e-5, 99l, " + str(energy)+ "}")
+ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value="{1.5e-5, 99l, 15.7")
 
 
-tree = ET.ElementTree(root)
-tree.write("../est.xml", pretty_print=True)
+prettify(root,"est.xml")
+
