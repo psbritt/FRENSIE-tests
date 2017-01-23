@@ -40,10 +40,3 @@ ET.SubElement(parameter_2, "Parameter", name="Elastic Cutoff Angle Cosine", type
 ET.SubElement(parameter_2, "Parameter", name="Electron Atomic Relaxation", type="bool", value="true" )
 
 prettify(root,"sim_info.xml")
-
-#f = open("sim_info.xml", 'w')
-#f.write( out[23:] )
-#tree = ET.ElementTree(root)
-
-#prettify(tree)
-#tree.write("sim_info.xml")

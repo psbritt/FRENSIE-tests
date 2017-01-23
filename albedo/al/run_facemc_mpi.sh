@@ -1,8 +1,8 @@
 #!/bin/sh
 # This file is named run_facemc_mpi.sh
 #SBATCH --partition=univ2
-#SBATCH --time=7-00:00:00
-#SBATCH --nodes=5
+#SBATCH --time=0-20:00:00
+#SBATCH --nodes=3
 #SBATCH --ntasks-per-node=20
 #SBATCH --mem-per-cpu=4000
 
@@ -34,50 +34,64 @@ then
     INPUT="$1"
 fi
 
+# Changing variables
+ENERGY=".002"
+THREADS="60"
+ELEMENT="Al"
+
+
+ENERGY_EV=$(echo $ENERGY*1000000 |bc)
+ENERGY_EV=${ENERGY_EV%.*}
 NAME="ace"
-MAT="mat_ace.xml"
-INFO="sim_info.xml"
 
 if [ ${INPUT} -eq 1 ]
 then
     # Use ACE data
     NAME="ace"
-    MAT="mat_ace.xml"
-    INFO="sim_info.xml"
+    python mat.py -n ${ELEMENT} -t ${NAME}
+    python sim_info.py -e ${ENERGY} -c 1.0
     echo "Using ACE data!"
 elif [ ${INPUT} -eq 2 ]
 then
     # Use Native analog data
     NAME="native"
-    MAT="mat_native.xml"
-    INFO="sim_info.xml"
+    python mat.py -n ${ELEMENT} -t ${NAME}
+    python sim_info.py -e ${ENERGY} -c 1.0
     echo "Using Native analog data!"
 elif [ ${INPUT} -eq 3 ]
 then
     # Use Native Moment Preserving data
     NAME="moments"
-    MAT="mat_native.xml"
-    INFO="sim_info_moments.xml"
+    python mat.py -n ${ELEMENT} -t "native"
+    python sim_info.py -e ${ENERGY} -c 0.9
     echo "Using Native Moment Preserving data!"
 else
     # Default to ACE data
     echo "Input not valid, ACE data will be used!"
+    python mat.py -n ${ELEMENT} -t ${NAME}
+    python sim_info.py -e ${ENERGY} -c 1.0
 fi
 
 # .xml file paths.
+python ../est.py -e ${ENERGY}
+python source.py -e ${ENERGY}
+MAT="mat.xml"
+INFO="sim_info.xml"
 GEOM="geom.xml"
 SOURCE="source.xml"
 RSP="../rsp_fn.xml"
 EST="../est.xml"
-NAME="al_${NAME}"
+NAME="al_${NAME}_${ENERGY_EV}"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
 mkdir -p $DIR
 
-THREADS="100"
-RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME --threads=${THREADS}"
+echo "Running Facemc with ${THREADS} threads:"
+RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
+echo ${RUN}
+${RUN} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Running Facemc with ${THREADS} threads:"
 echo ${RUN}

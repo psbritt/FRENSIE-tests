@@ -60,6 +60,6 @@ ET.SubElement(parameter_3, "Parameter", name="Cells", type="Array", value="{1}")
 sub_list_3 = ET.SubElement(parameter_3, "ParameterList", name="Bins")
 ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value="{1.5e-5, 99l, " + str(energy)+ "}")
 
+
 prettify(root,"../est.xml")
-#tree = ET.ElementTree(root)
-#tree.write("../est.xml", pretty_print=True)
+

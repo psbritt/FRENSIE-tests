@@ -41,5 +41,3 @@ ET.SubElement(parameter_1, "Parameter", name="Fractions", type="Array", value="{
 ET.SubElement(parameter_1, "Parameter", name="Isotopes", type="Array(string)", value=filename)
 
 prettify(root,"mat.xml")
-#tree = ET.ElementTree(root)
-#tree.write("mat.xml", pretty_print=True)
