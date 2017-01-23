@@ -1,10 +1,8 @@
 <ParameterList name="Geometry">
-
-    <Parameter name="Handler" type="string" value="DagMC"/>
-    <Parameter name="CAD File" type="string" value="geom.sat"/>
-    <Parameter name="Facet Tolerance" type="double" value="1e-3"/>
-    <Parameter name="Use Fast Id Lookup" type="bool" value="True"/>
-    <Parameter name="Material Property" type="string" value="mat"/>
-    <Parameter name="Density Property" type="string" value="rho"/>
-
+  <Parameter name="Handler" type="string" value="DagMC"/>
+  <Parameter name="CAD File" type="string" value="geom.sat"/>
+  <Parameter name="Facet Tolerance" type="double" value="1e-3"/>
+  <Parameter name="Use Fast Id Lookup" type="bool" value="True"/>
+  <Parameter name="Material Property" type="string" value="mat"/>
+  <Parameter name="Density Property" type="string" value="rho"/>
 </ParameterList>

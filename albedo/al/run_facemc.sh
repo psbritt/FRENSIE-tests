@@ -47,14 +47,22 @@ elif [ ${INPUT} -eq 2 ]
 then
     # Use Native analog data
     NAME="native"
+<<<<<<< HEAD
     python mat.py -n ${ELEMENT} -t ${NAME}
+=======
+    python mat.py -n ${ELEMENT} -t "linlin"
+>>>>>>> 57645d67eda0f94fccb981dea22bf345d677123f
     python sim_info.py -e ${ENERGY} -c 1.0
     echo "Using Native analog data!"
 elif [ ${INPUT} -eq 3 ]
 then
     # Use Native Moment Preserving data
     NAME="moments"
+<<<<<<< HEAD
     python mat.py -n ${ELEMENT} -t "native"
+=======
+    python mat.py -n ${ELEMENT} -t "linlin"
+>>>>>>> 57645d67eda0f94fccb981dea22bf345d677123f
     python sim_info.py -e ${ENERGY} -c 0.9
     echo "Using Native Moment Preserving data!"
 else

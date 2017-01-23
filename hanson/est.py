@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 import argparse as ap
-import xml.etree.ElementTree as ET
-from ElementTree_pretty import prettify
+import lxml.etree as ET
 
 # Set up the argument parser
 description = "This script allows one to write the est.xml file for FACEMC. "\
@@ -61,5 +60,5 @@ sub_list_3 = ET.SubElement(parameter_3, "ParameterList", name="Bins")
 ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value="{1.5e-5, 99l, " + str(energy)+ "}")
 
 
-prettify(root,"../est.xml")
-
+tree = ET.ElementTree(root)
+tree.write("../est.xml", pretty_print=True)
