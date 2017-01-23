@@ -2,6 +2,6 @@
   <ParameterList name="Al">
     <Parameter name="Id" type="unsigned int" value="1"/>
     <Parameter name="Fractions" type="Array" value="{1.0}"/>
-    <Parameter name="Isotopes" type="Array(string)" value="{Al}"/>
+    <Parameter name="Isotopes" type="Array(string)" value="{Al-LinLin}"/>
   </ParameterList>
 </ParameterList>

@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 import argparse as ap
-import xml.etree.ElementTree as ET
-from ElementTree_pretty import prettify
+import lxml.etree as ET
 
 # Set up the argument parser
 description = "This script allows one to write the sim_info.xml file for FACEMC. "\
@@ -39,11 +38,5 @@ ET.SubElement(parameter_2, "Parameter", name="Elastic Cutoff Angle Cosine", type
 
 ET.SubElement(parameter_2, "Parameter", name="Electron Atomic Relaxation", type="bool", value="true" )
 
-prettify(root,"sim_info.xml")
-
-#f = open("sim_info.xml", 'w')
-#f.write( out[23:] )
-#tree = ET.ElementTree(root)
-
-#prettify(tree)
-#tree.write("sim_info.xml")
+tree = ET.ElementTree(root)
+tree.write("sim_info.xml", pretty_print=True)

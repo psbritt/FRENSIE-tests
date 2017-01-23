@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 import argparse as ap
-import xml.etree.ElementTree as ET
-from ElementTree_pretty import prettify
+import lxml.etree as ET
 
 # Set up the argument parser
 description = "This script allows one to write the source.xml file for FACEMC. "\
@@ -32,6 +31,5 @@ ET.SubElement(parameters, "Parameter", name="Energy Distribution", type="Delta D
 sub_list_2 = ET.SubElement(parameters, "ParameterList", name="Directional Distribution")
 ET.SubElement(sub_list_2, "Parameter", name="Direction", type="Array(double)", value="{1.0,0.0,0.0}")
 
-prettify(root,"source.xml")
-#tree = ET.ElementTree(root)
-#tree.write("source.xml", pretty_print=True)
+tree = ET.ElementTree(root)
+tree.write("source.xml", pretty_print=True)
