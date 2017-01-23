@@ -82,7 +82,7 @@ E4 1.5e-5 99ilog 1.0
 c
 dbcn 17j 2 $ Turn on analog mode
 c
-CUT:P J 1.0e-02 $ Set photon cutoff to 10 eV
+CUT:P J 1.0e-02 $ Set photon cutoff to 10 keV
 CUT:E J 1.5e-05 $ Set electron cutoff to 15 eV
 c
 c Max energy, p's make e's, e's make p's, brem dist, skip 10, analog start energy
