@@ -33,7 +33,7 @@ fi
 NAME="ace"
 ELEMENT="Au"
 ENERGY="15.7"
-# Number of histories 1e7
+# Number of histories 10
 HISTORIES="10"
 
 python est.py
