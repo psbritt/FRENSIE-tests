@@ -41,7 +41,7 @@ fi
 
 # Changing variables
 THREADS="100"
-ELEMENT="Al"
+ELEMENT="Au"
 # Number of histories 1e7
 HISTORIES="10000000"
 

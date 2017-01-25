@@ -4,7 +4,7 @@
     <Parameter name="Histories" type="unsigned int" value="100"/>
   </ParameterList>
   <ParameterList name="Electron Properties">
-    <Parameter name="Max Electron Energy" type="double" value=".002"/>
+    <Parameter name="Max Electron Energy" type="double" value=".03"/>
     <Parameter name="Elastic Cutoff Angle Cosine" type="double" value="1.0"/>
     <Parameter name="Electron Atomic Relaxation" type="bool" value="true"/>
   </ParameterList>
