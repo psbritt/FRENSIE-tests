@@ -27,7 +27,7 @@ parameter_1 = ET.SubElement(root, "ParameterList", name="General Properties")
 
 ET.SubElement(parameter_1, "Parameter", name="Mode", type="string", value="Electron")
 
-ET.SubElement(parameter_1, "Parameter", name="Histories", type="unsigned int", value="100")
+ET.SubElement(parameter_1, "Parameter", name="Histories", type="unsigned int", value="1000000")
 
 
 
