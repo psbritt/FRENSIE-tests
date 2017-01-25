@@ -16,11 +16,29 @@ ET.SubElement(parameter_1, "Parameter", name="Type", type="string", value="Surfa
 
 ET.SubElement(parameter_1, "Parameter", name="Particle Type", type="string", value="Electron")
 
-ET.SubElement(parameter_1, "Parameter", name="Surfaces", type="Array", value="{4, 6}")
+ET.SubElement(parameter_1, "Parameter", name="Surfaces", type="Array", value="{6}")
 
 sub_list_1 = ET.SubElement(parameter_1, "ParameterList", name="Bins")
 ET.SubElement(sub_list_1, "Parameter", name="Cosine Bins", type="Array", value="{\
--1.0, 0.0, 0.939692620785908, 0.965925826289068, 0.984807753012208, 0.990268068741570, 0.994521895368273, 0.995396198367179, 0.996194698091746,0.996917333733128, 0.997564050259824, 0.998134798421867, 0.998629534754574 , 0.999048221581858, 0.999390827019096, 0.999657324975557, 0.999847695156391, 0.999961923064171, 1.0}")
+-1.0,\
+ 0.0,\
+ 0.939692620785908,\
+ 0.965925826289068,\
+ 0.984807753012208,\
+ 0.990268068741570,\
+ 0.994521895368273,\
+ 0.995396198367179,\
+ 0.996194698091746,\
+ 0.996917333733128,\
+ 0.997564050259824,\
+ 0.998134798421867,\
+ 0.998629534754574,\
+ 0.999048221581858,\
+ 0.999390827019096,\
+ 0.999657324975557,\
+ 0.999847695156391,\
+ 0.999961923064171,\
+ 1.0}")
 
 
 parameter_2 = ET.SubElement(root, "ParameterList", name="Surface Current Estimator 2")
@@ -31,10 +49,10 @@ ET.SubElement(parameter_2, "Parameter", name="Type", type="string", value="Surfa
 
 ET.SubElement(parameter_2, "Parameter", name="Particle Type", type="string", value="Electron")
 
-ET.SubElement(parameter_2, "Parameter", name="Surfaces", type="Array", value="{4, 6}")
+ET.SubElement(parameter_2, "Parameter", name="Surfaces", type="Array", value="{4}")
 
 sub_list_2 = ET.SubElement(parameter_2, "ParameterList", name="Bins")
-ET.SubElement(sub_list_2, "Parameter", name="Cosine Bins", type="Array", value="{-1.0, 0.0, 1.0}")
+ET.SubElement(sub_list_2, "Parameter", name="Cosine Bins", type="Array", value="{-1.0, -0.999999, 1.0}")
 
 
 parameter_3 = ET.SubElement(root, "ParameterList", name="Cell Track Length Flux Estimator")

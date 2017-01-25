@@ -81,7 +81,9 @@ DIR="results/${TODAY}"
 mkdir -p $DIR
 
 echo "Running Facemc with ${THREADS} threads:"
-${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME} --threads=${THREADS} > ${DIR}/${NAME}.txt 2>&1
+RUN="${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME} --threads=${THREADS}"
+echo ${RUN}
+${RUN} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Processing the results:"
 
@@ -93,6 +95,6 @@ mv continue_run.xml ${NEW_RUN_INFO}
 
 cd ${DIR}
 
-bash ../../../data_processor.sh ${NAME}
+bash ../../data_processor.sh ${NAME}
 echo "Results will be in ./${DIR}"
 

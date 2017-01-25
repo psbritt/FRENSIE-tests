@@ -58,16 +58,16 @@ c
 c --------------------
 c Source
 c --------------------
-c monodirectional, monoenergetic 0.005 MeV point source located
+c monodirectional, monoenergetic point source located
 c just before the the edge of the shield
-SDEF  ERG=1.0 POS=-20 0 0 DIR=1 VEC=1 0 0 PAR=e
+SDEF  ERG=0.05 POS=-20 0 0 DIR=1 VEC=1 0 0 PAR=e
 c --------------------
 c Job Control
 c --------------------
 c run in photon-electron mode to get low energy physics
 mode p e
 c run for 1e8 histories
-nps 1e8
+nps 1e7
 c Surface current on front surface
 f11:e 100
 c11  0 0.99 1
@@ -78,11 +78,11 @@ c21  0 0.99 1
 c
 c Cell track length flux for additional verification
 F4:e  10
-E4 1.5e-5 99ilog 1.0
+E4 1.5e-5 99ilog 0.05
 c
 dbcn 17j 2 $ Turn on analog mode
 c
-CUT:P J 1.0e-02 $ Set photon cutoff to 10 eV
+CUT:P J 1.0e-02 $ Set photon cutoff to 10 keV
 CUT:E J 1.5e-05 $ Set electron cutoff to 15 eV
 c
 c Max energy, p's make e's, e's make p's, brem dist, skip 10, analog start energy
