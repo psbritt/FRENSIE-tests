@@ -15,6 +15,7 @@ parser.add_argument('-e', help=source_energy_msg, required=True)
 # Parse the user's arguments
 user_args = parser.parse_args()
 energy = user_args.e
+name = "source_"+str(energy)+".xml"
 
 root = ET.Element("ParameterList", name="Source")
 
@@ -32,4 +33,4 @@ ET.SubElement(parameters, "Parameter", name="Energy Distribution", type="Delta D
 sub_list_2 = ET.SubElement(parameters, "ParameterList", name="Directional Distribution")
 ET.SubElement(sub_list_2, "Parameter", name="Direction", type="Array(double)", value="{1.0,0.0,0.0}")
 
-prettify(root,"source.xml")
+prettify(root,name)
