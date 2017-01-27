@@ -31,9 +31,6 @@ ENERGY="0.005"
 ENERGY_EV=$(echo $ENERGY*1000000 |bc)
 ENERGY_EV=${ENERGY_EV%.*}
 
-python ../est.py -e ${ENERGY}
-python source.py -e ${ENERGY}
-
 echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
 read INPUT
 if [ ${INPUT} -eq 1 ]
@@ -41,42 +38,48 @@ then
     # Use ACE data
     NAME="ace"
     python mat.py -n ${ELEMENT} -t ${NAME}
+    MAT="mat_ace.xml"
+
     python sim_info.py -e ${ENERGY} -c 1.0
+    INFO="sim_info.xml"
     echo "Using ACE data!"
 elif [ ${INPUT} -eq 2 ]
 then
     # Use Native analog data
     NAME="native"
-<<<<<<< HEAD
     python mat.py -n ${ELEMENT} -t ${NAME}
-=======
-    python mat.py -n ${ELEMENT} -t "linlin"
->>>>>>> 57645d67eda0f94fccb981dea22bf345d677123f
+    MAT="mat.xml"
+
     python sim_info.py -e ${ENERGY} -c 1.0
+    INFO="sim_info.xml"
     echo "Using Native analog data!"
 elif [ ${INPUT} -eq 3 ]
 then
     # Use Native Moment Preserving data
     NAME="moments"
-<<<<<<< HEAD
     python mat.py -n ${ELEMENT} -t "native"
-=======
-    python mat.py -n ${ELEMENT} -t "linlin"
->>>>>>> 57645d67eda0f94fccb981dea22bf345d677123f
+    MAT="mat.xml"
+
     python sim_info.py -e ${ENERGY} -c 0.9
+    INFO="sim_info.xml"
     echo "Using Native Moment Preserving data!"
 else
     # Default to ACE data
     echo "Input not valid, ACE data will be used!"
+    python mat.py -n ${ELEMENT} -t ${NAME}
+    MAT="mat_ace.xml"
+
+    python sim_info.py -e ${ENERGY} -c 1.0
+    INFO="sim_info.xml"
 fi
 
 # .xml file paths.
-MAT="mat.xml"
-INFO="sim_info.xml"
-GEOM="geom.xml"
-SOURCE="source.xml"
-RSP="../rsp_fn.xml"
+python ../est.py -e ${ENERGY}
 EST="../est.xml"
+python source.py -e ${ENERGY}
+SOURCE="source.xml"
+GEOM="geom.xml"
+RSP="../rsp_fn.xml"
 NAME="al_${NAME}_${ENERGY_EV}"
 
 TODAY=$(date +%Y-%m-%d)
