@@ -23,7 +23,7 @@
     <Parameter name="Particle Type" type="string" value="Electron"/>
     <Parameter name="Cells" type="Array" value="{1}"/>
     <ParameterList name="Bins">
-      <Parameter name="Energy Bins" type="Array" value="{1.5e-5, 99l, .015}"/>
+      <Parameter name="Energy Bins" type="Array" value="{1.5e-5, 99l, .04}"/>
     </ParameterList>
   </ParameterList>
 </ParameterList>

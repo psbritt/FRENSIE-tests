@@ -98,11 +98,6 @@ RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_d
 echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
-echo "Running Facemc with ${THREADS} threads:"
-echo ${RUN}
-${RUN} > ${DIR}/${NAME}.txt 2>&1
-echo "Moving the results:"
-
 # Move file to the test results folder
 H5=${NAME}.h5
 NEW_NAME="${DIR}/${H5}"
