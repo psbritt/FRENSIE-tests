@@ -42,8 +42,8 @@ fi
 # Changing variables
 THREADS="100"
 ELEMENT="Au"
-# Number of histories 1e7
-HISTORIES="10000000"
+# Number of histories 1e6
+HISTORIES="1000000"
 
 ENERGY="15.7"
 NAME="ace"
@@ -97,9 +97,6 @@ RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_d
 echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
-echo "Running Facemc with ${THREADS} threads:"
-echo ${RUN}
-${RUN} > ${DIR}/${NAME}.txt 2>&1
 echo "Moving the results:"
 
 # Move file to the test results folder
