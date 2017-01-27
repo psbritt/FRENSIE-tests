@@ -40,4 +40,10 @@ ET.SubElement(parameter_1, "Parameter", name="Fractions", type="Array", value="{
 
 ET.SubElement(parameter_1, "Parameter", name="Isotopes", type="Array(string)", value=filename)
 
-prettify(root,"mat.xml")
+
+if file_type == "ace":
+  prettify(root,"mat_ace.xml")
+elif file_type == "native":
+  prettify(root,"mat.xml")
+elif file_type == "linlin":
+  prettify(root,"mat_lin.xml")

@@ -49,38 +49,48 @@ then
     # Use ACE data
     NAME="ace"
     python mat.py -n ${ELEMENT} -t ${NAME}
+    MAT="mat_ace.xml"
+
     python sim_info.py -e ${ENERGY} -c 1.0
+    INFO="sim_info.xml"
     echo "Using ACE data!"
 elif [ ${INPUT} -eq 2 ]
 then
     # Use Native analog data
     NAME="native"
     python mat.py -n ${ELEMENT} -t ${NAME}
+    MAT="mat.xml"
+
     python sim_info.py -e ${ENERGY} -c 1.0
+    INFO="sim_info.xml"
     echo "Using Native analog data!"
 elif [ ${INPUT} -eq 3 ]
 then
     # Use Native Moment Preserving data
     NAME="moments"
     python mat.py -n ${ELEMENT} -t "native"
+    MAT="mat.xml"
+
     python sim_info.py -e ${ENERGY} -c 0.9
+    INFO="sim_info.xml"
     echo "Using Native Moment Preserving data!"
 else
     # Default to ACE data
     echo "Input not valid, ACE data will be used!"
     python mat.py -n ${ELEMENT} -t ${NAME}
+    MAT="mat_ace.xml"
+
     python sim_info.py -e ${ENERGY} -c 1.0
+    INFO="sim_info.xml"
 fi
 
 # .xml file paths.
 python ../est.py -e ${ENERGY}
-python source.py -e ${ENERGY}
-MAT="mat.xml"
-INFO="sim_info.xml"
-GEOM="geom.xml"
-SOURCE="source.xml"
-RSP="../rsp_fn.xml"
 EST="../est.xml"
+python source.py -e ${ENERGY}
+SOURCE="source.xml"
+GEOM="geom.xml"
+RSP="../rsp_fn.xml"
 NAME="al_${NAME}_${ENERGY_EV}"
 
 # Make directory for the test results

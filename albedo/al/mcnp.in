@@ -60,7 +60,7 @@ c Source
 c --------------------
 c monodirectional, monoenergetic point source located
 c just before the the edge of the shield
-SDEF  ERG=0.05 POS=-20 0 0 DIR=1 VEC=1 0 0 PAR=e
+SDEF  ERG=0.015 POS=-20 0 0 DIR=1 VEC=1 0 0 PAR=e
 c --------------------
 c Job Control
 c --------------------
@@ -78,7 +78,7 @@ c21  0 0.99 1
 c
 c Cell track length flux for additional verification
 F4:e  10
-E4 1.5e-5 99ilog 0.05
+E4 1.5e-5 99ilog 0.015
 c
 dbcn 17j 2 $ Turn on analog mode
 c
