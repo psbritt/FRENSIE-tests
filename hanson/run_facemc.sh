@@ -37,11 +37,12 @@ HISTORIES="10"
 
 ENERGY="15.7"
 NAME="ace"
-ELASTIC_OFF="False"
-BREM_OFF="False"
-IONIZATION_OFF="False"
-EXCITATION_OFF="False"
-REACTIONS=" -e ${ELASTIC_OFF} -b ${BREM_OFF} -i ${IONIZATION_OFF} -a ${EXCITATION_OFF}"
+# Turn certain reactions on (true/false)
+ELASTIC_ON="true"
+BREM_ON="true"
+IONIZATION_ON="true"
+EXCITATION_ON="true"
+REACTIONS=" -e ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
 
 echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
 read INPUT
@@ -49,6 +50,7 @@ if [ ${INPUT} -eq 1 ]
 then
     # Use ACE data
     NAME="ace"
+    echo "python sim_info.py -n ${HISTORIES} -c 1.0 ${REACTIONS}"
     python sim_info.py -n ${HISTORIES} -c 1.0 ${REACTIONS}
     python mat.py -n ${ELEMENT} -t ${NAME}
     MAT="mat_ace.xml"
@@ -94,7 +96,7 @@ TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
 mkdir -p $DIR
 
-echo "Running Facemc Hanson test with ${THREADS} threads:"
+echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME} --threads=${THREADS}"
 echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1

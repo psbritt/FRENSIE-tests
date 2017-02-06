@@ -44,13 +44,13 @@ THREADS="100"
 ELEMENT="Au"
 # Number of histories 1e6
 HISTORIES="1000000"
+# Turn certain reactions on (true/false)
+ELASTIC_ON="true"
+BREM_ON="true"
+IONIZATION_ON="true"
+EXCITATION_ON="true"
 
-ELASTIC_OFF="False"
-BREM_OFF="False"
-IONIZATION_OFF="False"
-EXCITATION_OFF="False"
-
-REACTIONS=" -e ${ELASTIC_OFF} -b ${BREM_OFF} -i ${IONIZATION_OFF} -a ${EXCITATION_OFF}"
+REACTIONS=" -e ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
 ENERGY="15.7"
 NAME="ace"
 
@@ -103,7 +103,7 @@ TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
 mkdir -p $DIR
 
-echo "Running Facemc Hanson test with ${THREADS} threads:"
+echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
 echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1

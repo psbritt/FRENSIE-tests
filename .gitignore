@@ -25,6 +25,7 @@
 *.inpo
 *.inpr
 *.inpm
+*.pyc
 results/
 results_linlin/
 continue_run.xml
