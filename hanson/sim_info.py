@@ -15,11 +15,27 @@ parser.add_argument('-n', help=history_msg, required=True)
 cutoff_msg = "the cutoff angle cosine"
 parser.add_argument('-c', help=cutoff_msg, required=True)
 
+elastic_msg = "turn elastic electron reaction off (True/False)"
+parser.add_argument('-e', type=bool, help=elastic_msg, required=True)
+
+brem_msg = "turn bremsstrahlung electron reaction off (True/False)"
+parser.add_argument('-b', type=bool, help=brem_msg, required=True)
+
+ionization_msg = "turn electroionization electron reaction off (True/False)"
+parser.add_argument('-i', type=bool, help=ionization_msg, required=True)
+
+excitation_msg = "turn atomic excitation electron reaction off (True/False)"
+parser.add_argument('-a', type=bool, help=excitation_msg, required=True)
+
 # Parse the user's arguments
 user_args = parser.parse_args()
 energy = 15.7
 number_of_histories = user_args.n
 cutoff_cosine = user_args.c
+elastic_bool = user_args.e
+brem_bool = user_args.b
+ionization_bool = user_args.i
+excitation_bool = user_args.a
 
 root = ET.Element("ParameterList", name="Simulation Info")
 
@@ -39,5 +55,17 @@ ET.SubElement(parameter_2, "Parameter", name="Max Electron Energy", type="double
 ET.SubElement(parameter_2, "Parameter", name="Elastic Cutoff Angle Cosine", type="double", value=str(cutoff_cosine) )
 
 ET.SubElement(parameter_2, "Parameter", name="Electron Atomic Relaxation", type="bool", value="true" )
+
+if elastic_bool:
+    ET.SubElement(parameter_2, "Parameter", name="Electron Elastic", type="bool", value="false" )
+
+if brem_bool:
+    ET.SubElement(parameter_2, "Parameter", name="Bremsstrahlung Elastic", type="bool", value="false" )
+
+if ionization_bool:
+    ET.SubElement(parameter_2, "Parameter", name="Electroionization Elastic", type="bool", value="false" )
+
+if excitation_bool:
+    ET.SubElement(parameter_2, "Parameter", name="Atomic Excitation Elastic", type="bool", value="false" )
 
 prettify(root,"sim_info.xml")

@@ -18,7 +18,7 @@ else
 
     if [ -f $H5 ];
     then
-        output="${FILE}_tranmission.txt"
+        output="${FILE}_transmission.txt"
         # Extract the surface current data for transmission
         ${TESTING_DIR}/edump.py -f $H5 -e 1 -i 6 -b Cosine > $output
 

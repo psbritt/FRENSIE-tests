@@ -59,7 +59,10 @@ def main(argv):
                 start=" surface  "+i
 
                 # go through the current estimators first angle
-                name = base+"_"+i+".txt"
+                if i == '100':
+                    name = base+"_albedo.txt"
+                else:
+                    name = base+"_transmission.txt"
                 file = open(name, 'w')
                 header = "# Angle     Current     Sigma\t"+str(today)+"\n"
                 total_number_of_angles = 3

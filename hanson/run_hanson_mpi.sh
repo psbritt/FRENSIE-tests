@@ -45,6 +45,12 @@ ELEMENT="Au"
 # Number of histories 1e6
 HISTORIES="1000000"
 
+ELASTIC_OFF="False"
+BREM_OFF="False"
+IONIZATION_OFF="False"
+EXCITATION_OFF="False"
+
+REACTIONS=" -e ${ELASTIC_OFF} -b ${BREM_OFF} -i ${IONIZATION_OFF} -a ${EXCITATION_OFF}"
 ENERGY="15.7"
 NAME="ace"
 
@@ -52,7 +58,7 @@ if [ ${INPUT} -eq 1 ]
 then
     # Use ACE data
     NAME="ace"
-    python sim_info.py -n ${HISTORIES} -c 1.0
+    python sim_info.py -n ${HISTORIES} -c 1.0 ${REACTIONS}
     python mat.py -n ${ELEMENT} -t ${NAME}
     MAT="mat_ace.xml"
     echo "Using ACE data!"
@@ -60,7 +66,7 @@ elif [ ${INPUT} -eq 2 ]
 then
     # Use Native analog data
     NAME="native"
-    python sim_info.py -n ${HISTORIES} -c 1.0
+    python sim_info.py -n ${HISTORIES} -c 1.0 ${REACTIONS}
     python mat.py -n ${ELEMENT} -t ${NAME}
     MAT="mat.xml"
     echo "Using Native analog data!"
@@ -68,13 +74,13 @@ elif [ ${INPUT} -eq 3 ]
 then
     # Use Native Moment Preserving data
     NAME="moments"
-    python sim_info.py -n ${HISTORIES} -c 0.9
+    python sim_info.py -n ${HISTORIES} -c 0.9 ${REACTIONS}
     python mat.py -n ${ELEMENT} -t "native"
     MAT="mat.xml"
     echo "Using Native Moment Preserving data!"
 else
     # Default to ACE data
-    python sim_info.py -n ${HISTORIES} -c 1.0
+    python sim_info.py -n ${HISTORIES} -c 1.0 ${REACTIONS}
     python mat.py -n ${ELEMENT} -t ${NAME}
     MAT="mat_ace.xml"
     echo "Input not valid, ACE data will be used!"
