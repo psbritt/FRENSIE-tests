@@ -71,7 +71,7 @@ then
     python sim_info.py -n ${HISTORIES} -c 0.9 ${REACTIONS}
     python mat.py -n ${ELEMENT} -t "native"
     INFO="sim_info_0.9"
-    MAT="mat_${ELEMENT}_${NAME}.xml"
+    MAT="mat_${ELEMENT}_native.xml"
     echo "Using Native Moment Preserving data!"
 else
     # Default to ACE data
