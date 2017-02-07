@@ -50,10 +50,10 @@ if [ ${INPUT} -eq 1 ]
 then
     # Use ACE data
     NAME="ace"
-    echo "python sim_info.py -n ${HISTORIES} -c 1.0 ${REACTIONS}"
     python sim_info.py -n ${HISTORIES} -c 1.0 ${REACTIONS}
     python mat.py -n ${ELEMENT} -t ${NAME}
-    MAT="mat_ace.xml"
+    INFO="sim_info_1.0"
+    MAT="mat_${ELEMENT}_${NAME}.xml"
     echo "Using ACE data!"
 elif [ ${INPUT} -eq 2 ]
 then
@@ -61,7 +61,8 @@ then
     NAME="native"
     python sim_info.py -n ${HISTORIES} -c 1.0 ${REACTIONS}
     python mat.py -n ${ELEMENT} -t ${NAME}
-    MAT="mat.xml"
+    INFO="sim_info_1.0"
+    MAT="mat_${ELEMENT}_${NAME}.xml"
     echo "Using Native analog data!"
 elif [ ${INPUT} -eq 3 ]
 then
@@ -69,25 +70,42 @@ then
     NAME="moments"
     python sim_info.py -n ${HISTORIES} -c 0.9 ${REACTIONS}
     python mat.py -n ${ELEMENT} -t "native"
-    MAT="mat.xml"
+    INFO="sim_info_0.9"
+    MAT="mat_${ELEMENT}_${NAME}.xml"
     echo "Using Native Moment Preserving data!"
 else
     # Default to ACE data
     python sim_info.py -n ${HISTORIES} -c 1.0 ${REACTIONS}
     python mat.py -n ${ELEMENT} -t ${NAME}
-    MAT="mat_ace.xml"
+    INFO="sim_info_1.0"
+    MAT="mat_${ELEMENT}_${NAME}.xml"
     echo "Input not valid, ACE data will be used!"
 fi
 
+# Set the sim info xml file name
+if [ "${ELASTIC_ON}" = "false" ]
+then
+    INFO="${INFO}_no_elastic"
+fi
+if [ "${BREM_ON}" = "false" ]
+then
+    INFO="${INFO}_no_brem"
+fi
+if [ "${IONIZATION_ON}" = "false" ]
+then
+    INFO="${INFO}_no_ionization"
+fi
+if [ "${EXCITATION_ON}" = "false" ]
+then
+    INFO="${INFO}_no_excitation"
+fi
+
+INFO="${INFO}.xml"
+
 # .xml file paths.
-python geom.py -t DagMC
-python est.py
-python source.py
 EST="est.xml"
 SOURCE="source.xml"
-INFO="sim_info.xml"
 GEOM="geom.xml"
-SOURCE="source.xml"
 RSP="../rsp_fn.xml"
 NAME="hanson_${NAME}"
 
@@ -101,8 +119,10 @@ RUN="${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT
 echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
-echo "Processing the results:"
+echo "Removing old xml files:"
+rm ${INFO} ${MAT} ElementTree_pretty.pyc
 
+echo "Processing the results:"
 H5=${NAME}.h5
 NEW_NAME="${DIR}/${H5}"
 NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"

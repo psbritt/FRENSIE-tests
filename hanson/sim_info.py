@@ -37,6 +37,18 @@ brem_bool = user_args.b
 ionization_bool = user_args.i
 excitation_bool = user_args.a
 
+name = "sim_info_"+str(cutoff_cosine)
+if elastic_bool == "false":
+    name += "_no_elastic"
+if brem_bool == "false":
+    name += "_no_brem"
+if ionization_bool == "false":
+    name += "_no_ionization"
+if excitation_bool == "false":
+    name += "_no_excitation"
+
+name += ".xml"
+
 root = ET.Element("ParameterList", name="Simulation Info")
 
 
@@ -61,4 +73,4 @@ ET.SubElement(parameter_2, "Parameter", name="Bremsstrahlung Elastic", type="boo
 ET.SubElement(parameter_2, "Parameter", name="Electroionization Elastic", type="bool", value=ionization_bool )
 ET.SubElement(parameter_2, "Parameter", name="Atomic Excitation Elastic", type="bool", value=excitation_bool )
 
-prettify(root,"sim_info.xml")
+prettify(root,name)
