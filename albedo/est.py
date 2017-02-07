@@ -15,6 +15,7 @@ parser.add_argument('-e', help=energy_msg, required=True)
 # Parse the user's arguments
 user_args = parser.parse_args()
 energy = user_args.e
+name = "../est_"+str(energy)+".xml"
 
 root = ET.Element("ParameterList", name="Simulation Info")
 
@@ -60,6 +61,6 @@ ET.SubElement(parameter_3, "Parameter", name="Cells", type="Array", value="{1}")
 sub_list_3 = ET.SubElement(parameter_3, "ParameterList", name="Bins")
 ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value="{1.5e-5, 99l, " + str(energy)+ "}")
 
-prettify(root,"../est.xml")
-#tree = ET.ElementTree(root)
-#tree.write("../est.xml", pretty_print=True)
+
+prettify(root,name)
+

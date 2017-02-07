@@ -1,7 +1,7 @@
 #!/bin/sh
 # This file is named run_facemc_mpi.sh
 #SBATCH --partition=univ2
-#SBATCH --time=7-00:00:00
+#SBATCH --time=3-00:00:00
 #SBATCH --nodes=5
 #SBATCH --ntasks-per-node=20
 #SBATCH --mem-per-cpu=4000
@@ -34,55 +34,75 @@ then
     INPUT="$1"
 fi
 
+# Changing variables
+ENERGY=".02"
+THREADS="100"
+ELEMENT="Al"
+# Number of histories 1e8
+HISTORIES="100000000"
+
+
+ENERGY_EV=$(echo $ENERGY*1000000 |bc)
+ENERGY_EV=${ENERGY_EV%.*}
 NAME="ace"
-MAT="mat_ace.xml"
-INFO="sim_info.xml"
 
 if [ ${INPUT} -eq 1 ]
 then
     # Use ACE data
     NAME="ace"
-    MAT="mat_ace.xml"
-    INFO="sim_info.xml"
+    python sim_info.py -e ${ENERGY} -n ${HISTORIES} -c 1.0
+    python mat.py -n ${ELEMENT} -t ${NAME}
+    INFO="sim_info_${ENERGY}_1.0.xml"
+    MAT="mat_${ELEMENT}_${NAME}.xml"
     echo "Using ACE data!"
 elif [ ${INPUT} -eq 2 ]
 then
     # Use Native analog data
     NAME="native"
-    MAT="mat_native.xml"
-    INFO="sim_info.xml"
+    python sim_info.py -e ${ENERGY} -n ${HISTORIES} -c 1.0
+    python mat.py -n ${ELEMENT} -t ${NAME}
+    INFO="sim_info_${ENERGY}_1.0.xml"
+    MAT="mat_${ELEMENT}_${NAME}.xml"
     echo "Using Native analog data!"
 elif [ ${INPUT} -eq 3 ]
 then
     # Use Native Moment Preserving data
     NAME="moments"
-    MAT="mat_native.xml"
-    INFO="sim_info_moments.xml"
+    python sim_info.py -e ${ENERGY} -n ${HISTORIES} -c 0.9
+    python mat.py -n ${ELEMENT} -t "native"
+    INFO="sim_info_${ENERGY}_0.9.xml"
+    MAT="mat_${ELEMENT}_native.xml"
     echo "Using Native Moment Preserving data!"
 else
     # Default to ACE data
+    python sim_info.py -e ${ENERGY} -n ${HISTORIES} -c 1.0
+    python mat.py -n ${ELEMENT} -t ${NAME}
+    INFO="sim_info_${ENERGY}_1.0.xml"
+    MAT="mat_ace.xml"
     echo "Input not valid, ACE data will be used!"
 fi
 
 # .xml file paths.
+python ../est.py -e ${ENERGY}
+python source.py -e ${ENERGY}
+EST="../est_${ENERGY}.xml"
+SOURCE="source_${ENERGY}.xml"
 GEOM="geom.xml"
-SOURCE="source.xml"
 RSP="../rsp_fn.xml"
-EST="../est.xml"
-NAME="al_${NAME}"
+NAME="al_${NAME}_${ENERGY_EV}"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
 mkdir -p $DIR
 
-THREADS="100"
-RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME --threads=${THREADS}"
-
 echo "Running Facemc with ${THREADS} threads:"
+RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
 echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
-echo "Moving the results:"
+
+echo "Removing old xml files:"
+rm ${INFO} ${EST} ${SOURCE} ${MAT} ElementTree_pretty.pyc
 
 # Move file to the test results folder
 H5=${NAME}.h5

@@ -25,14 +25,16 @@ then
     THREADS="$1"
 fi
 
-NAME="ace"
+# Changing variables
+ENERGY=".015"
 ELEMENT="Al"
-ENERGY="0.005"
+# Number of histories 1e7
+HISTORIES="10"
+
+
 ENERGY_EV=$(echo $ENERGY*1000000 |bc)
 ENERGY_EV=${ENERGY_EV%.*}
-
-python ../est.py -e ${ENERGY}
-python source.py -e ${ENERGY}
+NAME="ace"
 
 echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
 read INPUT
@@ -40,37 +42,48 @@ if [ ${INPUT} -eq 1 ]
 then
     # Use ACE data
     NAME="ace"
+    python sim_info.py -e ${ENERGY} -n ${HISTORIES} -c 1.0
     python mat.py -n ${ELEMENT} -t ${NAME}
-    python sim_info.py -e ${ENERGY} -c 1.0
+    INFO="sim_info_${ENERGY}_1.0.xml"
+    MAT="mat_${ELEMENT}_${NAME}.xml"
     echo "Using ACE data!"
 elif [ ${INPUT} -eq 2 ]
 then
     # Use Native analog data
     NAME="native"
-    python mat.py -n ${ELEMENT} -t "linlin"
-    python sim_info.py -e ${ENERGY} -c 1.0
+    python sim_info.py -e ${ENERGY} -n ${HISTORIES} -c 1.0
+    python mat.py -n ${ELEMENT} -t ${NAME}
+    INFO="sim_info_${ENERGY}_1.0.xml"
+    MAT="mat_${ELEMENT}_${NAME}.xml"
     echo "Using Native analog data!"
 elif [ ${INPUT} -eq 3 ]
 then
     # Use Native Moment Preserving data
     NAME="moments"
-    python mat.py -n ${ELEMENT} -t "linlin"
-    python sim_info.py -e ${ENERGY} -c 0.9
+    python sim_info.py -e ${ENERGY} -n ${HISTORIES} -c 0.9
+    python mat.py -n ${ELEMENT} -t "native"
+    INFO="sim_info_${ENERGY}_0.9.xml"
+    MAT="mat_${ELEMENT}_native.xml"
     echo "Using Native Moment Preserving data!"
 else
     # Default to ACE data
+    python sim_info.py -e ${ENERGY} -n ${HISTORIES} -c 1.0
+    python mat.py -n ${ELEMENT} -t ${NAME}
+    INFO="sim_info_${ENERGY}_1.0.xml"
+    MAT="mat_ace.xml"
     echo "Input not valid, ACE data will be used!"
 fi
 
 # .xml file paths.
-MAT="mat.xml"
-INFO="sim_info.xml"
+python ../est.py -e ${ENERGY}
+python source.py -e ${ENERGY}
+EST="../est_${ENERGY}.xml"
+SOURCE="source_${ENERGY}.xml"
 GEOM="geom.xml"
-SOURCE="source.xml"
 RSP="../rsp_fn.xml"
-EST="../est.xml"
 NAME="al_${NAME}_${ENERGY_EV}"
 
+# Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
 DIR="results/${TODAY}"
 mkdir -p $DIR
@@ -78,8 +91,11 @@ mkdir -p $DIR
 echo "Running Facemc with ${THREADS} threads:"
 ${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=$RSP --est_def=$EST --src_def=$SOURCE --cross_sec_dir=$CROSS_SECTION_XML_PATH --simulation_name=$NAME --threads=${THREADS} > ${DIR}/${NAME}.txt 2>&1
 
-echo "Processing the results:"
+echo "Removing old xml files:"
+rm ${INFO} ${EST} ${SOURCE} ${MAT} ElementTree_pretty.pyc
 
+
+echo "Processing the results:"
 H5=${NAME}.h5
 NEW_NAME="${DIR}/${H5}"
 NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"

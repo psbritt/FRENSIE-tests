@@ -6,42 +6,28 @@ import sys, getopt
 from subprocess import call
 
 def main(argv):
-    directory = ''
+    base = 'mcnp'
     try:
-        opts, args = getopt.getopt(argv,"hd:",["out_dir="])
+        opts, args = getopt.getopt(argv,"hf:",["filename="])
     except getopt.GetoptError:
-        print 'data_processor.py -d <directory>'
+        print 'data_processor.py -f <filename>'
         sys.exit(1)
     for opt, arg in opts:
         if opt == '-h':
-            print 'data_processor.py -d <directory>'
+            print 'data_processor.py -f <filename>'
             sys.exit(1)
-        elif opt in ("-d", "--out_dir"):
-            directory = arg
+        elif opt in ("-f", "--filename"):
+            base = arg
 
     cell_list = ['10']
     surface_list = ['100', '101']
     angle_list = ['', 'full' ]
 
     # Get mcnp output file name
-    base = "mcnp"
     mcnp_output = base+".o"
 
     # Check if file exists
     if os.path.isfile(mcnp_output):
-        # Check if the ouput directory exists and make if necessary
-        if not os.path.isdir(directory):
-            print "Making directory",directory
-            os.makedirs(directory)
-
-        # Move file to output directory
-        new_name = str(directory)+base
-        shutil.move(mcnp_output,new_name+".o")
-        shutil.move(base+".m",new_name+".m")
-        shutil.move(base+".r",new_name+".r")
-
-        # Move to output data directory
-        os.chdir(directory)
 
         today = datetime.date.today()
         # Read the mcnp data file for surface tallys
@@ -73,7 +59,10 @@ def main(argv):
                 start=" surface  "+i
 
                 # go through the current estimators first angle
-                name = base+"_"+i+".txt"
+                if i == '100':
+                    name = base+"_albedo.txt"
+                else:
+                    name = base+"_transmission.txt"
                 file = open(name, 'w')
                 header = "# Angle     Current     Sigma\t"+str(today)+"\n"
                 total_number_of_angles = 3
