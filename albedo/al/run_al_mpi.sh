@@ -1,9 +1,9 @@
 #!/bin/sh
 # This file is named run_facemc_mpi.sh
-#SBATCH --partition=univ2
-#SBATCH --time=3-00:00:00
-#SBATCH --nodes=5
-#SBATCH --ntasks-per-node=20
+#SBATCH --partition=pre
+#SBATCH --time=1-00:00:00
+#SBATCH --nodes=10
+#SBATCH --ntasks-per-node=16
 #SBATCH --mem-per-cpu=4000
 
 ##---------------------------------------------------------------------------##
@@ -35,8 +35,8 @@ then
 fi
 
 # Changing variables
-ENERGY=".02"
-THREADS="100"
+ENERGY=".03"
+THREADS="160"
 ELEMENT="Al"
 # Number of histories 1e8
 HISTORIES="100000000"
