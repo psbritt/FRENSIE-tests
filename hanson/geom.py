@@ -5,7 +5,7 @@ from ElementTree_pretty import prettify
 
 # Set up the argument parser
 description = "This script allows one to write the source.xml file for FACEMC. "\
-              "The input parameter is the source energy."
+              "The input parameter is the geometry type."
 
 parser = ap.ArgumentParser(description=description)
 
