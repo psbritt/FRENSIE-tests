@@ -38,8 +38,8 @@ HISTORIES="10"
 ENERGY="15.7"
 NAME="ace"
 # Turn certain reactions on (true/false)
-ELASTIC_ON="false"
-BREM_ON="false"
+ELASTIC_ON="true"
+BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
 
