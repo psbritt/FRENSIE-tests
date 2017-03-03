@@ -27,6 +27,7 @@
 *.inpm
 *.pyc
 results/
+old_results/
 results_linlin/
 continue_run.xml
 CMakeFiles
