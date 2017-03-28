@@ -12,23 +12,27 @@ parser = ap.ArgumentParser(description=description)
 element_msg = "the elemental symbol (ie: H, He, Al, Pb ). Must be properly capitalized (ie: Al not al or AL"
 parser.add_argument('-n', help=element_msg, required=True)
 
-file_type_msg = "the file type (ace, native, linlin )"
+file_type_msg = "the file type (ace or native )"
 parser.add_argument('-t', help=file_type_msg, required=True)
+
+file_type_msg = "the 2D electron interpolation (linlinlog or linlinlin )"
+parser.add_argument('-i', help=file_type_msg, required=True)
 
 
 # Parse the user's arguments
 user_args = parser.parse_args()
 element_symbol = user_args.n
 file_type = user_args.t
-name = "mat_"+element_symbol+"_"+file_type+".xml"
+interp = user_args.i
+name = "mat_"+element_symbol+"_"+file_type+"_"+interp+".xml"
 
 filename = "{" + element_symbol
 
 if file_type == "ace":
   filename += "}"
-elif file_type == "native":
+elif interp == "linlinlog":
   filename += "-Native}"
-elif file_type == "linlin":
+elif interp == "linlinlin":
   filename += "-LinLin}"
 
 root = ET.Element("ParameterList", name="Materials")

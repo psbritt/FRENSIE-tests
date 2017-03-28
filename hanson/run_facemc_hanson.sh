@@ -42,9 +42,20 @@ ELASTIC_ON="true"
 BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
+# Turn certain electron properties on (true/false)
+LINLINLOG_ON="false"
+CORRELATED_ON="false"
+UNIT_BASED_ON="false"
 
 REACTIONS=" -e ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
-SIM_PARAMETERS="-n ${HISTORIES} ${REACTIONS}"
+SIM_PARAMETERS="-n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
+
+INTERP="linlinlin"
+if [ ${LINLINLOG_ON} -eq "true" ]
+then
+    INTERP="linlinlog"
+    echo ${INTERP}
+fi
 
 echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
 read INPUT
@@ -54,9 +65,9 @@ then
     NAME="ace"
     SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
     python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME}
+    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
     INFO="sim_info_1.0"
-    MAT="mat_${ELEMENT}_${NAME}.xml"
+    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
     echo "Using ACE data!"
 elif [ ${INPUT} -eq 2 ]
 then
@@ -64,9 +75,9 @@ then
     NAME="native"
     SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
     python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME}
+    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
     INFO="sim_info_1.0"
-    MAT="mat_${ELEMENT}_${NAME}.xml"
+    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
     echo "Using Native analog data!"
 elif [ ${INPUT} -eq 3 ]
 then
@@ -74,26 +85,38 @@ then
     NAME="moments"
     SIM_PARAMETERS="${SIM_PARAMETERS} -c 0.9"
     python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t "native"
+    python mat.py -n ${ELEMENT} -t "native" -i ${INTERP}
     INFO="sim_info_0.9"
-    MAT="mat_${ELEMENT}_native.xml"
+    MAT="mat_${ELEMENT}_native_${INTERP}.xml"
     echo "Using Native Moment Preserving data!"
 else
     # Default to ACE data
     NAME="ace"
     SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
     python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME}
+    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
     INFO="sim_info_1.0"
-    MAT="mat_${ELEMENT}_${NAME}.xml"
+    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
     echo "Input not valid, ACE data will be used!"
 fi
 
 NAME_EXTENTION=""
 # Set the sim info xml file name
+if [ "${LINLINLOG_ON}" = "false" ]
+then
+    NAME_EXTENTION="${NAME_EXTENTION}_linlinlin"
+fi
+if [ "${CORRELATED_ON}" = "false" ]
+then
+    NAME_EXTENTION="${NAME_EXTENTION}_stochastic"
+fi
+if [ "${UNIT_BASED_ON}" = "false" ]
+then
+    NAME_EXTENTION="${NAME_EXTENTION}_exact"
+fi
 if [ "${ELASTIC_ON}" = "false" ]
 then
-    NAME_EXTENTION="_no_elastic"
+    NAME_EXTENTION="${NAME_EXTENTION}_no_elastic"
 fi
 if [ "${BREM_ON}" = "false" ]
 then
