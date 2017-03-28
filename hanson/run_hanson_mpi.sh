@@ -59,10 +59,10 @@ SIM_PARAMETERS="-n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT
 ENERGY="15.7"
 NAME="ace"
 
-INTERP="linlinlin"
+INTERP="linlin"
 if [ ${LINLINLOG_ON} -eq "true" ]
 then
-    INTERP="linlinlog"
+    INTERP="linlog"
     echo ${INTERP}
 fi
 
@@ -148,7 +148,7 @@ NAME="hanson_${NAME}${NAME_EXTENTION}"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
-DIR="results/linlog/${TODAY}"
+DIR="results/${INTERP}/${TODAY}"
 mkdir -p $DIR
 
 echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
