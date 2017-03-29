@@ -60,10 +60,9 @@ ENERGY="15.7"
 NAME="ace"
 
 INTERP="linlin"
-if [ ${LINLINLOG_ON} -eq "true" ]
+if [ ${LINLINLOG_ON} = true ]
 then
     INTERP="linlog"
-    echo ${INTERP}
 fi
 
 if [ ${INPUT} -eq 1 ]
