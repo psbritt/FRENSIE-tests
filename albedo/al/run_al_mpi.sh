@@ -35,7 +35,7 @@ then
 fi
 
 # Changing variables
-ENERGY=".03"
+ENERGY=".015"
 THREADS="160"
 ELEMENT="Al"
 # Number of histories 1e8
@@ -45,13 +45,22 @@ ELASTIC_ON="true"
 BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
+# Turn certain electron properties on (true/false)
+LINLINLOG_ON="true"
+CORRELATED_ON="true"
+UNIT_BASED_ON="true"
 
-
-REACTIONS=" -l ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
-SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} ${REACTIONS}"
+REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
+SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
 ENERGY_EV=$(echo $ENERGY*1000000 |bc)
 ENERGY_EV=${ENERGY_EV%.*}
 NAME="ace"
+
+INTERP="linlin"
+if [ ${LINLINLOG_ON} = true ]
+then
+    INTERP="linlog"
+fi
 
 if [ ${INPUT} -eq 1 ]
 then
@@ -59,9 +68,9 @@ then
     NAME="ace"
     SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
     python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME}
+    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
     INFO="sim_info_${ENERGY}_1.0"
-    MAT="mat_${ELEMENT}_${NAME}.xml"
+    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
     echo "Using ACE data!"
 elif [ ${INPUT} -eq 2 ]
 then
@@ -69,9 +78,9 @@ then
     NAME="native"
     SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
     python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME}
+    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
     INFO="sim_info_${ENERGY}_1.0"
-    MAT="mat_${ELEMENT}_${NAME}.xml"
+    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
     echo "Using Native analog data!"
 elif [ ${INPUT} -eq 3 ]
 then
@@ -79,39 +88,52 @@ then
     NAME="moments"
     SIM_PARAMETERS="${SIM_PARAMETERS} -c 0.9"
     python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t "native"
+    python mat.py -n ${ELEMENT} -t "native" -i ${INTERP}
     INFO="sim_info_${ENERGY}_0.9"
-    MAT="mat_${ELEMENT}_native.xml"
+    MAT="mat_${ELEMENT}_native_${INTERP}.xml"
     echo "Using Native Moment Preserving data!"
 else
     # Default to ACE data
     NAME="ace"
     SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
     python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME}
+    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
     INFO="sim_info_${ENERGY}_1.0"
-    MAT="mat_ace.xml"
+    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
     echo "Input not valid, ACE data will be used!"
 fi
 
+NAME_EXTENTION=""
 # Set the sim info xml file name
+if [ "${LINLINLOG_ON}" = "false" ]
+then
+    NAME_EXTENTION="${NAME_EXTENTION}_linlinlin"
+fi
+if [ "${CORRELATED_ON}" = "false" ]
+then
+    NAME_EXTENTION="${NAME_EXTENTION}_stochastic"
+fi
+if [ "${UNIT_BASED_ON}" = "false" ]
+then
+    NAME_EXTENTION="${NAME_EXTENTION}_exact"
+fi
 if [ "${ELASTIC_ON}" = "false" ]
 then
-    INFO="${INFO}_no_elastic"
+    NAME_EXTENTION="${NAME_EXTENTION}_no_elastic"
 fi
 if [ "${BREM_ON}" = "false" ]
 then
-    INFO="${INFO}_no_brem"
+    NAME_EXTENTION="${NAME_EXTENTION}_no_brem"
 fi
 if [ "${IONIZATION_ON}" = "false" ]
 then
-    INFO="${INFO}_no_ionization"
+    NAME_EXTENTION="${NAME_EXTENTION}_no_ionization"
 fi
 if [ "${EXCITATION_ON}" = "false" ]
 then
-    INFO="${INFO}_no_excitation"
+    NAME_EXTENTION="${NAME_EXTENTION}_no_excitation"
 fi
-INFO="${INFO}.xml"
+INFO="${INFO}${NAME_EXTENTION}.xml"
 
 # .xml file paths.
 python ../est.py -e ${ENERGY}
@@ -120,11 +142,11 @@ EST="../est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
 GEOM="geom.xml"
 RSP="../rsp_fn.xml"
-NAME="al_${NAME}_${ENERGY_EV}"
+NAME="al_${NAME}_${ENERGY_EV}${NAME_EXTENTION}"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
-DIR="results/linlog/${TODAY}"
+DIR="results/${INTERP}/${TODAY}"
 mkdir -p $DIR
 
 echo "Running Facemc Albedo test with ${HISTORIES} particles on ${THREADS} threads:"

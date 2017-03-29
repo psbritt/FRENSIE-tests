@@ -55,7 +55,6 @@ INTERP="linlin"
 if [ ${LINLINLOG_ON} = true ]
 then
     INTERP="linlog"
-    echo ${INTERP}
 fi
 
 echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
@@ -151,7 +150,7 @@ echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Removing old xml files:"
-#rm ${INFO} ${MAT} ElementTree_pretty.pyc
+rm ${INFO} ${MAT} ElementTree_pretty.pyc
 
 echo "Processing the results:"
 H5=${NAME}.h5
@@ -160,8 +159,8 @@ NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
 mv ${H5} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
 
-#cd ${DIR}
+cd ${DIR}
 
-#bash ../../data_processor.sh ${NAME}
+bash ../../data_processor.sh ${NAME}
 echo "Results will be in ./${DIR}"
 

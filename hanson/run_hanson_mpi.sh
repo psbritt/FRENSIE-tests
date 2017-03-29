@@ -50,9 +50,9 @@ BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="false"
-CORRELATED_ON="false"
-UNIT_BASED_ON="false"
+LINLINLOG_ON="true"
+CORRELATED_ON="true"
+UNIT_BASED_ON="true"
 
 REACTIONS=" -e ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
 SIM_PARAMETERS="-n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
