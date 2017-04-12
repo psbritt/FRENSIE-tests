@@ -87,9 +87,9 @@ ET.SubElement(parameter_2, "Parameter", name="Elastic Cutoff Angle Cosine", type
 ET.SubElement(parameter_2, "Parameter", name="Electron Atomic Relaxation", type="bool", value="true" )
 
 ET.SubElement(parameter_2, "Parameter", name="Electron Elastic", type="bool", value=elastic_bool )
-ET.SubElement(parameter_2, "Parameter", name="Bremsstrahlung Elastic", type="bool", value=brem_bool )
-ET.SubElement(parameter_2, "Parameter", name="Electroionization Elastic", type="bool", value=ionization_bool )
-ET.SubElement(parameter_2, "Parameter", name="Atomic Excitation Elastic", type="bool", value=excitation_bool )
+ET.SubElement(parameter_2, "Parameter", name="Electron Bremsstrahlung", type="bool", value=brem_bool )
+ET.SubElement(parameter_2, "Parameter", name="Electron Electroionization", type="bool", value=ionization_bool )
+ET.SubElement(parameter_2, "Parameter", name="Electron Atomic Excitation", type="bool", value=excitation_bool )
 
 ET.SubElement(parameter_2, "Parameter", name="Electron LinLinLog Interpolation", type="bool", value=linlinlog_bool )
 ET.SubElement(parameter_2, "Parameter", name="Electron Correlated Sampling", type="bool", value=correlated_bool )
