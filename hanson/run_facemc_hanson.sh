@@ -19,10 +19,10 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
-#CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
-FRENSIE=/home/lkersting/research/frensie-repos/lkersting
-#FRENSIE=/home/lkersting/frensie
+#CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
+#FRENSIE=/home/lkersting/research/frensie-repos/lkersting
+FRENSIE=/home/lkersting/frensie
 
 THREADS="12"
 if [ "$#" -eq 1 ];
@@ -34,17 +34,17 @@ fi
 # Changing variables
 ELEMENT="Au"
 # Number of histories 1e6
-HISTORIES="10"
+HISTORIES="100"
 
 ENERGY="15.7"
 NAME="ace"
 # Turn certain reactions on (true/false)
-ELASTIC_ON="true"
-BREM_ON="true"
-IONIZATION_ON="true"
-EXCITATION_ON="true"
+ELASTIC_ON="false"
+BREM_ON="false"
+IONIZATION_ON="false"
+EXCITATION_ON="false"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="false"
+LINLINLOG_ON="true"
 CORRELATED_ON="true"
 UNIT_BASED_ON="true"
 

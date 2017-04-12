@@ -46,9 +46,9 @@ ELEMENT="Au"
 HISTORIES="10000000"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
-BREM_ON="true"
-IONIZATION_ON="true"
-EXCITATION_ON="true"
+BREM_ON="false"
+IONIZATION_ON="false"
+EXCITATION_ON="false"
 # Turn certain electron properties on (true/false)
 LINLINLOG_ON="true"
 CORRELATED_ON="true"

@@ -1,7 +1,6 @@
 #!/bin/sh
 # This file is named run_facemc_mpi.sh
-#SBATCH --partition=pre
-#SBATCH --time=1-00:00:00
+#SBATCH --partition=univ
 #SBATCH --nodes=10
 #SBATCH --ntasks-per-node=16
 #SBATCH --mem-per-cpu=4000
@@ -35,7 +34,7 @@ then
 fi
 
 # Changing variables
-ENERGY=".015"
+ENERGY=".04"
 THREADS="160"
 ELEMENT="Al"
 # Number of histories 1e8
@@ -46,7 +45,7 @@ BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="true"
+LINLINLOG_ON="false"
 CORRELATED_ON="true"
 UNIT_BASED_ON="true"
 
