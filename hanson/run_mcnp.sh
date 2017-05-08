@@ -8,7 +8,7 @@ EXTRA_ARGS=$@
 MCNP6=/home/software/mcnp6.1.1/bin/mcnp611_linux_x86_64_omp
 CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
 TODAY=$(date +%Y-%m-%d)
-OUTPUT_DIR="./results/${TODAY}/"
+OUTPUT_DIR="./results/mcnp/${TODAY}/"
 
 THREADS="8"
 if [ "$#" -eq 1 ];
