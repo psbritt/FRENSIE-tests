@@ -33,8 +33,8 @@ fi
 
 # Changing variables
 ELEMENT="Au"
-# Number of histories 1e6
-HISTORIES="10"
+# Number of histories
+HISTORIES="100"
 
 ENERGY="15.7"
 NAME="ace"
