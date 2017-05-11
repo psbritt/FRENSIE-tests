@@ -21,7 +21,7 @@ user_args = parser.parse_args()
 file_name = user_args.f
 output_name = file_name[:-4] +"_spectrum.txt"
 if user_args.o:
-    output_name = "user_args.o"
+    output_name = user_args.o
 print "Output file: ",output_name
 
 degree = math.pi/180.0
