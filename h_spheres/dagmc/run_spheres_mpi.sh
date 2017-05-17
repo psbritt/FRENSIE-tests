@@ -1,25 +1,25 @@
 #!/bin/sh
-# This file is named run_al_mpi.sh
-#SBATCH --partition=univ
-#SBATCH --nodes=10
-#SBATCH --ntasks-per-node=16
+# This file is named run_facemc_mpi.sh
+#SBATCH --partition=univ2
+#SBATCH --time=4-00:00:00
+#SBATCH --nodes=5
+#SBATCH --ntasks-per-node=20
 #SBATCH --mem-per-cpu=4000
 
 ##---------------------------------------------------------------------------##
 ## ---------------------------- FACEMC test runner --------------------------##
 ##---------------------------------------------------------------------------##
 ## Validation runs comparing FRENSIE and MCNP.
-## The electron albedo is found for a semi-infinite aluminum slab. Since the
-## electron albedo requires a surface current, DagMC will be used and not Root.
-## FRENSIE will be run with three variations. 1. Using ACE data, which should
-## match MCNP almost exactly. 2. Using the Native data in analog mode, whcih 
-## uses a different interpolation scheme than MCNP. 3. Using Native data in 
-## moment preserving mode, which should give a less acurate answer while
-## decreasing run time.
+## The electron surface and cell flux and current for three concentrtic spheres
+## of Hydrogen for a 1, 10, 100 keV mono-energetic isotropic source of electrons.
+## FRENSIE will be run with three variations.
+## 1. Using ACE data, which should match MCNP almost exactly.
+## 2. Using the Native data in analog mode, which uses a different interpolation
+## scheme than MCNP.
+## 3. Using Native data in moment preserving mode, which should give a less
+## acurate answer while decreasing run time.
 
-##---------------------------------------------------------------------------##
-## ------------------------------- COMMANDS ---------------------------------##
-##---------------------------------------------------------------------------##
+# ------------------------------- COMMANDS ------------------------------------
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
@@ -34,25 +34,25 @@ then
 fi
 
 # Changing variables
-ENERGY=".04"
-THREADS="160"
-ELEMENT="Al"
-# Number of histories 1e8
-HISTORIES="100000000"
+
+# Number of threads
+THREADS="80"
+# Number of histories 1e7
+HISTORIES="10000000"
+# Geometry package (DagMC or ROOT)
+GEOMETRY="DagMC"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
-BREM_ON="true"
-IONIZATION_ON="true"
-EXCITATION_ON="true"
+BREM_ON="false"
+IONIZATION_ON="false"
+EXCITATION_ON="false"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="false"
+LINLINLOG_ON="true"
 CORRELATED_ON="true"
 UNIT_BASED_ON="true"
 
 REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
 SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
-ENERGY_EV=$(echo $ENERGY*1000000 |bc)
-ENERGY_EV=${ENERGY_EV%.*}
 NAME="ace"
 
 INTERP="linlin"
@@ -61,6 +61,10 @@ then
     INTERP="linlog"
 fi
 
+ELEMENT="H"
+
+echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
+read INPUT
 if [ ${INPUT} -eq 1 ]
 then
     # Use ACE data
@@ -69,7 +73,7 @@ then
     python sim_info.py ${SIM_PARAMETERS}
     python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
     INFO="sim_info_${ENERGY}_1.0"
-    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
+    MAT="mat_${ELEMENT}_${NAME}.xml"
     echo "Using ACE data!"
 elif [ ${INPUT} -eq 2 ]
 then
@@ -132,36 +136,39 @@ if [ "${EXCITATION_ON}" = "false" ]
 then
     NAME_EXTENTION="${NAME_EXTENTION}_no_excitation"
 fi
-INFO="${INFO}${NAME_EXTENTION}.xml"
 
-# .xml file paths.
-python ../est.py -e ${ENERGY}
+python est.py -e ${ENERGY} -t ${GEOMETRY}
 python source.py -e ${ENERGY}
-EST="../est_${ENERGY}.xml"
+python geom.py -e ${ENERGY}
+
+# .xml directory paths.
+INFO="${INFO}${NAME_EXTENTION}.xml"
+GEOM="geom_${ENERGY}.xml"
+RSP="rsp_fn.xml"
+EST="est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
-GEOM="geom.xml"
-RSP="../rsp_fn.xml"
-NAME="al_${NAME}_${ENERGY_EV}${NAME_EXTENTION}"
+NAME="h_${ENERGY_KEV}kev_${NAME}${NAME_EXTENTION}"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
 DIR="results/${INTERP}/${TODAY}"
-mkdir -p $DIR
+mkdir -p ${DIR}
 
-echo "Running Facemc Albedo test with ${HISTORIES} particles on ${THREADS} threads:"
+echo "Running Facemc H spheres test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
 echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Removing old xml files:"
-rm ${INFO} ${EST} ${SOURCE} ${MAT} ElementTree_pretty.pyc
+rm ${INFO} ${EST} ${SOURCE} ${MAT} ${GEOM} ElementTree_pretty.pyc
 
+echo "Moving the results:"
 # Move file to the test results folder
-H5=${NAME}.h5
-NEW_NAME="${DIR}/${H5}"
-NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
+NAME=${NAME}.h5
+NEW_NAME="${DIR}/${NAME}"
+NEW_RUN_INFO="${DIR}/continue_run_${NAME}kev.xml"
 
-mv ${H5} ${NEW_NAME}
+mv ${NAME} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
 
 echo "Results will be in ./${DIR}"

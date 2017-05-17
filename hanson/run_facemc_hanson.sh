@@ -19,8 +19,8 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-#CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
-CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
+#CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
 #FRENSIE=/home/lkersting/research/frensie-repos/lkersting
 FRENSIE=/home/lkersting/frensie
 
@@ -34,7 +34,7 @@ fi
 # Changing variables
 ELEMENT="Au"
 # Number of histories
-HISTORIES="100"
+HISTORIES="10"
 
 ENERGY="15.7"
 NAME="ace"

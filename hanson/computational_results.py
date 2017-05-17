@@ -10,10 +10,10 @@ description = "This script takes #/square degree data from MCNP, Native-ACE, "\
 parser = ap.ArgumentParser(description=description)
 
 mcnp_msg = "MCNP #/square degree data .txt file"
-parser.add_argument('-m', help=mcnp_msg, required=True)
+parser.add_argument('-m', help=mcnp_msg, required=False)
 
 ace_msg = "Native-ACE #/square degree data .txt file"
-parser.add_argument('-a', help=ace_msg, required=True)
+parser.add_argument('-a', help=ace_msg, required=False)
 
 log_msg = "Native-LinLog #/square degree data .txt file"
 parser.add_argument('-l', help=log_msg, required=True)
@@ -25,7 +25,10 @@ parser.add_argument('-f', help=lin_msg, required=True)
 user_args = parser.parse_args()
 
 # Get MCNP data
-with open(user_args.m) as input:
+mcnp_file ="/home/lkersting/frensie/tests/hanson/results/mcnp/mcnp_spectrum.txt"
+if user_args.m:
+    mcnp_file = user_args.m
+with open(mcnp_file) as input:
     data = zip(*(line.strip().split(' ') for line in input))
     name = data[0][0] + data[1][0] + data[2][0]
     mcnp_angles = data[0][1:]
@@ -33,7 +36,10 @@ with open(user_args.m) as input:
     mcnp_error = data[2][1:]
 
 # Get Native-ACE data
-with open(user_args.a) as input:
+ace_file ="/home/lkersting/frensie/tests/hanson/results/ace/latest/hanson_ace_spectrum.txt"
+if user_args.a:
+    ace_file = user_args.a
+with open(ace_file) as input:
     data = zip(*(line.strip().split(' ') for line in input))
     name = data[0][0] + data[1][0] + data[2][0]
     ace_angles = data[0][1:]

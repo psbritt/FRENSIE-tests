@@ -4,27 +4,25 @@
 ##---------------------------------------------------------------------------##
 
 EXTRA_ARGS=$@
-TESTING_DIR="/home/lkersting/frensie/frensie-tests"
+TESTING_DIR="/home/lkersting/frensie/tests"
 
-if [ "$#" -lt 1 ];
+if [ "$#" -ne 2 ];
 then
-    echo "The output directory is required. $# arguments provided!"
-    echo "run:  ./data_processor.sh <directory>"
+    echo "The input file and energy are required. $# arguments provided!"
+    echo "run:  ./data_processor.sh <file_name minus .h5> <energy in MeV>"
 else
-    echo -n "Enter the energy to process in keV (1, 10, 100) > "
-    read ENERGY
-    ENERGY="${ENERGY}kev"
-    echo "You entered: $ENERGY"
+    # Set file name
+    FILE=$1
+    # Set the energy
+    ENERGY=$2
+    ENERGY_KEV=$(echo $ENERGY*1000 |bc)
+    ENERGY_KEV=${ENERGY_KEV%.*}
 
-    # Set cross_section.xml directory path.
-    DIR=$1
-    mkdir -p $DIR
+    H5="${FILE}.h5"
 
-    NAME_EXTENSION=$2
-    H5="h_spheres_${ENERGY}${NAME_EXTENSION}.h5"
-    FLUX="${DIR}/${ENERGY}_flux"
-    CURRENT="${DIR}/${ENERGY}_current"
-    TRACK_FLUX="${DIR}/${ENERGY}_track_flux"
+    FLUX="${FILE}_flux"
+    CURRENT="${FILE}_current"
+    TRACK_FLUX="${FILE}_track_flux"
 
     if [ -f $H5 ];
     then
@@ -46,10 +44,8 @@ else
             ${TESTING_DIR}/edump.py -f $H5 -e 3 -i ${i} -b Energy > $file
         done
 
-        cd $DIR
-        plot="${TESTING_DIR}/h_spheres/dagmc/plot_${ENERGY}.p"
-        gnuplot ${plot}
-
+        plot="${TESTING_DIR}/h_spheres/dagmc/plot.p"
+        gnuplot -e "filename='${FILE}'" ${plot}
     else
        echo "File $H5 does not exist."
     fi

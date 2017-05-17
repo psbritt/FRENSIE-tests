@@ -41,7 +41,6 @@ fi
 
 # Changing variables
 THREADS="80"
-ELEMENT="Au"
 # Number of histories 1e7
 HISTORIES="10000000"
 # Turn certain reactions on (true/false)
@@ -65,6 +64,7 @@ then
     INTERP="linlog"
 fi
 
+ELEMENT="Au"
 if [ ${INPUT} -eq 1 ]
 then
     # Use ACE data
