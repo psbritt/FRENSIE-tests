@@ -19,6 +19,7 @@ parser.add_argument('-t', help=geom_type_msg, required=False)
 user_args = parser.parse_args()
 energy = user_args.e
 energy_kev=int(float(energy)*1000)
+name ="geom_"+energy
 
 geom_type = "DagMC"
 if user_args.t:
@@ -33,22 +34,31 @@ if geom_type == "DagMC":
     ET.SubElement(root, "Parameter", name="Facet Tolerance", type="double", value="1e-3")
     ET.SubElement(root, "Parameter", name="Use Fast Id Lookup", type="bool", value="True")
     ET.SubElement(root, "Parameter", name="Termination Cell Property", type="string", value="termination.cell")
+    ET.SubElement(root, "Parameter", name="Estimator Property", type="string", value="estimator")
     ET.SubElement(root, "Parameter", name="Material Property", type="string", value="mat")
     ET.SubElement(root, "Parameter", name="Density Property", type="string", value="rho")
-    ET.SubElement(root, "Parameter", name="Estimator Property", type="string", value="estimator")
 
 elif geom_type == "ROOT":
+    root_file = "h_spheres_"+str(energy_kev)+"kev.root"
+    name=name+"_root"
     ET.SubElement(root, "Parameter", name="Handler", type="string", value="ROOT")
-    ET.SubElement(root, "Parameter", name="Root File", type="string", value="geom.root")
+    ET.SubElement(root, "Parameter", name="Root File", type="string", value=root_file)
     ET.SubElement(root, "Parameter", name="Termination Cell Synonym", type="string", value="graveyard")
     ET.SubElement(root, "Parameter", name="Estimator Synonym", type="string", value="estimator")
+    ET.SubElement(root, "Parameter", name="Material Synonym", type="string", value="mat")
+    ET.SubElement(root, "Parameter", name="Density Synonym", type="string", value="rho")
 
 else:
     # Just assume DagMC
+    sat_file = "h_spheres_"+str(energy_kev)+"kev.sat"
     ET.SubElement(root, "Parameter", name="Handler", type="string", value="DagMC")
-    ET.SubElement(root, "Parameter", name="CAD File", type="string", value="geom.sat")
+    ET.SubElement(root, "Parameter", name="CAD File", type="string", value=sat_file)
     ET.SubElement(root, "Parameter", name="Facet Tolerance", type="double", value="1e-3")
     ET.SubElement(root, "Parameter", name="Use Fast Id Lookup", type="bool", value="True")
+    ET.SubElement(root, "Parameter", name="Termination Cell Property", type="string", value="termination.cell")
+    ET.SubElement(root, "Parameter", name="Estimator Property", type="string", value="estimator")
+    ET.SubElement(root, "Parameter", name="Material Property", type="string", value="mat")
+    ET.SubElement(root, "Parameter", name="Density Property", type="string", value="rho")
 
-name ="geom_"+energy+".xml"
+name =name+".xml"
 prettify(root,name)

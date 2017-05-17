@@ -24,7 +24,7 @@ if user_args.t:
     geom_type = user_args.t
 
 # Set xml file name
-name = "est_"+str(energy)+".xml"
+name = "est_"+str(energy)
 
 # assume energy is 0.001 MeV
 bins = "{ 1e-5, 197i, 1e-3}"
@@ -77,6 +77,7 @@ if geom_type == "DagMC":
 else:
     # Track Length Flux in Sphere
     tally = "Cell Track-Length Flux"
+    name += "_root"
 
     parameter_3 = ET.SubElement(root, "ParameterList", name="Track Length Flux in Sphere")
 
@@ -88,5 +89,6 @@ else:
     sub_list_3 = ET.SubElement(parameter_3, "ParameterList", name="Bins")
     ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value=bins)
 
+name +=".xml"
 prettify(root,name)
 

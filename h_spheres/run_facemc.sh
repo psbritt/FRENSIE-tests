@@ -1,51 +1,48 @@
-#!/bin/sh
-# This file is named run_facemc_mpi.sh
-#SBATCH --partition=univ2
-#SBATCH --time=4-00:00:00
-#SBATCH --nodes=5
-#SBATCH --ntasks-per-node=20
-#SBATCH --mem-per-cpu=4000
-
+#!/bin/bash
 ##---------------------------------------------------------------------------##
 ## ---------------------------- FACEMC test runner --------------------------##
 ##---------------------------------------------------------------------------##
 ## Validation runs comparing FRENSIE and MCNP.
 ## The electron surface and cell flux and current for three concentrtic spheres
-## of Hydrogen for a 1, 10, 100 keV mono-energetic isotropic source of electrons.
+## of Hydrogen for a 1, 10, 100 keV mono-energetic isotropic source of electrons
 ## FRENSIE will be run with three variations.
 ## 1. Using ACE data, which should match MCNP almost exactly.
 ## 2. Using the Native data in analog mode, which uses a different interpolation
 ## scheme than MCNP.
 ## 3. Using Native data in moment preserving mode, which should give a less
 ## acurate answer while decreasing run time.
-
-# ------------------------------- COMMANDS ------------------------------------
+##---------------------------------------------------------------------------##
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
+#CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
+#FRENSIE=/home/lkersting/research/frensie-repos/lkersting
 FRENSIE=/home/lkersting/frensie
 
-INPUT="1"
+THREADS="8"
 if [ "$#" -eq 1 ];
 then
-    # Set the file type (1 = ACE, 2 = Native, 3 = Moment Preserving)
-    INPUT="$1"
+    # Set the number of threads used
+    THREADS="$1"
 fi
 
 # Changing variables
 
-# Number of threads
-THREADS="80"
+# Source energy (.001, .01, .1 MeV)
+ENERGY=.01
+ENERGY_KEV=$(echo $ENERGY*1000 |bc)
+ENERGY_KEV=${ENERGY_KEV%.*}
+
 # Number of histories 1e7
-HISTORIES="10000000"
+HISTORIES="10"
 # Geometry package (DagMC or ROOT)
-GEOMETRY="DagMC"
+GEOMETRY="ROOT"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
-BREM_ON="false"
-IONIZATION_ON="false"
-EXCITATION_ON="false"
+BREM_ON="true"
+IONIZATION_ON="true"
+EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
 LINLINLOG_ON="true"
 CORRELATED_ON="true"
@@ -139,7 +136,7 @@ fi
 
 python est.py -e ${ENERGY} -t ${GEOMETRY}
 python source.py -e ${ENERGY}
-python geom.py -e ${ENERGY}
+python geom.py -e ${ENERGY} -t ${GEOMETRY}
 
 # .xml directory paths.
 INFO="${INFO}${NAME_EXTENTION}.xml"
@@ -148,27 +145,39 @@ RSP="rsp_fn.xml"
 EST="est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
 NAME="h_${ENERGY_KEV}kev_${NAME}${NAME_EXTENTION}"
+if [ "${GEOMETRY}" = "ROOT" ]
+then
+    NAME="${NAME}_root"
+    GEOM="geom_${ENERGY}_root.xml"
+    EST="est_${ENERGY}_root.xml"
+fi
 
 # Make directory for the test results
-TODAY=$(date +%Y-%m-%d)
-DIR="results/${INTERP}/${TODAY}"
+DIR="results/testrun/${INTERP}/"
+
 mkdir -p ${DIR}
 
 echo "Running Facemc H spheres test with ${HISTORIES} particles on ${THREADS} threads:"
-RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
+RUN="${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME} --threads=${THREADS}"
 echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Removing old xml files:"
 rm ${INFO} ${EST} ${SOURCE} ${MAT} ${GEOM} ElementTree_pretty.pyc
 
-echo "Moving the results:"
-# Move file to the test results folder
-NAME=${NAME}.h5
-NEW_NAME="${DIR}/${NAME}"
-NEW_RUN_INFO="${DIR}/continue_run_${NAME}kev.xml"
-
-mv ${NAME} ${NEW_NAME}
+echo "Processing the results:"
+H5=${NAME}.h5
+NEW_NAME="${DIR}/${H5}"
+NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
+mv ${H5} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
 
+cd ${DIR}
+
+if [ "${GEOMETRY}" = "ROOT" ]
+then
+    bash ../../../data_processor_root.sh ${NAME}
+else
+    bash ../../../data_processor.sh ${NAME}
+fi
 echo "Results will be in ./${DIR}"

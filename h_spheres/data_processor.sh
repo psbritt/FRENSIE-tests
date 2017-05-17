@@ -6,18 +6,13 @@
 EXTRA_ARGS=$@
 TESTING_DIR="/home/lkersting/frensie/tests"
 
-if [ "$#" -ne 2 ];
+if [ "$#" -ne 1 ];
 then
-    echo "The input file and energy are required. $# arguments provided!"
-    echo "run:  ./data_processor.sh <file_name minus .h5> <energy in MeV>"
+    echo "The input file is required. $# arguments provided!"
+    echo "run:  ./data_processor.sh <file_name minus .h5>"
 else
     # Set file name
     FILE=$1
-    # Set the energy
-    ENERGY=$2
-    ENERGY_KEV=$(echo $ENERGY*1000 |bc)
-    ENERGY_KEV=${ENERGY_KEV%.*}
-
     H5="${FILE}.h5"
 
     FLUX="${FILE}_flux"
@@ -44,7 +39,7 @@ else
             ${TESTING_DIR}/edump.py -f $H5 -e 3 -i ${i} -b Energy > $file
         done
 
-        plot="${TESTING_DIR}/h_spheres/dagmc/plot.p"
+        plot="${TESTING_DIR}/h_spheres/plot.p"
         gnuplot -e "filename='${FILE}'" ${plot}
     else
        echo "File $H5 does not exist."
