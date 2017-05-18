@@ -23,7 +23,7 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
 FRENSIE=/home/lkersting/frensie
 
 INPUT="1"
@@ -40,9 +40,9 @@ ENERGY=0.001
 ENERGY_KEV=$(echo $ENERGY*1000 |bc)
 ENERGY_KEV=${ENERGY_KEV%.*}
 # Number of threads
-THREADS="8"
+THREADS="80"
 # Number of histories 1e7
-HISTORIES="10"
+HISTORIES="10000000"
 # Geometry package (DagMC or ROOT)
 GEOMETRY="DagMC"
 # Turn certain reactions on (true/false)
