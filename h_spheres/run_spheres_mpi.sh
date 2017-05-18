@@ -23,7 +23,7 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
 FRENSIE=/home/lkersting/frensie
 
 INPUT="1"
@@ -35,17 +35,21 @@ fi
 
 # Changing variables
 
+# Source Energy (.001, .01, .1 MeV)
+ENERGY=0.001
+ENERGY_KEV=$(echo $ENERGY*1000 |bc)
+ENERGY_KEV=${ENERGY_KEV%.*}
 # Number of threads
-THREADS="80"
+THREADS="8"
 # Number of histories 1e7
-HISTORIES="10000000"
+HISTORIES="10"
 # Geometry package (DagMC or ROOT)
 GEOMETRY="DagMC"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
-BREM_ON="false"
-IONIZATION_ON="false"
-EXCITATION_ON="false"
+BREM_ON="true"
+IONIZATION_ON="true"
+EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
 LINLINLOG_ON="true"
 CORRELATED_ON="true"
@@ -63,8 +67,6 @@ fi
 
 ELEMENT="H"
 
-echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
-read INPUT
 if [ ${INPUT} -eq 1 ]
 then
     # Use ACE data
@@ -168,13 +170,13 @@ ${RUN} > ${DIR}/${NAME}.txt 2>&1
 echo "Removing old xml files:"
 rm ${INFO} ${EST} ${SOURCE} ${MAT} ${GEOM} ElementTree_pretty.pyc
 
-echo "Moving the results:"
 # Move file to the test results folder
-NAME=${NAME}.h5
-NEW_NAME="${DIR}/${NAME}"
-NEW_RUN_INFO="${DIR}/continue_run_${NAME}kev.xml"
+echo "Moving the results:"
+H5=${NAME}.h5
+NEW_NAME="${DIR}/${H5}"
+NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
 
-mv ${NAME} ${NEW_NAME}
+mv ${H5} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
 
 echo "Results will be in ./${DIR}"
