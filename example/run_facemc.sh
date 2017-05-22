@@ -37,15 +37,15 @@ ENERGY_KEV=${ENERGY_KEV%.*}
 # Number of histories 1e7
 HISTORIES="10"
 # Geometry package (DagMC or ROOT)
-GEOMETRY="DagMC"
+GEOMETRY="ROOT"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="false"
-CORRELATED_ON="false"
+LINLINLOG_ON="true"
+CORRELATED_ON="true"
 UNIT_BASED_ON="true"
 
 REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
@@ -144,7 +144,7 @@ GEOM="geom_${ENERGY}.xml"
 RSP="rsp_fn.xml"
 EST="est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
-NAME="h_${ENERGY_KEV}kev_${NAME}${NAME_EXTENTION}"
+NAME="${ENERGY_KEV}kev_${NAME}${NAME_EXTENTION}"
 if [ "${GEOMETRY}" = "ROOT" ]
 then
     NAME="${NAME}_root"
@@ -153,7 +153,7 @@ then
 fi
 
 # Make directory for the test results
-DIR="results/testrun/${INTERP}/"
+DIR="results/testrun/${INTERP}"
 
 mkdir -p ${DIR}
 
@@ -180,4 +180,4 @@ then
 else
     bash ../../../data_processor.sh ${NAME}
 fi
-echo "Results will be in ./${DIR}"
+echo "Results will be in ./${DIR}/${NAME}"

@@ -1,10 +1,8 @@
 reset
 clear
 
-if (!exists("filename")) filename='1kev'
-
 ## ---------- Plot Flux ---------- ##
-flux=filename."_flux"
+flux="flux"
 
 set terminal pngcairo nocrop enhanced font 'Verdana,10' size 1000,500
 set xlabel "Energy (MeV)"
@@ -36,7 +34,7 @@ plot flux."_1.txt" title "" with errorbars
 clear
 
 ## ---------- Plot Current ---------- ##
-current=filename."_current"
+current="current"
 set ylabel "Current"
 
 set title "Current for cold Hydrogen sphere of radius 0.0005 cm"
@@ -65,7 +63,7 @@ plot current."_1.txt" title "" with errorbars
 clear
 
 ## ---------- Plot Track Length Flux ---------- ##
-track_flux=filename."_track_flux"
+track_flux="track_flux"
 set ylabel "Flux" 
 
 set output track_flux.'_13.png'
