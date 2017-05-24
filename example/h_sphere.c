@@ -22,7 +22,7 @@ void h_sphere()
 //---------------------------------------------------------------------------//
 
   // Hydrogen
-  TGeoMaterial *mat_1 = new TGeoMaterial( "mat_1", 1, 1, 0.01 );
+  TGeoMaterial *mat_1 = new TGeoMaterial( "mat_1", 1, 1, 0.005 );
   TGeoMedium   *med_1 = new TGeoMedium( "med_1", 2, mat_1 );
 
   // Void

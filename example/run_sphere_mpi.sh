@@ -143,24 +143,27 @@ python est.py -e ${ENERGY} -t ${GEOMETRY}
 python source.py -e ${ENERGY}
 python geom.py -e ${ENERGY} -t ${GEOMETRY}
 
+# Make directory for the test results
+DIR="results/${INTERP}/${TODAY}"
+if [ "${NAME}" = "ace" ]
+then
+    DIR="results/ace/${TODAY}"
+fi
+mkdir -p ${DIR}
+
 # .xml directory paths.
 INFO="${INFO}${NAME_EXTENTION}.xml"
 GEOM="geom_${ENERGY}.xml"
 RSP="rsp_fn.xml"
 EST="est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
-NAME="${ENERGY_KEV}kev_${NAME}${NAME_EXTENTION}"
+NAME="${NAME}${NAME_EXTENTION}"
 if [ "${GEOMETRY}" = "ROOT" ]
 then
     NAME="${NAME}_root"
     GEOM="geom_${ENERGY}_root.xml"
     EST="est_${ENERGY}_root.xml"
 fi
-
-# Make directory for the test results
-TODAY=$(date +%Y-%m-%d)
-DIR="results/${INTERP}/${TODAY}"
-mkdir -p ${DIR}
 
 echo "Running Facemc H spheres test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"

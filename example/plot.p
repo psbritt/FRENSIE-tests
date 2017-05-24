@@ -12,7 +12,6 @@ set title 'Flux for cold Hydrogen sphere of radius 0.002 cm'
 set output flux.'.png'
 plot flux.'.txt' title '' with errorbars
 clear
-clear
 
 ## ---------- Plot Current ---------- ##
 current='current'

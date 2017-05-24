@@ -29,13 +29,8 @@ fi
 
 # Changing variables
 
-# Source energy (.001, .01, .1 MeV)
-ENERGY=.01
-ENERGY_KEV=$(echo $ENERGY*1000 |bc)
-ENERGY_KEV=${ENERGY_KEV%.*}
-
 # Number of histories 1e7
-HISTORIES="10"
+HISTORIES="100"
 # Geometry package (DagMC or ROOT)
 GEOMETRY="ROOT"
 # Turn certain reactions on (true/false)
@@ -47,6 +42,11 @@ EXCITATION_ON="true"
 LINLINLOG_ON="true"
 CORRELATED_ON="true"
 UNIT_BASED_ON="true"
+
+# Source energy (.01 MeV)
+ENERGY=.01
+ENERGY_KEV=$(echo $ENERGY*1000 |bc)
+ENERGY_KEV=${ENERGY_KEV%.*}
 
 REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
 SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
@@ -138,24 +138,27 @@ python est.py -e ${ENERGY} -t ${GEOMETRY}
 python source.py -e ${ENERGY}
 python geom.py -e ${ENERGY} -t ${GEOMETRY}
 
+# Make directory for the test results
+DIR="results/testrun/${INTERP}"
+if [ "${NAME}" = "ace" ]
+then
+    DIR="results/testrun/ace"
+fi
+mkdir -p ${DIR}
+
 # .xml directory paths.
 INFO="${INFO}${NAME_EXTENTION}.xml"
 GEOM="geom_${ENERGY}.xml"
 RSP="rsp_fn.xml"
 EST="est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
-NAME="${ENERGY_KEV}kev_${NAME}${NAME_EXTENTION}"
+NAME="${NAME}${NAME_EXTENTION}"
 if [ "${GEOMETRY}" = "ROOT" ]
 then
     NAME="${NAME}_root"
     GEOM="geom_${ENERGY}_root.xml"
     EST="est_${ENERGY}_root.xml"
 fi
-
-# Make directory for the test results
-DIR="results/testrun/${INTERP}"
-
-mkdir -p ${DIR}
 
 echo "Running Facemc H spheres test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME} --threads=${THREADS}"
@@ -180,4 +183,4 @@ then
 else
     bash ../../../data_processor.sh ${NAME}
 fi
-echo "Results will be in ./${DIR}/${NAME}"
+echo "Results will be in ./${DIR}"

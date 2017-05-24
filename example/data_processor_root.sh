@@ -16,8 +16,7 @@ else
     H5="${FILE}.h5"
 
     # Make a directory for the output files
-    mkdir -p ${FILE}
-    TRACK_FLUX="${FILE}/track_flux"
+    TRACK_FLUX="track_flux"
 
     if [ -f $H5 ];
     then
@@ -25,9 +24,8 @@ else
         # Extract the flux data
         ${TESTING_DIR}/edump.py -f $H5 -e 1 -i 1 -b Energy > $file
 
-        cd ${FILE}
         plot="${TESTING_DIR}/example/plot_root.p"
-        gnuplot -e "filename='${FILE}'" $plot
+        gnuplot $plot
 
     else
        echo "File $H5 does not exist."

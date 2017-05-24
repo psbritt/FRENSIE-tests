@@ -1,0 +1,44 @@
+#!/bin/bash
+##---------------------------------------------------------------------------##
+## MCNP6 test runner
+##---------------------------------------------------------------------------##
+
+# Set cross_section.xml directory path.
+EXTRA_ARGS=$@
+CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
+
+THREADS="8"
+if [ "$#" -eq 1 ];
+then
+    # Set the number of threads used
+    THREADS="$1"
+fi
+
+ENERGY="10kev"
+
+# Set the input file name
+FILE="h_sphere.inp"
+NAME="mcnp"
+
+# Make directory for the test results
+TODAY=$(date +%Y-%m-%d)
+DIR="./results/mcnp/${TODAY}"
+mkdir -p $DIR
+
+echo "Running MCNP6 H sphere test with ${THREADS} threads:"
+RUN="/home/software/mcnp6.1.1/bin/mcnp611_linux_x86_64_omp n="${FILE}" tasks ${THREADS}"
+echo ${RUN}
+${RUN} > ${DIR}/${NAME}.txt 2>&1
+
+echo "Processing the results:"
+NEW_NAME="${DIR}/${NAME}"
+
+# Move output files to test directory
+mv ${FILE}o ${NEW_NAME}.o
+mv ${FILE}r ${NEW_NAME}.r
+mv ${FILE}m ${NEW_NAME}.m
+
+# Move to output directory
+cd ${DIR}
+python ../../../data_processor_mcnp.py -f ${NAME}
+echo "The processed data is located at: ${DIR}"
