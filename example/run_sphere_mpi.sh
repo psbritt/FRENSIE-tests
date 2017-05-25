@@ -1,9 +1,9 @@
 #!/bin/sh
 # This file is named run_facemc_mpi.sh
-#SBATCH --partition=univ2
-#SBATCH --time=4-00:00:00
+#SBATCH --partition=pre
+#SBATCH --time=1-00:00:00
 #SBATCH --nodes=5
-#SBATCH --ntasks-per-node=20
+#SBATCH --ntasks-per-node=16
 #SBATCH --mem-per-cpu=4000
 
 ##---------------------------------------------------------------------------##
@@ -36,24 +36,24 @@ fi
 # Changing variables
 
 # Source Energy (.001, .01, .1 MeV)
-ENERGY=0.001
+ENERGY=0.01
 ENERGY_KEV=$(echo $ENERGY*1000 |bc)
 ENERGY_KEV=${ENERGY_KEV%.*}
 # Number of threads
 THREADS="80"
-# Number of histories 1e7
-HISTORIES="10000000"
+# Number of histories 1e8
+HISTORIES="100000000"
 # Geometry package (DagMC or ROOT)
-GEOMETRY="DagMC"
+GEOMETRY="ROOT"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="true"
+LINLINLOG_ON="false"
 CORRELATED_ON="true"
-UNIT_BASED_ON="true"
+UNIT_BASED_ON="false"
 
 REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
 SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
