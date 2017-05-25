@@ -30,7 +30,7 @@ fi
 # Changing variables
 
 # Number of histories 1e1
-HISTORIES="10"
+HISTORIES="100"
 # Geometry package (DagMC or ROOT)
 GEOMETRY="ROOT"
 # Turn certain reactions on (true/false)
@@ -41,7 +41,7 @@ EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
 LINLINLOG_ON="false"
 CORRELATED_ON="true"
-UNIT_BASED_ON="true"
+UNIT_BASED_ON="false"
 
 # Source energy (.01 MeV)
 ENERGY=.01
