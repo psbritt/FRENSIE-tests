@@ -29,8 +29,8 @@ fi
 
 # Changing variables
 
-# Number of histories 1e7
-HISTORIES="100"
+# Number of histories 1e1
+HISTORIES="10"
 # Geometry package (DagMC or ROOT)
 GEOMETRY="ROOT"
 # Turn certain reactions on (true/false)
@@ -39,7 +39,7 @@ BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="true"
+LINLINLOG_ON="false"
 CORRELATED_ON="true"
 UNIT_BASED_ON="true"
 
@@ -138,21 +138,23 @@ python est.py -e ${ENERGY} -t ${GEOMETRY}
 python source.py -e ${ENERGY}
 python geom.py -e ${ENERGY} -t ${GEOMETRY}
 
-# Make directory for the test results
-DIR="results/testrun/${INTERP}"
-if [ "${NAME}" = "ace" ]
-then
-    DIR="results/testrun/ace"
-fi
-mkdir -p ${DIR}
-
 # .xml directory paths.
 INFO="${INFO}${NAME_EXTENTION}.xml"
 GEOM="geom_${ENERGY}.xml"
 RSP="rsp_fn.xml"
 EST="est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
+
+# Make directory for the test results
+DIR="results/testrun/${INTERP}"
+if [ "${NAME}" = "ace" ]
+then
+    NAME_EXTENTION=''
+    DIR="results/testrun/ace"
+fi
 NAME="${NAME}${NAME_EXTENTION}"
+mkdir -p ${DIR}
+
 if [ "${GEOMETRY}" = "ROOT" ]
 then
     NAME="${NAME}_root"

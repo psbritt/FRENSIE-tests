@@ -16,7 +16,8 @@ else
     H5="${FILE}.h5"
 
     # Make a directory for the output files
-    TRACK_FLUX="track_flux"
+    mkdir -p ${FILE}
+    TRACK_FLUX="${FILE}/track_flux"
 
     if [ -f $H5 ];
     then
@@ -24,6 +25,10 @@ else
         # Extract the flux data
         ${TESTING_DIR}/edump.py -f $H5 -e 1 -i 1 -b Energy > $file
 
+        # Move to output directory
+        cd ${FILE}
+
+        # Plot results
         plot="${TESTING_DIR}/example/plot_root.p"
         gnuplot $plot
 

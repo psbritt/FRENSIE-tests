@@ -143,21 +143,24 @@ python est.py -e ${ENERGY} -t ${GEOMETRY}
 python source.py -e ${ENERGY}
 python geom.py -e ${ENERGY} -t ${GEOMETRY}
 
-# Make directory for the test results
-DIR="results/${INTERP}/${TODAY}"
-if [ "${NAME}" = "ace" ]
-then
-    DIR="results/ace/${TODAY}"
-fi
-mkdir -p ${DIR}
-
 # .xml directory paths.
 INFO="${INFO}${NAME_EXTENTION}.xml"
 GEOM="geom_${ENERGY}.xml"
 RSP="rsp_fn.xml"
 EST="est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
+
+# Make directory for the test results
+DIR="results/${INTERP}/${TODAY}"
+if [ "${NAME}" = "ace" ]
+then
+    NAME_EXTENTION=''
+    DIR="results/ace/${TODAY}"
+fi
 NAME="${NAME}${NAME_EXTENTION}"
+mkdir -p ${DIR}
+
+# Modify paths for root geometry
 if [ "${GEOMETRY}" = "ROOT" ]
 then
     NAME="${NAME}_root"
