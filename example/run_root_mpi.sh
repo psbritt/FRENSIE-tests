@@ -1,9 +1,9 @@
 #!/bin/sh
 # This file is named run_facemc_mpi.sh
-#SBATCH --partition=univ2
-#SBATCH --time=4-00:00:00
+#SBATCH --partition=pre
+#SBATCH --time=1-00:00:00
 #SBATCH --nodes=5
-#SBATCH --ntasks-per-node=20
+#SBATCH --ntasks-per-node=16
 #SBATCH --mem-per-cpu=4000
 
 ##---------------------------------------------------------------------------##
@@ -36,7 +36,7 @@ fi
 # Changing variables
 
 # Number of threads
-THREADS="100"
+THREADS="80"
 # Number of histories 1e8
 HISTORIES="100000000"
 # Turn certain reactions on (true/false)
@@ -49,8 +49,8 @@ LINLINLOG_ON="false"
 CORRELATED_ON="true"
 UNIT_BASED_ON="false"
 
-# Geometry package (DagMC or ROOT)
-GEOMETRY="DagMC"
+# Geometry package (ROOT)
+GEOMETRY="ROOT"
 # Source Energy (.01 MeV)
 ENERGY=0.01
 ENERGY_KEV=$(echo $ENERGY*1000 |bc)
