@@ -7,15 +7,16 @@
 //---------------------------------------------------------------------------//
 
 /* Description: An example geometry file for comparison between
- * ROOT and DagMC using FRENSIE. Hydrogen in a 1cm sphere is surrounded by void.
+ * ROOT and DagMC using FRENSIE. Hydrogen in a 0.01cm sphere is surrounded by void.
  * Cell track-length current and flux tallies are used in the sphere.
  */
 void h_sphere()
 {
   // Set up manager of geometry world
   gSystem->Load( "libGeom" );
-  new TGeoManager( "Test_Geometry",
-                   "Geometry for testing root implementation" );
+  TGeoManager* geom = new TGeoManager(
+                    "Example Test Geometry",
+                    "Geometry for H Sphere comparison" );
 
 //---------------------------------------------------------------------------//
 // Material Definitions
@@ -38,24 +39,19 @@ void h_sphere()
 //---------------------------------------------------------------------------//
 
   // Graveyard Volume
-  TGeoVolume *terminal_cube = gGeoManager->MakeBox( "TERMINAL",
-                                                     terminal_med,
-                                                     1.0, 1.0, 1.0 );
+  TGeoVolume *terminal_cube =
+                geom->MakeBox( "TERMINAL", terminal_med, 1.0, 1.0, 1.0 );
   terminal_cube->SetUniqueID(3);
 
   // Set the graveyard to be the top volume (rest-of-universe)
   gGeoManager->SetTopVolume( terminal_cube );
 
   // Void Volume (cube)
-  TGeoVolume *cube = gGeoManager->MakeBox( "CUBE",
-                                           void_med,
-                                           0.5, 0.5, 0.5 );
+  TGeoVolume *cube = geom->MakeBox( "CUBE", void_med, 0.5, 0.5, 0.5 );
   cube->SetUniqueID(2);
 
   // Hydrogen Volume (sphere)
-  TGeoVolume *sphere = gGeoManager->MakeSphere( "SPHERE",
-                                                med_1,
-                                                0.0,0.01 );
+  TGeoVolume *sphere = geom->MakeSphere( "SPHERE", med_1, 0.0,0.01 );
   sphere->SetUniqueID(1);
 
 //---------------------------------------------------------------------------//
@@ -63,23 +59,26 @@ void h_sphere()
 //---------------------------------------------------------------------------//
 
   // Add SPHERE as a daughter of CUBE
-  terminal_cube->AddNode( cube, 1 );
+  cube->AddNode( sphere, 1 );
 
   // Add CUBE as a daughter of TERMINAL
-  cube->AddNode( sphere, 1 );
+  terminal_cube->AddNode( cube, 1 );
+
+  // Set the graveyard to be the top volume (rest-of-universe)
+  geom->SetTopVolume( terminal_cube );
 
 //---------------------------------------------------------------------------//
 // Export and Drawing Capabilities
 //---------------------------------------------------------------------------//
 
   // Close the geometry
-  gGeoManager->CloseGeometry();
-  gGeoManager->SetTopVisible();
+  geom->SetTopVisible();
+  geom->CloseGeometry();
 
   // Uncomment to draw the geometry in an X-Window
   // terminal_cube->Draw();
 
-  gGeoManager->Export("h_sphere.root");
+  geom->Export("h_sphere.root");
   exit(1);
 
 }  // end Test_Root_Geometry

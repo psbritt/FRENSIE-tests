@@ -35,10 +35,6 @@ fi
 
 # Changing variables
 
-# Source Energy (.001, .01, .1 MeV)
-ENERGY=0.01
-ENERGY_KEV=$(echo $ENERGY*1000 |bc)
-ENERGY_KEV=${ENERGY_KEV%.*}
 # Number of threads
 THREADS="80"
 # Number of histories 1e8
@@ -54,6 +50,11 @@ EXCITATION_ON="true"
 LINLINLOG_ON="false"
 CORRELATED_ON="true"
 UNIT_BASED_ON="false"
+
+# Source Energy (.01 MeV)
+ENERGY=0.01
+ENERGY_KEV=$(echo $ENERGY*1000 |bc)
+ENERGY_KEV=${ENERGY_KEV%.*}
 
 REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
 SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
