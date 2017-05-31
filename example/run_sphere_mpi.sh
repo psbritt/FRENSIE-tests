@@ -24,7 +24,6 @@
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
 CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
-CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
 FRENSIE=/home/lkersting/frensie
 
 INPUT="1"
@@ -37,9 +36,9 @@ fi
 # Changing variables
 
 # Number of threads
-THREADS="8"
+THREADS="80"
 # Number of histories 1e8
-HISTORIES="100"
+HISTORIES="100000000"
 # Geometry package (DagMC or ROOT)
 GEOMETRY="ROOT"
 # Turn certain reactions on (true/false)
