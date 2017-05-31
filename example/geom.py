@@ -9,17 +9,12 @@ description = "This script allows one to write the source.xml file for FACEMC. "
 
 parser = ap.ArgumentParser(description=description)
 
-energy_msg = "The source energy (in MeV)"
-parser.add_argument('-e', help=energy_msg, required=True)
-
 geom_type_msg = "the geometry type (DagMC, ROOT)"
 parser.add_argument('-t', help=geom_type_msg, required=False)
 
 # Parse the user's arguments
 user_args = parser.parse_args()
-energy = user_args.e
-energy_kev=int(float(energy)*1000)
-name ="geom_"+energy
+name ="geom"
 
 geom_type = "DagMC"
 if user_args.t:

@@ -26,11 +26,11 @@ if user_args.t:
 # Set xml file name
 name = "est_"+str(energy)
 
-# assume energy is 0.001 MeV
-bins = "{ 1e-5, 197i, 1e-3}"
-if energy == ".01":
-    bins = "{ 1e-5,5e-5, 198i, 1e-2}"
-if energy == ".1":
+# assume energy is 0.01 MeV
+bins = "{ 1e-5,5e-5, 198i, 1e-2}"
+if energy == ".001" or energy == "0.001":
+    bins = "{ 1e-5, 197i, 1e-3}"
+if energy == ".1" or energy == "0.1":
     bins = "{ 1e-5, 1e-4, 5e-4, 198i, 1e-1}"
 
 root = ET.Element("ParameterList", name="Estimators")

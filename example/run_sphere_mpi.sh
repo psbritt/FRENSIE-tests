@@ -24,6 +24,7 @@
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
 CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
 FRENSIE=/home/lkersting/frensie
 
 INPUT="1"
@@ -36,9 +37,9 @@ fi
 # Changing variables
 
 # Number of threads
-THREADS="80"
+THREADS="8"
 # Number of histories 1e8
-HISTORIES="100000000"
+HISTORIES="100"
 # Geometry package (DagMC or ROOT)
 GEOMETRY="ROOT"
 # Turn certain reactions on (true/false)
@@ -142,11 +143,11 @@ fi
 
 python est.py -e ${ENERGY} -t ${GEOMETRY}
 python source.py -e ${ENERGY}
-python geom.py -e ${ENERGY} -t ${GEOMETRY}
+python geom.py -t ${GEOMETRY}
 
 # .xml directory paths.
 INFO="${INFO}${NAME_EXTENTION}.xml"
-GEOM="geom_${ENERGY}.xml"
+GEOM="geom.xml"
 RSP="rsp_fn.xml"
 EST="est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
@@ -165,7 +166,7 @@ mkdir -p ${DIR}
 if [ "${GEOMETRY}" = "ROOT" ]
 then
     NAME="${NAME}_root"
-    GEOM="geom_${ENERGY}_root.xml"
+    GEOM="geom_root.xml"
     EST="est_${ENERGY}_root.xml"
 fi
 

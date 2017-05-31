@@ -136,11 +136,11 @@ fi
 
 python est.py -e ${ENERGY} -t ${GEOMETRY}
 python source.py -e ${ENERGY}
-python geom.py -e ${ENERGY} -t ${GEOMETRY}
+python geom.py -t ${GEOMETRY}
 
 # .xml directory paths.
 INFO="${INFO}${NAME_EXTENTION}.xml"
-GEOM="geom_${ENERGY}.xml"
+GEOM="geom.xml"
 RSP="rsp_fn.xml"
 EST="est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
@@ -158,7 +158,7 @@ mkdir -p ${DIR}
 if [ "${GEOMETRY}" = "ROOT" ]
 then
     NAME="${NAME}_root"
-    GEOM="geom_${ENERGY}_root.xml"
+    GEOM="geom_root.xml"
     EST="est_${ENERGY}_root.xml"
 fi
 
