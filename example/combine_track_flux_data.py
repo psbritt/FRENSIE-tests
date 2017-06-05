@@ -28,9 +28,8 @@ def main(argv):
 
     # Check dir exists
     if os.path.isdir(mcnpinputdir) and os.path.isdir(facemcinputdir):
-        energy = input("Enter the energy to process in keV (1, 10, 100): ")
 
-        name = "/"+str(energy)+"kev_track_flux_"
+        name = "/track_flux.txt"
         for i in range(0, len(mcnp_cell_list)):
             # Get the file names
             mcnpinputfile = mcnpinputdir+name+str(mcnp_cell_list[i])+".txt"

@@ -109,35 +109,41 @@ else
     echo "Input not valid, ACE data will be used!"
 fi
 
-NAME_EXTENTION=""
+INTERP_NAMES=''
 # Set the sim info xml file name
 if [ "${LINLINLOG_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_linlinlin"
+    INTERP_NAMES="${INTERP_NAMES}_linlinlin"
 fi
 if [ "${CORRELATED_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_stochastic"
+    INTERP_NAMES="${INTERP_NAMES}_stochastic"
 fi
 if [ "${UNIT_BASED_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_exact"
+    INTERP_NAMES="${INTERP_NAMES}_exact"
+fi
+
+REACTION_NAMES=''
+if [ "${NAME}" = "ace" ]
+then
+    NAME_EXTENTION=''
 fi
 if [ "${ELASTIC_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_elastic"
+    REACTION_NAMES="${REACTION_NAMES}_no_elastic"
 fi
 if [ "${BREM_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_brem"
+    REACTION_NAMES="${REACTION_NAMES}_no_brem"
 fi
 if [ "${IONIZATION_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_ionization"
+    REACTION_NAMES="${REACTION_NAMES}_no_ionization"
 fi
 if [ "${EXCITATION_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_excitation"
+    REACTION_NAMES="${REACTION_NAMES}_no_excitation"
 fi
 
 python est.py -e ${ENERGY} -t ${GEOMETRY}
@@ -145,20 +151,24 @@ python source.py -e ${ENERGY}
 python geom.py -t ${GEOMETRY}
 
 # .xml directory paths.
-INFO="${INFO}${NAME_EXTENTION}.xml"
+INFO="${INFO}${INTERP_NAMES}${REACTION_NAMES}.xml"
 GEOM="geom.xml"
 RSP="rsp_fn.xml"
 EST="est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
 
 # Make directory for the test results
-DIR="results/${INTERP}/${TODAY}"
+TODAY=$(date +%Y-%m-%d)
+DIR=''
 if [ "${NAME}" = "ace" ]
 then
-    NAME_EXTENTION=''
     DIR="results/ace/${TODAY}"
+    NAME="${NAME}${REACTION_NAMES}"
+else
+    DIR="results/${INTERP}/${TODAY}"
+    NAME="${NAME}${INTERP_NAMES}${REACTION_NAMES}"
 fi
-NAME="${NAME}${NAME_EXTENTION}"
+
 mkdir -p ${DIR}
 
 # Modify paths for root geometry

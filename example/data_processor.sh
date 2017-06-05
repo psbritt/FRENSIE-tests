@@ -25,15 +25,15 @@ else
     then
         file=${FLUX}.txt
         # Extract the flux data
-        ${TESTING_DIR}/edump.py -f $H5 -e 1 -i 1 -b Energy > $file
+        ${TESTING_DIR}/edump.py -f $H5 -e 2 -i 1 -b Energy > $file
 
         file=${CURRENT}.txt
         # Extract the current data
-        ${TESTING_DIR}/edump.py -f $H5 -e 2 -i 1 -b Energy > $file
+        ${TESTING_DIR}/edump.py -f $H5 -e 3 -i 1 -b Energy > $file
 
         file=${TRACK_FLUX}.txt
         # Extract the track length flux data
-        ${TESTING_DIR}/edump.py -f $H5 -e 3 -i 1 -b Energy > $file
+        ${TESTING_DIR}/edump.py -f $H5 -e 1 -i 1 -b Energy > $file
 
         # Move to output directory
         cd ${FILE}

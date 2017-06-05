@@ -18,13 +18,13 @@ f02:e  10 $ average surface flux (f2)
 f01:e  10 $ surface current (f1)
 c
 e0     1e-5 5e-5 198i 0.01 $ Specify the electron energy bins
-c
+c Skip 17, turn single scatter electrons on
 dbcn 17j 2 $ Turn on analog mode
 c
 CUT:P J 1e-1 $ Set photon cutoff to 100 keV
 CUT:E J 1.5e-5 $ Set electron cutoff to 15 eV
 c
-c Max energy, p's makes e's, e's make p's, brem dist, skip 10, analog start energy
-PHYS:E 0.01 1 1 1 10J 0.1
+c Max energy, p's don't make e's, e's don't make p's, brem dist, skip 3, kock-on e's on, skip 6, analog start energy
+PHYS:E 0.01 1 1 1 3j J 6J 0.011
 c
 prdmp  j  1e7  1   1

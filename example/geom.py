@@ -28,7 +28,7 @@ if geom_type == "DagMC":
     ET.SubElement(root, "Parameter", name="CAD File", type="string", value=sat_file)
     ET.SubElement(root, "Parameter", name="Facet Tolerance", type="double", value="1e-3")
     ET.SubElement(root, "Parameter", name="Use Fast Id Lookup", type="bool", value="True")
-    ET.SubElement(root, "Parameter", name="Termination Cell Property", type="string", value="termination.cell")
+    ET.SubElement(root, "Parameter", name="Termination Cell Synonym", type="string", value="termination.cell")
     ET.SubElement(root, "Parameter", name="Estimator Property", type="string", value="estimator")
     ET.SubElement(root, "Parameter", name="Material Property", type="string", value="mat")
     ET.SubElement(root, "Parameter", name="Density Property", type="string", value="rho")
