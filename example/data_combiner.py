@@ -118,6 +118,7 @@ def main(argv):
         else:
             c_e_ratio[i] = 0.0
             c_e_uncert[i] = ( prop_uncert[i] )
+        print energy[i], facemc_average_values[i], mcnp_average_values[i], c_e_ratio[i], c_e_uncert[i]
 
     # calculate % of c/e values within 1,2,3 sigma
     num_c_e_in_one_sigma = 0
