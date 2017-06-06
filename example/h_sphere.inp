@@ -11,7 +11,7 @@ mode p e $ Run in photon-electron mode to get low energy physics
 nps    1e8 $ Number of particles
 sdef   pos = 0 0 0  erg = 0.01  par = e $ Mono-energetic electron beam
 c
-m1     1000.12p   1.0 $ Material def for hydrogen from the erp (.12p) library
+m1     1000.12p   1.0 $ Material def for hydrogen from the epr (.12p) library
 c
 f04:e  100 $ average flux in cell (f4)
 f02:e  10 $ average surface flux (f2)

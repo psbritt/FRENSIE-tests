@@ -40,14 +40,14 @@ void h_sphere()
 
   // Graveyard Volume
   TGeoVolume *terminal_cube =
-                geom->MakeBox( "TERMINAL", terminal_med, 1.0, 1.0, 1.0 );
+                geom->MakeBox( "TERMINAL", terminal_med, 0.1, 0.1, 0.1 );
   terminal_cube->SetUniqueID(3);
 
   // Set the graveyard to be the top volume (rest-of-universe)
   gGeoManager->SetTopVolume( terminal_cube );
 
   // Void Volume (cube)
-  TGeoVolume *cube = geom->MakeBox( "CUBE", void_med, 0.5, 0.5, 0.5 );
+  TGeoVolume *cube = geom->MakeBox( "CUBE", void_med, 0.05, 0.05, 0.05 );
   cube->SetUniqueID(2);
 
   // Hydrogen Volume (sphere)
