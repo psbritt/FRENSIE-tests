@@ -24,8 +24,7 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-#CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
-CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
 FRENSIE=/home/lkersting/frensie
 
 INPUT="1"
