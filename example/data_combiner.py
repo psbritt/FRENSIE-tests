@@ -156,6 +156,22 @@ def main(argv):
     print "% below: ", float(num_below)/len(range(start,len(c_e_ratio)))
     print "% above: ", float(num_above)/len(range(start,len(c_e_ratio)))
 
+    # Create the output file for C/E data
+    f = open(output_c_e, 'w')
+    f.write( "#FACEMC/MCNP\n" )
+    f.write( "#Energy    Values    Error\n" )
+
+    for i in range(0,len(energy)):
+        line = ' '
+        line = line + str(energy[i])
+        line = line + ' '
+        line = line + str(c_e_ratio[i])
+        line = line + ' '
+        line = line + str(c_e_uncert[i])
+        line = line + '\n'
+
+        f.write( line )
+
     # Plot data
     fig1 = plt.figure(num=1, figsize=(10,5))
     plt.subplot2grid((2,6),(0, 0), colspan=6)

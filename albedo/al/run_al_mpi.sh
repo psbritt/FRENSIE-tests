@@ -1,6 +1,7 @@
 #!/bin/sh
 # This file is named run_al_mpi.sh
-#SBATCH --partition=univ
+#SBATCH --partition=pre
+#SBATCH --time=1-00:00:00
 #SBATCH --nodes=10
 #SBATCH --ntasks-per-node=16
 #SBATCH --mem-per-cpu=4000
@@ -23,7 +24,8 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
+#CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
 FRENSIE=/home/lkersting/frensie
 
 INPUT="1"
@@ -34,18 +36,20 @@ then
 fi
 
 # Changing variables
-ENERGY=".04"
+
+# Energy in MeV (.0093, .011, .0134, .0173, .0252, .0415, .0621, .0818, .102)
+ENERGY=".0093"
 THREADS="160"
 ELEMENT="Al"
-# Number of histories 1e8
-HISTORIES="100000000"
+# Number of histories 1e6
+HISTORIES="1000000"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="false"
+LINLINLOG_ON="true"
 CORRELATED_ON="true"
 UNIT_BASED_ON="true"
 
