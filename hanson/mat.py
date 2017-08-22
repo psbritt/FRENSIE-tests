@@ -15,7 +15,7 @@ parser.add_argument('-n', help=element_msg, required=True)
 file_type_msg = "the file type (ace or native )"
 parser.add_argument('-t', help=file_type_msg, required=True)
 
-file_type_msg = "the 2D electron interpolation (linlog or linlin )"
+file_type_msg = "the 2D electron interpolation ( logloglog, linlinlin or loglinlin)"
 parser.add_argument('-i', help=file_type_msg, required=True)
 
 
@@ -30,10 +30,12 @@ filename = "{" + element_symbol
 
 if file_type == "ace":
   filename += "}"
-elif interp == "linlog":
+elif interp == "logloglog":
   filename += "-Native}"
-elif interp == "linlin":
-  filename += "-LinLin}"
+elif interp == "loglinlin":
+  filename += "-LogLinLin}"
+elif interp == "linlinlin":
+  filename += "-LinLinLin}"
 
 root = ET.Element("ParameterList", name="Materials")
 

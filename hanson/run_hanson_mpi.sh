@@ -49,20 +49,14 @@ BREM_ON="false"
 IONIZATION_ON="false"
 EXCITATION_ON="false"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="true"
 CORRELATED_ON="true"
 UNIT_BASED_ON="true"
+INTERP="logloglog"
 
 REACTIONS=" -e ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
 SIM_PARAMETERS="-n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
 ENERGY="15.7"
 NAME="ace"
-
-INTERP="linlin"
-if [ ${LINLINLOG_ON} = true ]
-then
-    INTERP="linlog"
-fi
 
 ELEMENT="Au"
 if [ ${INPUT} -eq 1 ]
@@ -108,10 +102,7 @@ fi
 
 NAME_EXTENTION=""
 # Set the sim info xml file name
-if [ "${LINLINLOG_ON}" = "false" ]
-then
-    NAME_EXTENTION="${NAME_EXTENTION}_linlinlin"
-fi
+NAME_EXTENTION="${NAME_EXTENTION}_${INTERP}"
 if [ "${CORRELATED_ON}" = "false" ]
 then
     NAME_EXTENTION="${NAME_EXTENTION}_stochastic"

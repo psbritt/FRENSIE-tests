@@ -25,7 +25,7 @@ parser.add_argument('-f', help=lin_msg, required=True)
 user_args = parser.parse_args()
 
 # Get MCNP data
-mcnp_file ="/home/lkersting/frensie/tests/hanson/results/mcnp/mcnp_spectrum.txt"
+mcnp_file ="/home/lkersting/frensie/tests/hanson/results/mcnp/latest/mcnp_spectrum.txt"
 if user_args.m:
     mcnp_file = user_args.m
 with open(mcnp_file) as input:

@@ -44,18 +44,12 @@ BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="true"
+INTERP="logloglog"
 CORRELATED_ON="true"
 UNIT_BASED_ON="true"
 
 REACTIONS=" -e ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
-SIM_PARAMETERS="-n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
-
-INTERP="linlin"
-if [ ${LINLINLOG_ON} = true ]
-then
-    INTERP="linlog"
-fi
+SIM_PARAMETERS="-n ${HISTORIES} -l ${INTERP} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
 
 echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
 read INPUT
@@ -102,10 +96,7 @@ fi
 
 NAME_EXTENTION=""
 # Set the sim info xml file name
-if [ "${LINLINLOG_ON}" = "false" ]
-then
-    NAME_EXTENTION="${NAME_EXTENTION}_linlinlin"
-fi
+NAME_EXTENTION="${NAME_EXTENTION}_${INTERP}"
 if [ "${CORRELATED_ON}" = "false" ]
 then
     NAME_EXTENTION="${NAME_EXTENTION}_stochastic"

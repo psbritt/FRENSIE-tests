@@ -16,7 +16,8 @@ set xrange[0.0:30.0]
 #set arrow from 1e-3,1.0 to 10.0,1.0 nohead lc rgb"red" lt 2 lw 1
 #set key outside top center
 #plot "computational_results.txt" using 1:2:3 with errorbars title "MCNP",\
-#     "computational_results.txt" using 1:4:5 with errorbars title "FACEMC-ACE"
+#     "computational_results.txt" using 1:4:5 with errorbars title "FACEMC-ACE",\
+#     "experimental_results.txt"  using 1:2:3 with errorbars title "Hanson"
 
 #plot "computational_results.txt" using 1:4:5 with errorbars title "FACEMC-ACE",\
 #     "computational_results.txt" using 1:6:7 with errorbars title "FACEMC-LinLin",\
