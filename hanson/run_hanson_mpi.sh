@@ -126,7 +126,7 @@ if [ "${EXCITATION_ON}" = "false" ]
 then
     NAME_EXTENTION="${NAME_EXTENTION}_no_excitation"
 fi
-INFO="${INFO}${NAME_EXTENTION}.xml"
+INFO="${INFO}_${INTERP}${NAME_EXTENTION}.xml"
 
 # .xml file paths.
 EST="est.xml"
