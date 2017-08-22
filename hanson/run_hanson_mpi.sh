@@ -102,7 +102,6 @@ fi
 
 NAME_EXTENTION=""
 # Set the sim info xml file name
-NAME_EXTENTION="${NAME_EXTENTION}_${INTERP}"
 if [ "${CORRELATED_ON}" = "false" ]
 then
     NAME_EXTENTION="${NAME_EXTENTION}_stochastic"
@@ -140,10 +139,10 @@ TODAY=$(date +%Y-%m-%d)
 
 if [ ${NAME} = "ace" ]
 then
-    NAME="hanson_${NAME}"
+    NAME="hanson_${NAME}${NAME_EXTENTION}"
     DIR="results/ace/${TODAY}"
 else
-    NAME="hanson_${NAME}${NAME_EXTENTION}"
+    NAME="hanson_${NAME}_${INTERP}${NAME_EXTENTION}"
     DIR="results/${INTERP}/${TODAY}"
 fi
 
