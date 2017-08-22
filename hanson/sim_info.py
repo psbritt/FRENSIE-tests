@@ -16,7 +16,7 @@ cutoff_msg = "the cutoff angle cosine"
 parser.add_argument('-c', help=cutoff_msg, required=True)
 
 interp_msg = "electron interpolation (logloglog, linlinlin, loglinlin)"
-parser.add_argument('-l', help=linlinlog_msg, required=True)
+parser.add_argument('-l', help=interp_msg, required=True)
 
 sampling_msg = "correlated electron sampling on (true/false)"
 parser.add_argument('-s', help=sampling_msg, required=True)
