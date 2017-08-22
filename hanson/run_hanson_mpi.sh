@@ -134,11 +134,19 @@ EST="est.xml"
 SOURCE="source.xml"
 GEOM="geom.xml"
 RSP="../rsp_fn.xml"
-NAME="hanson_${NAME}${NAME_EXTENTION}"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
-DIR="results/${INTERP}/${TODAY}"
+
+if [ ${NAME} = "ace" ]
+then
+    NAME="hanson_${NAME}"
+    DIR="results/ace/${TODAY}"
+else
+    NAME="hanson_${NAME}${NAME_EXTENTION}"
+    DIR="results/${INTERP}/${TODAY}"
+fi
+
 mkdir -p $DIR
 
 echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
