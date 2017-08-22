@@ -50,7 +50,7 @@ ionization_bool = user_args.i
 excitation_bool = user_args.a
 
 # Set xml file name
-name = "sim_info_"+str(cutoff_cosine)+interp
+name = "sim_info_"+str(cutoff_cosine)+"_"+interp
 if correlated_bool == "false":
     name += "_stochastic"
 if unit_based_bool == "false":
