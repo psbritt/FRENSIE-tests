@@ -9,79 +9,41 @@ description = "This script takes #/square degree data from MCNP, Native-ACE, "\
 
 parser = ap.ArgumentParser(description=description)
 
-mcnp_msg = "MCNP #/square degree data .txt file"
-parser.add_argument('-m', help=mcnp_msg, required=False)
-
-ace_msg = "Native-ACE #/square degree data .txt file"
-parser.add_argument('-a', help=ace_msg, required=False)
-
-log_msg = "Native-LinLog #/square degree data .txt file"
-parser.add_argument('-l', help=log_msg, required=True)
-
-lin_msg = "Native-LinLin #/square degree data .txt file"
-parser.add_argument('-f', help=lin_msg, required=True)
+msg = "#/square degree data .txt files"
+parser.add_argument("files", nargs='*', help=msg)
 
 # Parse the user's arguments
 user_args = parser.parse_args()
+files = user_args.files
 
-# Get MCNP data
-mcnp_file ="/home/lkersting/frensie/tests/hanson/results/mcnp/latest/mcnp_spectrum.txt"
-if user_args.m:
-    mcnp_file = user_args.m
-with open(mcnp_file) as input:
-    data = zip(*(line.strip().split(' ') for line in input))
-    name = data[0][0] + data[1][0] + data[2][0]
-    mcnp_angles = data[0][1:]
-    mcnp_result = data[1][1:]
-    mcnp_error = data[2][1:]
+# Number of files
+N = len(files)
+# Number of data points in each file
+M = 18
 
-# Get Native-ACE data
-ace_file ="/home/lkersting/frensie/tests/hanson/results/ace/latest/hanson_ace_spectrum.txt"
-if user_args.a:
-    ace_file = user_args.a
-with open(ace_file) as input:
-    data = zip(*(line.strip().split(' ') for line in input))
-    name = data[0][0] + data[1][0] + data[2][0]
-    ace_angles = data[0][1:]
-    ace_result = data[1][1:]
-    ace_error = data[2][1:]
+data_x = [[0 for x in range(N)] for y in range(M)]
+data_y = [[0 for x in range(N)] for y in range(M)]
+data_error = [[0 for x in range(N)] for y in range(M)]
 
-# Get Native-LinLog data
-with open(user_args.l) as input:
-    data = zip(*(line.strip().split(' ') for line in input))
-    name = data[0][0] + data[1][0] + data[2][0]
-    log_angles = data[0][1:]
-    log_result = data[1][1:]
-    log_error = data[2][1:]
-
-# Get Native-LinLin data
-with open(user_args.f) as input:
-    data = zip(*(line.strip().split(' ') for line in input))
-    name = data[0][0] + data[1][0] + data[2][0]
-    lin_angles = data[0][1:]
-    lin_result = data[1][1:]
-    lin_error = data[2][1:]
+for n in range(N):
+    with open(files[n]) as input:
+        data = zip(*(line.strip().split(' ') for line in input))
+        name = data[0][0] + data[1][0] + data[2][0]
+        data_x[n][:] = data[0][1:]
+        data_y[n][:] = data[1][1:]
+        data_error[n][:] = data[2][1:]
 
 
-# Make sure the data is all the same size
-if mcnp_angles == ace_angles == log_angles == lin_angles:
+out_file = open("computational_results.txt", "w")
+out_file.write("# MCNP\tACE\tLogLogLog\tLinLinLin\tLinLinLog\n")
+out_file.write("# Angle (degrees)\t#/square degree\tError\n")
 
-    out_file = open("computational_results.txt", "w")
-    out_file.write("# MCNP\tACE\tLinLin\tLinLog\n")
-    out_file.write("# Angle (degrees)\t#/square degree\tError\n")
+for i in range(M):
+    output = data_x[0][i]
+    for n in range(N):
+        output = output + " " + '%.6e' % float(data_y[n][i]) + " " + \
+                                '%.6e' % float(data_error[n][i])
+    output = output + "\n"
+    out_file.write( output )
+out_file.close()
 
-    for i in range(0, len(mcnp_angles)):
-        output = '%.3e'% float(mcnp_angles[i]) + " " + \
-                 '%.6e' % float(mcnp_result[i]) + " " + \
-                 '%.6e' % float(mcnp_error[i]) + " " + \
-                 '%.10e' % float(ace_result[i]) + " " + \
-                 '%.10e' % float(ace_error[i]) + " " + \
-                 '%.10e' % float(lin_result[i]) + " " + \
-                 '%.10e' % float(lin_error[i]) + " " + \
-                 '%.10e' % float(log_result[i]) + " " + \
-                 '%.10e' % float(log_error[i]) + "\n"
-        out_file.write( output )
-    out_file.close()
-
-else:
-    print "Error: data in files does not match!"

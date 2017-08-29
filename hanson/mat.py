@@ -32,10 +32,10 @@ if file_type == "ace":
   filename += "}"
 elif interp == "logloglog":
   filename += "-Native}"
-elif interp == "loglinlin":
-  filename += "-LogLinLin}"
+elif interp == "linlinlog":
+  filename += "-Native}"
 elif interp == "linlinlin":
-  filename += "-LinLinLin}"
+  filename += "-Native}"
 
 root = ET.Element("ParameterList", name="Materials")
 

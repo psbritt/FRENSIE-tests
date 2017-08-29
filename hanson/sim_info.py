@@ -90,6 +90,7 @@ ET.SubElement(parameter_2, "Parameter", name="Electron Electroionization", type=
 ET.SubElement(parameter_2, "Parameter", name="Electron Atomic Excitation", type="bool", value=excitation_bool )
 
 ET.SubElement(parameter_2, "Parameter", name="Electron Elastic Interpolation", type="string", value=interp )
+ET.SubElement(parameter_2, "Parameter", name="Electron Elastic Distribution", type="string", value="Decoupled" )
 ET.SubElement(parameter_2, "Parameter", name="Electron Bremsstrahlung Interpolation", type="string", value=interp )
 ET.SubElement(parameter_2, "Parameter", name="Electron Electroionization Interpolation", type="string", value=interp )
 

@@ -45,9 +45,9 @@ THREADS="80"
 HISTORIES="10000000"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
-BREM_ON="false"
-IONIZATION_ON="false"
-EXCITATION_ON="false"
+BREM_ON="true"
+IONIZATION_ON="true"
+EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
 CORRELATED_ON="true"
 UNIT_BASED_ON="true"
