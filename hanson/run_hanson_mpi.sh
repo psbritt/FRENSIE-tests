@@ -40,9 +40,9 @@ then
 fi
 
 # Changing variables
-THREADS="80"
+THREADS="8"
 # Number of histories 1e7
-HISTORIES="10000000"
+HISTORIES="100"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
@@ -156,13 +156,17 @@ ${RUN} > ${DIR}/${NAME}.txt 2>&1
 echo "Removing old xml files:"
 rm ${INFO} ${MAT} ElementTree_pretty.pyc
 
-echo "Moving the results:"
+
+echo "Processing the results:"
 # Move file to the test results folder
 H5=${NAME}.h5
 NEW_NAME="${DIR}/${H5}"
 NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
-
 mv ${H5} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
+
+cd ${DIR}
+
+bash ../../../data_processor.sh ${NAME}
 
 echo "Results will be in ./${DIR}"
