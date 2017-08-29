@@ -24,6 +24,9 @@ else
         # convert to #/sqaure degrees
         spectrum="${FILE}_spectrum.txt"
         python ../../../convert_to_square_degrees.py -f ${output} -o ${spectrum}
+        # Plot the spectrum results
+        plot="${FILE}.pdf"
+        echo "${FILE}" | python ../../../plot_results.py -o ${plot} ${spectrum}
 
         output="${FILE}_reflection.txt"
         # Extract the surface current data for reflection

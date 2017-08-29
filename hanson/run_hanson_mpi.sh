@@ -40,9 +40,9 @@ then
 fi
 
 # Changing variables
-THREADS="8"
+THREADS="80"
 # Number of histories 1e7
-HISTORIES="100"
+HISTORIES="10000000"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
