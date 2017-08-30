@@ -34,7 +34,7 @@ fi
 # Changing variables
 ELEMENT="Au"
 # Number of histories
-HISTORIES="10"
+HISTORIES="100"
 
 ENERGY="15.7"
 NAME="ace"
@@ -46,7 +46,7 @@ EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
 INTERP="logloglog"
 CORRELATED_ON="true"
-UNIT_BASED_ON="true"
+UNIT_BASED_ON="false"
 
 REACTIONS=" -e ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
 SIM_PARAMETERS="-n ${HISTORIES} -l ${INTERP} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
@@ -96,7 +96,6 @@ fi
 
 NAME_EXTENTION=""
 # Set the sim info xml file name
-NAME_EXTENTION="${NAME_EXTENTION}_${INTERP}"
 if [ "${CORRELATED_ON}" = "false" ]
 then
     NAME_EXTENTION="${NAME_EXTENTION}_stochastic"
@@ -121,18 +120,26 @@ if [ "${EXCITATION_ON}" = "false" ]
 then
     NAME_EXTENTION="${NAME_EXTENTION}_no_excitation"
 fi
-INFO="${INFO}${NAME_EXTENTION}.xml"
+INFO="${INFO}_${INTERP}${NAME_EXTENTION}.xml"
 
 # .xml file paths.
 EST="est.xml"
 SOURCE="source.xml"
 GEOM="geom.xml"
 RSP="../rsp_fn.xml"
-NAME="hanson_${NAME}${NAME_EXTENTION}"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
-DIR="results/testrun"
+
+if [ ${NAME} = "ace" ]
+then
+    NAME="hanson_${NAME}${NAME_EXTENTION}"
+    DIR="results/testrun/ace"
+else
+    NAME="hanson_${NAME}_${INTERP}${NAME_EXTENTION}"
+    DIR="results/testrun/${INTERP}"
+fi
+
 mkdir -p $DIR
 
 echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
@@ -141,7 +148,7 @@ echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Removing old xml files:"
-rm ${INFO} ${MAT} ElementTree_pretty.pyc
+#rm ${INFO} ${MAT} ElementTree_pretty.pyc
 
 echo "Processing the results:"
 H5=${NAME}.h5
@@ -152,6 +159,6 @@ mv continue_run.xml ${NEW_RUN_INFO}
 
 cd ${DIR}
 
-bash ../../data_processor.sh ${NAME}
+bash ../../../data_processor.sh ${NAME}
 echo "Results will be in ./${DIR}"
 
