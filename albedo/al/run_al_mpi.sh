@@ -48,21 +48,15 @@ BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="true"
 CORRELATED_ON="true"
 UNIT_BASED_ON="true"
+INTERP="logloglog"
 
 REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
-SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
+SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${INTERP} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
 ENERGY_EV=$(echo $ENERGY*1000000 |bc)
 ENERGY_EV=${ENERGY_EV%.*}
 NAME="ace"
-
-INTERP="linlin"
-if [ ${LINLINLOG_ON} = true ]
-then
-    INTERP="linlog"
-fi
 
 if [ ${INPUT} -eq 1 ]
 then
@@ -107,10 +101,6 @@ fi
 
 NAME_EXTENTION=""
 # Set the sim info xml file name
-if [ "${LINLINLOG_ON}" = "false" ]
-then
-    NAME_EXTENTION="${NAME_EXTENTION}_linlinlin"
-fi
 if [ "${CORRELATED_ON}" = "false" ]
 then
     NAME_EXTENTION="${NAME_EXTENTION}_stochastic"
@@ -144,11 +134,19 @@ EST="../est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
 GEOM="geom.xml"
 RSP="../rsp_fn.xml"
-NAME="al_${NAME}_${ENERGY_EV}${NAME_EXTENTION}"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
-DIR="results/${INTERP}/${TODAY}"
+
+if [ ${NAME} = "ace" ]
+then
+    NAME="al_${NAME}_${ENERGY_EV}${NAME_EXTENTION}"
+    DIR="results/ace/${TODAY}"
+else
+    NAME="al_${NAME}_${ENERGY_EV}_${INTERP}${NAME_EXTENTION}"
+    DIR="results/${INTERP}/${TODAY}"
+fi
+
 mkdir -p $DIR
 
 echo "Running Facemc Albedo test with ${HISTORIES} particles on ${THREADS} threads:"
@@ -159,12 +157,16 @@ ${RUN} > ${DIR}/${NAME}.txt 2>&1
 echo "Removing old xml files:"
 rm ${INFO} ${EST} ${SOURCE} ${MAT} ElementTree_pretty.pyc
 
-# Move file to the test results folder
+# Process the test results
+echo "Processing the results:"
 H5=${NAME}.h5
 NEW_NAME="${DIR}/${H5}"
 NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
-
 mv ${H5} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
 
+cd ${DIR}
+
+bash ../../../data_processor.sh ${NAME}
 echo "Results will be in ./${DIR}"
+

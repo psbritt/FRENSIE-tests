@@ -51,19 +51,9 @@ UNIT_BASED_ON="false"
 REACTIONS=" -e ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
 SIM_PARAMETERS="-n ${HISTORIES} -l ${INTERP} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
 
-echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
+echo -n "Enter the desired data type (1 = Native, 2 = Moment Preserving, 3 = ACE EPR14, 4 = ACE EPR12) > "
 read INPUT
 if [ ${INPUT} -eq 1 ]
-then
-    # Use ACE data
-    NAME="ace"
-    SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
-    python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
-    INFO="sim_info_1.0"
-    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
-    echo "Using ACE data!"
-elif [ ${INPUT} -eq 2 ]
 then
     # Use Native analog data
     NAME="native"
@@ -73,7 +63,7 @@ then
     INFO="sim_info_1.0"
     MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
     echo "Using Native analog data!"
-elif [ ${INPUT} -eq 3 ]
+elif [ ${INPUT} -eq 2 ]
 then
     # Use Native Moment Preserving data
     NAME="moments"
@@ -83,15 +73,36 @@ then
     INFO="sim_info_0.9"
     MAT="mat_${ELEMENT}_native_${INTERP}.xml"
     echo "Using Native Moment Preserving data!"
-else
-    # Default to ACE data
+elif [ ${INPUT} -eq 3 ]
+then
+    # Use ACE EPR14 data
+    CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA
+    NAME="epr14"
+    SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
+    python sim_info.py ${SIM_PARAMETERS}
+    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
+    INFO="sim_info_1.0"
+    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
+    echo "Using ACE data!"
+elif [ ${INPUT} -eq 4 ]
+then
+    # Use ACE EPR12 data
     NAME="ace"
     SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
     python sim_info.py ${SIM_PARAMETERS}
     python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
     INFO="sim_info_1.0"
     MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
-    echo "Input not valid, ACE data will be used!"
+    echo "Using ACE data!"
+else
+    # Default to Native data
+    NAME="native"
+    SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
+    python sim_info.py ${SIM_PARAMETERS}
+    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
+    INFO="sim_info_1.0"
+    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
+    echo "Input not valid, Native data will be used!"
 fi
 
 NAME_EXTENTION=""
@@ -104,23 +115,25 @@ if [ "${UNIT_BASED_ON}" = "false" ]
 then
     NAME_EXTENTION="${NAME_EXTENTION}_exact"
 fi
+
+NAME_REACTION=""
 if [ "${ELASTIC_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_elastic"
+    NAME_REACTION="${NAME_REACTION}_no_elastic"
 fi
 if [ "${BREM_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_brem"
+    NAME_REACTION="${NAME_REACTION}_no_brem"
 fi
 if [ "${IONIZATION_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_ionization"
+    NAME_REACTION="${NAME_REACTION}_no_ionization"
 fi
 if [ "${EXCITATION_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_excitation"
+    NAME_REACTION="${NAME_REACTION}_no_excitation"
 fi
-INFO="${INFO}_${INTERP}${NAME_EXTENTION}.xml"
+INFO="${INFO}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}.xml"
 
 # .xml file paths.
 EST="est.xml"
@@ -130,13 +143,13 @@ RSP="../rsp_fn.xml"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
-
-if [ ${NAME} = "ace" ]
+echo ${NAME}
+if [ ${NAME} = "ace" -o ${NAME} = "epr14" ]
 then
-    NAME="hanson_${NAME}${NAME_EXTENTION}"
-    DIR="results/testrun/ace"
+    DIR="results/testrun/${NAME}"
+    NAME="hanson_${NAME}${NAME_REACTION}"
 else
-    NAME="hanson_${NAME}_${INTERP}${NAME_EXTENTION}"
+    NAME="hanson_${NAME}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}"
     DIR="results/testrun/${INTERP}"
 fi
 
@@ -145,10 +158,11 @@ mkdir -p $DIR
 echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME} --threads=${THREADS}"
 echo ${RUN}
+#gdb -ex=r --args ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Removing old xml files:"
-#rm ${INFO} ${MAT} ElementTree_pretty.pyc
+rm ${INFO} ${MAT} ElementTree_pretty.pyc
 
 echo "Processing the results:"
 H5=${NAME}.h5

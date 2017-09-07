@@ -18,8 +18,8 @@ parser.add_argument('-n', help=history_msg, required=True)
 cutoff_msg = "the cutoff angle cosine"
 parser.add_argument('-c', help=cutoff_msg, required=True)
 
-linlinlog_msg = "lin-lin-log electron interpolation on (true/false)"
-parser.add_argument('-l', help=linlinlog_msg, required=True)
+interp_msg = "electron interpolation (logloglog, linlinlin, loglinlin)"
+parser.add_argument('-l', help=interp_msg, required=True)
 
 sampling_msg = "correlated electron sampling on (true/false)"
 parser.add_argument('-s', help=sampling_msg, required=True)
@@ -44,7 +44,7 @@ user_args = parser.parse_args()
 energy = user_args.e
 number_of_histories = user_args.n
 cutoff_cosine = user_args.c
-linlinlog_bool = user_args.l
+interp = user_args.l
 correlated_bool = user_args.s
 unit_based_bool = user_args.u
 elastic_bool = user_args.t
@@ -53,9 +53,7 @@ ionization_bool = user_args.i
 excitation_bool = user_args.a
 
 # Set xml file name
-name = "sim_info_"+str(energy)+"_"+str(cutoff_cosine)
-if linlinlog_bool == "false":
-    name += "_linlinlin"
+name = "sim_info_"+str(energy)+"_"+str(cutoff_cosine)+"_"+interp
 if correlated_bool == "false":
     name += "_stochastic"
 if unit_based_bool == "false":
@@ -92,7 +90,12 @@ ET.SubElement(parameter_2, "Parameter", name="Bremsstrahlung Elastic", type="boo
 ET.SubElement(parameter_2, "Parameter", name="Electroionization Elastic", type="bool", value=ionization_bool )
 ET.SubElement(parameter_2, "Parameter", name="Atomic Excitation Elastic", type="bool", value=excitation_bool )
 
-ET.SubElement(parameter_2, "Parameter", name="Electron LinLinLog Interpolation", type="bool", value=linlinlog_bool )
+ET.SubElement(parameter_2, "Parameter", name="Electron Elastic Interpolation", type="string", value=interp )
+ET.SubElement(parameter_2, "Parameter", name="Electron Elastic Distribution", type="string", value="Decoupled" )
+ET.SubElement(parameter_2, "Parameter", name="Electron Bremsstrahlung Interpolation", type="string", value=interp )
+ET.SubElement(parameter_2, "Parameter", name="Electron Electroionization Interpolation", type="string", value=interp )
+
+
 ET.SubElement(parameter_2, "Parameter", name="Electron Correlated Sampling", type="bool", value=correlated_bool )
 ET.SubElement(parameter_2, "Parameter", name="Electron Unit Based Interpolation", type="bool", value=unit_based_bool )
 

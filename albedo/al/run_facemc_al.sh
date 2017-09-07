@@ -37,21 +37,15 @@ BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="true"
+INTERP="logloglog"
 CORRELATED_ON="true"
 UNIT_BASED_ON="true"
 
 REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
-SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
+SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${INTERP} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
 ENERGY_EV=$(echo $ENERGY*1000000 |bc)
 ENERGY_EV=${ENERGY_EV%.*}
 NAME="ace"
-
-INTERP="linlin"
-if [ ${LINLINLOG_ON} = true ]
-then
-    INTERP="linlog"
-fi
 
 echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
 read INPUT
@@ -98,10 +92,6 @@ fi
 
 NAME_EXTENTION=""
 # Set the sim info xml file name
-if [ "${LINLINLOG_ON}" = "false" ]
-then
-    NAME_EXTENTION="${NAME_EXTENTION}_linlinlin"
-fi
 if [ "${CORRELATED_ON}" = "false" ]
 then
     NAME_EXTENTION="${NAME_EXTENTION}_stochastic"
@@ -126,7 +116,7 @@ if [ "${EXCITATION_ON}" = "false" ]
 then
     NAME_EXTENTION="${NAME_EXTENTION}_no_excitation"
 fi
-INFO="${INFO}${NAME_EXTENTION}.xml"
+INFO="${INFO}_${INTERP}${NAME_EXTENTION}.xml"
 
 # .xml file paths.
 python ../est.py -e ${ENERGY}
@@ -135,10 +125,19 @@ EST="../est_${ENERGY}.xml"
 SOURCE="source_${ENERGY}.xml"
 GEOM="geom.xml"
 RSP="../rsp_fn.xml"
-NAME="al_${NAME}_${ENERGY_EV}${NAME_EXTENTION}"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
+
+if [ ${NAME} = "ace" ]
+then
+    NAME="al_${NAME}_${ENERGY_EV}${NAME_EXTENTION}"
+    DIR="results/testrun/ace"
+else
+    NAME="al_${NAME}_${ENERGY_EV}_${INTERP}${NAME_EXTENTION}"
+    DIR="results/testrun/${INTERP}"
+fi
+
 DIR="results/testrun"
 mkdir -p $DIR
 
@@ -149,7 +148,6 @@ ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Removing old xml files:"
 rm ${INFO} ${EST} ${SOURCE} ${MAT} ElementTree_pretty.pyc
-
 
 echo "Processing the results:"
 H5=${NAME}.h5
