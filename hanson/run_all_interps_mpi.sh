@@ -26,8 +26,8 @@ do
         sed -i $command run_hanson_mpi.sh
         if [ ${i} != linlinlog ] || [ ${j} != false ];
         then
-            echo -e "\n"$i"\tunit based on = "$j
-            bash run_hanson_mpi.sh $file_type
+            echo -e "\nRunning Native Analog with "$i"and unit based on = "$j
+            sbatch run_hanson_mpi.sh $file_type
         fi
     done
 done
