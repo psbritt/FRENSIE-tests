@@ -12,11 +12,12 @@
 ## Validation runs comparing FRENSIE and MCNP.
 ## The electron albedo is found for a semi-infinite aluminum slab. Since the
 ## electron albedo requires a surface current, DagMC will be used and not Root.
-## FRENSIE will be run with three variations. 1. Using ACE data, which should
-## match MCNP almost exactly. 2. Using the Native data in analog mode, whcih 
-## uses a different interpolation scheme than MCNP. 3. Using Native data in 
-## moment preserving mode, which should give a less acurate answer while
-## decreasing run time.
+## FRENSIE will be run with three variations.
+## 1. Using ACE data, which should match MCNP almost exactly.
+## 2. Using the Native data in analog mode, whcih uses a different interpolation
+## scheme than MCNP.
+## 3. Using Native data in moment preserving mode, which should give a less
+## acurate answer while decreasing run time.
 
 ##---------------------------------------------------------------------------##
 ## ------------------------------- COMMANDS ---------------------------------##
@@ -30,7 +31,7 @@ FRENSIE=/home/lkersting/frensie
 INPUT="1"
 if [ "$#" -eq 1 ];
 then
-    # Set the file type (1 = ACE, 2 = Native, 3 = Moment Preserving)
+    # Set the file type (1 = Native, 2 = Moment Preserving, 3 = ACE EPR14, 4 = ACE EPR12)
     INPUT="$1"
 fi
 
@@ -56,19 +57,11 @@ REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_O
 SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${INTERP} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
 ENERGY_EV=$(echo $ENERGY*1000000 |bc)
 ENERGY_EV=${ENERGY_EV%.*}
-NAME="ace"
+NAME="native"
 
+echo -n "Enter the desired data type (1 = Native, 2 = Moment Preserving, 3 = ACE EPR14, 4 = ACE EPR12) > "
+read INPUT
 if [ ${INPUT} -eq 1 ]
-then
-    # Use ACE data
-    NAME="ace"
-    SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
-    python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
-    INFO="sim_info_${ENERGY}_1.0"
-    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
-    echo "Using ACE data!"
-elif [ ${INPUT} -eq 2 ]
 then
     # Use Native analog data
     NAME="native"
@@ -78,7 +71,7 @@ then
     INFO="sim_info_${ENERGY}_1.0"
     MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
     echo "Using Native analog data!"
-elif [ ${INPUT} -eq 3 ]
+elif [ ${INPUT} -eq 2 ]
 then
     # Use Native Moment Preserving data
     NAME="moments"
@@ -88,15 +81,36 @@ then
     INFO="sim_info_${ENERGY}_0.9"
     MAT="mat_${ELEMENT}_native_${INTERP}.xml"
     echo "Using Native Moment Preserving data!"
-else
-    # Default to ACE data
+elif [ ${INPUT} -eq 3 ]
+then
+    # Use ACE EPR14 data
+    CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA
+    NAME="epr14"
+    SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
+    python sim_info.py ${SIM_PARAMETERS}
+    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
+    INFO="sim_info_${ENERGY}_1.0"
+    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
+    echo "Using ACE data!"
+elif [ ${INPUT} -eq 4 ]
+then
+    # Use ACE EPR12 data
     NAME="ace"
     SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
     python sim_info.py ${SIM_PARAMETERS}
     python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
     INFO="sim_info_${ENERGY}_1.0"
     MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
-    echo "Input not valid, ACE data will be used!"
+    echo "Using ACE data!"
+else
+    # Default to Native data
+    NAME="native"
+    SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
+    python sim_info.py ${SIM_PARAMETERS}
+    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
+    INFO="sim_info_${ENERGY}_1.0"
+    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
+    echo "Input not valid, Native data will be used!"
 fi
 
 NAME_EXTENTION=""
@@ -109,23 +123,25 @@ if [ "${UNIT_BASED_ON}" = "false" ]
 then
     NAME_EXTENTION="${NAME_EXTENTION}_exact"
 fi
+
+NAME_REACTION=""
 if [ "${ELASTIC_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_elastic"
+    NAME_REACTION="${NAME_REACTION}_no_elastic"
 fi
 if [ "${BREM_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_brem"
+    NAME_REACTION="${NAME_REACTION}_no_brem"
 fi
 if [ "${IONIZATION_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_ionization"
+    NAME_REACTION="${NAME_REACTION}_no_ionization"
 fi
 if [ "${EXCITATION_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_excitation"
+    NAME_REACTION="${NAME_REACTION}_no_excitation"
 fi
-INFO="${INFO}${NAME_EXTENTION}.xml"
+INFO="${INFO}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}.xml"
 
 # .xml file paths.
 python ../est.py -e ${ENERGY}
@@ -138,13 +154,13 @@ RSP="../rsp_fn.xml"
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
 
-if [ ${NAME} = "ace" ]
+if [ ${NAME} = "ace" -o ${NAME} = "epr14" ]
 then
-    NAME="al_${NAME}_${ENERGY_EV}${NAME_EXTENTION}"
-    DIR="results/ace/${TODAY}"
+    DIR="results/${NAME}/${TODAY}"
+    NAME="al_${NAME}_${ENERGY_EV}${NAME_REACTION}"
 else
-    NAME="al_${NAME}_${ENERGY_EV}_${INTERP}${NAME_EXTENTION}"
     DIR="results/${INTERP}/${TODAY}"
+    NAME="al_${NAME}_${ENERGY_EV}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}"
 fi
 
 mkdir -p $DIR

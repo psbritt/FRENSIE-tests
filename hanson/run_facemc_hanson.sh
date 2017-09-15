@@ -10,11 +10,12 @@
 ## The #/steradians can be changed to #/square degree by multiplying by
 ## (pi/180)^2.
 ## FRENSIE will be run with three variations.
-## 1. Using ACE data, which should match MCNP almost exactly.
-## 2. Using the Native data in analog mode, whcih uses a different interpolation
+## 1. Using the Native data in analog mode, whcih uses a different interpolation
 ## scheme than MCNP.
-## 3. Using Native data in moment preserving mode, which should give a less
+## 2. Using Native data in moment preserving mode, which should give a less
 ## acurate answer while decreasing run time.
+## 3. Using ACE (EPR14) data, which should match MCNP6.2 almost exactly.
+## 3. Using ACE (EPR12) data, which should match MCNP6.1 almost exactly.
 ##---------------------------------------------------------------------------##
 
 # Set cross_section.xml directory path.
@@ -143,14 +144,14 @@ RSP="../rsp_fn.xml"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
-echo ${NAME}
+
 if [ ${NAME} = "ace" -o ${NAME} = "epr14" ]
 then
     DIR="results/testrun/${NAME}"
     NAME="hanson_${NAME}${NAME_REACTION}"
 else
-    NAME="hanson_${NAME}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}"
     DIR="results/testrun/${INTERP}"
+    NAME="hanson_${NAME}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}"
 fi
 
 mkdir -p $DIR
@@ -158,8 +159,8 @@ mkdir -p $DIR
 echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME} --threads=${THREADS}"
 echo ${RUN}
-#gdb -ex=r --args ${RUN}
-${RUN} > ${DIR}/${NAME}.txt 2>&1
+#gdb --args ${RUN}
+${RUN} > ${DIR}/${NAME}.txt #2>&1
 
 echo "Removing old xml files:"
 rm ${INFO} ${MAT} ElementTree_pretty.pyc

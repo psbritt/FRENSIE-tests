@@ -30,6 +30,8 @@ filename = "{" + element_symbol
 
 if file_type == "ace":
   filename += "}"
+elif file_type == "epr14":
+  filename += "_v14}"
 elif interp == "logloglog":
   filename += "-Native}"
 elif interp == "linlinlog":

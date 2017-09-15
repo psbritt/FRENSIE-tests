@@ -79,9 +79,7 @@ ET.SubElement(parameter_1, "Parameter", name="Histories", type="unsigned int", v
 parameter_2 = ET.SubElement(root, "ParameterList", name="Electron Properties")
 
 ET.SubElement(parameter_2, "Parameter", name="Max Electron Energy", type="double", value=str(energy))
-
 ET.SubElement(parameter_2, "Parameter", name="Elastic Cutoff Angle Cosine", type="double", value=str(cutoff_cosine) )
-
 ET.SubElement(parameter_2, "Parameter", name="Electron Atomic Relaxation", type="bool", value="true" )
 
 ET.SubElement(parameter_2, "Parameter", name="Electron Elastic", type="bool", value=elastic_bool )
