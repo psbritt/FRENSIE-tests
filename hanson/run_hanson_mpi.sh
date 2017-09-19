@@ -29,8 +29,8 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
-CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/lkersting/mcnpdata/
+#CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA/
 FRENSIE=/home/lkersting/frensie
 
 INPUT="1"
@@ -152,11 +152,11 @@ TODAY=$(date +%Y-%m-%d)
 
 if [ ${NAME} = "ace" ] || [ ${NAME} = "epr14" ];
 then
-    NAME="hanson_${NAME}${NAME_EXTENTION}"
     DIR="results/${NAME}/${TODAY}"
+    NAME="hanson_${NAME}${NAME_EXTENTION}"
 else
-    NAME="hanson_${NAME}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}"
     DIR="results/${INTERP}/${TODAY}"
+    NAME="hanson_${NAME}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}"
 fi
 
 mkdir -p $DIR

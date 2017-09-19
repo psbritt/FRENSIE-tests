@@ -20,9 +20,8 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
-#CROSS_SECTION_XML_PATH=/home/ecmartin3/software/mcnpdata/
-#FRENSIE=/home/lkersting/research/frensie-repos/lkersting
+#CROSS_SECTION_XML_PATH=/home/lkersting/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA
 FRENSIE=/home/lkersting/frensie
 
 THREADS="12"
@@ -77,7 +76,6 @@ then
 elif [ ${INPUT} -eq 3 ]
 then
     # Use ACE EPR14 data
-    CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA
     NAME="epr14"
     SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
     python sim_info.py ${SIM_PARAMETERS}

@@ -17,42 +17,54 @@ done
 
 epr="../../bin/epr_generator"
 if [ -d "$cross_section_directory" ]; then
-    
-    # Update Gold LogLogLog data
-    printf "Updating the Au LogLogLog native test data...\n"
-    $epr --cross_sec_dir=$cross_section_directory --cross_sec_alias=Au --min_photon_energy=1e-3 --max_photon_energy=20.0 --min_electron_energy=1e-5 --max_electron_energy=1e5 --occupation_num_tol=1e-3 --subshell_incoherent_tol=1e-3 --grid_convergence_tol=1e-3 --grid_absolute_diff_tol=1e-80 --grid_absolute_dist_tol=1e-18 --tabular_evaluation_tol=1e-15 --cutoff_angle_cosine=0.9 --number_of_moment_preserving_angles=2.0 --electron_interp_policy="Log-Log-Log" --modify_cs_xml_file --subdir="native" --output_alias="Native" --notes="$notes"
-    if [ $? -eq 0 ]
-    then
-        printf "Au native log-log-log data updated successfully!\n\n"
-    else
-        printf "Au native log-log-log data FAILED to update!\n"
-        exit 1
-    fi
-    
-    # Update Gold LinLinLin data
-    printf "Updating the Au LinLinLin native test data...\n"
-    $epr --cross_sec_dir=$cross_section_directory --cross_sec_alias=Au --min_photon_energy=1e-3 --max_photon_energy=20.0 --min_electron_energy=1e-5 --max_electron_energy=1e5 --occupation_num_tol=1e-3 --subshell_incoherent_tol=1e-3 --grid_convergence_tol=1e-3 --grid_absolute_diff_tol=1e-80 --grid_absolute_dist_tol=1e-18 --tabular_evaluation_tol=1e-15 --cutoff_angle_cosine=0.9 --number_of_moment_preserving_angles=2.0 --electron_interp_policy="Lin-Lin-Lin" --modify_cs_xml_file --subdir="native/linlinlin" --output_alias="LinLinLin" --notes="$notes"
-    if [ $? -eq 0 ]
-    then
-        printf "Au native lin-lin-lin data updated successfully!\n\n"
-    else
-        printf "Au native lin-lin-lin data FAILED to update!\n"
-        exit 1
-    fi
 
-    # Update Gold LinLinLog data
-    printf "Updating the Au LinLinLog native test data...\n"
-    $epr --cross_sec_dir=$cross_section_directory --cross_sec_alias=Au --min_photon_energy=1e-3 --max_photon_energy=20.0 --min_electron_energy=1e-5 --max_electron_energy=1e5 --occupation_num_tol=1e-3 --subshell_incoherent_tol=1e-3 --grid_convergence_tol=1e-3 --grid_absolute_diff_tol=1e-80 --grid_absolute_dist_tol=1e-18 --tabular_evaluation_tol=1e-15 --cutoff_angle_cosine=0.9 --number_of_moment_preserving_angles=2.0 --electron_interp_policy="Lin-Lin-Log" --modify_cs_xml_file --subdir="native/linlinlog" --output_alias="LinLinLog" --notes="$notes"
-    if [ $? -eq 0 ]
-    then
-        printf "Au native lin-lin-log data updated successfully!\n\n"
+    if [ -d "$cross_section_directory/native" ]; then
+        # Update Gold LogLogLog data
+        printf "Updating the Au LogLogLog native test data...\n"
+        $epr --cross_sec_dir=$cross_section_directory --cross_sec_alias=Au --min_photon_energy=1e-3 --max_photon_energy=20.0 --min_electron_energy=1e-5 --max_electron_energy=1e5 --occupation_num_tol=1e-3 --subshell_incoherent_tol=1e-3 --grid_convergence_tol=1e-3 --grid_absolute_diff_tol=1e-80 --grid_absolute_dist_tol=1e-18 --tabular_evaluation_tol=1e-15 --cutoff_angle_cosine=0.9 --number_of_moment_preserving_angles=2.0 --electron_interp_policy="Log-Log-Log" --modify_cs_xml_file --subdir="native" --output_alias="Native" --notes="$notes"
+        if [ $? -eq 0 ]
+        then
+            printf "Au native log-log-log data updated successfully!\n\n"
+        else
+            printf "Au native log-log-log data FAILED to update!\n"
+            exit 1
+        fi
     else
-        printf "Au native lin-lin-log data FAILED to update!\n"
-        exit 1
-    fi
+        printf "\nERROR: Subdirectory $cross_section_directory/native/ does not exist!\n"
+        printf "create the subdirectory before updating file!\n"
+
+    if [ -d "$cross_section_directory/native/linlinlin" ]; then
+    # Update Gold LinLinLin data
+        printf "Updating the Au LinLinLin native test data...\n"
+        $epr --cross_sec_dir=$cross_section_directory --cross_sec_alias=Au --min_photon_energy=1e-3 --max_photon_energy=20.0 --min_electron_energy=1e-5 --max_electron_energy=1e5 --occupation_num_tol=1e-3 --subshell_incoherent_tol=1e-3 --grid_convergence_tol=1e-3 --grid_absolute_diff_tol=1e-80 --grid_absolute_dist_tol=1e-18 --tabular_evaluation_tol=1e-15 --cutoff_angle_cosine=0.9 --number_of_moment_preserving_angles=2.0 --electron_interp_policy="Lin-Lin-Lin" --modify_cs_xml_file --subdir="native/linlinlin" --output_alias="LinLinLin" --notes="$notes"
+        if [ $? -eq 0 ]
+        then
+            printf "Au native lin-lin-lin data updated successfully!\n\n"
+        else
+            printf "Au native lin-lin-lin data FAILED to update!\n"
+            exit 1
+        fi
+    else
+        printf "\nERROR: Subdirectory $cross_section_directory/native/linlinlin does not exist!\n"
+        printf "create the subdirectory before updating file!\n"
+
+    if [ -d "$cross_section_directory/native/linlinlog" ]; then
+        # Update Gold LinLinLog data
+        printf "Updating the Au LinLinLog native test data...\n"
+        $epr --cross_sec_dir=$cross_section_directory --cross_sec_alias=Au --min_photon_energy=1e-3 --max_photon_energy=20.0 --min_electron_energy=1e-5 --max_electron_energy=1e5 --occupation_num_tol=1e-3 --subshell_incoherent_tol=1e-3 --grid_convergence_tol=1e-3 --grid_absolute_diff_tol=1e-80 --grid_absolute_dist_tol=1e-18 --tabular_evaluation_tol=1e-15 --cutoff_angle_cosine=0.9 --number_of_moment_preserving_angles=2.0 --electron_interp_policy="Lin-Lin-Log" --modify_cs_xml_file --subdir="native/linlinlog" --output_alias="LinLinLog" --notes="$notes"
+        if [ $? -eq 0 ]
+        then
+            printf "Au native lin-lin-log data updated successfully!\n\n"
+        else
+            printf "Au native lin-lin-log data FAILED to update!\n"
+            exit 1
+        fi
+    else
+        printf "\nERROR: Subdirectory $cross_section_directory/native/linlinlog does not exist!\n"
+        printf "create the subdirectory before updating file!\n"
 
 else
-    printf "\nERROR: Invalid cross section directory!\n"
+    printf "\nERROR: Directory $cross_section_directory does not exist!\n"
     printf "  update_test_files.sh -d cross_sectin_directory\n\n"
 fi
 
