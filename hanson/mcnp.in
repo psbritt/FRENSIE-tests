@@ -88,17 +88,13 @@ c Cell track length flux for additional verification
 F4:e  10
 E4 1.5e-5 99ilog 15.7
 c
-c Cell track length flux of photons for additional verification
-F14:p  10
-E14 1.5e-5 99ilog 15.7
-c
 dbcn 17j 2 $ Turn on analog mode
 c
 CUT:P J 1e-3 $ Set photon cutoff to 1e-3 MeV
 CUT:E J 1.5e-05 $ Set electron cutoff to 15 eV
 c
-c Max energy, p's make e's, e's make p's, brem dist, skip 10, analog start energy
-PHYS:E 15.7 1 1 1 10J 20.0
+c Max energy, p's don't make e's, e's don't make p's, simple brem dist, skip 8, full elastic, skip 1 analog start energy
+PHYS:E 15.7 1 1 1 8J -1 J 20.0
 c
 prdmp  j  1e7  1   1
 
