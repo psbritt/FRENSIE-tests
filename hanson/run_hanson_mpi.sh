@@ -153,7 +153,7 @@ TODAY=$(date +%Y-%m-%d)
 if [ ${NAME} = "ace" ] || [ ${NAME} = "epr14" ];
 then
     DIR="results/${NAME}/${TODAY}"
-    NAME="hanson_${NAME}${NAME_EXTENTION}"
+    NAME="hanson_${NAME}${NAME_REACTION}"
 else
     DIR="results/${INTERP}/${TODAY}"
     NAME="hanson_${NAME}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}"
