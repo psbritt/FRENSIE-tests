@@ -71,15 +71,16 @@ if user_args.e:
     x = map(float, exp_x)
     y = map(float, exp_y)
     yerr = map(float, exp_error)
-    plt.errorbar(x, y, yerr=yerr, label="Hanson", fmt="o" )
+    plt.errorbar(x, y, yerr=yerr, label="Hanson", fmt="s", markersize=5 )
 
 
-markers = ["v","s","+","x","^","<",">","1","2","3","4","8","p","P","*","h","H","X","D","d"]
+markers = ["v","o","+","x","^","<",">","1","2","3","4","8","p","P","*","h","H","X","D","d"]
+markerssizes = [6,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
 for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
     yerr = map(float, data_error[n])
-    plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n] )
+    plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n] )
 plt.legend(loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
