@@ -32,7 +32,7 @@ if [ -d "$cross_section_directory" ]; then
     else
         printf "\nERROR: Subdirectory $cross_section_directory/native/ does not exist!\n"
         printf "create the subdirectory before updating file!\n"
-
+    fi
     if [ -d "$cross_section_directory/native/linlinlin" ]; then
     # Update Gold LinLinLin data
         printf "Updating the Au LinLinLin native test data...\n"
@@ -47,7 +47,7 @@ if [ -d "$cross_section_directory" ]; then
     else
         printf "\nERROR: Subdirectory $cross_section_directory/native/linlinlin does not exist!\n"
         printf "create the subdirectory before updating file!\n"
-
+    fi
     if [ -d "$cross_section_directory/native/linlinlog" ]; then
         # Update Gold LinLinLog data
         printf "Updating the Au LinLinLog native test data...\n"
@@ -62,7 +62,7 @@ if [ -d "$cross_section_directory" ]; then
     else
         printf "\nERROR: Subdirectory $cross_section_directory/native/linlinlog does not exist!\n"
         printf "create the subdirectory before updating file!\n"
-
+    fi
 else
     printf "\nERROR: Directory $cross_section_directory does not exist!\n"
     printf "  update_test_files.sh -d cross_sectin_directory\n\n"

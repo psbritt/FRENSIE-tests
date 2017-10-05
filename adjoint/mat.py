@@ -12,10 +12,10 @@ parser = ap.ArgumentParser(description=description)
 element_msg = "the elemental symbol (ie: H, He, Al, Pb ). Must be properly capitalized (ie: Al not al or AL"
 parser.add_argument('-n', help=element_msg, required=True)
 
-file_type_msg = "the file type (ace, epr14 or native )"
+file_type_msg = "the file type (ace or native )"
 parser.add_argument('-t', help=file_type_msg, required=True)
 
-file_type_msg = "the 2D electron interpolation ( logloglog, linlinlin or linlinlog)"
+file_type_msg = "the 2D electron interpolation ( logloglog, linlinlin or loglinlin)"
 parser.add_argument('-i', help=file_type_msg, required=True)
 
 
@@ -35,9 +35,9 @@ elif file_type == "epr14":
 elif interp == "logloglog":
   filename += "-Native}"
 elif interp == "linlinlog":
-  filename += "-LinLinLog}"
+  filename += "-Native}"
 elif interp == "linlinlin":
-  filename += "-LinLinLin}"
+  filename += "-Native}"
 
 root = ET.Element("ParameterList", name="Materials")
 
@@ -48,4 +48,3 @@ ET.SubElement(parameter_1, "Parameter", name="Fractions", type="Array", value="{
 ET.SubElement(parameter_1, "Parameter", name="Isotopes", type="Array(string)", value=filename)
 
 prettify(root,name)
-print name

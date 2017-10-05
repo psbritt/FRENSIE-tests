@@ -4,8 +4,7 @@ import xml.etree.ElementTree as ET
 from ElementTree_pretty import prettify
 
 # Set up the argument parser
-description = "This script allows one to write the sim_info.xml file for FACEMC. "\
-              "The input parameter is the source energy."
+description = "This script allows one to write the sim_info.xml file for FACEMC."
 
 parser = ap.ArgumentParser(description=description)
 

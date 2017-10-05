@@ -2,20 +2,7 @@
 ##---------------------------------------------------------------------------##
 ## FACEMC test runner
 ##---------------------------------------------------------------------------##
-## Validation runs comparing FRENSIE and MCNP.
-## The electron angular distribution for a thin gold foil of .0009658 cm.
-## The # of particles per steradian for scattering angle is found by dividing
-## the surface current by 2pi * ( \mu_{i} - \mu_{i-1} ) where \mu_{0} is the
-## lowest cosine bin (ie: -1). Surface current is needed so DagMC will be used.
-## The #/steradians can be changed to #/square degree by multiplying by
-## (pi/180)^2.
-## FRENSIE will be run with three variations.
-## 1. Using the Native data in analog mode, whcih uses a different interpolation
-## scheme than MCNP.
-## 2. Using Native data in moment preserving mode, which should give a less
-## acurate answer while decreasing run time.
-## 3. Using ACE (EPR14) data, which should match MCNP6.2 almost exactly.
-## 3. Using ACE (EPR12) data, which should match MCNP6.1 almost exactly.
+## Validation runs comparing FRENSIE Forward with Adjoint.
 ##---------------------------------------------------------------------------##
 
 # Set cross_section.xml directory path.
@@ -32,6 +19,10 @@ then
 fi
 
 # Changing variables
+# Material element
+ELEMENT="H"
+# Delta source energy
+ENERGY="1.0"
 # Number of histories
 HISTORIES="100"
 # Turn certain reactions on (true/false)
@@ -48,13 +39,11 @@ DISTRIBUTION="Hybrid"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
 COUPLED_SAMPLING="Simplified"
 
-ELEMENT="Au"
-ENERGY="15.7"
 NAME="native"
 
 ELASTIC="-d ${DISTRIBUTION} -c ${COUPLED_SAMPLING}"
 REACTIONS="-t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
-SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${INTERP} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS} ${ELASTIC}"
+SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS} ${ELASTIC}"
 
 echo -n "Enter the desired data type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12) > "
 read INPUT
@@ -110,7 +99,7 @@ then
 fi
 
 # .xml file paths.
-INFO=$(python ../sim_info.py ${SIM_PARAMETERS} 2>&1)
+INFO=$(python ../adjoint_sim_info.py ${SIM_PARAMETERS} 2>&1)
 MAT=$(python ../mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP} 2>&1)
 SOURCE="source.xml"
 EST="est.xml"
@@ -151,3 +140,4 @@ cd ${DIR}
 
 bash ../../../data_processor.sh ${NAME}
 echo "Results will be in ./${DIR}"
+
