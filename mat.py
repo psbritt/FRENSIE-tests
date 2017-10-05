@@ -12,10 +12,10 @@ parser = ap.ArgumentParser(description=description)
 element_msg = "the elemental symbol (ie: H, He, Al, Pb ). Must be properly capitalized (ie: Al not al or AL"
 parser.add_argument('-n', help=element_msg, required=True)
 
-file_type_msg = "the file type (ace or native )"
+file_type_msg = "the file type (ace, epr14 or native )"
 parser.add_argument('-t', help=file_type_msg, required=True)
 
-file_type_msg = "the 2D electron interpolation ( logloglog, linlinlin or loglinlin)"
+file_type_msg = "the 2D electron interpolation ( logloglog, linlinlin or linlinlog)"
 parser.add_argument('-i', help=file_type_msg, required=True)
 
 
@@ -48,3 +48,4 @@ ET.SubElement(parameter_1, "Parameter", name="Fractions", type="Array", value="{
 ET.SubElement(parameter_1, "Parameter", name="Isotopes", type="Array(string)", value=filename)
 
 prettify(root,name)
+print name
