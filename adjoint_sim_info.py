@@ -14,9 +14,6 @@ parser.add_argument('-e', help=energy_msg, required=True)
 history_msg = "the number of histories as an int (ie: 1000 not 1e-4)"
 parser.add_argument('-n', help=history_msg, required=True)
 
-cutoff_msg = "the cutoff angle cosine"
-parser.add_argument('-c', help=cutoff_msg, required=True)
-
 sampling_msg = "correlated electron sampling on (true/false)"
 parser.add_argument('-s', help=sampling_msg, required=True)
 
@@ -78,12 +75,12 @@ else:
         name+="_coupled"
         if couled_sampling_method == "1D":
             name+="_1D"
-            couled_sampling_method = "One D Union"
+            couled_sampling_method == "One D Union"
         elif couled_sampling_method == "2D":
             name+="_2D"
-            couled_sampling_method = "Two D Union"
+            couled_sampling_method == "Two D Union"
         else:
-            couled_sampling_method = "Simplified Union"
+            couled_sampling_method == "Simplified Union"
     elif elastic_distribution == "Hybrid":
         name+="_0.9"
         cutoff_cosine = 0.9
@@ -101,7 +98,7 @@ root = ET.Element("ParameterList", name="Simulation Info")
 
 parameter_1 = ET.SubElement(root, "ParameterList", name="General Properties")
 
-ET.SubElement(parameter_1, "Parameter", name="Mode", type="string", value="Adjoint Electron")
+ET.SubElement(parameter_1, "Parameter", name="Mode", type="string", value="Adjoint-Electron")
 
 ET.SubElement(parameter_1, "Parameter", name="Histories", type="unsigned int", value=number_of_histories)
 
@@ -120,10 +117,8 @@ if elastic_bool:
   ET.SubElement(parameter_2, "Parameter", name="Adjoint Elastic Cutoff Angle Cosine", type="double", value=str(cutoff_cosine) )
   ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Elastic Distribution", type="string", value=elastic_distribution )
 
-  if( elastic_distribution == "Coupled" )
-  {
+  if( elastic_distribution == "Coupled" ):
     ET.SubElement(parameter_2, "Parameter", name="Adjoint Coupled Elastic Sampling Method", type="string", value=couled_sampling_method )
-}
 
 ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Bremsstrahlung", type="bool", value=brem_bool )
 ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Electroionization", type="bool", value=ionization_bool )

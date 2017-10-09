@@ -39,7 +39,7 @@ BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
-LINLINLOG_ON="false"
+LINLINLOG_ON="true"
 CORRELATED_ON="true"
 UNIT_BASED_ON="false"
 
@@ -171,7 +171,9 @@ fi
 echo "Running Facemc H spheres test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME} --threads=${THREADS}"
 echo ${RUN}
-${RUN} > ${DIR}/${NAME}.txt 2>&1
+
+${RUN}
+#gdb --args ${RUN}
 
 echo "Removing old xml files:"
 rm ${INFO} ${EST} ${SOURCE} ${MAT} ${GEOM} ElementTree_pretty.pyc

@@ -21,8 +21,8 @@ fi
 # Changing variables
 # Material element
 ELEMENT="H"
-# Delta source energy
-ENERGY="1.0"
+# Delta source energy in MeV ( 0.001, 0.01, 0.1)
+ENERGY="0.001"
 # Number of histories
 HISTORIES="100"
 # Turn certain reactions on (true/false)
@@ -38,6 +38,8 @@ UNIT_BASED_ON="false"
 DISTRIBUTION="Hybrid"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
 COUPLED_SAMPLING="Simplified"
+# The Geometry package (ROOT or DAGMC)
+GEOMETRY="ROOT"
 
 NAME="native"
 
@@ -45,26 +47,14 @@ ELASTIC="-d ${DISTRIBUTION} -c ${COUPLED_SAMPLING}"
 REACTIONS="-t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
 SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS} ${ELASTIC}"
 
-echo -n "Enter the desired data type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12) > "
-read INPUT
-if [ ${INPUT} -eq 2 ]
-then
-    # Use ACE EPR14 data
-    NAME="epr14"
-    echo "Using ACE EPR14 data!"
-elif [ ${INPUT} -eq 3 ]
-then
-    # Use ACE EPR12 data
-    NAME="ace"
-    echo "Using ACE EPR12 data!"
-elif [ ${DISTRIBUTION} = "Hybrid" ]
+if [ ${DISTRIBUTION} = "Hybrid" ]
 then
     # Use Native moment preserving data
     NAME="moments"
-    echo "Using Native Moment Preserving data!"
+    echo "Using Native Moment Preserving adjoint data!"
 else
     # Use Native analog data
-    echo "Using Native analog data!"
+    echo "Using Native analog adjoint data!"
 fi
 
 NAME_EXTENTION=""
@@ -101,22 +91,16 @@ fi
 # .xml file paths.
 INFO=$(python ../adjoint_sim_info.py ${SIM_PARAMETERS} 2>&1)
 MAT=$(python ../mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP} 2>&1)
-SOURCE="source.xml"
-EST="est.xml"
-GEOM="geom.xml"
+SOURCE=$(python ./source.py -e ${ENERGY} 2>&1)
+EST=$(python ./est.py -e ${ENERGY} -t ${GEOMETRY} 2>&1)
+GEOM=$(python ./geom.py -t ${GEOMETRY} 2>&1)
 RSP="../rsp_fn.xml"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
 
-if [ ${NAME} = "ace" -o ${NAME} = "epr14" ]
-then
-    DIR="results/testrun/${NAME}"
-    NAME="hanson_${NAME}${NAME_REACTION}"
-else
-    DIR="results/testrun/${INTERP}"
-    NAME="hanson_${NAME}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}"
-fi
+DIR="results/testrun/${INTERP}"
+NAME="hanson_${NAME}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}"
 
 mkdir -p $DIR
 
@@ -126,18 +110,18 @@ echo ${RUN}
 #gdb --args ${RUN}
 ${RUN}
 
-echo "Removing old xml files:"
-rm ${INFO} ${MAT} ElementTree_pretty.pyc
+# echo "Removing old xml files:"
+# #rm ${INFO} ${MAT} ElementTree_pretty.pyc
 
-echo "Processing the results:"
-H5=${NAME}.h5
-NEW_NAME="${DIR}/${H5}"
-NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
-mv ${H5} ${NEW_NAME}
-mv continue_run.xml ${NEW_RUN_INFO}
+# echo "Processing the results:"
+# H5=${NAME}.h5
+# NEW_NAME="${DIR}/${H5}"
+# NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
+# mv ${H5} ${NEW_NAME}
+# mv continue_run.xml ${NEW_RUN_INFO}
 
-cd ${DIR}
+# #cd ${DIR}
 
-bash ../../../data_processor.sh ${NAME}
-echo "Results will be in ./${DIR}"
+# #bash ../../../data_processor.sh ${NAME}
+# echo "Results will be in ./${DIR}"
 

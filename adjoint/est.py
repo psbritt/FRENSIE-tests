@@ -9,82 +9,87 @@ description = "This script allows one to write the est.xml file for FACEMC."\
 
 parser = ap.ArgumentParser(description=description)
 
+energy_msg = "The source energy (in MeV)"
+parser.add_argument('-e', help=energy_msg, required=True)
+
 geom_type_msg = "the geometry type (DagMC, ROOT)"
 parser.add_argument('-t', help=geom_type_msg, required=False)
 
 # Parse the user's arguments
 user_args = parser.parse_args()
-geom_type = user_args.t
+energy = user_args.e
+
+geom_type = "DagMC"
+if user_args.t:
+    geom_type = user_args.t
+
+# Set xml file name
+name = "est_"+str(energy)
+
+# assume energy is 0.01 MeV
+bins = "{ 1e-5,5e-5, 198i, 1e-2}"
+if energy == ".001" or energy == "0.001":
+    bins = "{ 1e-5, 197i, 1e-3}"
+if energy == ".1" or energy == "0.1":
+    bins = "{ 1e-5, 1e-4, 5e-4, 198i, 1e-1}"
 
 root = ET.Element("ParameterList", name="Estimators")
 
-# Transmission Tally
-# assume geom type is DagMC
-tally = "Surface Current"
-tally_type = "Surfaces"
-tally_vols = "{6}"
+if geom_type == "DagMC":
 
-if geom_type == "ROOT":
+    # Flux on sphere surfaces
+    tally = "Surface Flux"
+
+    parameter_1 = ET.SubElement(root, "ParameterList", name="Flux on sphere surfaces")
+
+    ET.SubElement(parameter_1, "Parameter", name="Id", type="unsigned int", value="2")
+    ET.SubElement(parameter_1, "Parameter", name="Type", type="string", value=tally)
+    ET.SubElement(parameter_1, "Parameter", name="Particle Type", type="string", value="Adjoint Electron")
+
+    sub_list_1 = ET.SubElement(parameter_1, "ParameterList", name="Bins")
+    ET.SubElement(sub_list_1, "Parameter", name="Energy Bins", type="Array", value=bins)
+
+    tally = "Surface Current"
+
+    parameter_2 = ET.SubElement(root, "ParameterList", name="Current on sphere surfaces")
+
+    ET.SubElement(parameter_2, "Parameter", name="Id", type="unsigned int", value="3")
+    ET.SubElement(parameter_2, "Parameter", name="Type", type="string", value=tally)
+    ET.SubElement(parameter_2, "Parameter", name="Particle Type", type="string", value="Adjoint Electron")
+    #ET.SubElement(parameter_2, "Parameter", name=tally_type, type="Array", value=tally_vols)
+
+    sub_list_2 = ET.SubElement(parameter_2, "ParameterList", name="Bins")
+    ET.SubElement(sub_list_2, "Parameter", name="Energy Bins", type="Array", value=bins)
+
+    # Track Length Flux in Sphere
+    tally = "Cell Track-Length Flux"
+
+    parameter_3 = ET.SubElement(root, "ParameterList", name="Track Length Flux in Sphere")
+
+    ET.SubElement(parameter_3, "Parameter", name="Id", type="unsigned int", value="1")
+    ET.SubElement(parameter_3, "Parameter", name="Type", type="string", value=tally)
+    ET.SubElement(parameter_3, "Parameter", name="Particle Type", type="string", value="Adjoint Electron")
+    sub_list_3 = ET.SubElement(parameter_3, "ParameterList", name="Bins")
+    ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value=bins)
+
+    # Pulse Height in Sphere
     tally = "Cell Pulse Height"
-    tally_type = "Cells"
-    tally_vols = "{2}"
 
-parameter_1 = ET.SubElement(root, "ParameterList", name="Transmission Current")
+else:
+    # Track Length Flux in Sphere
+    tally = "Cell Track-Length Flux"
+    name += "_root"
 
-ET.SubElement(parameter_1, "Parameter", name="Id", type="unsigned int", value="1")
-ET.SubElement(parameter_1, "Parameter", name="Type", type="string", value=tally)
-ET.SubElement(parameter_1, "Parameter", name="Particle Type", type="string", value="Electron")
-ET.SubElement(parameter_1, "Parameter", name=tally_type, type="Array", value=tally_vols)
+    parameter_3 = ET.SubElement(root, "ParameterList", name="Track Length Flux in Sphere")
 
-sub_list_1 = ET.SubElement(parameter_1, "ParameterList", name="Bins")
-ET.SubElement(sub_list_1, "Parameter", name="Cosine Bins", type="Array", value="{\
--1.0,\
- 0.0,\
- 0.939692620785908,\
- 0.965925826289068,\
- 0.984807753012208,\
- 0.990268068741570,\
- 0.994521895368273,\
- 0.995396198367179,\
- 0.996194698091746,\
- 0.996917333733128,\
- 0.997564050259824,\
- 0.998134798421867,\
- 0.998629534754574,\
- 0.999048221581858,\
- 0.999390827019096,\
- 0.999657324975557,\
- 0.999847695156391,\
- 0.999961923064171,\
- 1.0}")
+    ET.SubElement(parameter_3, "Parameter", name="Id", type="unsigned int", value="1")
+    ET.SubElement(parameter_3, "Parameter", name="Type", type="string", value=tally)
+    ET.SubElement(parameter_3, "Parameter", name="Particle Type", type="string", value="Adjoint Electron")
+    ET.SubElement(parameter_3, "Parameter", name="Cells", type="Array", value="{1}")
 
-# Reflection Tally
-tally_vols = "{4}"
-if geom_type == "ROOT":
-    tally_vols = "{3}"
+    sub_list_3 = ET.SubElement(parameter_3, "ParameterList", name="Bins")
+    ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value=bins)
 
-parameter_2 = ET.SubElement(root, "ParameterList", name="Reflection Current")
-
-ET.SubElement(parameter_2, "Parameter", name="Id", type="unsigned int", value="2")
-ET.SubElement(parameter_2, "Parameter", name="Type", type="string", value=tally)
-ET.SubElement(parameter_2, "Parameter", name="Particle Type", type="string", value="Electron")
-ET.SubElement(parameter_2, "Parameter", name=tally_type, type="Array", value=tally_vols)
-
-sub_list_2 = ET.SubElement(parameter_2, "ParameterList", name="Bins")
-ET.SubElement(sub_list_2, "Parameter", name="Cosine Bins", type="Array", value="{-1.0, -0.999999, 1.0}")
-
-
-# Reflection Tally
-parameter_3 = ET.SubElement(root, "ParameterList", name="Cell Track Length Flux Estimator")
-
-ET.SubElement(parameter_3, "Parameter", name="Id", type="unsigned int", value="3")
-ET.SubElement(parameter_3, "Parameter", name="Type", type="string", value="Cell Track-Length Flux")
-ET.SubElement(parameter_3, "Parameter", name="Particle Type", type="string", value="Electron")
-ET.SubElement(parameter_3, "Parameter", name="Cells", type="Array", value="{1}")
-
-sub_list_3 = ET.SubElement(parameter_3, "ParameterList", name="Bins")
-ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value="{1.5e-5, 99l, 15.7")
-
-
-prettify(root,"est.xml")
-
+name +=".xml"
+prettify(root,name)
+print name
