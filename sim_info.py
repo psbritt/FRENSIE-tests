@@ -66,7 +66,7 @@ elastic_distribution = user_args.d
 couled_sampling_method = user_args.c
 
 # Set xml file name
-name = "sim_info_"+interp
+name = "sim_info_"+interp+"_"+energy
 if correlated_bool == "false":
     name += "_stochastic"
 if unit_based_bool == "false":
@@ -79,12 +79,12 @@ else:
         name+="_coupled"
         if couled_sampling_method == "1D":
             name+="_1D"
-            couled_sampling_method == "One D Union"
+            couled_sampling_method = "One D Union"
         elif couled_sampling_method == "2D":
             name+="_2D"
-            couled_sampling_method == "Two D Union"
+            couled_sampling_method = "Two D Union"
         else:
-            couled_sampling_method == "Simplified Union"
+            couled_sampling_method = "Simplified Union"
     elif elastic_distribution == "Hybrid":
         name+="_0.9"
         cutoff_cosine = 0.9

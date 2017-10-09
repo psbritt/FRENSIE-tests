@@ -110,18 +110,17 @@ echo ${RUN}
 #gdb --args ${RUN}
 ${RUN}
 
-# echo "Removing old xml files:"
-# #rm ${INFO} ${MAT} ElementTree_pretty.pyc
+echo "Removing old xml files:"
+rm ${INFO} ${MAT} ${EST} ${GEOM} ${SOURCE} ElementTree_pretty.pyc
 
-# echo "Processing the results:"
-# H5=${NAME}.h5
-# NEW_NAME="${DIR}/${H5}"
-# NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
-# mv ${H5} ${NEW_NAME}
-# mv continue_run.xml ${NEW_RUN_INFO}
+echo "Processing the results:"
+H5=${NAME}.h5
+NEW_NAME="${DIR}/${H5}"
+NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
+mv ${H5} ${NEW_NAME}
+mv continue_run.xml ${NEW_RUN_INFO}
 
-# #cd ${DIR}
+cd ${DIR}
 
-# #bash ../../../data_processor.sh ${NAME}
-# echo "Results will be in ./${DIR}"
-
+bash ../../../data_processor.sh ${NAME}
+echo "Results will be in ./${DIR}"

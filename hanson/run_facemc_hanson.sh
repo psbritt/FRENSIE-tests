@@ -22,8 +22,6 @@
 EXTRA_ARGS=$@
 #CROSS_SECTION_XML_PATH=/home/lkersting/mcnpdata/
 #CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA
-CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
-#FRENSIE=/home/lkersting/research/frensie-repos/lkersting/
 FRENSIE=/home/lkersting/frensie
 
 THREADS="12"
@@ -136,6 +134,7 @@ mkdir -p $DIR
 echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME} --threads=${THREADS}"
 echo ${RUN}
+
 #gdb --args ${RUN}
 #valgrind --tool=memcheck --leak-check=yes ${RUN}
 ${RUN}

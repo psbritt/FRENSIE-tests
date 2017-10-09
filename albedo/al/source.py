@@ -34,3 +34,4 @@ sub_list_2 = ET.SubElement(parameters, "ParameterList", name="Directional Distri
 ET.SubElement(sub_list_2, "Parameter", name="Direction", type="Array(double)", value="{1.0,0.0,0.0}")
 
 prettify(root,name)
+print name
