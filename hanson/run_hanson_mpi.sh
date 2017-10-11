@@ -50,7 +50,7 @@ BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
-CORRELATED_ON="false"
+CORRELATED_ON="true"
 UNIT_BASED_ON="true"
 INTERP="logloglog"
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
@@ -144,22 +144,22 @@ mkdir -p $DIR
 echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
 echo ${RUN}
-# #gdb -ex=r --args ${RUN}
-# ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
-# echo "Removing old xml files:"
-# rm ${INFO} ${MAT} ElementTree_pretty.pyc
+${RUN} > ${DIR}/${NAME}.txt 2>&1
+
+echo "Removing old xml files:"
+rm ${INFO} ${MAT} ElementTree_pretty.pyc
 
 
-# echo "Processing the results:"
-# # Move file to the test results folder
-# H5=${NAME}.h5
-# NEW_NAME="${DIR}/${H5}"
-# NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
-# mv ${H5} ${NEW_NAME}
-# mv continue_run.xml ${NEW_RUN_INFO}
+echo "Processing the results:"
+# Move file to the test results folder
+H5=${NAME}.h5
+NEW_NAME="${DIR}/${H5}"
+NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
+mv ${H5} ${NEW_NAME}
+mv continue_run.xml ${NEW_RUN_INFO}
 
-# cd ${DIR}
+cd ${DIR}
 
 # bash ../../../data_processor.sh ${NAME}
 echo "Results will be in ./${DIR}"
