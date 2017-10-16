@@ -21,7 +21,6 @@ parser.add_argument('-e', help=experimental_msg, action='store_true')
 output_msg = "The output file name."
 parser.add_argument('-o', help=output_msg, required=False)
 
-mcnp_msg = "MCNP #/square degree data .txt file"
 parser.add_argument("input_files", nargs='*')
 
 # Parse the user's arguments
@@ -56,8 +55,8 @@ plt.ylabel('#/Square Degrees', size=14)
 plt.title('$\mathrm{15.7\/MeV\/Electron\/Angular\/Distribution\/from\/a\/9.658\/\mu m\/Gold\/Foil}$', size=16)
 ax=plt.gca()
 
-plt.xlim(0.0,30.0)
-plt.ylim(-0.005,0.06)
+plt.xlim(0.0,10.0)
+plt.ylim(0.0,0.05)
 
 if user_args.e:
     # Get experimental data
