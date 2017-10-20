@@ -6,13 +6,16 @@
 EXTRA_ARGS=$@
 TESTING_DIR="/home/lkersting/frensie/frensie-tests"
 
-if [ "$#" -ne 1 ];
+if [ "$#" -ne 2 ];
 then
-    echo "The input file is required. $# arguments provided!"
-    echo "run:  ./data_processor.sh <file>"
+    echo "The energy and input file are required. $# arguments provided!"
+    echo "run:  ./data_processor.sh <energy> <file>"
 else
+    # Set Energy
+    Energy_MeV=$1
     # Set file name
-    FILE=$1
+    FILE=$2
+
 
     H5="${FILE}.h5"
     TL_FLUX="${FILE}_cell_flux"
@@ -22,6 +25,11 @@ else
         output=${FILE}_albedo.txt
         # Extract the surface current data
         ${TESTING_DIR}/edump.py -f $H5 -e 1 -i 4 -b Cosine > $output
+        # Remove extra data and add energy
+        sed -i '1s/.*/# Energy (keV)\tAlebdo\tError/' $output
+        sed -i '2,4d' $output
+        REPLACE="2s/1.0/$Energy_MeV/"
+        sed -i $REPLACE $output
 
         output=${TL_FLUX}.txt
         # Extract the surface current data

@@ -148,6 +148,5 @@ mv continue_run.xml ${NEW_RUN_INFO}
 
 cd ${DIR}
 
-bash ../../../data_processor.sh ${NAME}
+bash ../../../../data_processor.sh ${ENERGY} ${NAME}
 echo "Results will be in ./${DIR}"
-

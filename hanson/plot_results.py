@@ -90,5 +90,4 @@ if user_args.o:
 
 print "Plot outputted to: ",output
 fig.savefig(output, bbox_inches='tight')
-
-
+plt.show()
