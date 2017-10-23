@@ -32,5 +32,5 @@ ET.SubElement(parameters, "Parameter", name="Energy Distribution", type="Delta D
 
 ET.SubElement(parameters, "Parameter", name="Directionn", type="Array(double)", value="{1.0,0.0,0.0}")
 
-prettify(root,"name")
+prettify(root,name)
 print name
