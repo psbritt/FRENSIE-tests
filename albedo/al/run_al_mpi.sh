@@ -39,7 +39,7 @@ fi
 # Changing variables
 
 # Energy in MeV (.0093, .011, .0134, .0173, .0252, .0415, .0621, .0818, .102)
-ENERGY=".0093"
+ENERGY=".102"
 THREADS="160"
 ELEMENT="Al"
 # Number of histories 1e6
@@ -56,7 +56,7 @@ INTERP="logloglog"
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
 DISTRIBUTION="Coupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
-COUPLED_SAMPLING="Simplified"
+COUPLED_SAMPLING="2D"
 
 NAME="native"
 

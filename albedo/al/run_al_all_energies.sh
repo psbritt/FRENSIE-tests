@@ -10,8 +10,8 @@
 # energies to run for mpi
 energies=( .0093 .011 .0134 .0173 .0252 .0415 .0621 .0818 .102 )
 
-# file type (1 = ACE, 2 = Native, 3 = Moment Preserving)
-file_type=2
+# file type (1 = Native, 2 = EPR14, 3 = ACE)
+file_type=1
 
 # loop through energies and run mpi script
 for i in "${energies[@]}"
