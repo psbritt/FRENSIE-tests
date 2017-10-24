@@ -33,11 +33,11 @@ EXCITATION_ON="true"
 # Turn certain electron properties on (true/false)
 INTERP="logloglog"
 CORRELATED_ON="true"
-UNIT_BASED_ON="false"
+UNIT_BASED_ON="true"
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
-DISTRIBUTION="Hybrid"
+DISTRIBUTION="Coupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
-COUPLED_SAMPLING="Simplified"
+COUPLED_SAMPLING="2D"
 # The Geometry package (ROOT or DAGMC)
 GEOMETRY="ROOT"
 
@@ -91,11 +91,11 @@ fi
 # .xml file paths.
 INFO=$(python ../adjoint_sim_info.py ${SIM_PARAMETERS} 2>&1)
 MAT=$(python ../mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP} 2>&1)
-SOURCE=$(python ./source.py -e ${ENERGY} 2>&1)
-EST=$(python ./est.py -e ${ENERGY} -t ${GEOMETRY} 2>&1)
+SOURCE=$(python ./adjoint_source.py -d ${CROSS_SECTION_XML_PATH} -e ${ENERGY} 2>&1)
+EST=$(python ./adjoint_est.py -e ${ENERGY} -t ${GEOMETRY} 2>&1)
 GEOM=$(python ./geom.py -t ${GEOMETRY} 2>&1)
 RSP="../rsp_fn.xml"
-
+e
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
 
