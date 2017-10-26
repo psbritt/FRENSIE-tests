@@ -66,8 +66,8 @@ c Job Control
 c --------------------
 c run in photon-electron mode to get low energy physics
 mode p e
-c run for 1e7 histories
-nps 1e7
+c run for 1e8 histories
+nps 1e8
 c Surface current on front surface
 f11:e 100
 c11  0 0.939692620785908 0.965925826289068 0.984807753012208 &
