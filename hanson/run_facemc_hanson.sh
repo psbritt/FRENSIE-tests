@@ -39,10 +39,10 @@ ELASTIC_ON="true"
 BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
-# Turn certain electron properties on (true/false)
+# Two D Interp Policy (logloglog, linlinlin, linlinlog)
 INTERP="logloglog"
-CORRELATED_ON="true"
-UNIT_BASED_ON="false"
+# Two D Sampling Policy (correlated, exact, stochastic)
+SAMPLE="correlated"
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
 DISTRIBUTION="Decoupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
@@ -54,7 +54,7 @@ NAME="native"
 
 ELASTIC="-d ${DISTRIBUTION} -c ${COUPLED_SAMPLING}"
 REACTIONS="-t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
-SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${INTERP} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS} ${ELASTIC}"
+SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -s ${SAMPLE} -l ${INTERP} ${REACTIONS} ${ELASTIC}"
 
 echo -n "Enter the desired data type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12) > "
 read INPUT
@@ -100,16 +100,9 @@ if [ "${EXCITATION_ON}" = "false" ]
 then
     NAME_REACTION="${NAME_REACTION}_no_excitation"
 fi
-if [ "${CORRELATED_ON}" = "false" ]
-then
-    NAME_EXTENTION="${NAME_EXTENTION}_stochastic"
-fi
-if [ "${UNIT_BASED_ON}" = "false" ]
-then
-    NAME_EXTENTION="${NAME_EXTENTION}_exact"
-fi
 
 # .xml file paths.
+echo ${SIM_PARAMETERS}
 INFO=$(python ../sim_info.py ${SIM_PARAMETERS} 2>&1)
 MAT=$(python ../mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP} 2>&1)
 SOURCE="source.xml"
@@ -126,7 +119,7 @@ then
     NAME="hanson_${NAME}${NAME_REACTION}"
 else
     DIR="results/testrun/${INTERP}"
-    NAME="hanson_${NAME}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}"
+    NAME="hanson_${NAME}_${INTERP}_${SAMPLE}${NAME_EXTENTION}${NAME_REACTION}"
 fi
 
 mkdir -p $DIR
