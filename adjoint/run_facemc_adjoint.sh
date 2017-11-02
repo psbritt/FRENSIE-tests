@@ -30,10 +30,8 @@ ELASTIC_ON="true"
 BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
-# Turn certain electron properties on (true/false)
+# Two D Interp Policy (logloglog, linlinlin, linlinlog)
 INTERP="logloglog"
-CORRELATED_ON="true"
-UNIT_BASED_ON="true"
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
 DISTRIBUTION="Coupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
@@ -45,7 +43,7 @@ NAME="native"
 
 ELASTIC="-d ${DISTRIBUTION} -c ${COUPLED_SAMPLING}"
 REACTIONS="-t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
-SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS} ${ELASTIC}"
+SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} ${REACTIONS} ${ELASTIC}"
 
 if [ ${DISTRIBUTION} = "Hybrid" ]
 then
@@ -78,14 +76,6 @@ fi
 if [ "${EXCITATION_ON}" = "false" ]
 then
     NAME_REACTION="${NAME_REACTION}_no_excitation"
-fi
-if [ "${CORRELATED_ON}" = "false" ]
-then
-    NAME_EXTENTION="${NAME_EXTENTION}_stochastic"
-fi
-if [ "${UNIT_BASED_ON}" = "false" ]
-then
-    NAME_EXTENTION="${NAME_EXTENTION}_exact"
 fi
 
 # .xml file paths.

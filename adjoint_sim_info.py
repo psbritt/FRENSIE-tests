@@ -14,12 +14,6 @@ parser.add_argument('-e', help=energy_msg, required=True)
 history_msg = "the number of histories as an int (ie: 1000 not 1e-4)"
 parser.add_argument('-n', help=history_msg, required=True)
 
-sampling_msg = "correlated electron sampling on (true/false)"
-parser.add_argument('-s', help=sampling_msg, required=True)
-
-unit_based_msg = "unit based electron interpolation on (true/false)"
-parser.add_argument('-u', help=unit_based_msg, required=True)
-
 elastic_dist_msg = "elastic electron distribution ( Coupled, Decoupled, Hybrid )"
 parser.add_argument('-d', help=elastic_dist_msg, required=True)
 
@@ -107,10 +101,9 @@ ET.SubElement(parameter_1, "Parameter", name="Histories", type="unsigned int", v
 parameter_2 = ET.SubElement(root, "ParameterList", name="Adjoint Electron Properties")
 
 ET.SubElement(parameter_2, "Parameter", name="Max Adjoint Electron Energy", type="double", value=str(energy))
-
-ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Correlated Sampling", type="bool", value=correlated_bool )
-ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Unit Based Interpolation", type="bool", value=unit_based_bool )
-
+ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Bremsstrahlung", type="bool", value=brem_bool )
+ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Electroionization", type="bool", value=ionization_bool )
+ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Atomic Excitation", type="bool", value=excitation_bool )
 ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Elastic", type="bool", value=elastic_bool )
 
 if elastic_bool:
@@ -119,10 +112,6 @@ if elastic_bool:
 
   if( elastic_distribution == "Coupled" ):
     ET.SubElement(parameter_2, "Parameter", name="Adjoint Coupled Elastic Sampling Method", type="string", value=couled_sampling_method )
-
-ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Bremsstrahlung", type="bool", value=brem_bool )
-ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Electroionization", type="bool", value=ionization_bool )
-ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Atomic Excitation", type="bool", value=excitation_bool )
 
 prettify(root,name)
 print name
