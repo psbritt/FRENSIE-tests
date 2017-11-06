@@ -15,6 +15,9 @@ parser.add_argument('-e', help=energy_msg, required=True)
 geom_type_msg = "the geometry type (DagMC, ROOT)"
 parser.add_argument('-t', help=geom_type_msg, required=False)
 
+tracker_msg = "turn particle tracker on (True = on, False = off)"
+parser.add_argument('-p', help=tracker_msg, required=False)
+
 # Parse the user's arguments
 user_args = parser.parse_args()
 energy = user_args.e
@@ -89,14 +92,16 @@ else:
     sub_list_3 = ET.SubElement(parameter_3, "ParameterList", name="Bins")
     ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value=bins)
 
-# Particle Tracker
-tally_number = tally_number +1
-tally = "Particle Tracker"
+# Option to turn on particle tracker
+if user_args.p == "true":
+    # Particle Tracker
+    tally_number = tally_number +1
+    tally = "Particle Tracker"
 
-parameter_4 = ET.SubElement(root, "ParameterList", name="Particle Tracker 1")
+    parameter_4 = ET.SubElement(root, "ParameterList", name="Particle Tracker 1")
 
-ET.SubElement(parameter_4, "Parameter", name="Id", type="unsigned int", value=str(tally_number) )
-ET.SubElement(parameter_4, "Parameter", name="Type", type="string", value=tally)
+    ET.SubElement(parameter_4, "Parameter", name="Id", type="unsigned int", value=str(tally_number) )
+    ET.SubElement(parameter_4, "Parameter", name="Type", type="string", value=tally)
 
 name +=".xml"
 prettify(root,name)

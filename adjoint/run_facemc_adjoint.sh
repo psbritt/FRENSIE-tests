@@ -36,6 +36,8 @@ INTERP="logloglog"
 DISTRIBUTION="Coupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
 COUPLED_SAMPLING="2D"
+# Option to turn on particle tracker (true/false)
+PARTICLE_TRACKER="false"
 
 
 ELEMENT="H"
@@ -86,7 +88,7 @@ fi
 INFO=$(python ../adjoint_sim_info.py ${SIM_PARAMETERS} 2>&1)
 MAT=$(python ../mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP} 2>&1)
 SOURCE=$(python ./adjoint_source.py -d ${CROSS_SECTION_XML_PATH} -e ${ENERGY} 2>&1)
-EST=$(python ./adjoint_est.py -e ${ENERGY} -t ${GEOMETRY} 2>&1)
+EST=$(python ./adjoint_est.py -e ${ENERGY} -t ${GEOMETRY} -p ${PARTICLE_TRACKER} 2>&1)
 GEOM=$(python ./geom.py -t ${GEOMETRY} 2>&1)
 RSP="../rsp_fn.xml"
 
