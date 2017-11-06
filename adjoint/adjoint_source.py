@@ -21,7 +21,7 @@ parser.add_argument('-e', help=energy_msg, required=True)
 
 # Parse the user's arguments
 user_args = parser.parse_args()
-max_energy = user_args.e
+max_energy = float(user_args.e)
 datadir = user_args.d
 
 # -------------------------------------------------------------------------- ##
@@ -33,14 +33,13 @@ cs_list = Teuchos.XMLParameterListReader().toParameterList( xml_obj )
 
 data_list = cs_list.get( 'H-Native' )
 native_file_name = datadir + data_list.get( 'electroatomic_file_path' )
-print native_file_name
+
 native_data = Native.ElectronPhotonRelaxationDataContainer( native_file_name )
 
 energy_grid = native_data.getElectronEnergyGrid()
 total_cs = native_data.getTotalElectronCrossSection()
 
 e_bin = 0
-max_energy = 1.1
 
 energy_print = "{" + str(energy_grid[0])
 cross_section_print = "{" + str(total_cs[0])
@@ -60,7 +59,7 @@ energy_print = energy_print + "}"
 cross_section_print = cross_section_print + "}"
 source_distribution = "{" + energy_print + "," + cross_section_print + "}"
 
-name = "adjoint_source_"+max_energy+".xml"
+name = "adjoint_source_"+str(max_energy)+".xml"
 
 root = ET.Element("ParameterList", name="Source")
 

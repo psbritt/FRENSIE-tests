@@ -6,7 +6,7 @@
 ## The electron albedo is found for a semi-infinite aluminum slab. Since the
 ## electron albedo requires a surface current, DagMC will be used and not Root.
 ## FRENSIE will be run with four variations.
-## 1. Using the Native data in analog mode, whcih uses a different interpolation
+## 1. Using the Native data in analog mode, which uses a different interpolation
 ## scheme than MCNP.
 ## 2. Using Native data in moment preserving mode, which should give a less
 ## acurate answer while decreasing run time.

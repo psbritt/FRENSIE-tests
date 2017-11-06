@@ -26,49 +26,53 @@ if user_args.t:
 # Set xml file name
 name = "est_"+str(energy)
 
-# Set 200 log spaced bins between the min and max energy
-bins = "{ 1e-5, 200i, "+ str(energy) + "}"
+# assume energy is 0.01 MeV
+bins = "{ 1e-5,5e-5, 198i, 1e-2}"
+if float(energy) == 0.001:
+    bins = "{ 1e-5, 197i, 1e-3}"
+if float(energy) == 0.1:
+    bins = "{ 1e-5, 1e-4, 5e-4, 198i, 1e-1}"
 
-root = ET.Element("ParameterList", name="Estimators")
+root = ET.Element("ParameterList", name="Observers")
 
-if geom_type == "DagMC":
-
-    # Flux on sphere surfaces
-    tally = "Surface Flux"
-
-    parameter_1 = ET.SubElement(root, "ParameterList", name="Flux on sphere surfaces")
-
-    ET.SubElement(parameter_1, "Parameter", name="Id", type="unsigned int", value="1")
-    ET.SubElement(parameter_1, "Parameter", name="Type", type="string", value=tally)
-    ET.SubElement(parameter_1, "Parameter", name="Particle Type", type="string", value="Adjoint Electron")
-
-    sub_list_1 = ET.SubElement(parameter_1, "ParameterList", name="Bins")
-    ET.SubElement(sub_list_1, "Parameter", name="Energy Bins", type="Array", value=bins)
-
-    tally = "Surface Current"
-
-    parameter_2 = ET.SubElement(root, "ParameterList", name="Current on sphere surfaces")
-
-    ET.SubElement(parameter_2, "Parameter", name="Id", type="unsigned int", value="2")
-    ET.SubElement(parameter_2, "Parameter", name="Type", type="string", value=tally)
-    ET.SubElement(parameter_2, "Parameter", name="Particle Type", type="string", value="Adjoint Electron")
-    #ET.SubElement(parameter_2, "Parameter", name=tally_type, type="Array", value=tally_vols)
-
-    sub_list_2 = ET.SubElement(parameter_2, "ParameterList", name="Bins")
-    ET.SubElement(sub_list_2, "Parameter", name="Energy Bins", type="Array", value=bins)
+tally_number = 1
+if geom_type == "DagMC" or geom_type == "DAGMC" or geom_type == "dagmc":
 
     # Track Length Flux in Sphere
     tally = "Cell Track-Length Flux"
 
     parameter_3 = ET.SubElement(root, "ParameterList", name="Track Length Flux in Sphere")
 
-    ET.SubElement(parameter_3, "Parameter", name="Id", type="unsigned int", value="3")
+    ET.SubElement(parameter_3, "Parameter", name="Id", type="unsigned int", value=str(tally_number) )
     ET.SubElement(parameter_3, "Parameter", name="Type", type="string", value=tally)
     ET.SubElement(parameter_3, "Parameter", name="Particle Type", type="string", value="Adjoint Electron")
-    #ET.SubElement(parameter_3, "Parameter", name="Cells", type="Array", value="{1}")
-
     sub_list_3 = ET.SubElement(parameter_3, "ParameterList", name="Bins")
     ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value=bins)
+
+    # Flux on sphere surfaces
+    tally_number = tally_number +1
+    tally = "Surface Flux"
+
+    parameter_1 = ET.SubElement(root, "ParameterList", name="Flux on sphere surfaces")
+
+    ET.SubElement(parameter_1, "Parameter", name="Id", type="unsigned int", value=str(tally_number) )
+    ET.SubElement(parameter_1, "Parameter", name="Type", type="string", value=tally)
+    ET.SubElement(parameter_1, "Parameter", name="Particle Type", type="string", value="Adjoint Electron")
+
+    sub_list_1 = ET.SubElement(parameter_1, "ParameterList", name="Bins")
+    ET.SubElement(sub_list_1, "Parameter", name="Energy Bins", type="Array", value=bins)
+
+    tally_number = tally_number +1
+    tally = "Surface Current"
+
+    parameter_2 = ET.SubElement(root, "ParameterList", name="Current on sphere surfaces")
+
+    ET.SubElement(parameter_2, "Parameter", name="Id", type="unsigned int", value=str(tally_number) )
+    ET.SubElement(parameter_2, "Parameter", name="Type", type="string", value=tally)
+    ET.SubElement(parameter_2, "Parameter", name="Particle Type", type="string", value="Adjoint Electron")
+
+    sub_list_2 = ET.SubElement(parameter_2, "ParameterList", name="Bins")
+    ET.SubElement(sub_list_2, "Parameter", name="Energy Bins", type="Array", value=bins)
 
 else:
     # Track Length Flux in Sphere
@@ -77,14 +81,24 @@ else:
 
     parameter_3 = ET.SubElement(root, "ParameterList", name="Track Length Flux in Sphere")
 
-    ET.SubElement(parameter_3, "Parameter", name="Id", type="unsigned int", value="1")
+    ET.SubElement(parameter_3, "Parameter", name="Id", type="unsigned int", value=str(tally_number) )
     ET.SubElement(parameter_3, "Parameter", name="Type", type="string", value=tally)
     ET.SubElement(parameter_3, "Parameter", name="Particle Type", type="string", value="Adjoint Electron")
-    ET.SubElement(parameter_3, "Parameter", name="Cells", type="Array", value="{1,2,3,4,5}")
+    ET.SubElement(parameter_3, "Parameter", name="Cells", type="Array", value="{1}")
 
     sub_list_3 = ET.SubElement(parameter_3, "ParameterList", name="Bins")
     ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value=bins)
 
+# Particle Tracker
+tally_number = tally_number +1
+tally = "Particle Tracker"
+
+parameter_4 = ET.SubElement(root, "ParameterList", name="Particle Tracker 1")
+
+ET.SubElement(parameter_4, "Parameter", name="Id", type="unsigned int", value=str(tally_number) )
+ET.SubElement(parameter_4, "Parameter", name="Type", type="string", value=tally)
+
 name +=".xml"
 prettify(root,name)
+print name
 

@@ -9,7 +9,7 @@ description = "This script allows one to write the mat.xml file for FACEMC. "\
 
 parser = ap.ArgumentParser(description=description)
 
-element_msg = "the elemental symbol (ie: H, He, Al, Pb ). Must be properly capitalized (ie: Al not al or AL"
+element_msg = "the elemental symbol (ie: H, He, Al, Pb ). Must be properly capitalized (ie: Al not al or AL)"
 parser.add_argument('-n', help=element_msg, required=True)
 
 file_type_msg = "the file type (ace, epr14 or native )"

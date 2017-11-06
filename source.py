@@ -19,7 +19,7 @@ name = "source_"+str(energy)+".xml"
 
 root = ET.Element("ParameterList", name="Source")
 
-parameters = ET.SubElement(root, "ParameterList", name="Basic Distributed Source")
+parameters = ET.SubElement(root, "ParameterList", name="Monoenergetic beam source")
 
 ET.SubElement(parameters, "Parameter", name="Id", type="int", value="1")
 

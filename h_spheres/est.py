@@ -35,7 +35,7 @@ if energy == ".1":
 
 root = ET.Element("ParameterList", name="Estimators")
 
-if geom_type == "DagMC":
+if geom_type == "DagMC" or geom_type == "DAGMC" or geom_type == "dagmc":
 
     # Flux on sphere surfaces
     tally = "Surface Flux"

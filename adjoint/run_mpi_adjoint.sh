@@ -1,26 +1,31 @@
-#!/bin/bash
+#!/bin/sh
+# This file is named run_facemc_mpi.sh
+#SBATCH --partition=pre
+#SBATCH --time=1-00:00:00
+#SBATCH --nodes=4
+#SBATCH --ntasks-per-node=20
+#SBATCH --mem-per-cpu=4000
+
+
 ##---------------------------------------------------------------------------##
-## FACEMC test runner
+## ---------------------------- FACEMC test runner --------------------------##
 ##---------------------------------------------------------------------------##
 ## Validation runs comparing FRENSIE Forward with Adjoint.
+
+##---------------------------------------------------------------------------##
+## ------------------------------- COMMANDS ---------------------------------##
 ##---------------------------------------------------------------------------##
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-#CROSS_SECTION_XML_PATH=/home/lkersting/mcnpdata/
-CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA/
-FRENSIE=/home/lkersting/frensie/
-
-THREADS="12"
-if [ "$#" -eq 1 ];
-then
-    # Set the number of threads used
-    THREADS="$1"
-fi
+CROSS_SECTION_XML_PATH=/home/lkersting/mcnpdata/
+#CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA/
+FRENSIE=/home/lkersting/frensie
 
 # Changing variables
-# Number of histories
-HISTORIES="100"
+THREADS="80"
+# Number of histories 1e8
+HISTORIES="100000000"
 # Delta source energy in MeV ( 0.001, 0.01, 0.1)
 ENERGY="0.01"
 # The Geometry package (ROOT or DagMC)
@@ -92,8 +97,7 @@ RSP="../rsp_fn.xml"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
-
-DIR="results/testrun/${INTERP}"
+DIR="results/${INTERP}/${TODAY}"
 NAME="adjoint_${NAME}_${INTERP}${NAME_EXTENTION}${NAME_REACTION}"
 
 mkdir -p $DIR
@@ -101,6 +105,7 @@ mkdir -p $DIR
 echo "Running Facemc Adjoint H-Sphere test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="${FRENSIE}/bin/facemc --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME} --threads=${THREADS}"
 echo ${RUN}
+
 #gdb --args ${RUN}
 ${RUN}
 

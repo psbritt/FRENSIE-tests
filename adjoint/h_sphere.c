@@ -16,7 +16,7 @@ void h_sphere()
   gSystem->Load( "libGeom" );
   TGeoManager* geom = new TGeoManager(
                     "Example Test Geometry",
-                    "Geometry for H Sphere comparison" );
+                    "Geometry for Forward/Adjoint H Sphere comparison" );
 
 //---------------------------------------------------------------------------//
 // Material Definitions

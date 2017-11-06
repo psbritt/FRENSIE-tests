@@ -38,10 +38,6 @@ user_args = parser.parse_args()
 energy = user_args.e
 number_of_histories = user_args.n
 
-# Two D Sampling parameters
-correlated_bool = user_args.s
-unit_based_bool = user_args.u
-
 # Turn reactions on/off
 elastic_bool = user_args.t
 brem_bool = user_args.b
@@ -53,28 +49,25 @@ cutoff_cosine = 1.0
 # Elastic Distribution (Coupled, Decoupled, Hybrid)
 elastic_distribution = user_args.d
 # Elastic Coupled Distribution Sampling Method ( 1D, 2D, Simplified)
-couled_sampling_method = user_args.c
+coupled_sampling_method = user_args.c
+coupled_sampling = "Two D Union"
 
 # Set xml file name
 name = "sim_info"
-if correlated_bool == "false":
-    name += "_stochastic"
-if unit_based_bool == "false":
-    name += "_exact"
 
 if elastic_bool == "false":
     name += "_no_elastic"
 else:
     if elastic_distribution == "Coupled":
         name+="_coupled"
-        if couled_sampling_method == "1D":
+        if coupled_sampling_method == "1D":
             name+="_1D"
-            couled_sampling_method == "One D Union"
-        elif couled_sampling_method == "2D":
+            coupled_sampling == "One D Union"
+        elif coupled_sampling_method == "2D":
             name+="_2D"
-            couled_sampling_method == "Two D Union"
+            coupled_sampling == "Two D Union"
         else:
-            couled_sampling_method == "Simplified Union"
+            coupled_sampling == "Simplified Union"
     elif elastic_distribution == "Hybrid":
         name+="_0.9"
         cutoff_cosine = 0.9
@@ -111,7 +104,7 @@ if elastic_bool:
   ET.SubElement(parameter_2, "Parameter", name="Adjoint Electron Elastic Distribution", type="string", value=elastic_distribution )
 
   if( elastic_distribution == "Coupled" ):
-    ET.SubElement(parameter_2, "Parameter", name="Adjoint Coupled Elastic Sampling Method", type="string", value=couled_sampling_method )
+    ET.SubElement(parameter_2, "Parameter", name="Adjoint Coupled Elastic Sampling Method", type="string", value=coupled_sampling )
 
 prettify(root,name)
 print name

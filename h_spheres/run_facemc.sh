@@ -6,11 +6,12 @@
 ## The electron surface and cell flux and current for three concentrtic spheres
 ## of Hydrogen for a 1, 10, 100 keV mono-energetic isotropic source of electrons
 ## FRENSIE will be run with three variations.
-## 1. Using ACE data, which should match MCNP almost exactly.
-## 2. Using the Native data in analog mode, which uses a different interpolation
+## 1. Using the Native data in analog mode, which uses a different interpolation
 ## scheme than MCNP.
-## 3. Using Native data in moment preserving mode, which should give a less
+## 2. Using Native data in moment preserving mode, which should give a less
 ## acurate answer while decreasing run time.
+## 3. Using ACE (EPR14) data, which should match MCNP6.2 almost exactly.
+## 4. Using ACE (EPR12) data, which should match MCNP6.1 almost exactly.
 ##---------------------------------------------------------------------------##
 
 # Set cross_section.xml directory path.
@@ -43,96 +44,74 @@ ELASTIC_ON="true"
 BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
-# Turn certain electron properties on (true/false)
-LINLINLOG_ON="false"
-CORRELATED_ON="false"
-UNIT_BASED_ON="true"
-
-REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
-SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
-NAME="ace"
-
-INTERP="linlin"
-if [ ${LINLINLOG_ON} = true ]
-then
-    INTERP="linlog"
-fi
+# Two D Interp Policy (logloglog, linlinlin, linlinlog)
+INTERP="logloglog"
+# Two D Sampling Policy (correlated, exact, stochastic)
+SAMPLE="correlated"
+# Elastic distribution ( Decoupled, Coupled, Hybrid )
+DISTRIBUTION="Decoupled"
+# Elastic coupled sampling method ( Simplified, 1D, 2D )
+COUPLED_SAMPLING="Simplified"
 
 ELEMENT="H"
+NAME="native"
 
-echo -n "Enter the desired data type (1 = ACE, 2 = Native, 3 = Moment Preserving) > "
+ELASTIC="-d ${DISTRIBUTION} -c ${COUPLED_SAMPLING}"
+REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
+SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${INTERP} -s ${SAMPLE} ${REACTIONS} ${ELASTIC}"
+
+echo -n "Enter the desired data type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12) > "
 read INPUT
-if [ ${INPUT} -eq 1 ]
+if [ ${INPUT} -eq 2 ]
 then
-    # Use ACE data
-    NAME="ace"
-    SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
-    python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
-    INFO="sim_info_${ENERGY}_1.0"
-    MAT="mat_${ELEMENT}_${NAME}.xml"
-    echo "Using ACE data!"
-elif [ ${INPUT} -eq 2 ]
-then
-    # Use Native analog data
-    NAME="native"
-    SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
-    python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
-    INFO="sim_info_${ENERGY}_1.0"
-    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
-    echo "Using Native analog data!"
+    # Use ACE EPR14 data
+    NAME="epr14"
+    echo "Using ACE EPR14 data!"
 elif [ ${INPUT} -eq 3 ]
 then
-    # Use Native Moment Preserving data
+    # Use ACE EPR12 data
+    NAME="ace"
+    echo "Using ACE EPR12 data!"
+elif [ ${DISTRIBUTION} = "Hybrid" ]
+then
+    # Use Native moment preserving data
     NAME="moments"
-    SIM_PARAMETERS="${SIM_PARAMETERS} -c 0.9"
-    python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t "native" -i ${INTERP}
-    INFO="sim_info_${ENERGY}_0.9"
-    MAT="mat_${ELEMENT}_native_${INTERP}.xml"
     echo "Using Native Moment Preserving data!"
 else
-    # Default to ACE data
-    NAME="ace"
-    SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
-    python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
-    INFO="sim_info_${ENERGY}_1.0"
-    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
-    echo "Input not valid, ACE data will be used!"
+    # Use Native analog data
+    echo "Using Native analog data!"
 fi
 
 NAME_EXTENTION=""
+NAME_REACTION=""
 # Set the sim info xml file name
-if [ "${LINLINLOG_ON}" = "false" ]
-then
-    NAME_EXTENTION="${NAME_EXTENTION}_linlinlin"
-fi
-if [ "${CORRELATED_ON}" = "false" ]
-then
-    NAME_EXTENTION="${NAME_EXTENTION}_stochastic"
-fi
-if [ "${UNIT_BASED_ON}" = "false" ]
-then
-    NAME_EXTENTION="${NAME_EXTENTION}_exact"
-fi
 if [ "${ELASTIC_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_elastic"
+    NAME_REACTION="${NAME_REACTION}_no_elastic"
+elif [ ${DISTRIBUTION} = "Coupled" ]
+then
+    NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
 fi
 if [ "${BREM_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_brem"
+    NAME_REACTION="${NAME_REACTION}_no_brem"
 fi
 if [ "${IONIZATION_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_ionization"
+    NAME_REACTION="${NAME_REACTION}_no_ionization"
 fi
 if [ "${EXCITATION_ON}" = "false" ]
 then
-    NAME_EXTENTION="${NAME_EXTENTION}_no_excitation"
+    NAME_REACTION="${NAME_REACTION}_no_excitation"
 fi
+
+# .xml file paths.
+INFO=$(python ../../sim_info.py ${SIM_PARAMETERS} 2>&1)
+MAT=$(python ../../mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP} 2>&1)
+EST=$(python ./est.py -e ${ENERGY} 2>&1)
+SOURCE=$(python source.py -e ${ENERGY} 2>&1)
+GEOM="geom.xml"
+RSP="../rsp_fn.xml"
 
 python est.py -e ${ENERGY} -t ${GEOMETRY}
 python source.py -e ${ENERGY}
