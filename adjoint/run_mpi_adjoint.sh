@@ -29,7 +29,7 @@ HISTORIES="100000000"
 # Delta source energy in MeV ( 0.001, 0.01, 0.1)
 ENERGY="0.01"
 # The Geometry package (ROOT or DagMC)
-GEOMETRY="ROOT"
+GEOMETRY="DagMC"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
