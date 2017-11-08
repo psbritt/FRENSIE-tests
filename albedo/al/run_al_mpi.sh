@@ -39,10 +39,10 @@ fi
 # Changing variables
 # Energy in MeV (.005, .0093, .01, .011, .0134, .05, .0173, .02, .0252, .03, .04, .0415, .05, .06, .0621, .0818, .102)
 ENERGY=".102"
-THREADS="1"
+THREADS="160"
 ELEMENT="Al"
 # Number of histories 1e6
-HISTORIES="10"
+HISTORIES="1000000"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
