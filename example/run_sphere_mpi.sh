@@ -45,10 +45,14 @@ ELASTIC_ON="true"
 BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
-# Turn certain electron properties on (true/false)
-LINLINLOG_ON="false"
-CORRELATED_ON="true"
-UNIT_BASED_ON="false"
+# Two D Interp Policy (logloglog, linlinlin, linlinlog)
+INTERP="logloglog"
+# Two D Sampling Policy (correlated, exact, stochastic)
+SAMPLE="correlated"
+# Elastic distribution ( Decoupled, Coupled, Hybrid )
+DISTRIBUTION="Coupled"
+# Elastic coupled sampling method ( Simplified, 1D, 2D )
+COUPLED_SAMPLING="2D"
 
 # Geometry package (DagMC or ROOT)
 GEOMETRY="DagMC"
@@ -57,113 +61,74 @@ ENERGY=0.01
 ENERGY_KEV=$(echo $ENERGY*1000 |bc)
 ENERGY_KEV=${ENERGY_KEV%.*}
 
+ELASTIC="-d ${DISTRIBUTION} -c ${COUPLED_SAMPLING}"
 REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
-SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${LINLINLOG_ON} -s ${CORRELATED_ON} -u ${UNIT_BASED_ON} ${REACTIONS}"
-NAME="ace"
-
-INTERP="linlin"
-if [ ${LINLINLOG_ON} = true ]
-then
-    INTERP="linlog"
-fi
+SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${INTERP} -s ${SAMPLE} ${REACTIONS} ${ELASTIC}"
 
 ELEMENT="H"
+NAME="native"
 
-if [ ${INPUT} -eq 1 ]
+if [ ${INPUT} -eq 2 ]
 then
-    # Use ACE data
-    NAME="ace"
-    SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
-    python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
-    INFO="sim_info_${ENERGY}_1.0"
-    MAT="mat_${ELEMENT}_${NAME}.xml"
-    echo "Using ACE data!"
-elif [ ${INPUT} -eq 2 ]
-then
-    # Use Native analog data
-    NAME="native"
-    SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
-    python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
-    INFO="sim_info_${ENERGY}_1.0"
-    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
-    echo "Using Native analog data!"
+    # Use ACE EPR14 data
+    NAME="epr14"
+    echo "Using ACE EPR14 data!"
 elif [ ${INPUT} -eq 3 ]
 then
-    # Use Native Moment Preserving data
+    # Use ACE EPR12 data
+    NAME="ace"
+    echo "Using ACE EPR12 data!"
+elif [ ${DISTRIBUTION} = "Hybrid" ]
+then
+    # Use Native moment preserving data
     NAME="moments"
-    SIM_PARAMETERS="${SIM_PARAMETERS} -c 0.9"
-    python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t "native" -i ${INTERP}
-    INFO="sim_info_${ENERGY}_0.9"
-    MAT="mat_${ELEMENT}_native_${INTERP}.xml"
     echo "Using Native Moment Preserving data!"
 else
-    # Default to ACE data
-    NAME="ace"
-    SIM_PARAMETERS="${SIM_PARAMETERS} -c 1.0"
-    python sim_info.py ${SIM_PARAMETERS}
-    python mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP}
-    INFO="sim_info_${ENERGY}_1.0"
-    MAT="mat_${ELEMENT}_${NAME}_${INTERP}.xml"
-    echo "Input not valid, ACE data will be used!"
+    # Use Native analog data
+    echo "Using Native analog data!"
 fi
 
-INTERP_NAMES=""
-# Set the sim info xml file name
-if [ "${LINLINLOG_ON}" = "false" ]
-then
-    INTERP_NAMES="${INTERP_NAMES}_linlinlin"
-fi
-if [ "${CORRELATED_ON}" = "false" ]
-then
-    INTERP_NAMES="${INTERP_NAMES}_stochastic"
-fi
-if [ "${UNIT_BASED_ON}" = "false" ]
-then
-    INTERP_NAMES="${INTERP_NAMES}_exact"
-fi
-
-REACTION_NAMES=''
+NAME_EXTENTION=""
+NAME_REACTION=""
+# Set the file name extentions
 if [ "${ELASTIC_ON}" = "false" ]
 then
-    REACTION_NAMES="${REACTION_NAMES}_no_elastic"
+    NAME_REACTION="${NAME_REACTION}_no_elastic"
+elif [ ${DISTRIBUTION} = "Coupled" ]
+then
+    NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
 fi
 if [ "${BREM_ON}" = "false" ]
 then
-    REACTION_NAMES="${REACTION_NAMES}_no_brem"
+    NAME_REACTION="${NAME_REACTION}_no_brem"
 fi
 if [ "${IONIZATION_ON}" = "false" ]
 then
-    REACTION_NAMES="${REACTION_NAMES}_no_ionization"
+    NAME_REACTION="${NAME_REACTION}_no_ionization"
 fi
 if [ "${EXCITATION_ON}" = "false" ]
 then
-    REACTION_NAMES="${REACTION_NAMES}_no_excitation"
+    NAME_REACTION="${NAME_REACTION}_no_excitation"
 fi
 
-python est.py -e ${ENERGY} -t ${GEOMETRY}
-python source.py -e ${ENERGY}
-python geom.py -t ${GEOMETRY}
-
-# .xml directory paths.
-INFO="${INFO}${INTERP_NAMES}${REACTION_NAMES}.xml"
-GEOM="geom.xml"
-RSP="rsp_fn.xml"
-EST="est_${ENERGY}.xml"
-SOURCE="source_${ENERGY}.xml"
+# .xml file paths.
+INFO=$(python ../sim_info.py ${SIM_PARAMETERS} 2>&1)
+MAT=$(python ../mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP} 2>&1)
+EST=$(python est.py -e ${ENERGY} -t ${GEOMETRY} 2>&1)
+SOURCE=$(python ../point_source.py -e ${ENERGY} 2>&1)
+GEOM=$(python geom.py -t ${GEOMETRY} 2>&1)
+RSP="../rsp_fn.xml"
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
-DIR=''
-if [ "${NAME}" = "ace" ]
+
+if [ ${NAME} = "ace" ] || [ ${NAME} = "epr14" ];
 then
-    DIR="results/ace/${TODAY}"
-    NAME="${NAME}${REACTION_NAMES}"
+    DIR="results/${NAME}/${TODAY}"
+    NAME="example_${NAME}${NAME_REACTION}"
 else
     DIR="results/${INTERP}/${TODAY}"
-    NAME="${NAME}${INTERP_NAMES}${REACTION_NAMES}"
+    NAME="example_${NAME}_${INTERP}_${SAMPLE}${NAME_EXTENTION}${NAME_REACTION}"
 fi
 
 mkdir -p ${DIR}
@@ -172,11 +137,9 @@ mkdir -p ${DIR}
 if [ "${GEOMETRY}" = "ROOT" ]
 then
     NAME="${NAME}_root"
-    GEOM="geom_root.xml"
-    EST="est_${ENERGY}_root.xml"
 fi
 
-echo "Running Facemc H spheres test with ${HISTORIES} particles on ${THREADS} threads:"
+echo "Running Facemc H spheres example test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
 echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
@@ -184,13 +147,19 @@ ${RUN} > ${DIR}/${NAME}.txt 2>&1
 echo "Removing old xml files:"
 rm ${INFO} ${EST} ${SOURCE} ${MAT} ${GEOM} ../ElementTree_pretty.pyc
 
-# Move file to the test results folder
-echo "Moving the results:"
+echo "Processing the results:"
 H5=${NAME}.h5
 NEW_NAME="${DIR}/${H5}"
 NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
-
 mv ${H5} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
 
+cd ${DIR}
+
+if [ "${GEOMETRY}" = "ROOT" ]
+then
+    bash ../../../data_processor_root.sh ${NAME}
+else
+    bash ../../../data_processor.sh ${NAME}
+fi
 echo "Results will be in ./${DIR}"
