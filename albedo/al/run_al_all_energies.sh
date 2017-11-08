@@ -19,6 +19,6 @@ for i in "${energies[@]}"
 do
     command=s/ENERGY=.*/ENERGY=\"$i\"/
     sed -i $command run_al_mpi.sh
-    echo "\nRunning Al Albedo Test at an Energy of "$i" MeV!"
+    echo -e "\nRunning Al Albedo Test at an Energy of "$i" MeV!"
     sbatch run_al_mpi.sh $file_type
 done
