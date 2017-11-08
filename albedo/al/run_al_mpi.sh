@@ -136,7 +136,7 @@ echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Removing old xml files:"
-rm ${INFO} ${EST} ${SOURCE} ${MAT} ElementTree_pretty.pyc
+rm ${INFO} ${EST} ${SOURCE} ${MAT} ../../ElementTree_pretty.pyc
 
 # Process the test results
 echo "Processing the results:"

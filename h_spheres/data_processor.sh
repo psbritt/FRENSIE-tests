@@ -16,7 +16,7 @@ else
     H5="${FILE}.h5"
 
     # Make a directory for the output files
-    mkdir ${FILE}
+    mkdir -p ${FILE}
     FLUX="${FILE}/flux"
     CURRENT="${FILE}/current"
     TRACK_FLUX="${FILE}/track_flux"

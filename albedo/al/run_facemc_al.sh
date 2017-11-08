@@ -129,7 +129,7 @@ echo ${RUN}
 ${RUN}
 
 echo "Removing old xml files:"
-rm ${INFO} ${EST} ${SOURCE} ${MAT} ElementTree_pretty.pyc
+rm ${INFO} ${EST} ${SOURCE} ${MAT} ../../ElementTree_pretty.pyc
 
 echo "Processing the results:"
 H5=${NAME}.h5

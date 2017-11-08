@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import argparse as ap
 import xml.etree.ElementTree as ET
+import sys; sys.path.append("../")
 from ElementTree_pretty import prettify
 
 # Set up the argument parser

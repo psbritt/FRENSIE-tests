@@ -137,7 +137,7 @@ ${RUN}
 #gdb --args ${RUN}
 
 echo "Removing old xml files:"
-rm ${INFO} ${EST} ${SOURCE} ${MAT} ${GEOM} ElementTree_pretty.pyc
+rm ${INFO} ${EST} ${SOURCE} ${MAT} ${GEOM} ../ElementTree_pretty.pyc
 
 echo "Processing the results:"
 H5=${NAME}.h5

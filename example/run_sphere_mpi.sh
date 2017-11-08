@@ -181,7 +181,7 @@ echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Removing old xml files:"
-rm ${INFO} ${EST} ${SOURCE} ${MAT} ${GEOM} ElementTree_pretty.pyc
+rm ${INFO} ${EST} ${SOURCE} ${MAT} ${GEOM} ../ElementTree_pretty.pyc
 
 # Move file to the test results folder
 echo "Moving the results:"

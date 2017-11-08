@@ -4,6 +4,7 @@ import PyFrensie.Data.Native as Native
 import PyTrilinos.Teuchos as Teuchos
 import numpy
 import xml.etree.ElementTree as ET
+import sys; sys.path.append("../")
 from ElementTree_pretty import prettify
 
 # Set up the argument parser

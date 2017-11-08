@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 import argparse as ap
 import xml.etree.ElementTree as ET
+import sys; sys.path.append("../")
 from ElementTree_pretty import prettify
 
 # Set up the argument parser
@@ -32,3 +33,4 @@ ET.SubElement(sub_list_1, "Parameter", name="Position", type="Array(double)", va
 ET.SubElement(parameters, "Parameter", name="Energy Distribution", type="Delta Distribution", value=source_energy)
 
 prettify(root,name)
+print name
