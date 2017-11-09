@@ -58,7 +58,7 @@ c
 c --------------------
 c Source
 c --------------------
-c monodirectional, monoenergetic 15.7 MeV point source located
+c monodirectional, monoenergetic 15.7 MeV point source
 c just before the the edge of the foil
 SDEF  ERG=15.7 POS=-0.5 0 0 DIR=1 VEC=1 0 0 PAR=e
 c --------------------
@@ -97,7 +97,5 @@ c Max energy, p's don't make e's, e's don't make p's, simple brem dist, skip 8, 
 PHYS:E 15.7 1 1 1 8J 2 J 20.0
 c
 prdmp  j  1e7  1   1
-c PHYS:E entry 13 is selectron of the elastic distribution:
+c PHYS:E entry 13 is the selection of the elastic distribution:
 c 2 = full elastic, 1 = transport x-sec cutoff, 0 = cutoff, -1 = no elastic
-
-

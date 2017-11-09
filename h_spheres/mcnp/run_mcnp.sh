@@ -5,7 +5,11 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
+MCNP6_1=/home/software/mcnp6.1.1/bin/mcnp611_linux_x86_64_omp
+MCNP6_2=/home/software/mcnp6.2/bin/mcnp6
+MCNP=$MCNP6_2
+TODAY=$(date +%Y-%m-%d)
+OUTPUT_DIR="./results/${TODAY}/"
 
 THREADS="8"
 if [ "$#" -eq 1 ];
@@ -21,25 +25,25 @@ echo "You entered: $ENERGY"
 
 # Set the input file name
 NAME="h_spheres_${ENERGY}.inp"
+OUTPUT="mcnp_${ENERGY}."
 
-echo "Running MCNP6 with ${THREADS} threads:"
-/home/software/mcnp6.1.1/bin/mcnp611_linux_x86_64_omp n="$NAME" tasks ${THREADS}
+mkdir -p $OUTPUT_DIR
+
+echo "Running MCNP6.2 with ${THREADS} threads:"
+echo "${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}"
+${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}
+
+NEW_NAME=${OUTPUT_DIR}${OUTPUT}
+
+# Move output files to test directory
+mv ${OUTPUT}o ${NEW_NAME}o
+mv ${OUTPUT}r ${NEW_NAME}r
+mv ${OUTPUT}m ${NEW_NAME}m
 
 echo "Processing the results:"
 
-TODAY=$(date +%Y-%m-%d)
-DIR="./results/${TODAY}/"
-
-NEW_NAME=${DIR}${NAME}
-
-# Move output files to test directory
-mkdir -p $DIR
-mv ${NAME}o ${NEW_NAME}o
-mv ${NAME}r ${NEW_NAME}r
-mv ${NAME}m ${NEW_NAME}m
-
 # Move to output directory
-cd ${DIR}
+cd ${OUTPUT_DIR}
 
 echo $INPUT | ../../data_processor.py -d ./
-echo "The processed data is located at: ${DIR}"
+echo "The processed data is located at: ${OUTPUT_DIR}"

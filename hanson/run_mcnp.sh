@@ -24,7 +24,7 @@ OUTPUT="mcnp."
 
 mkdir -p $OUTPUT_DIR
 
-echo "Running MCNP6:"
+echo "Running MCNP6.2 with ${THREADS} threads:"
 echo "${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}"
 ${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}
 
