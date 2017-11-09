@@ -86,7 +86,7 @@ CUT:P J 1.0 $ Set photon cutoff to 1 MeV
 CUT:E J 1.5e-5 $ Set electron cutoff to 15 eV
 c
 c Max energy, p's don't make e's, e's don't make p's, simple brem dist, skip 8, full elastic, skip 1 analog start energy
-PHYS:E 15.7 1 1 1 8J 2 J 20.0
+PHYS:E 0.1 1 1 1 8J 2 J 20.0
 c
 prdmp  j  1e7  1   1
 c PHYS:E entry 13 is selection of the elastic distribution:

@@ -26,8 +26,8 @@ def main(argv):
     energy = input("Enter the energy to process in keV (1, 10, 100): ")
 
     # Get mcnp output file name
-    base = "h_spheres_"+str(energy)+"kev"
-    mcnp_output = base+".inpo"
+    base = "mcnp_"+str(energy)+"kev"
+    mcnp_output = base+".o"
 
     # Check if the ouput directory exists
     if not os.path.isdir(directory):
