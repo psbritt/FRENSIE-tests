@@ -30,7 +30,7 @@ FRENSIE=/home/lkersting/frensie
 INPUT="1"
 if [ "$#" -eq 1 ];
 then
-    # Set the file type (1 = ACE, 2 = Native, 3 = Moment Preserving)
+    # Set the file type (1 = Native (default), 2 = ACE EPR14, 3 = ACE EPR12)
     INPUT="$1"
 fi
 
@@ -54,6 +54,8 @@ DISTRIBUTION="Coupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
 COUPLED_SAMPLING="2D"
 
+# Particle tracker ( true = on, false = off)
+PARTICLE="false"
 # Geometry package (DagMC or ROOT)
 GEOMETRY="DagMC"
 # Source Energy (.01 MeV)
@@ -114,7 +116,7 @@ fi
 # .xml file paths.
 INFO=$(python ../sim_info.py ${SIM_PARAMETERS} 2>&1)
 MAT=$(python ../mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP} 2>&1)
-EST=$(python est.py -e ${ENERGY} -t ${GEOMETRY} 2>&1)
+EST=$(python est.py -e ${ENERGY} -t ${GEOMETRY} -p ${PARTICLE} 2>&1)
 SOURCE=$(python ../point_source.py -e ${ENERGY} 2>&1)
 GEOM=$(python geom.py -t ${GEOMETRY} 2>&1)
 RSP="../rsp_fn.xml"

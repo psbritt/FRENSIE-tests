@@ -43,7 +43,7 @@ else
 
         cd ${FILE}
         plot="${TESTING_DIR}/h_spheres/plot.p"
-        gnuplot -e "filename='${FILE}'" ${plot}
+        gnuplot ${plot}
     else
        echo "File $H5 does not exist."
     fi
