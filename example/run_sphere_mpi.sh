@@ -149,13 +149,19 @@ ${RUN} > ${DIR}/${NAME}.txt 2>&1
 echo "Removing old xml files:"
 rm ${INFO} ${EST} ${SOURCE} ${MAT} ${GEOM} ../ElementTree_pretty.pyc
 
-# Move file to the test results folder
-echo "Moving the results:"
+echo "Processing the results:"
 H5=${NAME}.h5
 NEW_NAME="${DIR}/${H5}"
 NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
-
 mv ${H5} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
 
+cd ${DIR}
+
+if [ "${GEOMETRY}" = "ROOT" ]
+then
+    bash ../../../data_processor_root.sh ${NAME}
+else
+    bash ../../../data_processor.sh ${NAME}
+fi
 echo "Results will be in ./${DIR}"
