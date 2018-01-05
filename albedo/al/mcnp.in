@@ -9,7 +9,7 @@ c Cell 10 is the volume of aluminum that is doing the shielding
 10  1  -2.6989  100 -101 102 -103 104 -105    IMP:e=1   IMP:p=1
 c Cell 20 is a void
 20  0  200 -201 202 -203 204 -205 #10       IMP:e=1   IMP:p=1
-c Cell 30 is the graveyard 
+c Cell 30 is the graveyard
 30  0  #20 #10                              IMP:e=0   IMP:p=0
 c
 c
@@ -29,9 +29,9 @@ c
 103 PY 150
 104 PZ -150
 105 PZ 150
-c 
+c
 c the 200 series define the outer cube filling a void
-c 
+c
 200 PX -25
 201 PX 25
 202 PY -160
@@ -52,7 +52,7 @@ c
 c
 c Material Definition
 c
-m1    13000.12p  1.0 $ Material def for Al from the erp (.12p) library
+m1    13000.14p  1.0 $ Material def for Al from the erp (.14p) library
 c
 c
 c --------------------
@@ -68,7 +68,7 @@ c --------------------
 c run in photon-electron mode to get low energy physics
 mode p e
 c run for 1e8 histories
-nps 1e7
+nps 1e8
 c Surface current on front surface
 f11:e 100
 c11  0 0.99 1
@@ -86,8 +86,9 @@ c
 CUT:P J 1.0e-02 $ Set photon cutoff to 10 keV
 CUT:E J 1.5e-05 $ Set electron cutoff to 15 eV
 c
-c Max energy, p's make e's, e's make p's, brem dist, skip 10, analog start energy
-PHYS:E 1.0 1 1 1 10J 1.0
+c Max energy, p's don't make e's, e's don't make p's, simple brem dist, skip 8, full elastic, skip 1 analog start energy
+PHYS:E 1.0 1 1 1 8J 2 J 1.0
 c
 prdmp  j  1e7  1   1
-
+c PHYS:E entry 13 is the selection of the elastic distribution:
+c 2 = full elastic, 1 = transport x-sec cutoff, 0 = cutoff, -1 = no elastic

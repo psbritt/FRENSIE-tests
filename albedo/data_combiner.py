@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # Luke Kersting
-# This script asks for data from multiple albedo runs and combines thems to give
+# This script asks for data from multiple albedo runs and combines them to give
 # an energy distribution of albedos.
 import math
 import numpy as np
@@ -8,7 +8,7 @@ import argparse as ap
 
 # Set up the argument parser
 description = "This script asks for data from multiple albedo runs and "\
-              "combines thems to give an energy distribution of albedos."
+              "combines them to give an energy distribution of albedos."
 
 parser = ap.ArgumentParser(description=description)
 
@@ -33,21 +33,26 @@ else:
       data[:,n] = np.loadtxt(file_paths[n], skiprows=1, dtype=str)
 
   # Get the sorted indices
-  ind = np.lexsort(data)
+  ind = np.argsort(data[0,:])
 
   # Create the output file
   outputfile = "combined_data.txt"
   if user_args.o:
       outputfile = user_args.o
 
+  question = "Enter the desired header name for data file: "
+  name = raw_input(question)
+
   f = open(outputfile, 'w')
-  f.write( "#Energy\tAlbedo\tError\n" )
+  f.write( "#" )
+  f.write( name )
+  f.write( "\n#Energy\tAlbedo\tError" )
 
   for i in ind:
       line = str(data[0,i])
-      line = line + ' ' + str(data[1,i])
-      line = line + ' ' + str(data[2,i])
-      line = line + '\n'
+      line = line + '\t' + str(data[1,i])
+      line = line + '\t' + str(data[2,i])
+      line = '\n' + line
 
       f.write( line )
 

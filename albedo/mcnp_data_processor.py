@@ -30,7 +30,7 @@ def main(argv):
     if os.path.isfile(mcnp_output):
 
         today = datetime.date.today()
-        # Read the mcnp data file for surface tallys
+        # Read the mcnp data file for surface tallies
         with open(mcnp_output) as data:
             # go through all surface tallies
             for i in cell_list:

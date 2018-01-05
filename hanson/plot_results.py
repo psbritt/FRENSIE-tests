@@ -70,7 +70,7 @@ if user_args.e:
     x = map(float, exp_x)
     y = map(float, exp_y)
     yerr = map(float, exp_error)
-    plt.errorbar(x, y, yerr=yerr, label="Hanson", fmt="s", markersize=5 )
+    plt.errorbar(x, y, yerr=yerr, label="Hanson (Exp.)", fmt="s", markersize=5 )
 
 
 markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","X","D","d"]

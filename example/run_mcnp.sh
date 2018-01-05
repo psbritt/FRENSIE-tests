@@ -5,7 +5,9 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/software/mcnpdata/
+MCNP6_1=/home/software/mcnp6.1.1/bin/mcnp611_linux_x86_64_omp
+MCNP6_2=/home/software/mcnp6.2/bin/mcnp6
+MCNP=$MCNP6_2
 
 THREADS="8"
 if [ "$#" -eq 1 ];
@@ -25,8 +27,8 @@ TODAY=$(date +%Y-%m-%d)
 DIR="./results/mcnp/${TODAY}"
 mkdir -p $DIR
 
-echo "Running MCNP6 H sphere test with ${THREADS} threads:"
-RUN="/home/software/mcnp6.1.1/bin/mcnp611_linux_x86_64_omp n="${FILE}" tasks ${THREADS}"
+echo "Running MCNP6.2 H sphere test with ${THREADS} threads:"
+RUN="${MCNP} n="${FILE}" tasks ${THREADS}"
 echo ${RUN}
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 

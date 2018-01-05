@@ -1,0 +1,19 @@
+# CREEP Experimental Albedo Comparison
+# Energy (MeV)	Reflection Coef (Bishop-Neubert, Neubert, Darlington)
+0.0050	0.186	NaN	NaN
+0.0093	NaN	NaN	0.181
+0.0100	0.177	NaN	NaN
+0.0110	NaN	NaN	0.179
+0.0134	NaN	NaN	0.172
+0.0150	NaN	0.171	NaN
+0.0173	NaN	NaN	0.169
+0.0200	NaN	0.164	NaN
+0.0252	NaN	NaN	0.161
+0.0300	0.156	0.155	NaN
+0.0400	NaN	0.151	NaN
+0.0415	NaN	NaN	0.154
+0.0500	NaN	0.147	NaN
+0.0600	NaN	0.146	NaN
+0.0621	NaN	NaN	0.150
+0.0818	NaN	NaN	0.149
+0.1020	NaN	NaN	0.147

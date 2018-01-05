@@ -29,7 +29,7 @@ def main(argv):
 
     # Check if file exists
     if os.path.isfile(mcnp_output):
-        # Check if the ouput directory exists and make if necessary
+        # Check if the output directory exists and make if necessary
         if not os.path.isdir(directory):
             print "Making directory",directory
             os.makedirs(directory)

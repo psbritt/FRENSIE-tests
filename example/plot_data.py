@@ -356,14 +356,14 @@ def main(argv):
     plt.ylim(0.0,800000.0)
 
     plt.plot( energy, ace_average_values, label='FACEMC-ACE')
-    plt.plot( energy, endl_average_values, label='FACEMC-ENDL(LinLin)')
+    plt.plot( energy, endl_average_values, label='FACEMC-ENDL')
     if len(moments_energy) > 0:
         plt.plot( energy, moments_average_values, label='FACEMC-Hybrid')
     plt.plot( energy, mcnp_average_values, label='MCNP')
     # plot with errorbars
-#    plt.errorbar( energy, mcnp_average_values, yerr=mcnp_error, label='MCNP')
-#    plt.errorbar( energy, ace_average_values, yerr=ace_error, label='FACEMC-ACE')
-#    plt.errorbar( energy, endl_average_values, yerr=endl_error, label='FACEMC-ENDL(LinLin)')
+    # plt.errorbar( energy, mcnp_average_values, yerr=mcnp_error, label='MCNP')
+    # plt.errorbar( energy, ace_average_values, yerr=ace_error, label='FACEMC-ACE')
+    # plt.errorbar( energy, endl_average_values, yerr=endl_error, label='FACEMC-ENDL')
 
     plt.ticklabel_format(axis='y', style='sci', scilimits=(-2,2))
 
@@ -375,7 +375,7 @@ def main(argv):
 #    plt.plot( energy, ace_c_e_ratio )
     # plot with errorbars
     plt.errorbar( energy, ace_c_e_ratio, yerr=ace_c_e_uncert, label='FACEMC-ACE')
-    plt.errorbar( energy, endl_c_e_ratio, yerr=endl_c_e_uncert, label='FACEMC-ENDL(LinLin)')
+    plt.errorbar( energy, endl_c_e_ratio, yerr=endl_c_e_uncert, label='FACEMC-ENDL')
     if len(moments_energy) > 0:
         plt.errorbar( energy, moments_c_e_ratio, yerr=moments_c_e_uncert, label='FACEMC-Hybrid')
 #    plt.legend(bbox_to_anchor=(1.05, 1), loc=1, borderaxespad=0.)
