@@ -14,10 +14,10 @@ parser.add_argument('-e', help=energy_msg, required=True)
 history_msg = "the number of histories as an int (ie: 1000 not 1e-4)"
 parser.add_argument('-n', help=history_msg, required=True)
 
-interp_msg = "electron interpolation policy (logloglog, linlinlin, loglinlin)"
+interp_msg = "electron interpolation policy (logloglog, linlinlin, linlinlog)"
 parser.add_argument('-l', help=interp_msg, required=True)
 
-sampling_msg = "electron sampling policy (correlated, exact, stochastic)"
+sampling_msg = "electron sampling policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)"
 parser.add_argument('-s', help=sampling_msg, required=True)
 
 elastic_dist_msg = "elastic electron distribution ( Coupled, Decoupled, Hybrid )"
@@ -46,7 +46,20 @@ number_of_histories = user_args.n
 
 # Two D Sampling parameters
 interp = user_args.l
-sampling = user_args.s
+
+if user_args.s == "1":
+  sampling = "Unit-base Correlated"
+  sampling_name = "unit_correlated"
+elif user_args.s == "2":
+  sampling = "Correlated"
+  sampling_name = "correlated"
+elif user_args.s == "3":
+  sampling = "Unit-base"
+  sampling_name = "unit_base"
+else:
+  # Assume Unit-base correlated
+  sampling = "Unit-base Correlated"
+  sampling_name = "unit_correlated"
 
 # Turn reactions on/off
 elastic_bool = user_args.t
@@ -62,7 +75,7 @@ elastic_distribution = user_args.d
 couled_sampling_method = user_args.c
 
 # Set xml file name
-name = "sim_info_"+interp+"_"+sampling+"_"+energy
+name = "sim_info_"+interp+"_"+sampling_name+"_"+energy
 
 if elastic_bool == "false":
     name += "_no_elastic"

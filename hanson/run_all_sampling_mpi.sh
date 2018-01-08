@@ -9,7 +9,6 @@
 
 # interpolations to run for mpi
 sample_methods=( 2D 1D Simplified )
-interp=( correlated exact )
 # file type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12)
 file_type=1
 

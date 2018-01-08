@@ -6,8 +6,7 @@
 EXTRA_ARGS=$@
 TESTING_DIR="/home/lkersting/frensie/tests"
 
-if [ "$#" -ne 1 ];
-then
+if [ "$#" -ne 1 ]; then
     echo "The input file is required. $# arguments provided!"
     echo "run:  ./data_processor.sh <file_name minus .h5>"
 else
@@ -21,8 +20,7 @@ else
     CURRENT="${FILE}/current"
     TRACK_FLUX="${FILE}/track_flux"
 
-    if [ -f $H5 ];
-    then
+    if [ -f $H5 ]; then
         for i in 1 3 6 9 12
         do
             file=${FLUX}_${i}.txt

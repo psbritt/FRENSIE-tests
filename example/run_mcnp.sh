@@ -10,8 +10,7 @@ MCNP6_2=/home/software/mcnp6.2/bin/mcnp6
 MCNP=$MCNP6_2
 
 THREADS="8"
-if [ "$#" -eq 1 ];
-then
+if [ "$#" -eq 1 ]; then
     # Set the number of threads used
     THREADS="$1"
 fi

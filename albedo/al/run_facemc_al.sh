@@ -21,8 +21,7 @@ CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA
 FRENSIE=/home/lkersting/frensie
 
 THREADS="12"
-if [ "$#" -eq 1 ];
-then
+if [ "$#" -eq 1 ]; then
     # Set the number of threads used
     THREADS="$1"
 fi
@@ -39,8 +38,8 @@ IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Two D Interp Policy (logloglog, linlinlin, linlinlog)
 INTERP="logloglog"
-# Two D Sampling Policy (correlated, exact, stochastic)
-SAMPLE="correlated"
+# Two D Sampling Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
+SAMPLE=1
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
 DISTRIBUTION="Decoupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
@@ -56,18 +55,15 @@ ENERGY_EV=${ENERGY_EV%.*}
 
 echo -n "Enter the desired data type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12) > "
 read INPUT
-if [ ${INPUT} -eq 2 ]
-then
+if [ ${INPUT} -eq 2 ]; then
     # Use ACE EPR14 data
     NAME="epr14"
     echo "Using ACE EPR14 data!"
-elif [ ${INPUT} -eq 3 ]
-then
+elif [ ${INPUT} -eq 3 ]; then
     # Use ACE EPR12 data
     NAME="ace"
     echo "Using ACE EPR12 data!"
-elif [ ${DISTRIBUTION} = "Hybrid" ]
-then
+elif [ ${DISTRIBUTION} = "Hybrid" ]; then
     # Use Native moment preserving data
     NAME="moments"
     echo "Using Native Moment Preserving data!"
@@ -79,23 +75,18 @@ fi
 NAME_EXTENTION=""
 NAME_REACTION=""
 # Set the sim info xml file name
-if [ "${ELASTIC_ON}" = "false" ]
-then
+if [ "${ELASTIC_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_elastic"
-elif [ ${DISTRIBUTION} = "Coupled" ]
-then
+elif [ ${DISTRIBUTION} = "Coupled" ]; then
     NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
 fi
-if [ "${BREM_ON}" = "false" ]
-then
+if [ "${BREM_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_brem"
 fi
-if [ "${IONIZATION_ON}" = "false" ]
-then
+if [ "${IONIZATION_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_ionization"
 fi
-if [ "${EXCITATION_ON}" = "false" ]
-then
+if [ "${EXCITATION_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_excitation"
 fi
 
@@ -110,13 +101,28 @@ RSP="../rsp_fn.xml"
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
 
-if [ ${NAME} = "ace" -o ${NAME} = "epr14" ]
-then
+if [ ${NAME} = "ace" -o ${NAME} = "epr14" ]; then
     DIR="results/testrun/${NAME}"
     NAME="al_${NAME}_${ENERGY_EV}${NAME_REACTION}"
 else
     DIR="results/testrun/${INTERP}"
-    NAME="al_${NAME}_${ENERGY_EV}_${INTERP}_${SAMPLE}${NAME_EXTENTION}${NAME_REACTION}"
+
+    if [ ${SAMPLE} = 1 ]
+    then
+        echo "unit_correlated"
+        SAMPLE_NAME="unit_correlated"
+    elif [ ${SAMPLE} = 2 ]
+    then
+        echo "correlated"
+        SAMPLE_NAME="correlated"
+    elif [ ${SAMPLE} = 3 ]
+    then
+        echo "unit_base"
+        SAMPLE_NAME="unit_base"
+    fi
+    echo $SAMPLE_NAME
+
+    NAME="al_${NAME}_${ENERGY_EV}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"
 fi
 
 mkdir -p $DIR

@@ -12,8 +12,7 @@ TODAY=$(date +%Y-%m-%d)
 OUTPUT_DIR="./results/mcnp/${TODAY}/"
 
 THREADS="8"
-if [ "$#" -eq 1 ];
-then
+if [ "$#" -eq 1 ]; then
     # Set the number of threads used
     THREADS="$1"
 fi

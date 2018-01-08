@@ -12,8 +12,7 @@ CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA/
 FRENSIE=/home/lkersting/frensie/
 
 THREADS="12"
-if [ "$#" -eq 1 ];
-then
+if [ "$#" -eq 1 ]; then
     # Set the number of threads used
     THREADS="$1"
 fi
@@ -47,8 +46,7 @@ REACTIONS="-t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON
 SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} ${REACTIONS} ${ELASTIC}"
 
 NAME="native"
-if [ ${DISTRIBUTION} = "Hybrid" ]
-then
+if [ ${DISTRIBUTION} = "Hybrid" ]; then
     # Use Native moment preserving data
     NAME="moments"
     echo "Using Native Moment Preserving data!"
@@ -60,27 +58,21 @@ fi
 NAME_EXTENTION=""
 NAME_REACTION=""
 # Set the file name extentions
-if [ "${ELASTIC_ON}" = "false" ]
-then
+if [ "${ELASTIC_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_elastic"
-elif [ ${DISTRIBUTION} = "Coupled" ]
-then
+elif [ ${DISTRIBUTION} = "Coupled" ]; then
     NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
 fi
-if [ "${BREM_ON}" = "false" ]
-then
+if [ "${BREM_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_brem"
 fi
-if [ "${IONIZATION_ON}" = "false" ]
-then
+if [ "${IONIZATION_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_ionization"
 fi
-if [ "${EXCITATION_ON}" = "false" ]
-then
+if [ "${EXCITATION_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_excitation"
 fi
-if [ "${GEOMETRY}" = "ROOT" ]
-then
+if [ "${GEOMETRY}" = "ROOT" ]; then
     NAME_EXTENTION="${NAME_EXTENTION}_root"
 fi
 
@@ -118,8 +110,7 @@ mv continue_run.xml ${NEW_RUN_INFO}
 
 cd ${DIR}
 
-if [ "${GEOMETRY}" = "ROOT" ]
-then
+if [ "${GEOMETRY}" = "ROOT" ]; then
     bash ../../../data_processor_root.sh ${NAME}
 else
     bash ../../../data_processor.sh ${NAME}

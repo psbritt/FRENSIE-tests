@@ -6,8 +6,7 @@
 EXTRA_ARGS=$@
 TESTING_DIR="/home/lkersting/frensie/frensie-tests"
 
-if [ "$#" -ne 2 ];
-then
+if [ "$#" -ne 2 ]; then
     echo "The energy and input file are required. $# arguments provided!"
     echo "run:  ./data_processor.sh <energy> <file>"
 else
@@ -20,8 +19,7 @@ else
     H5="${FILE}.h5"
     TL_FLUX="${FILE}_cell_flux"
 
-    if [ -f $H5 ];
-    then
+    if [ -f $H5 ]; then
         output=${FILE}_albedo.txt
         # Extract the surface current data
         ${TESTING_DIR}/edump.py -f $H5 -e 1 -i 4 -b Cosine > $output

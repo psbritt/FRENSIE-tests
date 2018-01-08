@@ -44,13 +44,14 @@ for n in range(len(file_paths)):
     with open(file_paths[n]) as input:
         names[n] = next(input)
         names[n] = names[n].replace("#","")
+        names[n] = names[n].replace("\n","")
         next(input)
         data = zip(*(line.strip().split() for line in input))
         data_x[n] = data[0][:]
         data_y[n] = data[1][:]
         data_error[n] = data[2][:]
 
-fig = plt.figure(num=1, figsize=(10,5))
+fig = plt.figure(num=1, figsize=(10,7))
 plt.xlabel('Energy (MeV)', size=14)
 plt.ylabel('Reflection Coef.', size=14)
 plt.title('Electron Albedos for an infinite slab of Al', size=16)
@@ -66,9 +67,9 @@ if user_args.e:
 
 if user_args.a:
     data = np.loadtxt("./creep_experimental_2.txt", skiprows=2)
-    plt.scatter(data[:,0], data[:,1], label="Bishop (Exp.)", marker='*')
-    plt.scatter(data[:,0], data[:,2], label="Neubert (Exp.)", marker='o' )
-    plt.scatter(data[:,0], data[:,3], label="Darlington (Exp.)", marker='^' )
+    plt.scatter(data[:,0], data[:,1], label="Bishop (Exp.)", marker='*', s=35 )
+    plt.scatter(data[:,0], data[:,2], label="Neubert (Exp.)", marker='o', s=35 )
+    plt.scatter(data[:,0], data[:,3], label="Darlington (Exp.)", marker='d', s=35 )
 
 
 # if user_args.a:
@@ -87,8 +88,8 @@ if user_args.a:
 #     plt.scatter(data[:,0], data[:,12], label="Joy Ref. 106" )
 #     plt.scatter(data[:,0], data[:,13], label="Joy Ref. 107" )
 
-markers = ["v","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","X","D","d"]
-markerssizes = [6,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
+markers = ["v","^","<",">","s","+","x","1","2","3","4","8","p","*","h","H","X","D","d"]
+markerssizes = [7,7,7,7,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7]
 for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
@@ -97,6 +98,9 @@ for n in range(N):
 plt.legend(loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
+
+# leg = plt.legend(loc='best', ncol=2)
+# leg.get_frame().set_alpha(0.5)
 
 output = "albedo_results.pdf"
 if user_args.o:

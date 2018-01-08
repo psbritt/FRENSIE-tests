@@ -6,8 +6,7 @@
 EXTRA_ARGS=$@
 TESTING_DIR="/home/lkersting/frensie/frensie-tests"
 
-if [ "$#" -ne 1 ];
-then
+if [ "$#" -ne 1 ]; then
     echo "The input file is required. $# arguments provided!"
     echo "run:  ./data_processor.sh <file>"
 else
@@ -18,8 +17,7 @@ else
     TL_FLUX="${FILE}_cell_flux"
     SURFACE_CURRENT="${FILE}_current"
 
-    if [ -f $H5 ];
-    then
+    if [ -f $H5 ]; then
         for i in 4 6
         do
             output=${SURFACE_CURRENT}_1_${i}.txt

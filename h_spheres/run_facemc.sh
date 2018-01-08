@@ -21,8 +21,7 @@ CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA
 FRENSIE=/home/lkersting/frensie
 
 THREADS="8"
-if [ "$#" -eq 1 ];
-then
+if [ "$#" -eq 1 ]; then
     # Set the number of threads used
     THREADS="$1"
 fi
@@ -45,8 +44,8 @@ IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Two D Interp Policy (logloglog, linlinlin, linlinlog)
 INTERP="logloglog"
-# Two D Sampling Policy (correlated, exact, stochastic)
-SAMPLE="correlated"
+# Two D Sampling Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
+SAMPLE=1
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
 DISTRIBUTION="Decoupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
@@ -61,18 +60,15 @@ SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${INTERP} -s ${SAMPLE} ${REACTIO
 
 echo -n "Enter the desired data type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12) > "
 read INPUT
-if [ ${INPUT} -eq 2 ]
-then
+if [ ${INPUT} -eq 2 ]; then
     # Use ACE EPR14 data
     NAME="epr14"
     echo "Using ACE EPR14 data!"
-elif [ ${INPUT} -eq 3 ]
-then
+elif [ ${INPUT} -eq 3 ]; then
     # Use ACE EPR12 data
     NAME="ace"
     echo "Using ACE EPR12 data!"
-elif [ ${DISTRIBUTION} = "Hybrid" ]
-then
+elif [ ${DISTRIBUTION} = "Hybrid" ]; then
     # Use Native moment preserving data
     NAME="moments"
     echo "Using Native Moment Preserving data!"
@@ -84,23 +80,18 @@ fi
 NAME_EXTENTION=""
 NAME_REACTION=""
 # Set the sim info xml file name
-if [ "${ELASTIC_ON}" = "false" ]
-then
+if [ "${ELASTIC_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_elastic"
-elif [ ${DISTRIBUTION} = "Coupled" ]
-then
+elif [ ${DISTRIBUTION} = "Coupled" ]; then
     NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
 fi
-if [ "${BREM_ON}" = "false" ]
-then
+if [ "${BREM_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_brem"
 fi
-if [ "${IONIZATION_ON}" = "false" ]
-then
+if [ "${IONIZATION_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_ionization"
 fi
-if [ "${EXCITATION_ON}" = "false" ]
-then
+if [ "${EXCITATION_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_excitation"
 fi
 
@@ -112,9 +103,24 @@ SOURCE=$(python source.py -e ${ENERGY} 2>&1)
 GEOM=$(python geom.py -e ${ENERGY} -t ${GEOMETRY} 2>&1)
 RSP="../rsp_fn.xml"
 
-NAME="h_${ENERGY_KEV}kev_${NAME}${NAME_EXTENTION}"
-if [ "${GEOMETRY}" = "ROOT" ]
-then
+if [ ${NAME} = "ace" -o ${NAME} = "epr14" ]; then
+    DIR="results/${NAME}/${TODAY}"
+    NAME="h_${ENERGY_KEV}kev_${NAME}${NAME_REACTION}"
+else
+    DIR="results/${INTERP}/${TODAY}"
+
+    if [ ${SAMPLE} = 1 ]; then
+        SAMPLE_NAME="unit_correlated"
+    elif [ ${SAMPLE} = 2 ]; then
+        SAMPLE_NAME="correlated"
+    elif [ ${SAMPLE} = 3 ]; then
+        SAMPLE_NAME="unit_base"
+    fi
+
+    NAME="h_${ENERGY_KEV}kev_${NAME}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"
+fi
+
+if [ "${GEOMETRY}" = "ROOT" ]; then
     NAME="${NAME}_root"
 fi
 
@@ -140,8 +146,7 @@ mv continue_run.xml ${NEW_RUN_INFO}
 
 cd ${DIR}
 
-if [ "${GEOMETRY}" = "ROOT" ]
-then
+if [ "${GEOMETRY}" = "ROOT" ]; then
     bash ../../../data_processor_root.sh ${NAME}
 else
     bash ../../../data_processor.sh ${NAME}

@@ -6,8 +6,7 @@
 EXTRA_ARGS=$@
 TESTING_DIR="/home/lkersting/frensie/tests"
 
-if [ "$#" -ne 1 ];
-then
+if [ "$#" -ne 1 ]; then
     echo "The input file is required. $# arguments provided!"
     echo "run:  ./data_processor_root.sh <file_name minus .h5>"
 else
@@ -19,8 +18,7 @@ else
     mkdir -p ${FILE}
     TRACK_FLUX="${FILE}/track_flux"
 
-    if [ -f $H5 ];
-    then
+    if [ -f $H5 ]; then
         file=${TRACK_FLUX}.txt
         # Extract the flux data
         ${TESTING_DIR}/edump.py -f $H5 -e 1 -i 1 -b Energy > $file

@@ -9,7 +9,7 @@
 
 # interpolations to run for mpi
 interps=( linlinlin linlinlog logloglog )
-sample_policy=( correlated exact )
+sample_policy=( 1 2 )
 # file type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12)
 file_type=1
 
@@ -24,8 +24,7 @@ do
     do
         command=s/SAMPLE=.*/SAMPLE=\"$j\"/
         sed -i $command run_hanson_mpi.sh
-        if [ ${i} != linlinlog ] || [ ${j} != exact ];
-        then
+        if [ ${i} != linlinlog ] || [ ${j} != 2 ]; then
             echo -e "\nRunning Native Analog with "$i" "$j" Sampling!"
             sbatch run_hanson_mpi.sh $file_type
         fi
