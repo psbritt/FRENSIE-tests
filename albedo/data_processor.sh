@@ -24,7 +24,7 @@ else
         # Extract the surface current data
         ${TESTING_DIR}/edump.py -f $H5 -e 1 -i 4 -b Cosine > $output
         # Remove extra data and add energy
-        sed -i '1s/.*/# Energy (keV)\tAlbedo\tError/' $output
+        sed -i '1s/.*/# Energy (MeV)\tAlbedo\tError/' $output
         sed -i '2,4d' $output
         REPLACE="2s/1.0/$Energy_MeV/"
         sed -i $REPLACE $output

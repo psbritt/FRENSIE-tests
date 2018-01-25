@@ -61,14 +61,14 @@ c --------------------
 c monodirectional, monoenergetic point source located
 c just before the the edge of the shield
 c Energies: .0093 .011 .0134 .0173 .0252 .0415 .0621 .0818 .102
-SDEF  ERG=0.0252 POS=-20 0 0 DIR=1 VEC=1 0 0 PAR=e
+SDEF  ERG=.04 POS=-20 0 0 DIR=1 VEC=1 0 0 PAR=e
 c --------------------
 c Job Control
 c --------------------
 c run in photon-electron mode to get low energy physics
 mode p e
 c run for 1e8 histories
-nps 1e8
+nps 5e7
 c Surface current on front surface
 f11:e 100
 c11  0 0.99 1

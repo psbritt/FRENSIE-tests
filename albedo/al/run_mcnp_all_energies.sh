@@ -23,7 +23,8 @@ if [ "$#" -eq 1 ]; then
 fi
 
 # energies to run for mpi
-energies=( 0.0093 0.011 0.0134 0.0173 0.0252 0.0415 0.0621 0.0818 0.102 )
+energies=(.005 .0093 .01 .011 .0134 .015 .0173 .02 .0252 .03 .04 .0415 .05 .06 .0621 .0818 .102)
+energies=(.005 .01 .015 .02 .03 .04 .05 .06)
 
 # Set the input file name
 NAME="mcnp.in"

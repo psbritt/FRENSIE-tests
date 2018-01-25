@@ -72,7 +72,7 @@ cutoff_cosine = 1.0
 # Elastic Distribution (Coupled, Decoupled, Hybrid)
 elastic_distribution = user_args.d
 # Elastic Coupled Distribution Sampling Method ( One D Union, Two D Union, Simplified Union)
-couled_sampling_method = user_args.c
+coupled_sampling_method = user_args.c
 
 # Set xml file name
 name = "sim_info_"+interp+"_"+sampling_name+"_"+energy
@@ -82,14 +82,14 @@ if elastic_bool == "false":
 else:
     if elastic_distribution == "Coupled":
         name+="_coupled"
-        if couled_sampling_method == "1D":
+        if coupled_sampling_method == "1D":
             name+="_1D"
-            couled_sampling_method = "One D Union"
-        elif couled_sampling_method == "2D":
+            coupled_sampling_method = "One D Union"
+        elif coupled_sampling_method == "2D":
             name+="_2D"
-            couled_sampling_method = "Two D Union"
+            coupled_sampling_method = "Two D Union"
         else:
-            couled_sampling_method = "Simplified Union"
+            coupled_sampling_method = "Simplified Union"
     elif elastic_distribution == "Hybrid":
         name+="_0.9"
         cutoff_cosine = 0.9
@@ -130,7 +130,7 @@ if elastic_bool:
   ET.SubElement(parameter_2, "Parameter", name="Electron Elastic Distribution", type="string", value=elastic_distribution )
 
   if elastic_distribution == "Coupled":
-    ET.SubElement(parameter_2, "Parameter", name="Coupled Elastic Sampling Method", type="string", value=couled_sampling_method )
+    ET.SubElement(parameter_2, "Parameter", name="Coupled Elastic Sampling Method", type="string", value=coupled_sampling_method )
 
 prettify(root,name)
 print name
