@@ -61,7 +61,7 @@ c --------------------
 c monodirectional, monoenergetic point source located
 c just before the the edge of the shield
 c Energies: .0093 .011 .0134 .0173 .0252 .0415 .0621 .0818 .102
-SDEF  ERG=.04 POS=-20 0 0 DIR=1 VEC=1 0 0 PAR=e
+SDEF  ERG=.06 POS=-20 0 0 DIR=1 VEC=1 0 0 PAR=e
 c --------------------
 c Job Control
 c --------------------
