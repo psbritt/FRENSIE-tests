@@ -20,7 +20,7 @@ if [ -d "$cross_section_directory" ]; then
 
     if [ -d "$cross_section_directory/native" ]; then
         # Update H Log data
-        printf "Updating the H LinLog native test data...\n"
+        printf "Updating the H LogLogLog native test data...\n"
         $epr --cross_sec_dir=$cross_section_directory --cross_sec_alias=H --min_photon_energy=1e-3 --max_photon_energy=20.0 --min_electron_energy=1e-5 --max_electron_energy=1e5 --occupation_num_tol=1e-3 --subshell_incoherent_tol=1e-3 --grid_convergence_tol=1e-3 --grid_absolute_diff_tol=1e-80 --grid_absolute_dist_tol=1e-18 --tabular_evaluation_tol=1e-15 --cutoff_angle_cosine=0.9 --number_of_moment_preserving_angles=2.0 --electron_interp_policy="Log-Log-Log" --modify_cs_xml_file --subdir="native" --output_alias="Native" --notes="$notes"
         if [ $? -eq 0 ]; then
             printf "H native lin-lin-log data updated successfully!\n\n"
@@ -34,7 +34,7 @@ if [ -d "$cross_section_directory" ]; then
     fi
     if [ -d "$cross_section_directory/native/linlinlin" ]; then
         # Update H Lin data
-        printf "Updating the H LinLin native test data...\n"
+        printf "Updating the H LinLinLin native test data...\n"
         $epr --cross_sec_dir=$cross_section_directory --cross_sec_alias=H --min_photon_energy=1e-3 --max_photon_energy=20.0 --min_electron_energy=1e-5 --max_electron_energy=1e5 --occupation_num_tol=1e-3 --subshell_incoherent_tol=1e-3 --grid_convergence_tol=1e-3 --grid_absolute_diff_tol=1e-80 --grid_absolute_dist_tol=1e-18 --tabular_evaluation_tol=1e-15 --cutoff_angle_cosine=0.9 --number_of_moment_preserving_angles=2.0 --electron_interp_policy="Lin-Lin-Lin" --modify_cs_xml_file --subdir="native/linlinlin" --output_alias="LinLinLin" --notes="$notes"
         if [ $? -eq 0 ]; then
             printf "H native lin-lin-lin data updated successfully!\n\n"

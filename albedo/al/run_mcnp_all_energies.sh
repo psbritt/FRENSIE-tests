@@ -33,10 +33,10 @@ mkdir -p $OUTPUT_DIR
 # loop through energies and run mpi script
 for i in "${energies[@]}"
 do
-    pattern="ERG=$i POS=-20 0 0 DIR=1 VEC=1 0 0 PAR=e"
+    pattern="ERG=${i} POS=-20 0 0 DIR=1 VEC=1 0 0 PAR=e"
     sed -i 's,ERG=.*,'"$pattern"',' "mcnp.in"
 
-    OUTPUT="mcnp_$i"
+    OUTPUT="mcnp_${i}"
 
     echo "Running MCNP:"
     echo "${MCNP} i=${NAME} n=${OUTPUT}. tasks ${THREADS}"
@@ -53,7 +53,7 @@ do
     cd ${OUTPUT_DIR}
 
     echo "Processing the results:"
-    python ../../../../mcnp_data_processor.py -f ${OUTPUT}
+    python ../../../../mcnp_data_processor.py -f ${OUTPUT} -e ${i}
     echo "The processed data is located at: ${OUTPUT_DIR}"
     cd ../../../
 

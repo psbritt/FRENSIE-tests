@@ -3,6 +3,8 @@
 import sys, getopt
 import math as m
 import matplotlib.pyplot as plt
+from colorama import Fore, init
+init(autoreset=True)
 
 def main(argv):
     mcnpinputfile = ''
@@ -118,7 +120,7 @@ def main(argv):
         else:
             c_e_ratio[i] = 0.0
             c_e_uncert[i] = ( prop_uncert[i] )
-        print energy[i], facemc_average_values[i], mcnp_average_values[i], c_e_ratio[i], c_e_uncert[i]
+        print energy[i], "\t", facemc_average_values[i], "\t", mcnp_average_values[i], c_e_ratio[i], "\t", c_e_uncert[i]
 
     # calculate % of c/e values within 1,2,3 sigma
     num_c_e_in_one_sigma = 0
@@ -128,33 +130,57 @@ def main(argv):
     num_above = 0
 
     start = 0
-    for i in range(start,len(c_e_ratio)):
+    stop = len(c_e_ratio)
+    num_zeros = 0
+    print "----------------------------------------------------------------"
+    print "Energy,\t Difference in units Sigma,\t Sigma"
+    print "----------------------------------------------------------------"
+    for i in range(start,stop):
         if c_e_ratio[i] < 1.0:
             num_below = num_below+1
         else:
             num_above = num_above+1
 
         diff = abs( 1.0 - c_e_ratio[i] )
+        if ( c_e_uncert[i] > 0.0 ):
+          string = str(energy[i])+ "\t"+ str(diff/c_e_uncert[i]) + "\t" + str(c_e_uncert[i])
+        elif ( diff == 0.0 ):
+          string = str(energy[i])+ "\t0.0\t" + str(c_e_uncert[i])
+          num_zeros = num_zeros + 1
+          continue
+        else:
+          string = str(energy[i])+ "\tinf\t" + str(c_e_uncert[i])
         #print c_e_ratio[i], diff, 2*c_e_uncert[i]
         if diff <= c_e_uncert[i]:
             num_c_e_in_one_sigma = num_c_e_in_one_sigma + 1
+            print(Fore.GREEN + str(string))
         if diff <= 2*c_e_uncert[i]:
             num_c_e_in_two_sigma = num_c_e_in_two_sigma + 1
+            if diff > c_e_uncert[i]:
+                print(Fore.BLUE + str(string))
         if diff <= 3*c_e_uncert[i]:
             num_c_e_in_three_sigma = num_c_e_in_three_sigma + 1
+            if diff > 2*c_e_uncert[i]:
+                print(Fore.YELLOW + str(string))
+        else:
+            print(Fore.RED + str(string))
 
+    length = len(range(start,len(c_e_ratio))) - num_zeros
     print "----------------------------------------------------------------"
-    print "% C/E in 1 sigma: "
-    print num_c_e_in_one_sigma, len(range(start,len(c_e_ratio))), float(num_c_e_in_one_sigma)/len(range(start,len(c_e_ratio)))
+    print(Fore.GREEN + "% C/E in 1 sigma: ")
+    string = str(num_c_e_in_one_sigma) + " " + str(length) + " " + str(float(num_c_e_in_one_sigma)/length)
+    print(Fore.GREEN + str(string))
     print "----------------------------------------------------------------"
-    print "% C/E in 2 sigma: "
-    print num_c_e_in_two_sigma, len(range(start,len(c_e_ratio))), float(num_c_e_in_two_sigma)/len(range(start,len(c_e_ratio)))
+    print(Fore.BLUE + "% C/E in 2 sigma: ")
+    string = str(num_c_e_in_two_sigma) + " " + str(length) + " " + str(float(num_c_e_in_two_sigma)/length)
+    print(Fore.BLUE + str(string))
     print "----------------------------------------------------------------"
-    print "% C/E in 3 sigma: "
-    print num_c_e_in_three_sigma, len(range(start,len(c_e_ratio))), float(num_c_e_in_three_sigma)/len(range(start,len(c_e_ratio)))
+    print(Fore.YELLOW + "% C/E in 3 sigma: ")
+    string = str(num_c_e_in_three_sigma) + " " + str(length) + " " + str(float(num_c_e_in_three_sigma)/length)
+    print(Fore.YELLOW + str(string))
     print "----------------------------------------------------------------"
-    print "% below: ", float(num_below)/len(range(start,len(c_e_ratio)))
-    print "% above: ", float(num_above)/len(range(start,len(c_e_ratio)))
+    print "% below: ", float(num_below)/length
+    print "% above: ", float(num_above)/length
 
     # Create the output file for C/E data
     f = open(output_c_e, 'w')
@@ -174,26 +200,30 @@ def main(argv):
 
     # Plot data
     fig1 = plt.figure(num=1, figsize=(10,5))
-    plt.subplot2grid((2,6),(0, 0), colspan=6)
-#    plt.xlabel('Energy (MeV)')
+    ax =plt.subplot2grid((2,6),(0, 0), colspan=6)
+
+    # plt.ylabel('Surface Current ($\#$)')
+    # plt.ylabel('Surface Flux ($\#/cm^2$)')
     plt.ylabel('Track Length Flux ($\#/cm^2$)')
+    # plt.title('Comparison of the Surface Current in a Sphere of H')
+    # plt.title('Comparison of the Surface Flux in a Sphere of H')
     plt.title('Comparison of the Track Length Flux in a Sphere of H')
-#    plt.xlim(0.85,1.0)
-#    #plt.ylim(0.02,0.05)
-#    plt.plot( energy, mcnp_average_values, label='MCNP')
-#    plt.plot( energy, facemc_average_values, label='FACEMC-ACE')
+    plt.ylim(2e4, 2e6)
+    ax.set_yscale('log')
+
+    plt.xlim(0.0, energy[len(energy)-1])
+
     # plot with errorbars
-    plt.errorbar( energy, mcnp_average_values, yerr=mcnp_error, label='MCNP')
-    plt.errorbar( energy, facemc_average_values, yerr=facemc_error, label='FACEMC-ACE')
+    plt.errorbar( energy, mcnp_average_values, yerr=mcnp_error, label='MCNP 6.2')
+    plt.errorbar( energy, facemc_average_values, yerr=facemc_error, label='ACE-EPR14')
     plt.legend(loc=2)
     plt.subplot2grid((2,6),(1, 0), colspan=6)
     plt.xlabel('Energy (MeV)')
     plt.ylabel('C/E')
-#    plt.ylim(0.9, 1.1)
-#    plt.plot( energy, c_e_ratio )
+    plt.xlim(1e-5, energy[len(energy)-1])
+
     # plot with errorbars
     plt.errorbar( energy, c_e_ratio, yerr=c_e_uncert)
-#    plt.legend(bbox_to_anchor=(1.05, 1), loc=2, borderaxespad=0.)
 
     plt.show()
 
