@@ -26,8 +26,8 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-# CROSS_SECTION_XML_PATH=/home/lkersting/mcnpdata/
-CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA/
+CROSS_SECTION_XML_PATH=/home/lkersting/mcnpdata/
+# CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA/
 FRENSIE=/home/lkersting/frensie
 
 INPUT="1"
@@ -40,11 +40,10 @@ fi
 ELEMENT="Al"
 ENERGY="0.314"
 TEST_NUMBER="1"
-GEOM_PATH="${FRENSIE}/frensie-tests/lockwood/${ELEMENT}_${ENERGY}/geom_${TEST_NUMBER}.root"
 
-THREADS="8"
-# Number of histories 1e7
-HISTORIES="10"
+THREADS="80"
+# Number of histories 1e6
+HISTORIES="1000000"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
@@ -58,6 +57,10 @@ SAMPLE=1
 DISTRIBUTION="Coupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
 COUPLED_SAMPLING="2D"
+
+# Path to root file (currently no DagMC option)
+GEOM_PATH="${FRENSIE}/frensie-tests/lockwood/${ELEMENT}_${ENERGY}/geom_${TEST_NUMBER}.root"
+GEOM_TYPE="ROOT"
 
 NAME="native"
 
@@ -106,7 +109,7 @@ INFO=$(python ../sim_info.py ${SIM_PARAMETERS} 2>&1)
 MAT=$(python ../mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP} 2>&1)
 SOURCE=$(python ./source.py -e ${ENERGY} 2>&1)
 EST="est.xml"
-GEOM=$(python ./geom.py -t ROOT -f ${GEOM_PATH} 2>&1)
+GEOM=$(python ./geom.py -t ${GEOM_TYPE} -f ${GEOM_PATH} 2>&1)
 RSP="../rsp_fn.xml"
 
 # Make directory for the test results

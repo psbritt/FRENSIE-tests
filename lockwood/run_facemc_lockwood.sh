@@ -27,8 +27,7 @@ fi
 
 ELEMENT="Al"
 ENERGY="0.314"
-TEST_NUMBER="1"
-GEOM_PATH="${FRENSIE}/frensie-tests/lockwood/${ELEMENT}_${ENERGY}/geom_${TEST_NUMBER}.root"
+TEST_NUMBER="2"
 
 # Changing variables
 # Number of histories
@@ -46,6 +45,10 @@ SAMPLE=1
 DISTRIBUTION="Decoupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
 COUPLED_SAMPLING="Simplified"
+
+# ROOT or DagMC (currently no DagMC option)
+GEOM_PATH="${FRENSIE}/frensie-tests/lockwood/${ELEMENT}_${ENERGY}/geom_${TEST_NUMBER}.root"
+GEOM_TYPE="ROOT"
 
 NAME="native"
 
@@ -95,7 +98,7 @@ INFO=$(python ../sim_info.py ${SIM_PARAMETERS} 2>&1)
 MAT=$(python ../mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP} 2>&1)
 SOURCE=$(python ./source.py -e ${ENERGY} 2>&1)
 EST="est.xml"
-GEOM=$(python ./geom.py -t ROOT -f ${GEOM_PATH} 2>&1)
+GEOM=$(python ./geom.py -t ${GEOM_TYPE} -f ${GEOM_PATH} 2>&1)
 RSP="../rsp_fn.xml"
 
 # Make directory for the test results

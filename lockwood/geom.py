@@ -24,7 +24,6 @@ name = "geom_"+str(geom_type)+".xml"
 root = ET.Element("ParameterList", name="Geometry")
 
 if str(geom_type) == "DagMC":
-    print "why this?"
     ET.SubElement(root, "Parameter", name="Handler", type="string", value="DagMC")
     ET.SubElement(root, "Parameter", name="CAD File", type="string", value=str(geom_file))
     ET.SubElement(root, "Parameter", name="Facet Tolerance", type="double", value="1e-3")
@@ -45,7 +44,7 @@ else:
     ET.SubElement(root, "Parameter", name="Use Fast Id Lookup", type="bool", value="True")
 
 
-ET.SubElement(root, "Parameter", name="Material Property Name", type="string", value="mat")
+# ET.SubElement(root, "Parameter", name="Material Property Name", type="string", value="mat")
 # ET.SubElement(root, "Parameter", name="Density Property", type="string", value="rho")
 
 prettify(root,name)

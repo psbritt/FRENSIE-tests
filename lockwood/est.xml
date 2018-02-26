@@ -3,10 +3,10 @@
     <Parameter name="Id" type="unsigned int" value="1"/>
     <Parameter name="Type" type="string" value="Cell Pulse Height"/>
     <Parameter name="Particle Type" type="string" value="Electron"/>
-    <Parameter name="Cells" type="Array" value="{1,2}"/>
+    <Parameter name="Cells" type="Array" value="{1}"/>
     <Parameter name="Energy Multiplication" type="bool" value="true"/>
   </ParameterList>
-  <ParameterList name="Cell Track Length Flux Estimator">
+  <!-- <ParameterList name="Cell Track Length Flux Estimator">
     <Parameter name="Id" type="unsigned int" value="2"/>
     <Parameter name="Type" type="string" value="Cell Track-Length Flux"/>
     <Parameter name="Particle Type" type="string" value="Electron"/>
@@ -14,7 +14,7 @@
     <ParameterList name="Bins">
       <Parameter name="Energy Bins" type="Array" value="{1.5e-5, 49l, .314}"/>
     </ParameterList>
-  </ParameterList>
+  </ParameterList> -->
   <!-- <ParameterList name="Particle Tracker 1">
     <Parameter name="Id" type="unsigned int" value="3"/>
     <Parameter name="Type" type="string" value="Particle Tracker"/>
