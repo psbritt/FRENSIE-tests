@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # Luke Kersting
-# This script asks for #/square degree data and run names which it then plots.
+# This script asks for energy deposition data and run names which it then plots.
 import csv
 import math
 import numpy as np
@@ -9,7 +9,7 @@ from matplotlib.ticker import FormatStrFormatter
 import argparse as ap
 
 # Set up the argument parser
-description = "This script asks for #/square degree data and run names which "\
+description = "This script asks for energy deposition data and run names which "\
               "which it then plots."
 
 parser = ap.ArgumentParser(description=description)
@@ -31,7 +31,7 @@ file_paths = user_args.input_files
 N = len(file_paths)
 
 # Number of data points in each file
-M = 18
+M = 12
 data_x = [[0 for x in range(N)] for y in range(M)]
 data_y = [[0 for x in range(N)] for y in range(M)]
 data_error = [[0 for x in range(N)] for y in range(M)]
@@ -50,27 +50,28 @@ for n in range(len(file_paths)):
         data_error[n][0:17] = data[2][1:]
 
 fig = plt.figure(num=1, figsize=(10,5))
-plt.xlabel('Angle (Degree)', size=14)
-plt.ylabel('#/Square Degrees', size=14)
-plt.title('$\mathrm{15.7\/MeV\/Electron\/Angular\/Distribution\/from\/a\/9.658\/\mu m\/Gold\/Foil}$', size=16)
+plt.xlabel('Range ($\mathrm{g/cm^2}$)', size=14)
+plt.ylabel('Dose ($\mathrm{MeV\/cm^2/g}$)', size=14)
+plt.title('$\mathrm{Energy\/Deposition\/from\/0.314\/MeV\/Electron\/in\/Aluminum}$', size=16)
 ax=plt.gca()
 
-plt.xlim(0.0,10.0)
-plt.ylim(0.0,0.05)
+plt.xlim(0.0,0.1)
+plt.ylim(0.0,6.0)
 
 if user_args.e:
     # Get experimental data
-    with open("experimental_results.txt") as input:
-        data = zip(*(line.strip().split(' ') for line in input))
-        data_name = data[0][0] + data[1][0] + data[2][0]
+    with open("./Al_0.314/experimental_results.txt") as input:
+        data = zip(*(line.strip().split('\t') for line in input))
+        data_name = data[0][0] + data[1][0]
         exp_x = data[0][1:]
         exp_y = data[1][1:]
-        exp_error = data[2][1:]
+        # exp_error = data[2][1:]
 
     x = map(float, exp_x)
     y = map(float, exp_y)
-    yerr = map(float, exp_error)
-    plt.errorbar(x, y, yerr=yerr, label="Hanson (Exp.)", fmt="s", markersize=5 )
+    plt.scatter(x, y, label="Lockwood (Exp.)", marker='s' )
+    # yerr = map(float, exp_error)
+    # plt.errorbar(x, y, yerr=yerr, label="Lockwood (Exp.)", fmt="s", markersize=5 )
 
 
 markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","X","D","d"]
@@ -84,7 +85,7 @@ plt.legend(loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
 
-output = "hanson_results.pdf"
+output = "lockwood_results.pdf"
 if user_args.o:
     output = user_args.o
 
