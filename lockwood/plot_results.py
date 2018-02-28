@@ -31,23 +31,28 @@ file_paths = user_args.input_files
 N = len(file_paths)
 
 # Number of data points in each file
-M = 12
+M = 7
 data_x = [[0 for x in range(N)] for y in range(M)]
 data_y = [[0 for x in range(N)] for y in range(M)]
 data_error = [[0 for x in range(N)] for y in range(M)]
 names = [0 for x in range(N)]
 
 # Get computational results
-for n in range(len(file_paths)):
+for n in range(N):
     question = "Enter the desired plot name to data file (" + file_paths[n] + "): "
     names[n] = raw_input(question)
 
     with open(file_paths[n]) as input:
-        data = zip(*(line.strip().split(' ') for line in input))
-        data_name = data[0][0] + data[1][0] + data[2][0]
-        data_x[n][0:17] = data[0][1:]
-        data_y[n][0:17] = data[1][1:]
-        data_error[n][0:17] = data[2][1:]
+        next(input)
+        data = zip(*(line.strip().split('\t') for line in input))
+        data_name = data[0][1] + data[1][1] + data[2][1]
+        data_x[n][0:M] = data[0][1:]
+        data_y[n][0:M] = data[1][1:]
+        data_error[n][0:M] = data[2][1:]
+
+        for i in range(0, M):
+          data_y[n][i] = float(data_y[n][i])/float(data_x[n][i])
+          data_error[n][i] = float(data_error[n][i])/float(data_x[n][i])
 
 fig = plt.figure(num=1, figsize=(10,5))
 plt.xlabel('Range ($\mathrm{g/cm^2}$)', size=14)
@@ -80,6 +85,10 @@ for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
     yerr = map(float, data_error[n])
+    print n
+    print x
+    print y
+    print yerr
     plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n] )
 plt.legend(loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))

@@ -117,7 +117,7 @@ TODAY=$(date +%Y-%m-%d)
 
 if [ ${NAME} = "ace" ] || [ ${NAME} = "epr14" ]; then
     DIR="results/${NAME}/${TODAY}"
-    NAME="lockwood_${ENERGY}_${NAME}${NAME_REACTION}"
+    NAME="lockwood_${ENERGY}_${TEST_NUMBER}_${NAME}${NAME_REACTION}"
 else
     DIR="results/${INTERP}/${TODAY}"
 
@@ -133,7 +133,7 @@ else
         NAME="${NAME}_moments"
     fi
 
-    NAME="lockwood_${ENERGY}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"
+    NAME="lockwood_${ENERGY}_${TEST_NUMBER}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"
 fi
 
 mkdir -p $DIR

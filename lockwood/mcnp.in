@@ -1,4 +1,4 @@
-Electron 0.75 Brem test
+Electron Lockwood test
 c
 c
 c -----------------------------------------------------------------------------c
@@ -6,37 +6,25 @@ c Cell block-------------------------------------------------------------------c
 c -----------------------------------------------------------------------------c
 c
 c -----------------------------------------------------------------
-c Cell 10 is the CaF2 dosimeter
+c Cell 10 is the Calorimeter
 c -----------------------------------------------------------------
-10  1  -3.18        100                             IMP:e=1 IMP:p=1
+10  1  -2.7      100 -101 102 -103 104 -105                 IMP:e=1
 c -----------------------------------------------------------------
-c Cell 20 is the lower Al encapsulator
+c Cell 20 is the front foil
 c -----------------------------------------------------------------
-20  2  -2.6989      101                             IMP:e=1 IMP:p=1
+20  1  -2.7      200 -201 202 -203 204 -205                 IMP:e=1
 c -----------------------------------------------------------------
-c Cell 30 is the upper Al encapsulator
+c Cell 30 is the "infinite" plate
 c -----------------------------------------------------------------
-30  2  -2.6989      102                             IMP:e=1 IMP:p=1
+30  1  -2.7     -300                                        IMP:e=1
 c -----------------------------------------------------------------
-c Cell 40 is the C convertor
+c Cell 40 is the vacuum
 c -----------------------------------------------------------------
-40  3  -1.76        200                             IMP:e=1 IMP:p=1
-c -----------------------------------------------------------------
-c Cell 50 is the vacuum area of the source
-c -----------------------------------------------------------------
-50  0               201                             IMP:e=1 IMP:p=1
-c -----------------------------------------------------------------
-c Dry Air in Albuquerque
-c -----------------------------------------------------------------
-60  5  -9.987075e-4 300 -100 -101 -102 -200 -201    IMP:e=1 IMP:p=1
-c -----------------------------------------------------------------
-c Be casing around entire experiment
-c -----------------------------------------------------------------
-70  6  -1.848       301 -300                        IMP:e=1 IMP:p=1
+40  0           -400 #10 #20 #30                            IMP:e=1
 c -----------------------------------------------------------------
 c Void around problem
 c -----------------------------------------------------------------
-80  0              -301                             IMP:e=0 IMP:p=1
+50  0           400                                        IMP:e=0
 c
 c
 c ----------------------------------------------------------------------------c
@@ -47,21 +35,31 @@ c ----------------------------------------------------------------------------c
 c Surface block---------------------------------------------------------------c
 c ----------------------------------------------------------------------------c
 c
-c the 100 series defines an encapsulated thermoluminescent dosimeter
+c the 100 series defines the Calorimeter foil (8.255 x 8.255 x R_cal=0.00187037 )
 c
-100 RCC 0 0 30.22   0 0 0.089  60 $ Cylinder with R = 60 and H = 0.089 about z
-101 RCC 0 0 30.0    0 0 0.22   60 $ Cylinder with R = 60 and H = 0.22 about z
-102 RCC 0 0 30.309  0 0 0.22   60 $ Cylinder with R = 60 and H = 0.22 about z
+100 PX -4.1275
+101 PX  4.1275
+102 PY -4.1275
+103 PY  4.1275
+104 PZ  5.0
+105 PZ  5.00187037
 c
-c the 200 series defines a source and converter region
+c the 200 series defines the front foil (8.89 x 8.89 x R_x - 0.5*R_cal )
 c
-200 RCC 0 0 0       0 0 0.48    1 $ Cylinder with R =  1 and H = 0.48 about z
-201 RCC 0 0 0       0 0 -0.005  1 $ Cylinder with R =  1 and H = 0.005 about z
+200 PX -4.445
+201 PX  4.445
+202 PY -4.445
+203 PY  4.445
+204 PZ  4.897435185
+205 PZ  4.9
 c
-c the 300 series defines an outer shell
+c the 300 series defines the infinite plate ( H = 2, R = 3.81 )
 c
-300 RCC 0 0 -0.005  0 0 30.534 60 $ Cylinder with R = 60 and H = 30.539 about z
-301 RCC 0 0 -0.1    0 0 35.0 65 $ Cylinder with R = 65 and H = 35.1 about z
+300 RCC 0 0 5.10187037  0 0 2.0 3.81 $ 0.1 cm behind the Calorimeter
+c
+c the 400 series defines the vacuum ( H = 10, R = 10 )
+c
+400 RCC 0 0 -0.1  0 0 10.0 10.0
 c
 c ----------------------------------------------------------------------------c
 c MCNP necessary space--------------------------------------------------------c
@@ -74,66 +72,26 @@ c
 c
 c Material Definition
 c -----------------------
-c CaF2
-c -----------------------
-m1    20000.14p  0.51332
-      9000.14p  0.48668
-c -----------------------
 c Al
 c -----------------------
-m2    13000.14p  1.0
-c -----------------------
-c Carbon
-c -----------------------
-m3    6000.14p  1.0
-c -----------------------
-c Dry Air
-c -----------------------
-m4    6000.14p  0.000124
-      7000.14p  0.755267
-      8000.14p  0.231781
-      18000.14p  0.012827
-c -----------------------
-c Be
-c -----------------------
-m5    79000.14p  1.0
+m1    13000.14p  1.0
 c
 c
 c --------------------
 c Source
 c --------------------
-c 0.1 cm disk source at the far end of the vacuum perpendicular to the z-axis
-c uniformly emitting 0.75 MeV electrons monodirectionally in the +z-direction
-SDEF  POS=0 0 -0.005 AXS=0 0 1 EXT=0 RAD=d1 PAR=e ERG=0.75
-      VEC=0 0 1 DIR=1
-SI1   0  0.1          $ radial sampling range: 0 to Rmax (=0.1cm)
-SP1  -21 1            $ radial sampling weighting: r^1 for disk
+c monodirectional, monoenergetic point source located at the origin
+SDEF  ERG=0.314 POS=0 0 0 DIR=1 VEC=0 0 1 PAR=e
+c
 c --------------------
 c Job Control
 c --------------------
 c run in photon-electron mode to get low energy physics
-mode p e
+mode e
 c run for 1e8 histories
-nps 1e8
-c Surface current on front surface
-f11:e 100
-c11  0 0.939692620785908 0.965925826289068 0.984807753012208 &
-0.990268068741570 0.994521895368273 0.995396198367179 0.996194698091746 &
-0.996917333733128 0.997564050259824 0.998134798421867 0.998629534754574 &
-0.999048221581858 0.999390827019096 0.999657324975557 0.999847695156391 &
-0.999961923064171 1.0
-c
-c Surface current on back surface
-f21:e 101
-c21  0 0.939692620785908 0.965925826289068 0.984807753012208 &
-0.990268068741570 0.994521895368273 0.995396198367179 0.996194698091746 &
-0.996917333733128 0.997564050259824 0.998134798421867 0.998629534754574 &
-0.999048221581858 0.999390827019096 0.999657324975557 0.999847695156391 &
-0.999961923064171 1.0
-c
-c Cell track length flux for additional verification
-F4:e  10
-E4 1.5e-5 99ilog 15.7
+nps 1e3
+c Cell pulse height tally (in MeV) for the Calorimeter
+*f8:e 10
 c
 dbcn 17j 2 $ Turn on analog mode
 c
@@ -141,7 +99,7 @@ CUT:P J 1e-3 $ Set photon cutoff to 1e-3 MeV
 CUT:E J 1.5e-05 $ Set electron cutoff to 15 eV
 c
 c Max energy, p's don't make e's, e's don't make p's, simple brem dist, skip 8, full elastic, skip 1 analog start energy
-PHYS:E 15.7 1 1 1 8J 2 J 20.0
+PHYS:E 1.033 1 1 1 8J 2 J 20.0
 c
 prdmp  j  1e7  1   1
 c PHYS:E entry 13 is the selection of the elastic distribution:
