@@ -31,7 +31,7 @@ file_paths = user_args.input_files
 N = len(file_paths)
 
 # Number of data points in each file
-M = 7
+M = 11
 data_x = [[0 for x in range(N)] for y in range(M)]
 data_y = [[0 for x in range(N)] for y in range(M)]
 data_error = [[0 for x in range(N)] for y in range(M)]
@@ -50,9 +50,9 @@ for n in range(N):
         data_y[n][0:M] = data[1][1:]
         data_error[n][0:M] = data[2][1:]
 
-        for i in range(0, M):
-          data_y[n][i] = float(data_y[n][i])/float(data_x[n][i])
-          data_error[n][i] = float(data_error[n][i])/float(data_x[n][i])
+        # for i in range(0, M):
+        #   data_y[n][i] = float(data_y[n][i])/float(data_x[n][i])
+        #   data_error[n][i] = float(data_error[n][i])/float(data_x[n][i])
 
 fig = plt.figure(num=1, figsize=(10,5))
 plt.xlabel('Range ($\mathrm{g/cm^2}$)', size=14)

@@ -39,7 +39,7 @@ fi
 # Changing variables
 ELEMENT="Al"
 ENERGY="0.314"
-TEST_NUMBER="1"
+TEST_NUMBER="0"
 
 THREADS="80"
 # Number of histories 1e6
@@ -58,9 +58,16 @@ DISTRIBUTION="Coupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
 COUPLED_SAMPLING="2D"
 
-# Path to root file (currently no DagMC option)
-GEOM_PATH="${FRENSIE}/frensie-tests/lockwood/${ELEMENT}_${ENERGY}/geom_${TEST_NUMBER}.root"
-GEOM_TYPE="ROOT"
+# ROOT or DagMC
+GEOM_TYPE="DagMC"
+# Path to geometry file
+if [ ${GEOM_TYPE} == "DagMC"]; then
+    GEOM_PATH="${FRENSIE}/frensie-tests/lockwood/${ELEMENT}_${ENERGY}/dagmc/geom_${TEST_NUMBER}.sat"
+elif [ ${GEOM_TYPE} == "ROOT"]; then
+    GEOM_PATH="${FRENSIE}/frensie-tests/lockwood/${ELEMENT}_${ENERGY}/geom_${TEST_NUMBER}.root"
+else
+    echo "Error: geometry type \"${GEOM_TYPE}\" is not supported!"
+fi
 
 NAME="native"
 
