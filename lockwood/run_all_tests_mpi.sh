@@ -20,5 +20,5 @@ do
     sed -i $command run_lockwood_mpi.sh
 
      echo -e "\nRunning Lockwood Test Number $i!"
-     echo "sbatch run_lockwood_mpi.sh $file_type"
+     sbatch run_lockwood_mpi.sh $file_type
 done
