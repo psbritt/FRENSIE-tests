@@ -30,8 +30,8 @@
   | PRIVATELY OWNED RIGHTS.                                             |
   +---------------------------------------------------------------------+
   
-1mcnp     version 6     ld=06/09/17                     03/01/18 10:59:01 
- *************************************************************************                 probid =  03/01/18 10:59:01 
+1mcnp     version 6     ld=06/09/17                     03/01/18 11:34:10 
+ *************************************************************************                 probid =  03/01/18 11:34:10 
  i=mcnp.in n=mcnp_0.314_0.0094. tasks 4
 
  
@@ -126,8 +126,8 @@
         88-       c --------------------
         89-       c run in photon-electron mode to get low energy physics
         90-       mode p e
-        91-       c run for 1e8 histories
-        92-       nps 1e6
+        91-       c run for 1e5 histories
+        92-       nps 1e5
         93-       c Cell pulse height tally (in MeV) for the Calorimeter
         94-       *f8:e 10
         95-       c

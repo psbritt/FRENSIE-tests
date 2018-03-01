@@ -20,7 +20,11 @@ parser.add_argument('-f', help=geom_file_msg, required=False)
 user_args = parser.parse_args()
 geom_type = user_args.t
 geom_file = user_args.f
-name = "geom_"+str(geom_type)+".xml"
+
+# Extract test number from file name
+test_number = geom_file.rsplit('_', 1)[-1][:-4]
+
+name = "geom_"+str(geom_type)+"_"+str(test_number)+".xml"
 root = ET.Element("ParameterList", name="Geometry")
 
 if str(geom_type) == "DagMC":
