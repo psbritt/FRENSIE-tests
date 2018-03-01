@@ -50,7 +50,7 @@ c
 201 PX  4.445
 202 PY -4.445
 203 PY  4.445
-204 PZ  4.864135185
+204 PZ  4.900935185
 205 PZ  4.9
 c
 c the 300 series defines the infinite plate ( H = 2, R = 3.81 )
@@ -89,7 +89,7 @@ c --------------------
 c run in photon-electron mode to get low energy physics
 mode p e
 c run for 1e8 histories
-nps 1e4
+nps 1e6
 c Cell pulse height tally (in MeV) for the Calorimeter
 *f8:e 10
 c

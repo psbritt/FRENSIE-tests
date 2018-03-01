@@ -15,14 +15,10 @@ parser = ap.ArgumentParser(description=description)
 output_msg = "The output file name."
 parser.add_argument('-o', help=output_msg, required=False)
 
-calorimeter_msg = "The calorimeter thickness (g/cm2)."
-parser.add_argument('-c', help=calorimeter_msg, required=True)
-
 parser.add_argument("input_files", nargs='*')
 
 # Parse the user's arguments
 user_args = parser.parse_args()
-calorimeter_thickness = float(user_args.c)
 file_paths = user_args.input_files
 
 # Number of files
@@ -58,8 +54,8 @@ else:
 
   for i in range(N):
       line = str(depth[i])
-      line = line + '\t' + str(data[0,i]/calorimeter_thickness)
-      line = line + '\t' + str(data[1,i]/calorimeter_thickness)
+      line = line + '\t' + str(data[0,i])
+      line = line + '\t' + str(data[1,i])
       line = '\n' + line
 
       f.write( line )
