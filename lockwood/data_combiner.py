@@ -28,16 +28,12 @@ if N == 0:
   print "No files albedo specified!"
 else:
   # Get computational results
-  data = np.zeros((2,N))
-  depth = np.zeros(N)
+  data = np.zeros((3,N))
   for n in range(N):
       data[:,n] = np.loadtxt(file_paths[n], skiprows=1, dtype=str)
-      print file_paths[n]
-      question2 = "Enter the range (g/cm2) for this file: "
-      depth[n] = raw_input(question2)
 
   # Get the sorted indices
-  # ind = np.argsort(data[0,:])
+  ind = np.argsort(data[0,:])
 
   # Create the output file
   outputfile = "combined_data.txt"
@@ -52,10 +48,10 @@ else:
   f.write( name )
   f.write( "\n#Range (g/cm2)\tEnergy Deposition (MeV-cm2/g)\tError" )
 
-  for i in range(N):
-      line = str(depth[i])
-      line = line + '\t' + str(data[0,i])
+  for i in ind:
+      line = str(data[0,i])
       line = line + '\t' + str(data[1,i])
+      line = line + '\t' + str(data[2,i])
       line = '\n' + line
 
       f.write( line )

@@ -60,8 +60,8 @@ plt.ylabel('Dose ($\mathrm{MeV\/cm^2/g}$)', size=14)
 plt.title('$\mathrm{Energy\/Deposition\/from\/0.314\/MeV\/Electron\/in\/Aluminum}$', size=16)
 ax=plt.gca()
 
-plt.xlim(0.0,0.1)
-plt.ylim(0.0,6.0)
+# plt.xlim(0.0,0.1)
+# plt.ylim(0.0,6.0)
 
 if user_args.e:
     # Get experimental data

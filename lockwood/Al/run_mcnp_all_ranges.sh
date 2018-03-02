@@ -42,6 +42,8 @@ mkdir -p $OUTPUT_DIR
 
 # Calorimeter thickness (cm)
 R_cal=0.00187037
+# Calorimeter thickness (g/cm2)
+cal_thickness=0.00505
 # Calorimeter half thickness (cm)
 half_cal=0.000935185
 # density in g/cm^3
@@ -51,10 +53,10 @@ density=2.7
 for i in "${ranges[@]}"
 do
     # get range in cm
-    range_cm=$(echo "${range}/${density}" | bc)
+    range_cm=$(echo "${i}/${density}" | bc -l )
     # Change the energy
     pattern="ERG=${energy} POS=0 0 0 DIR=1 VEC=0 0 1 PAR=e"
-    sed -i 's,ERG=.*,'"$pattern"',' "mcnp.in"
+    sed -i 's,ERG=.*,'"${pattern}"',' "mcnp.in"
 
     # Change the front foil thickness
     half_cal=0.000935185
@@ -81,7 +83,7 @@ do
     cd ${OUTPUT_DIR}
 
     echo "Processing the results:"
-    python ../../../mcnp_data_processor.py -f ${OUTPUT}.o -r ${i}
+    python ../../../../mcnp_data_processor.py -f ${OUTPUT}.o -r ${i} -t ${cal_thickness}
     echo "The processed data is located at: ${OUTPUT_DIR}"
     cd ../../../
     printf "\n------------------------------------------------------------\n"

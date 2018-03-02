@@ -32,7 +32,7 @@ energy=0.314
 # ( 0.0094 0.0180 0.0255 0.0336 0.0402 0.0476 0.0562 0.0654 0.0723 0.0808 0.0990 0.1110 0.1257 0.1440 0.1593 0.1821 0.2122 0.2225 0.2452 0.2521 0.2908 0.3141 0.3533 0.4188 0.4814 )
 
 # range in g/cm^2
-range=0.0094
+range=0.0025
 # density in g/cm^3
 density=2.7
 range_cm=$(echo "${range}/${density}" | bc)
@@ -54,7 +54,7 @@ front_lower_z=$(echo "4.9 - ${front_thickness}" | bc)
 
 
 pattern="204 PZ  ${front_lower_z}"
-sed -i 's,204 PZ.*,'"$pattern"',' "mcnp.in"
+# sed -i 's,204 PZ.*,'"$pattern"',' "mcnp.in"
 
 echo "Running MCNP6.2 with ${THREADS} threads:"
 echo "${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}"
@@ -71,5 +71,5 @@ mv ${OUTPUT}m ${NEW_NAME}m
 cd ${OUTPUT_DIR}
 
 echo "Processing the results:"
-python ../../../mcnp_data_processor.py -f ${OUTPUT}o -r ${range}
+python ../../../../mcnp_data_processor.py -f ${OUTPUT}o -r ${range}
 echo "The processed data is located at: ${OUTPUT_DIR}"
