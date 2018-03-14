@@ -28,6 +28,7 @@ def main(argv):
 
     outputfile = outputname+'.txt'
     output_c_e = outputname+'_c_e.txt'
+    outputgraph = outputname+'.png'
     # open the estimator file
     f = open(facemcinputfile, 'r')
 
@@ -208,8 +209,8 @@ def main(argv):
     # plt.title('Comparison of the Surface Current in a Sphere of H')
     # plt.title('Comparison of the Surface Flux in a Sphere of H')
     plt.title('Comparison of the Track Length Flux in a Sphere of H')
-    plt.ylim(2e4, 2e6)
-    ax.set_yscale('log')
+    # plt.ylim(2e4, 2e6)
+    # ax.set_yscale('log')
 
     plt.xlim(0.0, energy[len(energy)-1])
 
@@ -223,8 +224,9 @@ def main(argv):
     plt.xlim(1e-5, energy[len(energy)-1])
 
     # plot with errorbars
-    plt.errorbar( energy, c_e_ratio, yerr=c_e_uncert)
+    plt.errorbar( energy, c_e_ratio, yerr=c_e_uncert, color='r')
 
+    fig1.savefig(outputgraph, bbox_inches='tight', dpi=300)
     plt.show()
 
 if __name__ == "__main__":

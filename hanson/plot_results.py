@@ -89,5 +89,5 @@ if user_args.o:
     output = user_args.o
 
 print "Plot outputted to: ",output
-fig.savefig(output, bbox_inches='tight')
+fig.savefig(output, bbox_inches='tight', dpi=300)
 plt.show()

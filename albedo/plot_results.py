@@ -90,11 +90,12 @@ if user_args.a:
 
 markers = ["v","^","<",">","s","+","x","1","2","3","4","8","p","*","h","H","X","D","d"]
 markerssizes = [7,7,7,7,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7]
+marker_color = ['g', 'r', 'c', 'm', 'y', 'k', 'w', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
 for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
     yerr = map(float, data_error[n])
-    plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n] )
+    plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n] )
 plt.legend(loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
@@ -107,5 +108,5 @@ if user_args.o:
     output = user_args.o
 
 print "Plot outputted to: ",output
-fig.savefig(output, bbox_inches='tight')
+fig.savefig(output, bbox_inches='tight', dpi=300)
 plt.show()
