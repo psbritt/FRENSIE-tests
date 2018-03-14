@@ -12,20 +12,20 @@ void geom_Al()
 //---------------------------------------------------------------------------//
 
   // 0.314 Mev Ranges (g/cm2):
-  /* 0.0009, 0.0035, 0.0067, 0.0095, 0.0124, 0.0149, 0.0177, 0.0210, 0.0242,
-   * 0.0267, 0.0300, or 0.0368 */
+  /* 0.0025 0.0094 0.0181 0.0255 0.0336 0.0403 0.0477 0.0566 0.0654 0.0721
+   * 0.0810 0.0993 */
 
   // 0.521 Mev Ranges (g/cm2):
-  /* 0.0009, 0.0035, 0.0067, 0.0094, 0.0124, 0.0150, 0.0176, 0.0210, 0.0242,
-   * 0.0267, 0.0299, 0.0367, 0.0412, 0.0466, 0.0533, 0.0591, 0.0676, 0.0787 */
+  /* 0.0025 0.0094 0.0180 0.0255 0.0335 0.0405 0.0475 0.0566 0.0653 0.0721
+   * 0.0807 0.0992 0.1111 0.1259 0.1439 0.1596 0.1825 0.2125 */
 
   // 1.033 Mev Ranges (g/cm2):
-  /* 0.0009, 0.0035, 0.0067, 0.0094, 0.0125, 0.0149, 0.0176, 0.0208, 0.0242,
-   * 0.0268, 0.0299, 0.0367, 0.0411, 0.0466, 0.0533, 0.0590, 0.0674, 0.0786,
-   * 0.0824, 0.0908, 0.0934, 0.1077, 0.1163, 0.1309, 0.1551, 0.1783 */
+  /* 0.0025 0.0094 0.0180 0.0255 0.0336 0.0402 0.0476 0.0562 0.0654 0.0723
+   * 0.0808 0.0990 0.1110 0.1257 0.1440 0.1593 0.1821 0.2122 0.2225 0.2452
+   * 0.2521 0.2908 0.3141 0.3533 0.4188 0.4814 */
 
   // Range of dose depth calculation in cm
-  double range = 0.0368;
+  double range = 0.0993;
 //---------------------------------------------------------------------------//
 
 
@@ -90,8 +90,11 @@ void geom_Al()
   // // Create the front foil
   // //----------------------
 
+  // Calculate the range = 0.4814;
+  double range_cm = range/density;
+
   // Calculate the thickness of the front foil
-  double front_thickness = range - half_cal_thickness;
+  double front_thickness = range_cm - half_cal_thickness;
 
   TGeoVolume* front_foil;
   if (front_thickness > 0.0 )
@@ -124,7 +127,7 @@ void geom_Al()
   // Create the vacuum (R = "infinite" cm, h = "infinite")
   //--------------------------------------------------------
 
-  // Set a radius of 7 cm ( 167 x the CSDA range )
+  // Set a radius of 7 cm ( 167 x the CSDA range = 0.4814;
   double vacuum_radius = 7.0;
   // Set a vacuum length large enough to cover the whole geometry
   double vacuum_half_length = 2.0*plate_half_length + 5.0 + calorimeter_thickness + 0.5;
@@ -161,7 +164,7 @@ geom->SetTopVolume(graveyard_region);
   // Get z position of the vacuum
   double vacuum_z = vacuum_half_length;
   // Add region
-  graveyard_region->AddNode(void_region, 1 );
+  graveyard_region->AddNode(void_region, 0 );
 
     //-----------------------------------
     // Add the calorimeter foil to vacuum
@@ -198,15 +201,15 @@ geom->SetTopVolume(graveyard_region);
 // Export and Drawing Capabilities
 //---------------------------------------------------------------------------//
 
-  // // Close the geometry
-  // geom->SetTopVisible();
-  // geom->CloseGeometry();
+  // Close the geometry
+  geom->CloseGeometry();
 
   // // Draw the geometry
+  // geom->SetTopVisible();
   // graveyard_region->Draw();
 
-  //  TView *view = gPad->GetView();
-  //  view->ShowAxis();
+  // TView *view = gPad->GetView();
+  // view->ShowAxis();
 
   // Export the geometry
   geom->Export( "geom_Al.root" );

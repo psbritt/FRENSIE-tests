@@ -39,13 +39,14 @@ names = [0 for x in range(N)]
 
 # Get computational results
 for n in range(N):
-    question = "Enter the desired plot name to data file (" + file_paths[n] + "): "
-    names[n] = raw_input(question)
+    # question = "Enter the desired plot name to data file (" + file_paths[n] + "): "
+    # names[n] = raw_input(question)
 
     with open(file_paths[n]) as input:
-        next(input)
+        names[n] = input.readline().strip()[1:]
+        print names[n]
         data = zip(*(line.strip().split('\t') for line in input))
-        data_name = data[0][1] + data[1][1] + data[2][1]
+        data_name = data[0][0] + data[1][0] + data[2][0]
         data_x[n][0:M] = data[0][1:]
         data_y[n][0:M] = data[1][1:]
         data_error[n][0:M] = data[2][1:]
@@ -60,36 +61,37 @@ plt.ylabel('Dose ($\mathrm{MeV\/cm^2/g}$)', size=14)
 plt.title('$\mathrm{Energy\/Deposition\/from\/0.314\/MeV\/Electron\/in\/Aluminum}$', size=16)
 ax=plt.gca()
 
-# plt.xlim(0.0,0.1)
-# plt.ylim(0.0,6.0)
+plt.xlim(0.0,0.1)
+plt.ylim(0.0,8.0)
 
 if user_args.e:
     # Get experimental data
     with open("./Al_0.314/experimental_results.txt") as input:
         data = zip(*(line.strip().split('\t') for line in input))
-        data_name = data[0][0] + data[1][0]
+        data_name = data[0][0] + data[1][0] + data[2][0]
         exp_x = data[0][1:]
         exp_y = data[1][1:]
-        # exp_error = data[2][1:]
+        # Error is given in %
+        exp_error = data[2][1:]
 
+    # Calculate the experimental from the % error
     x = map(float, exp_x)
     y = map(float, exp_y)
-    plt.scatter(x, y, label="Lockwood (Exp.)", marker='s' )
-    # yerr = map(float, exp_error)
-    # plt.errorbar(x, y, yerr=yerr, label="Lockwood (Exp.)", fmt="s", markersize=5 )
+    # plt.scatter(x, y, label="Lockwood (Exp.)", marker='s' )
+    yerr = map(float, exp_error)
+    for i in range(0, len(yerr)):
+        yerr[i] = yerr[i]*y[i]/100.0
+    plt.errorbar(x, y, yerr=yerr, label="Lockwood (Exp.)", fmt="s", markersize=5 )
 
 
 markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","X","D","d"]
 markerssizes = [6,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
+marker_color = ['g', 'r', 'c', 'm', 'y', 'k', 'w', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
 for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
     yerr = map(float, data_error[n])
-    print n
-    print x
-    print y
-    print yerr
-    plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n] )
+    plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n])
 plt.legend(loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
