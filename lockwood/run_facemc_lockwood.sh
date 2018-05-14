@@ -31,7 +31,7 @@ fi
 ELEMENT="Al"; ENERGY="0.314"; TEST_NUMBER="0"
 
 # Number of histories
-HISTORIES="1"
+HISTORIES="100000"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
@@ -42,9 +42,9 @@ INTERP="logloglog"
 # Two D Sampling Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
 SAMPLE=1
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
-DISTRIBUTION="Decoupled"
+DISTRIBUTION="Coupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
-COUPLED_SAMPLING="Simplified"
+COUPLED_SAMPLING="2D"
 
 # ROOT or DagMC
 GEOM_TYPE="DagMC"
@@ -57,13 +57,13 @@ if [ "${ELEMENT}" == "Al" ]; then
 
     if [ ${ENERGY} == 0.314 ]; then
         # ranges for 0.314 MeV source (g/cm2)
-        ranges=( 0.0094 0.0181 0.0255 0.0336 0.0403 0.0477 0.0566 0.0654 0.0721 0.0810 0.0993 )
+        ranges=( 0.0025 0.0094 0.0181 0.0255 0.0336 0.0403 0.0477 0.0566 0.0654 0.0721 0.0810 0.0993 )
     elif [ ${ENERGY} == 0.521 ]; then
         # ranges for 0.521 MeV source (g/cm2)
-        ranges=( 0.0094 0.0180 0.0255 0.0335 0.0405 0.0475 0.0566 0.0653 0.0721 0.0807 0.0992 0.1111 0.1259 0.1439 0.1596 0.1825 0.2125 )
+        ranges=( 0.0025 0.0094 0.0180 0.0255 0.0335 0.0405 0.0475 0.0566 0.0653 0.0721 0.0807 0.0992 0.1111 0.1259 0.1439 0.1596 0.1825 0.2125 )
     elif [ ${ENERGY} == 1.033 ]; then
         # ranges for 1.033 MeV source (g/cm2)
-        ranges=( 0.0094 0.0180 0.0255 0.0336 0.0402 0.0476 0.0562 0.0654 0.0723 0.0808 0.0990 0.1110 0.1257 0.1440 0.1593 0.1821 0.2122 0.2225 0.2452 0.2521 0.2908 0.3141 0.3533 0.4188 0.4814 )
+        ranges=( 0.0025 0.0094 0.0180 0.0255 0.0336 0.0402 0.0476 0.0562 0.0654 0.0723 0.0808 0.0990 0.1110 0.1257 0.1440 0.1593 0.1821 0.2122 0.2225 0.2452 0.2521 0.2908 0.3141 0.3533 0.4188 0.4814 )
     else
         NO_ERRORS="false"
         echo "Error: Energy ${ENERGY} is currently not supported!"

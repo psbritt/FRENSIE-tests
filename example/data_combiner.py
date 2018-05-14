@@ -216,7 +216,8 @@ def main(argv):
 
     # plot with errorbars
     plt.errorbar( energy, mcnp_average_values, yerr=mcnp_error, label='MCNP 6.2')
-    plt.errorbar( energy, facemc_average_values, yerr=facemc_error, label='ACE-EPR14')
+    # plt.errorbar( energy, facemc_average_values, yerr=facemc_error, label='ACE-EPR14')
+    plt.errorbar( energy, facemc_average_values, yerr=facemc_error, label='ENDL')
     plt.legend(loc=2)
     plt.subplot2grid((2,6),(1, 0), colspan=6)
     plt.xlabel('Energy (MeV)')

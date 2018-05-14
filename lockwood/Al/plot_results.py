@@ -62,7 +62,7 @@ plt.title('$\mathrm{Energy\/Deposition\/from\/0.314\/MeV\/Electron\/in\/Aluminum
 ax=plt.gca()
 
 plt.xlim(0.0,0.1)
-plt.ylim(0.0,8.0)
+plt.ylim(0.0,6.0)
 
 if user_args.e:
     # Get experimental data

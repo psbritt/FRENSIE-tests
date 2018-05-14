@@ -67,9 +67,9 @@ if user_args.e:
 
 if user_args.a:
     data = np.loadtxt("./creep_experimental_2.txt", skiprows=2)
-    plt.scatter(data[:,0], data[:,1], label="Bishop (Exp.)", marker='*', s=35 )
-    plt.scatter(data[:,0], data[:,2], label="Neubert (Exp.)", marker='o', s=35 )
-    plt.scatter(data[:,0], data[:,3], label="Darlington (Exp.)", marker='d', s=35 )
+    plt.scatter(data[:,0], data[:,1], label="Bishop (Exp.)", marker='*', s=50, facecolors='none', edgecolors='b' )
+    plt.scatter(data[:,0], data[:,2], label="Neubert (Exp.)", marker='o', s=45, facecolors='none', edgecolors='b' )
+    plt.scatter(data[:,0], data[:,3], label="Darlington (Exp.)", marker='d', s=45, facecolors='none', edgecolors='b' )
 
 
 # if user_args.a:
@@ -88,9 +88,12 @@ if user_args.a:
 #     plt.scatter(data[:,0], data[:,12], label="Joy Ref. 106" )
 #     plt.scatter(data[:,0], data[:,13], label="Joy Ref. 107" )
 
-markers = ["v","^","<",">","s","+","x","1","2","3","4","8","p","*","h","H","X","D","d"]
-markerssizes = [7,7,7,7,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7]
-marker_color = ['g', 'r', 'c', 'm', 'y', 'k', 'w', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
+# markers = ["v","^","<",">","s","+","x","1","2","3","4","8","p","*","h","H","X","D","d"]
+# markerssizes = [7,7,7,7,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7]
+# marker_color = ['g', 'r', 'c', 'm', 'y', 'k', 'w', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
+markers = ["s","<","x","+","8","p","*","h","H","X","D","d"]
+markerssizes = [8,8,8,8,5,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8]
+marker_color = ['y', 'c', 'g', 'r', 'm', 'k', 'w', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
 for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
@@ -99,7 +102,7 @@ for n in range(N):
 plt.legend(loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
-
+plt.ylim(0.12,0.22)
 # leg = plt.legend(loc='best', ncol=2)
 # leg.get_frame().set_alpha(0.5)
 

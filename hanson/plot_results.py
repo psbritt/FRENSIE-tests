@@ -14,7 +14,6 @@ description = "This script asks for #/square degree data and run names which "\
 
 parser = ap.ArgumentParser(description=description)
 
-
 experimental_msg = "Flag to add the experimental data to the generated plot."
 parser.add_argument('-e', help=experimental_msg, action='store_true')
 
@@ -71,6 +70,7 @@ if user_args.e:
     y = map(float, exp_y)
     yerr = map(float, exp_error)
     plt.errorbar(x, y, yerr=yerr, label="Hanson (Exp.)", fmt="s", markersize=5 )
+    # plt.errorbar(x, y, yerr=yerr, label="Hanson (Exp.)", fmt="s", markersize=5, fillstyle='none' )
 
 
 markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","X","D","d"]
