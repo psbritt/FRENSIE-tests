@@ -27,8 +27,8 @@ fi
 
 # Changing variables
 
-# Al: 0.314 MeV & tests 0-11, 0.512 MeV & test 0-16, 1.033 MeV & tests 0-24
-ELEMENT="Al"; ENERGY="0.314"; TEST_NUMBER="0"
+# Al: 0.314 MeV & tests 0-11, 0.521 MeV & test 0-16, 1.033 MeV & tests 0-24
+ELEMENT="Al"; ENERGY="0.521"; TEST_NUMBER="0"
 
 # Number of histories
 HISTORIES="100000"
