@@ -17,8 +17,8 @@ parser.add_argument('-n', help=history_msg, required=True)
 interp_msg = "electron interpolation policy (logloglog, linlinlin, linlinlog)"
 parser.add_argument('-l', help=interp_msg, required=True)
 
-sampling_msg = "electron sampling policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)"
-parser.add_argument('-s', help=sampling_msg, required=True)
+grid_msg = "electron grid policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)"
+parser.add_argument('-s', help=grid_msg, required=True)
 
 elastic_dist_msg = "elastic electron distribution ( Coupled, Decoupled, Hybrid )"
 parser.add_argument('-d', help=elastic_dist_msg, required=True)
@@ -44,22 +44,22 @@ user_args = parser.parse_args()
 energy = user_args.e
 number_of_histories = user_args.n
 
-# Two D Sampling parameters
+# Two D Grid parameters
 interp = user_args.l
 
 if user_args.s == "1":
-  sampling = "Unit-base Correlated"
-  sampling_name = "unit_correlated"
+  grid = "Unit-base Correlated"
+  grid_name = "unit_correlated"
 elif user_args.s == "2":
-  sampling = "Correlated"
-  sampling_name = "correlated"
+  grid = "Correlated"
+  grid_name = "correlated"
 elif user_args.s == "3":
-  sampling = "Unit-base"
-  sampling_name = "unit_base"
+  grid = "Unit-base"
+  grid_name = "unit_base"
 else:
   # Assume Unit-base correlated
-  sampling = "Unit-base Correlated"
-  sampling_name = "unit_correlated"
+  grid = "Unit-base Correlated"
+  grid_name = "unit_correlated"
 
 # Turn reactions on/off
 elastic_bool = user_args.t
@@ -75,7 +75,7 @@ elastic_distribution = user_args.d
 coupled_sampling_method = user_args.c
 
 # Set xml file name
-name = "sim_info_"+interp+"_"+sampling_name+"_"+energy
+name = "sim_info_"+interp+"_"+grid_name+"_"+energy
 
 if elastic_bool == "false":
     name += "_no_elastic"
@@ -117,7 +117,7 @@ parameter_2 = ET.SubElement(root, "ParameterList", name="Electron Properties")
 
 ET.SubElement(parameter_2, "Parameter", name="Max Electron Energy", type="double", value=str(energy))
 ET.SubElement(parameter_2, "Parameter", name="Electron Atomic Relaxation", type="bool", value="true" )
-ET.SubElement(parameter_2, "Parameter", name="Electron Sampling Policy", type="string", value=sampling )
+ET.SubElement(parameter_2, "Parameter", name="Electron Grid Policy", type="string", value=grid )
 ET.SubElement(parameter_2, "Parameter", name="Electron Interpolation Policy", type="string", value=interp )
 
 ET.SubElement(parameter_2, "Parameter", name="Electron Bremsstrahlung", type="bool", value=brem_bool )
