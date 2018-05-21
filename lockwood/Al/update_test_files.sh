@@ -15,7 +15,7 @@ do case "${option}"
    esac
 done
 
-epr="../../bin/epr_generator"
+epr="../../../bin/epr_generator"
 if [ -d "$cross_section_directory" ]; then
 
     if [ -d "$cross_section_directory/native" ]; then
