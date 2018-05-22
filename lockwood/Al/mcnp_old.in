@@ -8,11 +8,11 @@ c
 c -----------------------------------------------------------------
 c Cell 10 is the Calorimeter
 c -----------------------------------------------------------------
-10  1  -2.7      -100 -110                                  IMP:e=1
+10  1  -2.7      100 -101 102 -103 104 -105                 IMP:e=1
 c -----------------------------------------------------------------
 c Cell 20 is the front foil
 c -----------------------------------------------------------------
-20  1  -2.7      -200                                       IMP:e=1
+20  1  -2.7      200 -201 202 -203 204 -205                 IMP:e=1
 c -----------------------------------------------------------------
 c Cell 30 is the "infinite" plate
 c -----------------------------------------------------------------
@@ -35,17 +35,23 @@ c ----------------------------------------------------------------------------c
 c Surface block---------------------------------------------------------------c
 c ----------------------------------------------------------------------------c
 c
-c The 100 series defines the Calorimeter foil
-c Calorimeter is a pentagon made by the intersection of two squares at 45 degrees to each other
-c Major square, 100 = ( 8.255 x 8.255 x R_cal=0.00187037 )
-c Minor square, 110 = ( 8.082230509 x 8.082230509 x R_cal=0.00187037 )
+c the 100 series defines the Calorimeter foil (8.255 x 8.255 x R_cal=0.00187037 )
 c
-100 RPP -4.1275 4.1275 -4.1275 4.1275 5.0 5.000187037
-110 1 RPP -4.041115254 4.041115254 -4.041115254 4.041115254 5.0 5.000187037
+100 PX -4.1275
+101 PX  4.1275
+102 PY -4.1275
+103 PY  4.1275
+104 PZ  5.0
+105 PZ  5.00187037
 c
 c the 200 series defines the front foil (8.89 x 8.89 x R_x - 0.5*R_cal )
 c
-200 RPP -4.445 4.445 -4.445 4.445 4.86419444444445 4.9
+200 PX -4.445
+201 PX  4.445
+202 PY -4.445
+203 PY  4.445
+204 PZ  4.89745370351851851852
+205 PZ  4.9
 c
 c the 300 series defines the infinite plate ( H = 2, R = 3.81 )
 c
@@ -75,7 +81,7 @@ c --------------------
 c Source
 c --------------------
 c monodirectional, monoenergetic point source located at the origin
-SDEF  ERG=0.521 POS=0 0 0 DIR=1 VEC=0 0 1 PAR=e
+SDEF  ERG=0.314 POS=0 0 0 DIR=1 VEC=0 0 1 PAR=e
 c
 c --------------------
 c Job Control
@@ -83,11 +89,9 @@ c --------------------
 c run in photon-electron mode to get low energy physics
 mode p e
 c run for 1e7 histories
-nps 1e1
+nps 1e7
 c Cell pulse height tally (in MeV) for the Calorimeter
 *f8:e 10
-c 45 degree rotation about the z-axis
-*TR1 0 0 0  45 -45 90  135 45 90  90 90 0
 c
 dbcn 17j 2 $ Turn on analog mode
 c

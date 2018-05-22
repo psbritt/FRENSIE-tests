@@ -34,9 +34,7 @@ fi
 for i in "${test_number[@]}"
 do
     # Change the interp
-    echo $energy
     line=s/ELEMENT=.*/ELEMENT=\"${element}\"\;\ ENERGY=\"${energy}\"\;\ TEST_NUMBER=\"$i\"/
-    echo $line
     sed -i "$line" run_lockwood_mpi.sh
 
      echo -e "\nRunning Lockwood ${element} ${energy} Test Number $i!"
