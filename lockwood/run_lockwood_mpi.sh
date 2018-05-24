@@ -1,7 +1,7 @@
 #!/bin/sh
 # This file is named run_facemc_mpi.sh
-#SBATCH --partition=pre
-#SBATCH --time=1-00:00:00
+#SBATCH --partition=univ2
+#SBATCH --time=3-00:00:00
 #SBATCH --nodes=5
 #SBATCH --ntasks-per-node=16
 #SBATCH --mem-per-cpu=4000
@@ -43,7 +43,7 @@ ELEMENT="Al"; ENERGY="0.314"; TEST_NUMBER="11"
 
 THREADS="80"
 # Number of histories 1e6
-HISTORIES="1000000"
+HISTORIES="5000000"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
@@ -58,7 +58,7 @@ DISTRIBUTION="Coupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
 COUPLED_SAMPLING="2D"
 
-# ROOT or DagMC
+# ROOT or DagMC (temp DagMC_test)
 GEOM_TYPE="DagMC"
 
 NAME="native"
@@ -88,6 +88,8 @@ fi
 # Path to geometry file
 if [ "${GEOM_TYPE}" == "DagMC" ]; then
     GEOM_PATH="${FRENSIE}/frensie-tests/lockwood/${ELEMENT}/${ELEMENT}_${ENERGY}/dagmc/geom_${TEST_NUMBER}.sat"
+elif [ "${GEOM_TYPE}" == "DagMC_test" ]; then
+    GEOM_PATH="${FRENSIE}/frensie-tests/lockwood/${ELEMENT}/${ELEMENT}_${ENERGY}/dagmc/geom_${TEST_NUMBER}_test.sat"
 elif [ "${GEOM_TYPE}" == "ROOT" ]; then
     GEOM_PATH="${FRENSIE}/frensie-tests/lockwood/${ELEMENT}/${ELEMENT}_${ENERGY}/root/geom_${TEST_NUMBER}.root"
 else

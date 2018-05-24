@@ -115,6 +115,7 @@ ET.SubElement(parameter_1, "Parameter", name="Histories", type="unsigned int", v
 
 parameter_2 = ET.SubElement(root, "ParameterList", name="Electron Properties")
 
+ET.SubElement(parameter_2, "Parameter", name="Min Electron Energy", type="double", value="2e-5")
 ET.SubElement(parameter_2, "Parameter", name="Max Electron Energy", type="double", value=str(energy))
 ET.SubElement(parameter_2, "Parameter", name="Electron Atomic Relaxation", type="bool", value="true" )
 ET.SubElement(parameter_2, "Parameter", name="Electron Grid Policy", type="string", value=grid )
