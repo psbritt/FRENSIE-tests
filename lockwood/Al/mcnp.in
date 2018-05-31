@@ -82,8 +82,8 @@ c Job Control
 c --------------------
 c run in photon-electron mode to get low energy physics
 mode p e
-c run for 1e7 histories
-nps 1e1
+c run for 1e6 histories
+nps 1e6
 c Cell pulse height tally (in MeV) for the Calorimeter
 *f8:e 10
 c 45 degree rotation about the z-axis
