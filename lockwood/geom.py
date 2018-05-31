@@ -21,10 +21,13 @@ user_args = parser.parse_args()
 geom_type = user_args.t
 geom_file = user_args.f
 
+# Extract energy and element from the file path
+energy = geom_file.rsplit('/')[-3]
+
 # Extract test number from file name
 test_number = geom_file.rsplit('_', 1)[-1][:-4]
 
-name = "geom_"+str(geom_type)+"_"+str(test_number)+".xml"
+name = "geom_"+str(geom_type)+"_"+str(energy)+"_"+str(test_number)+".xml"
 root = ET.Element("ParameterList", name="Geometry")
 
 if str(geom_type) == "DagMC":
