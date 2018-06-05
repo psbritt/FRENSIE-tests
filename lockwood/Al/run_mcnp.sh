@@ -57,29 +57,29 @@ else
     sed -i 's,204 PZ.*,'"$pattern"',' "$NAME"
 fi
 
-# OUTPUT="mcnp_${energy}_${test_number}."
+OUTPUT="mcnp_${energy}_${test_number}."
 
-# mkdir -p $OUTPUT_DIR
+mkdir -p $OUTPUT_DIR
 
-# # Change the energy
-# pattern="ERG=${energy} POS=0 0 0 DIR=1 VEC=0 0 1 PAR=e"
-# sed -i 's,ERG=.*,'"$pattern"',' "$NAME"
+# Change the energy
+pattern="ERG=${energy} POS=0 0 0 DIR=1 VEC=0 0 1 PAR=e"
+sed -i 's,ERG=.*,'"$pattern"',' "$NAME"
 
-# echo "Running MCNP6.2 with ${THREADS} threads:"
-# echo "${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}"
-# ${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}
+echo "Running MCNP6.2 with ${THREADS} threads:"
+echo "${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}"
+${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}
 
-# NEW_NAME=${OUTPUT_DIR}${OUTPUT}
+NEW_NAME=${OUTPUT_DIR}${OUTPUT}
 
-# # Move output files to test directory
-# mv ${OUTPUT}o ${NEW_NAME}o
-# mv ${OUTPUT}r ${NEW_NAME}r
-# mv ${OUTPUT}m ${NEW_NAME}m
+# Move output files to test directory
+mv ${OUTPUT}o ${NEW_NAME}o
+mv ${OUTPUT}r ${NEW_NAME}r
+mv ${OUTPUT}m ${NEW_NAME}m
 
-# # Move to output directory=
-# cd ${OUTPUT_DIR}
+# Move to output directory=
+cd ${OUTPUT_DIR}
 
-# echo "Processing the results:"
-# calorimeter_thickness=5.050E-03
-# python ../../../../mcnp_data_processor.py -f ${OUTPUT}o -r ${ranges[${test_number}]} -t ${calorimeter_thickness}
-# echo "The processed data is located at: ${OUTPUT_DIR}"
+echo "Processing the results:"
+calorimeter_thickness=5.050E-03
+python ../../../../mcnp_data_processor.py -f ${OUTPUT}o -r ${ranges[${test_number}]} -t ${calorimeter_thickness}
+echo "The processed data is located at: ${OUTPUT_DIR}"
