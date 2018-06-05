@@ -37,6 +37,6 @@ do
     line=s/ELEMENT=.*/ELEMENT=\"${element}\"\;\ ENERGY=\"${energy}\"\;\ TEST_NUMBER=\"$i\"/
     sed -i "$line" run_lockwood_mpi.sh
 
-     echo -e "\nRunning Lockwood ${element} ${energy} Test Number $i!"
+     echo -e "\nRunning Lockwood ${element} ${energy} Test Number $i (file type = ${file_type}!"
      sbatch run_lockwood_mpi.sh $file_type
 done

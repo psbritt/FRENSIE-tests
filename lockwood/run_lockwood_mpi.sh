@@ -127,6 +127,8 @@ if [ "${NO_ERRORS}" = "true" ]; then
         NAME_REACTION="${NAME_REACTION}_no_elastic"
     elif [ ${DISTRIBUTION} = "Coupled" ]; then
         NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+    elif [ ${DISTRIBUTION} = "Decoupled" ]; then
+        NAME_EXTENTION="${NAME_EXTENTION}_${DISTRIBUTION}"
     fi
     if [ "${BREM_ON}" = "false" ]; then
         NAME_REACTION="${NAME_REACTION}_no_brem"
