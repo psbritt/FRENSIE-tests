@@ -45,7 +45,7 @@ c
 c
 c the 200 series defines the front foil (8.89 x 8.89 x R_x - 0.5*R_cal )
 c
-200 RPP -4.445 4.445 -4.445 4.445 4.86419444444445 4.9
+200 RPP -4.445 4.445 -4.445 4.445 4.86415740740741 4.9
 c
 c the 300 series defines the infinite plate ( H = 2, R = 3.81 )
 c
@@ -75,7 +75,7 @@ c --------------------
 c Source
 c --------------------
 c monodirectional, monoenergetic point source located at the origin
-SDEF  ERG=0.521 POS=0 0 0 DIR=1 VEC=0 0 1 PAR=e
+SDEF  ERG=0.314 POS=0 0 0 DIR=1 VEC=0 0 1 PAR=e
 c
 c --------------------
 c Job Control

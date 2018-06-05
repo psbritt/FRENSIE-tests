@@ -16,7 +16,7 @@ if [ "$#" -eq 1 ]; then
 fi
 
 # Energy (0.314, 0.521, 1.033) MeV
-energy="0.314"
+energy=0.314
 
 if [ ${energy} == 0.314 ]; then
     # Number of tests for 0.314 MeV
@@ -31,10 +31,14 @@ else
     echo "Error: Energy (MeV) \"${energy}\" is currently not supported!"
 fi
 
+# Change the energy
+line=s/energy=.*/energy=${energy}/
+sed -i "$line" run_mcnp.sh
+
 # loop through test numbers and run mpi script
 for i in "${test_number[@]}"
 do
-    # Change the interp
+    # Change the test number
     line=s/test_number=.*/test_number=\"$i\"/
     sed -i "$line" run_mcnp.sh
 

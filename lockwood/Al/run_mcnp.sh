@@ -18,7 +18,7 @@ if [ "$#" -eq 1 ]; then
 fi
 
 # Set the energy (0.314 0.521 1.033)
-energy=0.521
+energy=0.314
 # Set the test number (1 to N where N_0.314 = 11, N_0.521 = 17, N_1.033 = 25)
 test_number="11"
 

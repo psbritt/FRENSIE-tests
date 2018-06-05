@@ -67,7 +67,7 @@ c --------------------
 c Source
 c --------------------
 c monodirectional, monoenergetic point source located at the origin
-SDEF  ERG=0.521 POS=0 0 0 DIR=1 VEC=0 0 1 PAR=e
+SDEF  ERG=0.314 POS=0 0 0 DIR=1 VEC=0 0 1 PAR=e
 c
 c --------------------
 c Job Control
