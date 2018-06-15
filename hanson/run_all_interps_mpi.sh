@@ -9,6 +9,7 @@
 
 # interpolations to run for mpi
 interps=( linlinlin linlinlog logloglog )
+# Sey 2D Grid Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
 sample_policy=( 1 2 )
 # file type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12)
 file_type=1
@@ -19,7 +20,7 @@ do
     # Change the interp
     command=s/INTERP=.*/INTERP=\"$i\"/
     sed -i $command run_hanson_mpi.sh
-    # Set 2D sampling policy
+    # Set 2D grid policy
     for j in "${sample_policy[@]}"
     do
         command=s/SAMPLE=.*/SAMPLE=\"$j\"/

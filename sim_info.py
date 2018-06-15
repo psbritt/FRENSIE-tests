@@ -57,9 +57,9 @@ elif user_args.s == "3":
   grid = "Unit-base"
   grid_name = "unit_base"
 else:
-  # Assume Unit-base correlated
-  grid = "Unit-base Correlated"
-  grid_name = "unit_correlated"
+  # Nothing selected cause an error
+  grid = "ERROR"
+  grid_name = "ERROR"
 
 # Turn reactions on/off
 elastic_bool = user_args.t

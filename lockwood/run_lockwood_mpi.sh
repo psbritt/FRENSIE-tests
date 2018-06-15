@@ -49,9 +49,9 @@ ELASTIC_ON="true"
 BREM_ON="true"
 IONIZATION_ON="true"
 EXCITATION_ON="true"
-# Two D Interp Policy (logloglog, linlinlin, linlinlog)
+# 2D Interp Policy (logloglog, linlinlin, linlinlog)
 INTERP="logloglog"
-# Two D Sampling Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
+# 2D Grid Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
 SAMPLE=1
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
 DISTRIBUTION="Coupled"

@@ -2,7 +2,7 @@
 # This file is named run_facemc_mpi.sh
 #SBATCH --partition=pre
 #SBATCH --time=1-00:00:00
-#SBATCH --nodes=5
+#SBATCH --nodes=7
 #SBATCH --ntasks-per-node=16
 #SBATCH --mem-per-cpu=4000
 
@@ -29,7 +29,7 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/lkersting/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/lkersting/software/mcnpdata/
 #CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA/
 FRENSIE=/home/lkersting/frensie
 
@@ -40,7 +40,7 @@ if [ "$#" -eq 1 ]; then
 fi
 
 # Changing variables
-THREADS="80"
+THREADS="112"
 # Number of histories 1e7
 HISTORIES="10000000"
 # Turn certain reactions on (true/false)
@@ -50,7 +50,7 @@ IONIZATION_ON="true"
 EXCITATION_ON="true"
 # Two D Interp Policy (logloglog, linlinlin, linlinlog)
 INTERP="logloglog"
-# Two D Sampling Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
+# Two D Grid Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
 SAMPLE=1
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
 DISTRIBUTION="Coupled"
@@ -91,6 +91,8 @@ if [ "${ELASTIC_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_elastic"
 elif [ ${DISTRIBUTION} = "Coupled" ]; then
     NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+elif [ ${DISTRIBUTION} = "Decoupled" ]; then
+    NAME_EXTENTION="${NAME_EXTENTION}_${DISTRIBUTION}"
 fi
 if [ "${BREM_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_brem"
@@ -125,6 +127,10 @@ else
         SAMPLE_NAME="correlated"
     elif [ ${SAMPLE} = 3 ]; then
         SAMPLE_NAME="unit_base"
+    fi
+
+    if [ ${NAME} = "moments" ]; then
+        NAME="${NAME}_moments"
     fi
 
     NAME="hanson_${NAME}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"

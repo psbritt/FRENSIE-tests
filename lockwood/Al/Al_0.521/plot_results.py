@@ -5,6 +5,7 @@ import csv
 import math
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import gridspec
 from matplotlib.ticker import FormatStrFormatter
 import argparse as ap
 import inspect, os
@@ -40,29 +41,34 @@ names = [0 for x in range(N)]
 
 # Get computational results
 for n in range(N):
-    # question = "Enter the desired plot name to data file (" + file_paths[n] + "): "
-    # names[n] = raw_input(question)
 
     with open(file_paths[n]) as input:
         names[n] = input.readline().strip()[1:]
-        print names[n]
         data = zip(*(line.strip().split('\t') for line in input))
         data_name = data[0][0] + data[1][0] + data[2][0]
         data_x[n][0:M] = data[0][1:]
         data_y[n][0:M] = data[1][1:]
         data_error[n][0:M] = data[2][1:]
 
-        # for i in range(0, M):
-        #   data_y[n][i] = float(data_y[n][i])/float(data_x[n][i])
-        #   data_error[n][i] = float(data_error[n][i])/float(data_x[n][i])
+# Plot
+fig = plt.figure(num=1, figsize=(10,6))
 
-fig = plt.figure(num=1, figsize=(10,5))
-plt.xlabel('Range ($\mathrm{g/cm^2}$)', size=14)
+# set height ratios for sublots
+gs = gridspec.GridSpec(2, 1, height_ratios=[2, 1])
+
+# the first subplot
+ax0 = plt.subplot(gs[0])
+
+# x_label = 'Range ($\mathrm{g/cm^2}$)'
+x_label = 'Fraction of a Mean Range'
+x_data =[0.0108, 0.0403, 0.0771, 0.1090, 0.1430, 0.1730, 0.2030, 0.2420, 0.2790, 0.3080, 0.3450, 0.4240, 0.4750, 0.5380, 0.6150, 0.6820, 0.7800, 0.9080]
+
+plt.xlabel(x_label, size=14)
 plt.ylabel('Dose ($\mathrm{MeV\/cm^2/g}$)', size=14)
 plt.title('$\mathrm{Energy\/Deposition\/from\/0.521\/MeV\/Electron\/in\/Aluminum}$', size=16)
 ax=plt.gca()
 
-plt.xlim(0.0,0.22)
+plt.xlim(0.0,0.95)
 plt.ylim(0.0,5.0)
 
 if user_args.e:
@@ -84,20 +90,72 @@ if user_args.e:
     yerr = map(float, exp_error)
     for i in range(0, len(yerr)):
         yerr[i] = yerr[i]*y[i]/100.0
-    plt.errorbar(x, y, yerr=yerr, label="Lockwood (Exp.)", fmt="s", markersize=5 )
+    line0,err0,arg3, = ax0.errorbar(x_data[0:18], y[0:18], yerr=yerr[0:18], label="Lockwood (Exp.)", fmt="s", markersize=5 )
 
 
-markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","X","D","d"]
+markers = ["--v","-.o",":^","--<","-.>",":+","--x","-.1",":2","--3","-.4",":8","--p","-.P",":*","--h","-.H",":X","--D","-.d"]
 markerssizes = [6,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
 marker_color = ['g', 'r', 'c', 'm', 'y', 'k', 'w', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
+# names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
 for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
     yerr = map(float, data_error[n])
-    plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n])
+    plt.errorbar(x_data[0:18], y[0:18], yerr=yerr[0:18], label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n])
 plt.legend(loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
+
+markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","X","D","d"]
+if user_args.e:
+
+    # The C/E subplot (with shared x-axis)
+    ax1 = plt.subplot(gs[1], sharex = ax0)
+    plt.xlabel(x_label, size=14)
+    plt.ylabel('C/E', size=14)
+
+    # Get experimental data
+    directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    filename = directory + "/experimental_results.txt"
+    with open(filename) as input:
+        data = zip(*(line.strip().split('\t') for line in input))
+        data_name = data[0][0] + data[1][0] + data[2][0]
+        exp_x = data[0][1:]
+        exp_y = data[1][1:]
+        # Error is given in %
+        exp_error = data[2][1:]
+
+    # Calculate the experimental from the % error
+    x = map(float, exp_x)
+    experimental_y = map(float, exp_y)
+
+    for n in range(N):
+        x = map(float, data_x[n])
+        y = map(float, data_y[n])
+        yerr = map(float, data_error[n])
+
+        print names[n]
+        for i in range(0, len(y)):
+          y[i] = y[i]/experimental_y[i]
+          yerr[i] = yerr[i]/experimental_y[i]
+          print i, ": ", y[i], "\t +-\t", (1.0-y[i])*100, "%"
+        ax1.errorbar(x_data[0:18], y[0:18], yerr=yerr[0:18], label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n])
+
+    # make x ticks for first suplot invisible
+    plt.setp(ax0.get_xticklabels(), visible=False)
+
+    # remove first tick label for the first subplot
+    yticks = ax0.yaxis.get_major_ticks()
+    yticks[0].label1.set_visible(False)
+    ax0.grid(linestyle=':')
+    ax1.grid(linestyle=':')
+
+    plt.xlim(0.0,0.95)
+    plt.ylim(0.45,1.2)
+    # plt.ylim(0.5,5.0)
+
+    # remove vertical gap between subplots
+    plt.subplots_adjust(hspace=.0)
 
 output = "lockwood_results.pdf"
 if user_args.o:
