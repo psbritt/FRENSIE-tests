@@ -124,6 +124,7 @@ TODAY=$(date +%Y-%m-%d)
 if [ ${NAME} = "ace" -o ${NAME} = "epr14" ]; then
     DIR="results/${NAME}/${TODAY}"
     NAME="al_${NAME}_${ENERGY_EV}${NAME_REACTION}"
+    PROCESSOR="../../../../data_processor.sh ${ENERGY} ${NAME}"
 else
     if [ ${SAMPLE} = 1 ]; then
         SAMPLE_NAME="unit_correlated"
@@ -135,6 +136,7 @@ else
 
     DIR="results/${INTERP}/${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}/${TODAY}"
     NAME="al_${NAME}_${ENERGY_EV}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"
+    PROCESSOR="../../../../../data_processor.sh ${ENERGY} ${NAME}"
 fi
 
 mkdir -p $DIR
@@ -158,5 +160,5 @@ mv continue_run.xml ${NEW_RUN_INFO}
 
 cd ${DIR}
 
-bash ../../../../data_processor.sh ${ENERGY} ${NAME}
+bash ${PROCESSOR}
 echo "Results will be in ./${DIR}"
