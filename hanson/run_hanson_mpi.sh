@@ -83,16 +83,40 @@ else
     echo "Using Native analog data!"
 fi
 
+# Set the interp in title
+TITLE=""
+if [ "${INTERP}" = "logloglog"]; then
+    TITLE="Log-log"
+elif [ "${INTERP}" = "linlinlin"]; then
+    TITLE="Lin-lin"
+elif [ "${INTERP}" = "linlinlog"]; then
+    TITLE="Lin-log"
+fi
 
+# Set the sampling name
+SAMPLE_NAME=""
+if [ ${SAMPLE} = 1 ]; then
+    SAMPLE_NAME="unit_correlated"
+    TITLE="${TITLE} Unit-base Correlated"
+elif [ ${SAMPLE} = 2 ]; then
+    SAMPLE_NAME="correlated"
+    TITLE="${TITLE} Correlated"
+elif [ ${SAMPLE} = 3 ]; then
+    SAMPLE_NAME="unit_base"
+    TITLE="${TITLE} Unit-base"
+fi
+
+# Set the name raction and extention
 NAME_EXTENTION=""
 NAME_REACTION=""
-# Set the file name extentions
 if [ "${ELASTIC_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_elastic"
 elif [ ${DISTRIBUTION} = "Coupled" ]; then
     NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+    TITLE="${TITLE} ${COUPLED_SAMPLING}"
 elif [ ${DISTRIBUTION} = "Decoupled" ]; then
     NAME_EXTENTION="${NAME_EXTENTION}_${DISTRIBUTION}"
+    TITLE="${TITLE} ${DISTRIBUTION}"
 fi
 if [ "${BREM_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_brem"
@@ -118,6 +142,7 @@ TODAY=$(date +%Y-%m-%d)
 if [ ${NAME} = "ace" ] || [ ${NAME} = "epr14" ]; then
     DIR="results/${NAME}/${TODAY}"
     NAME="hanson_${NAME}${NAME_REACTION}"
+    TITLE="FACEMC-ACE"
 else
     DIR="results/${INTERP}/${TODAY}"
 
@@ -134,6 +159,7 @@ else
     fi
 
     NAME="hanson_${NAME}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"
+    TITLE="FACEMC-ACE"
 fi
 
 mkdir -p $DIR
@@ -156,7 +182,5 @@ NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
 mv ${H5} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
 
-cd ${DIR}
-
-bash ../../../data_processor.sh ${NAME}
+bash ./data_processor.py -f ${NAME} -t \"${TITLE}\"
 echo "Results will be in ./${DIR}"

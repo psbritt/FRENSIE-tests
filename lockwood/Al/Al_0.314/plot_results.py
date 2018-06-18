@@ -16,7 +16,6 @@ description = "This script asks for energy deposition data and run names which "
 
 parser = ap.ArgumentParser(description=description)
 
-
 experimental_msg = "Flag to add the experimental data to the generated plot."
 parser.add_argument('-e', help=experimental_msg, action='store_true')
 
