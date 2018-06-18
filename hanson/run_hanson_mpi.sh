@@ -159,7 +159,6 @@ else
     fi
 
     NAME="hanson_${NAME}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"
-    TITLE="FACEMC-ACE"
 fi
 
 mkdir -p $DIR
@@ -182,5 +181,5 @@ NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
 mv ${H5} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
 
-bash ./data_processor.py -f ${NAME} -t \"${TITLE}\"
+python ./data_processor.py -f ${NEW_NAME} -t "${TITLE}"
 echo "Results will be in ./${DIR}"
