@@ -13,11 +13,11 @@
 ## The electron albedo is found for a semi-infinite aluminum slab. Since the
 ## electron albedo requires a surface current, DagMC will be used and not Root.
 ## FRENSIE will be run with three variations.
-## 1. Using ACE data, which should match MCNP almost exactly.
-## 2. Using the Native data in analog mode, whcih uses a different interpolation
+## 1. Using the Native data in analog mode, whcih uses a different interpolation
 ## scheme than MCNP.
-## 3. Using Native data in moment preserving mode, which should give a less
+## 2. Using Native data in moment preserving mode, which should give a less
 ## acurate answer while decreasing run time.
+## 3. Using ACE (EPR14) data, which should match MCNP6.2 almost exactly.
 
 ##---------------------------------------------------------------------------##
 ## ------------------------------- COMMANDS ---------------------------------##
@@ -25,7 +25,7 @@
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/lkersting/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/lkersting/software/mcnpdata/
 #CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA/
 FRENSIE=/home/lkersting/frensie
 
@@ -57,6 +57,15 @@ DISTRIBUTION="Coupled"
 COUPLED_SAMPLING="2D"
 
 NAME="native"
+# NO_ERRORS="true"
+
+# if [ "${ELEMENT}" == "Al" ]; then
+#     # Source energies for Al (MeV)
+#     energies=( .005 .0093 .01 .011 .0134 .015 .0173 .02 .0252 .03 .04 .0415 .05 .06 .0621 .0818 .102 )
+# else
+#     NO_ERRORS="false"
+#     echo "Error: Element ${ELEMENT} is currently not supported!"
+# fi
 
 ELASTIC="-d ${DISTRIBUTION} -c ${COUPLED_SAMPLING}"
 REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
@@ -88,6 +97,8 @@ if [ "${ELASTIC_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_elastic"
 elif [ ${DISTRIBUTION} = "Coupled" ]; then
     NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+elif [ ${DISTRIBUTION} = "Decoupled" ]; then
+    NAME_EXTENTION="${NAME_EXTENTION}_${DISTRIBUTION}"
 fi
 if [ "${BREM_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_brem"
@@ -114,8 +125,6 @@ if [ ${NAME} = "ace" -o ${NAME} = "epr14" ]; then
     DIR="results/${NAME}/${TODAY}"
     NAME="al_${NAME}_${ENERGY_EV}${NAME_REACTION}"
 else
-    DIR="results/${INTERP}/${TODAY}"
-
     if [ ${SAMPLE} = 1 ]; then
         SAMPLE_NAME="unit_correlated"
     elif [ ${SAMPLE} = 2 ]; then
@@ -124,6 +133,7 @@ else
         SAMPLE_NAME="unit_base"
     fi
 
+    DIR="results/${INTERP}/${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}/${TODAY}"
     NAME="al_${NAME}_${ENERGY_EV}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"
 fi
 
@@ -132,6 +142,7 @@ mkdir -p $DIR
 echo "Running Facemc Albedo test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
 echo ${RUN}
+
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Removing old xml files:"
@@ -149,4 +160,3 @@ cd ${DIR}
 
 bash ../../../../data_processor.sh ${ENERGY} ${NAME}
 echo "Results will be in ./${DIR}"
-

@@ -8,11 +8,17 @@
 ## .0818 and .102 MeV
 ##---------------------------------------------------------------------------##
 
-# energies to run for mpi
-energies=(.005 .0093 .01 .011 .0134 .015 .0173 .02 .0252 .03 .04 .0415 .05 .06 .0621 .0818 .102)
-
-# file type (1 = Native, 2 = EPR14, 3 = ACE)
+# file type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12)
 file_type=1
+# Material element
+element="Al"
+
+if [ "${element}" == "Al" ]; then
+    # Source energies for Al (MeV)
+    energies=( .005 .0093 .01 .011 .0134 .015 .0173 .02 .0252 .03 .04 .0415 .05 .06 .0621 .0818 .102 )
+else
+    echo "Error: Element \"${element}\" is currently not supported!"
+fi
 
 # loop through energies and run mpi script
 for i in "${energies[@]}"

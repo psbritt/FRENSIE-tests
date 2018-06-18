@@ -155,8 +155,6 @@ if [ "${NO_ERRORS}" = "true" ]; then
         DIR="${ELEMENT}/results/${NAME}/${TODAY}"
         NAME="lockwood_${ENERGY}_${TEST_NUMBER}_${NAME}${NAME_REACTION}"
     else
-        DIR="${ELEMENT}/results/${INTERP}/${TODAY}"
-
         if [ ${SAMPLE} = 1 ]; then
             SAMPLE_NAME="unit_correlated"
         elif [ ${SAMPLE} = 2 ]; then
@@ -165,10 +163,7 @@ if [ "${NO_ERRORS}" = "true" ]; then
             SAMPLE_NAME="unit_base"
         fi
 
-        if [ ${NAME} = "moments" ]; then
-            NAME="${NAME}_moments"
-        fi
-
+        DIR="${ELEMENT}/results/${INTERP}/${TODAY}"
         NAME="lockwood_${ENERGY}_${TEST_NUMBER}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"
     fi
 
