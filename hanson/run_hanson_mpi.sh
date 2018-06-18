@@ -85,11 +85,11 @@ fi
 
 # Set the interp in title
 TITLE=""
-if [ "${INTERP}" = "logloglog"]; then
+if [ "${INTERP}" = "logloglog" ]; then
     TITLE="Log-log"
-elif [ "${INTERP}" = "linlinlin"]; then
+elif [ "${INTERP}" = "linlinlin" ]; then
     TITLE="Lin-lin"
-elif [ "${INTERP}" = "linlinlog"]; then
+elif [ "${INTERP}" = "linlinlog" ]; then
     TITLE="Lin-log"
 fi
 
