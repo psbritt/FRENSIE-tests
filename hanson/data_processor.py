@@ -80,8 +80,8 @@ def main(argv):
 
       # Write data to file
       for i in range(0, size):
-          output = '%.4e' % avg_angle[i] + " " + \
-                  '%.16e' % num_square_degree[i] + " " + \
+          output = '%.4e' % avg_angle[i] + "\t" + \
+                  '%.16e' % num_square_degree[i] + "\t" + \
                   '%.16e' % num_square_degree_error[i] + "\n"
           out_file.write( output )
 

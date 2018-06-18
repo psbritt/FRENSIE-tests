@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 from matplotlib.ticker import FormatStrFormatter
 import argparse as ap
+import inspect, os
 
 # Set up the argument parser
 description = "This script asks for #/square degree data and run names which "\
@@ -38,19 +39,28 @@ data_error = [[0 for x in range(N)] for y in range(M)]
 names = [0 for x in range(N)]
 
 # Get computational results
-for n in range(len(file_paths)):
-    question = "Enter the desired plot name to data file (" + file_paths[n] + "): "
-    names[n] = raw_input(question)
+for n in range(N):
 
     with open(file_paths[n]) as input:
-        data = zip(*(line.strip().split(' ') for line in input))
-        data_name = data[0][0] + data[1][0] + data[2][0]
-        data_x[n][0:17] = data[0][1:]
-        data_y[n][0:17] = data[1][1:]
-        data_error[n][0:17] = data[2][1:]
+        names[n] = input.readline().strip()[1:]
+        print names[n]
+        print input.readline().strip()[1:]
+        data = zip(*(line.strip().split('\t') for line in input))
+        data_x[n][:] = data[0][:]
+        data_y[n][:] = data[1][:]
+        data_error[n][:] = data[2][:]
 
-fig = plt.figure(num=1, figsize=(10,5))
-plt.xlabel('Angle (Degree)', size=14)
+# Plot
+fig = plt.figure(num=1, figsize=(10,6))
+
+# set height ratios for sublots
+gs = gridspec.GridSpec(2, 1, height_ratios=[2, 1])
+
+# the first subplot
+ax0 = plt.subplot(gs[0])
+
+x_label = 'Angle (Degree)'
+plt.xlabel(x_label, size=14)
 plt.ylabel('#/Square Degrees', size=14)
 plt.title('$\mathrm{15.7\/MeV\/Electron\/Angular\/Distribution\/from\/a\/9.658\/\mu m\/Gold\/Foil}$', size=16)
 ax=plt.gca()
@@ -60,8 +70,10 @@ plt.ylim(0.0,0.05)
 
 if user_args.e:
     # Get experimental data
-    with open("experimental_results.txt") as input:
-        data = zip(*(line.strip().split(' ') for line in input))
+    directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    filename = directory + "/experimental_results.txt"
+    with open(filename) as input:
+        data = zip(*(line.strip().split('\t') for line in input))
         data_name = data[0][0] + data[1][0] + data[2][0]
         exp_x = data[0][1:]
         exp_y = data[1][1:]
@@ -74,21 +86,74 @@ if user_args.e:
     # plt.errorbar(x, y, yerr=yerr, label="Hanson (Exp.)", fmt="s", markersize=5, fillstyle='none' )
 
 
-markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","X","D","d"]
+markers = ["--v","-.o",":^","--<","-.>",":+","--x","-.1",":2","--3","-.4",":8","--p","-.P",":*","--h","-.H",":X","--D","-.d"]
 markerssizes = [6,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
+marker_color = ['g', 'r', 'c', 'm', 'y', 'k', 'w', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
+# names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
 for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
     yerr = map(float, data_error[n])
-    plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n] )
+    plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n] )
 plt.legend(loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
+
+markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","X","D","d"]
+if user_args.e:
+
+    # The C/E subplot (with shared x-axis)
+    ax1 = plt.subplot(gs[1], sharex = ax0)
+    plt.xlabel(x_label, size=14)
+    plt.ylabel('C/E', size=14)
+
+    # Get experimental data
+    directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+    filename = directory + "/experimental_results.txt"
+    with open(filename) as input:
+        data = zip(*(line.strip().split('\t') for line in input))
+        data_name = data[0][0] + data[1][0] + data[2][0]
+        exp_x = data[0][1:]
+        exp_y = data[1][1:]
+        # Error is given in %
+        exp_error = data[2][1:]
+
+    # Calculate the experimental from the % error
+    x = map(float, exp_x)
+    experimental_y = map(float, exp_y)
+
+    for n in range(N):
+        x = map(float, data_x[n])
+        y = map(float, data_y[n])
+        yerr = map(float, data_error[n])
+
+        print names[n]
+        for i in range(0, len(y)):
+          # print "y: ", y[i], "\ty_exp: ", experimental_y[i]
+          y[i] = y[i]/experimental_y[i]
+          yerr[i] = yerr[i]/experimental_y[i]
+          print i, ": ", (1.0-y[i])*100, "%"
+        ax1.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n])
+
+    # make x ticks for first suplot invisible
+    plt.setp(ax0.get_xticklabels(), visible=False)
+
+    # remove first tick label for the first subplot
+    yticks = ax0.yaxis.get_major_ticks()
+    yticks[0].label1.set_visible(False)
+    ax0.grid(linestyle=':')
+    ax1.grid(linestyle=':')
+
+    plt.xlim(0.0,10.0)
+    plt.ylim(0.2,1.2)
+
+    # remove vertical gap between subplots
+    plt.subplots_adjust(hspace=.0)
 
 output = "hanson_results.pdf"
 if user_args.o:
     output = user_args.o
 
 print "Plot outputted to: ",output
-fig.savefig(output, bbox_inches='tight', dpi=300)
+fig.savefig(output, bbox_inches='tight', dpi=600)
 plt.show()
