@@ -51,7 +51,7 @@ for n in range(N):
         data_error[n][:] = data[2][:]
 
 # Plot
-fig = plt.figure(num=1, figsize=(10,6))
+fig = plt.figure(num=1, figsize=(9,9))
 
 # set height ratios for sublots
 gs = gridspec.GridSpec(2, 1, height_ratios=[2, 1])
@@ -76,27 +76,38 @@ if user_args.e:
         data = zip(*(line.strip().split('\t') for line in input))
         exp_x = data[0][1:]
         exp_y = data[1][1:]
+        # exp_error = data[2][1:]
 
     x = map(float, exp_x)
     y = map(float, exp_y)
+    print x, y
+    # yerr = map(float, exp_error)
+    # plt.errorbar(x, y, yerr=yerr, label="Hanson (Exp.)", fmt="s", markersize=5 )
     plt.plot(x, y, label="Hanson (Exp.)", marker='s', markersize=5 )
+
 
 markers = ["--v","-.o",":^","--<","-.>",":+","--x","-.1",":2","--3","-.4",":8","--p","-.P",":*","--h","-.H",":X","--D","-.d"]
 markerssizes = [6,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
 marker_color = ['g', 'r', 'c', 'm', 'y', 'k', 'w', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
+
+# linestyles: 'solid', 'loosely dotted', 'dotted', 'densely dotted', 'loosely dashed', 'dashed', 'densely dashed', 'loosely dashdotted', 'dashdotted', 'densely dashdotted', 'loosely dashdotdotted', 'dashdotdotted', 'densely dashdotdotted')
+linestyles = [(0, ()), (0, (1, 10)), (0, (1, 5)), (0, (1, 1)), (0, (5, 10)), (0, (5, 5)), (0, (5, 1)), (0, (3, 10, 1, 10)), (0, (3, 5, 1, 5)), (0, (3, 1, 1, 1)), (0, (3, 10, 1, 10, 1, 10)), (0, (3, 5, 1, 5, 1, 5)), (0, (3, 1, 1, 1, 1, 1))]
+
 # names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
 for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
     yerr = map(float, data_error[n])
 
-    # Calculate bin mid points
-    mid = [None] * len(x)
-    x.insert(0, 0.0)
-    for i in range(len(mid)):
-      mid[i] = 0.5*(x[i+1] + x[i])
+    # Insert first bin lower bounds as an angle of 0
+    x.insert(0,0.0)
 
-    plt.errorbar(mid, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n] )
+    # Plot histogram of results
+    m, bins, _ = plt.hist(x[:-1], bins=x, weights=y, histtype='step', label=names[n], color=marker_color[n], linestyle=linestyles[n] )
+    # Plot error bars
+    mid = 0.5*(bins[1:] + bins[:-1])
+    plt.errorbar(mid, m, yerr=yerr, ecolor=marker_color[n], fmt=None)
+
 plt.legend(loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
@@ -128,19 +139,22 @@ if user_args.e:
         x = map(float, data_x[n])
         y = map(float, data_y[n])
         yerr = map(float, data_error[n])
-
-        # Calculate bin mid points
-        mid = [None] * len(x)
         x.insert(0, 0.0)
-        for i in range(len(mid)):
-          mid[i] = 0.5*(x[i+1] + x[i])
 
         for i in range(0, len(y)):
           # print "y: ", y[i], "\ty_exp: ", experimental_y[i]
           y[i] = y[i]/experimental_y[i]
           yerr[i] = yerr[i]/experimental_y[i]
           print i, ": ", (1.0-y[i])*100, "%"
-        ax1.errorbar(mid, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n])
+
+        # Plot histogram of results
+        m, bins, _ = ax1.hist(x[:-1], bins=x, weights=y, histtype='step', label=names[n], color=marker_color[n], linestyle=linestyles[n] )
+        # Plot error bars
+        mid = 0.5*(bins[1:] + bins[:-1])
+        print "marker_color[n] = ", marker_color[n]
+        ax1.errorbar(mid, m, yerr=yerr, ecolor=marker_color[n], fmt=None)
+
+        # ax1.errorbar(mid, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n])
 
     # make x ticks for first suplot invisible
     plt.setp(ax0.get_xticklabels(), visible=False)

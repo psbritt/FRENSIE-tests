@@ -59,13 +59,12 @@ def main(argv):
       size = len(cosines)-1
       num_square_degree = [None] * size
       num_square_degree_error = [None] * size
-      avg_angle = [None] * size
+      angles = [None] * size
 
       for i in range(0, size):
         j = size-i
         k = j-1
-        angle_sum = math.acos(float(cosines[j]))/degree + math.acos(float(cosines[k]))/degree
-        avg_angle[i] = angle_sum/2.0
+        angles[i] = math.acos(float(cosines[k]))/degree
         cosine_diff = float(cosines[j]) - float(cosines[k])
         sterradians = 2.0*math.pi*cosine_diff
         num_per_ster = float(current[j])/sterradians
@@ -80,7 +79,7 @@ def main(argv):
 
       # Write data to file
       for i in range(0, size):
-          output = '%.4e' % avg_angle[i] + "\t" + \
+          output = '%.4e' % angles[i] + "\t" + \
                   '%.16e' % num_square_degree[i] + "\t" + \
                   '%.16e' % num_square_degree_error[i] + "\n"
           out_file.write( output )
