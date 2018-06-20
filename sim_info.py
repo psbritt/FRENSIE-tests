@@ -2,6 +2,7 @@
 import argparse as ap
 import xml.etree.ElementTree as ET
 from ElementTree_pretty import prettify
+import os.path
 
 # Set up the argument parser
 description = "This script allows one to write the sim_info.xml file for FACEMC."
@@ -75,33 +76,37 @@ elastic_distribution = user_args.d
 coupled_sampling_method = user_args.c
 
 # Set xml file name
-name = "sim_info_"+interp+"_"+grid_name+"_"+energy
+name_base = "sim_info_"+interp+"_"+grid_name+"_"+energy
 
 if elastic_bool == "false":
-    name += "_no_elastic"
+    name_base += "_no_elastic"
 else:
     if elastic_distribution == "Coupled":
-        name+="_coupled"
+        name_base+="_coupled"
         if coupled_sampling_method == "1D":
-            name+="_1D"
+            name_base+="_1D"
             coupled_sampling_method = "One D Union"
         elif coupled_sampling_method == "2D":
-            name+="_2D"
+            name_base+="_2D"
             coupled_sampling_method = "Two D Union"
         else:
             coupled_sampling_method = "Simplified Union"
     elif elastic_distribution == "Hybrid":
-        name+="_0.9"
+        name_base+="_0.9"
         cutoff_cosine = 0.9
 
 if brem_bool == "false":
-    name += "_no_brem"
+    name_base += "_no_brem"
 if ionization_bool == "false":
-    name += "_no_ionization"
+    name_base += "_no_ionization"
 if excitation_bool == "false":
-    name += "_no_excitation"
-name += ".xml"
+    name_base += "_no_excitation"
 
+name = name_base + ".xml"
+i=1
+while os.path.isfile(name):
+  name = name_base+"_"+str(i)+".xml"
+  i=i+1
 
 root = ET.Element("ParameterList", name="Simulation Info")
 

@@ -7,6 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import argparse as ap
+import inspect, os
 
 # Set up the argument parser
 description = "This script asks for albedo data and run names which "\
@@ -57,7 +58,7 @@ plt.ylabel('Reflection Coef.', size=14)
 plt.title('Electron Albedos for an infinite slab of Al', size=16)
 ax=plt.gca()
 
-plt.xlim(0.0,.11)
+plt.xlim(0.0,120)
 #plt.ylim(0.12,0.19)
 
 if user_args.e:
@@ -65,28 +66,25 @@ if user_args.e:
     data = np.loadtxt("./creep_experimental.txt", skiprows=2)
     plt.scatter(data[:,0], data[:,1], label="CREEP", marker='s' )
 
+markers = ["v","^","<",">","s","+","x","1","2","3","4","8","p","*","h","H","X","D","d"]
 if user_args.a:
-    data = np.loadtxt("./creep_experimental_2.txt", skiprows=2)
-    plt.scatter(data[:,0], data[:,1], label="Bishop (Exp.)", marker='*', s=50, facecolors='none', edgecolors='b' )
-    plt.scatter(data[:,0], data[:,2], label="Neubert (Exp.)", marker='o', s=45, facecolors='none', edgecolors='b' )
-    plt.scatter(data[:,0], data[:,3], label="Darlington (Exp.)", marker='d', s=45, facecolors='none', edgecolors='b' )
+  # exp_names = ['assad','bishop', 'bongeler', 'bronstein', 'cosslett', 'drescher', 'heinrich', 'kanter', 'neubert', 'palluel', 'philibert', 'reimer', 'shimizu', 'wittry' ]
+  exp_names = ['assad','bishop', 'bronstein', 'drescher', 'neubert' ]
 
+  # Get experimental data
+  directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
-# if user_args.a:
-#     data = np.loadtxt("./experimental_reflections_2.txt", skiprows=2)
-#     plt.scatter(data[:,0], data[:,1], label="Neubert" )
-#     plt.scatter(data[:,0], data[:,2], label="Bishop" )
-#     plt.scatter(data[:,0], data[:,3], label="Joy Ref. 2" )
-#     plt.scatter(data[:,0], data[:,4], label="Joy Ref. 4" )
-#     plt.scatter(data[:,0], data[:,5], label="Joy Ref. 5" )
-#     plt.scatter(data[:,0], data[:,6], label="Joy Ref. 6" )
-#     plt.scatter(data[:,0], data[:,7], label="Joy Ref. 14" )
-#     plt.scatter(data[:,0], data[:,8], label="Joy Ref. 15" )
-#     plt.scatter(data[:,0], data[:,9], label="Joy Ref. 22" )
-#     plt.scatter(data[:,0], data[:,10], label="Joy Ref. 35" )
-#     plt.scatter(data[:,0], data[:,11], label="Joy Ref. 68" )
-#     plt.scatter(data[:,0], data[:,12], label="Joy Ref. 106" )
-#     plt.scatter(data[:,0], data[:,13], label="Joy Ref. 107" )
+  for i in range(len(exp_names)):
+    filename = directory + "/al/experimental_results/" + exp_names[i] +".tsv"
+    with open(filename) as input:
+        name = input.readline().strip()
+        input.readline()
+        data = zip(*(line.strip().split('\t') for line in input))
+        x = data[0][:]
+        y = data[1][:]
+
+    plt.scatter(x, y, label=name +" (Exp.)", marker=markers[i], s=50, facecolors='none', edgecolors='b' )
+
 
 # markers = ["v","^","<",">","s","+","x","1","2","3","4","8","p","*","h","H","X","D","d"]
 # markerssizes = [7,7,7,7,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7]
@@ -102,7 +100,7 @@ for n in range(N):
 plt.legend(loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
-plt.ylim(0.12,0.22)
+# plt.ylim(0.12,0.22)
 # leg = plt.legend(loc='best', ncol=2)
 # leg.get_frame().set_alpha(0.5)
 

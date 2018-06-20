@@ -2,6 +2,7 @@
 import argparse as ap
 import xml.etree.ElementTree as ET
 from ElementTree_pretty import prettify
+import os.path
 
 # Set up the argument parser
 description = "This script allows one to write the source.xml file for FACEMC. "\
@@ -41,4 +42,11 @@ else:
 ET.SubElement(root, "Parameter", name="Material Property", type="string", value="mat")
 ET.SubElement(root, "Parameter", name="Density Property", type="string", value="rho")
 
-prettify(root,"geom.xml")
+name="geom.xml"
+i=1
+while os.path.isfile(name):
+  name = "geom_" +str(i)+".xml"
+  i=i+1
+
+prettify(root,name)
+print name

@@ -2,6 +2,7 @@
 import argparse as ap
 import xml.etree.ElementTree as ET
 from ElementTree_pretty import prettify
+import os.path
 
 # Set up the argument parser
 description = "This script allows one to write the mat.xml file for FACEMC. "\
@@ -24,7 +25,12 @@ user_args = parser.parse_args()
 element_symbol = user_args.n
 file_type = user_args.t
 interp = user_args.i
-name = "mat_"+element_symbol+"_"+file_type+"_"+interp+".xml"
+
+name="mat_"+element_symbol+"_"+file_type+"_"+interp+".xml"
+i=1
+while os.path.isfile(name):
+  name = "mat_"+element_symbol+"_"+file_type+"_"+interp+"_" +str(i)+".xml"
+  i=i+1
 
 filename = "{" + element_symbol
 
