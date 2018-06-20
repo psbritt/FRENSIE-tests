@@ -44,7 +44,7 @@ for n in range(N):
     with open(file_paths[n]) as input:
         names[n] = input.readline().strip()[1:]
         print names[n]
-        print input.readline().strip()[1:]
+        input.readline().strip()[1:]
         data = zip(*(line.strip().split('\t') for line in input))
         data_x[n][:] = data[0][:]
         data_y[n][:] = data[1][:]
@@ -111,14 +111,11 @@ if user_args.e:
 
     # Get experimental data
     directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-    filename = directory + "/experimental_results.txt"
+    filename = directory + "/experimental_results.tsv"
     with open(filename) as input:
         data = zip(*(line.strip().split('\t') for line in input))
-        data_name = data[0][0] + data[1][0] + data[2][0]
         exp_x = data[0][1:]
         exp_y = data[1][1:]
-        # Error is given in %
-        exp_error = data[2][1:]
 
     # Calculate the experimental from the % error
     x = map(float, exp_x)
