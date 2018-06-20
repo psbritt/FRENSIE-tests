@@ -128,6 +128,14 @@ if [ "${EXCITATION_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_excitation"
 fi
 
+# .xml file paths.
+SOURCE="source.xml"
+EST="est.xml"
+GEOM="geom.xml"
+RSP="../rsp_fn.xml"
+INFO=$(python ../sim_info.py ${SIM_PARAMETERS} 2>&1)
+MAT=$(python ../mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP} 2>&1)
+
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
 
@@ -154,14 +162,6 @@ else
 fi
 
 mkdir -p $DIR
-
-# .xml file paths.
-SOURCE="source.xml"
-EST="est.xml"
-GEOM="geom.xml"
-RSP="../rsp_fn.xml"
-INFO=$(python ../sim_info.py ${SIM_PARAMETERS} 2>&1)
-MAT=$(python ../mat.py -n ${ELEMENT} -t ${NAME} -i ${INTERP} 2>&1)
 
 echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
