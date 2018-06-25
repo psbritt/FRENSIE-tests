@@ -163,7 +163,7 @@ if [ "${NO_ERRORS}" = "true" ]; then
             SAMPLE_NAME="unit_base"
         fi
 
-        DIR="${ELEMENT}/results/${INTERP}/${TODAY}"
+        DIR="${ELEMENT}/results/${INTERP}/${SAMPLE_NAME}${NAME_EXTENTION}/${TODAY}"
         NAME="lockwood_${ENERGY}_${TEST_NUMBER}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"
     fi
 

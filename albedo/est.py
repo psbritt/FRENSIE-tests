@@ -3,6 +3,7 @@ import argparse as ap
 import xml.etree.ElementTree as ET
 import sys; sys.path.append("../../")
 from ElementTree_pretty import prettify
+import os.path
 
 # Set up the argument parser
 description = "This script allows one to write the est.xml file for FACEMC. "\
@@ -16,7 +17,6 @@ parser.add_argument('-e', help=energy_msg, required=True)
 # Parse the user's arguments
 user_args = parser.parse_args()
 energy = user_args.e
-name = "est_"+str(energy)+".xml"
 
 root = ET.Element("ParameterList", name="Simulation Info")
 
@@ -62,6 +62,12 @@ ET.SubElement(parameter_3, "Parameter", name="Cells", type="Array", value="{1}")
 sub_list_3 = ET.SubElement(parameter_3, "ParameterList", name="Bins")
 ET.SubElement(sub_list_3, "Parameter", name="Energy Bins", type="Array", value="{1.5e-5, 99l, " + str(energy)+ "}")
 
+# Set name for source file
+name = "est_"+str(energy)+".xml"
+i=1
+while os.path.isfile(name):
+  name = "est_"+str(energy)+"_" +str(i)+".xml"
+  i=i+1
 
 prettify(root,name)
 print name
