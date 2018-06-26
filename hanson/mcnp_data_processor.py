@@ -4,6 +4,7 @@ import os
 import shutil
 import sys, getopt
 from subprocess import call
+import math
 
 def main(argv):
     directory = ''
@@ -20,7 +21,7 @@ def main(argv):
             directory = arg
 
     cell_list = ['10']
-    surface_list = ['100', '101']
+    surface_list = ['101']
     angle_list = ['', 'full' ]
 
     # Get mcnp output file name
@@ -44,28 +45,34 @@ def main(argv):
         os.chdir(directory)
 
         today = datetime.date.today()
-        # Read the mcnp data file for surface tallys
-        with open(mcnp_output) as data:
-            # go through all surface tallies
-            for i in cell_list:
-                start=" cell  "+i
-                name = base+"_cell_flux.txt"
-                file = open(name, 'w')
-                header = "# Energy   flux \t   Sigma\t"+str(today)+"\n"
-                file.write(header)
-                # Skips text before the beginning of the interesting block:
-                for line in data:
-                    if line.startswith(start):
-                        data.next()
-                        break
-                # Reads text until the end of the block:
-                for line in data:  # This keeps reading the file
-                    if line.startswith('      total'):
-                        file.close()
-                        break
-                    line = line.lstrip()
-                    line = line.replace('   ',' ')
-                    file.write(line)
+        # # Read the mcnp data file for surface tallies
+        # with open(mcnp_output) as data:
+        #     # go through all surface tallies
+        #     for i in cell_list:
+        #         start=" cell  "+i
+        #         name = base+"_cell_flux.txt"
+        #         file = open(name, 'w')
+        #         header = "# Energy   flux \t   Sigma\t"+str(today)+"\n"
+        #         file.write(header)
+        #         # Skips text before the beginning of the interesting block:
+        #         for line in data:
+        #             if line.startswith(start):
+        #                 data.next()
+        #                 break
+        #         # Reads text until the end of the block:
+        #         for line in data:  # This keeps reading the file
+        #             if line.startswith('      total'):
+        #                 file.close()
+        #                 break
+        #             line = line.lstrip()
+        #             line = line.replace('   ',' ')
+        #             file.write(line)
+
+        degree = math.pi/180.0
+        square_degree = degree*degree
+        cosines = [ -1.00000000000000E+00, 0.00000000000000E+00, 8.48048096156426E-01, 8.82126866017668E-01, 9.13332365617192E-01, 9.38191335922484E-01, 9.51433341895538E-01, 9.60585317886711E-01, 9.68669911264357E-01, 9.74526872786577E-01, 9.78652704312051E-01, 9.82024659632372E-01, 9.85229115235059E-01, 9.88520271746353E-01, 9.91146155097021E-01, 9.92986158373646E-01, 9.95072889372028E-01, 9.96419457128586E-01, 9.97012445565730E-01, 9.97743253476273E-01, 9.98187693254492E-01, 9.98555486558339E-01, 9.98823128276774E-01, 9.99166134342540E-01, 9.99378583910478E-01, 9.99701489781183E-01, 9.99853726281158E-01, 9.99958816007535E-01, 1.00000000000000E+00 ]
+        current = [None] * (len(cosines) -1)
+        error = [None] * (len(cosines) -1)
 
         with open(mcnp_output) as data:
             # go through all surface tallies
@@ -73,64 +80,46 @@ def main(argv):
                 start=" surface  "+i
 
                 # go through the current estimators first angle
-                name = base+"_"+i+".txt"
-                file = open(name, 'w')
-                header = "# Angle     Current     Sigma\t"+str(today)+"\n"
-                total_number_of_angles = 18
-                number_of_angles = 0
-                file.write(header)
-                file.write("-1.00000000000000 0.00000E+00 0.0000\n")
                 # Skips text before the beginning of the interesting block:
+                i = 0
                 for line in data:
                     if line.startswith(start):
-                        line = data.next().strip()
-                        if number_of_angles == 0:
-                            line = "0.000000000000000" + line.replace('angle  bin:  -1.          to  0.00000E+00','')
-                        elif number_of_angles == 1:
-                            line = "0.939692620785908" + line.replace('angle  bin:   0.00000E+00 to  9.39693E-01','')
-                        elif number_of_angles == 2:
-                            line = "0.965925826289068" + line.replace('angle  bin:   9.39693E-01 to  9.65926E-01','')
-                        elif number_of_angles == 3:
-                            line = "0.984807753012208" + line.replace('angle  bin:   9.65926E-01 to  9.84808E-01','')
-                        elif number_of_angles == 4:
-                            line = "0.990268068741570" + line.replace('angle  bin:   9.84808E-01 to  9.90268E-01','')
-                        elif number_of_angles == 5:
-                            line = "0.994521895368273" + line.replace('angle  bin:   9.90268E-01 to  9.94522E-01','')
-                        elif number_of_angles == 6:
-                            line = "0.995396198367179" + line.replace('angle  bin:   9.94522E-01 to  9.95396E-01','')
-                        elif number_of_angles == 7:
-                            line = "0.996194698091746" + line.replace('angle  bin:   9.95396E-01 to  9.96195E-01','')
-                        elif number_of_angles == 8:
-                            line = "0.996917333733128" + line.replace('angle  bin:   9.96195E-01 to  9.96917E-01','')
-                        elif number_of_angles == 9:
-                            line = "0.997564050259824" + line.replace('angle  bin:   9.96917E-01 to  9.97564E-01','')
-                        elif number_of_angles == 10:
-                            line = "0.998134798421867" + line.replace('angle  bin:   9.97564E-01 to  9.98135E-01','')
-                        elif number_of_angles == 11:
-                            line = "0.998629534754574" + line.replace('angle  bin:   9.98135E-01 to  9.98630E-01','')
-                        elif number_of_angles == 12:
-                            line = "0.999048221581858" + line.replace('angle  bin:   9.98630E-01 to  9.99048E-01','')
-                        elif number_of_angles == 13:
-                            line = "0.999390827019096" + line.replace('angle  bin:   9.99048E-01 to  9.99391E-01','')
-                        elif number_of_angles == 14:
-                            line = "0.999657324975557" + line.replace('angle  bin:   9.99391E-01 to  9.99657E-01','')
-                        elif number_of_angles == 15:
-                            line = "0.999847695156391" + line.replace('angle  bin:   9.99657E-01 to  9.99848E-01','')
-                        elif number_of_angles == 16:
-                            line = "0.999961923064171" + line.replace('angle  bin:   9.99848E-01 to  9.99962E-01','')
-                        elif number_of_angles == 17:
-                            line = "1.000000000000000" + line.replace('angle  bin:   9.99962E-01 to  1.00000E+00','')
-                        line = line.replace(' mu',' ')
-                        line+=data.next().strip()+'\n'
-                        file.write(line)
-                        number_of_angles+=1
-                        if number_of_angles == total_number_of_angles:
+                        data.next()
+                        current[i], error[i] = data.next().strip().split(' ')
+                        i+=1
+                        if i == len(cosines):
                             break
-                file.close()
 
-        # Plot results
-#        plot = "../../plot_"+base+".p"
-#        call(["gnuplot", plot])
+        # Convert to #/Square Degree
+        size = len(cosines)-1
+        num_square_degree = [None] * size
+        num_square_degree_error = [None] * size
+        angles = [None] * size
+
+        for i in range(0, size):
+          j = size-i
+          k = j-1
+          angles[i] = math.acos(float(cosines[k]))/degree
+          cosine_diff = float(cosines[j]) - float(cosines[k])
+          sterradians = 2.0*math.pi*cosine_diff
+          num_per_ster = float(current[j-1])/sterradians
+          num_square_degree[i] = num_per_ster*square_degree
+          num_square_degree_error[i] = float(error[j-1])/sterradians*square_degree
+
+        # Write title to file
+        name = base+"_spectrum.txt"
+        out_file = open(name, 'w')
+        out_file.write( "# MCNP6.2\n")
+        # Write data header to file
+        header = "# Degrees\t#/Square Degree\tError\t"+str(today)+"\n"
+        out_file.write(header)
+
+        # Write data to file
+        for i in range(0, size):
+            output = '%.4e' % angles[i] + "\t" + \
+                    '%.16e' % num_square_degree[i] + "\t" + \
+                    '%.16e' % num_square_degree_error[i] + "\n"
+            out_file.write( output )
 
     else:
         print "File ",mcnp_output," does not exist!"

@@ -118,13 +118,13 @@ if user_args.e:
         exp_y = data[1][1:]
 
     # Calculate the experimental from the % error
-    x = map(float, exp_x)
+    experimental_x = map(float, exp_x)
     experimental_y = map(float, exp_y)
 
     for n in range(N):
-        x = map(float, data_x[n])
-        y = map(float, data_y[n])
-        yerr = map(float, data_error[n])
+        x = map(float, data_x[n][:-2])
+        y = map(float, data_y[n][:-2])
+        yerr = map(float, data_error[n][:-2])
 
         # Calculate bin mid points
         mid = [None] * len(x)
@@ -149,7 +149,9 @@ if user_args.e:
     ax1.grid(linestyle=':')
 
     plt.xlim(0.0,7.0)
-    plt.ylim(0.2,1.2)
+    plt.ylim(0.8,1.3)
+    # plt.ylim(0.5,1.8)
+    # plt.ylim(0.2,2.5)
 
     # remove vertical gap between subplots
     plt.subplots_adjust(hspace=.0)
