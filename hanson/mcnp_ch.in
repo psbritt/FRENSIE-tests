@@ -87,8 +87,8 @@ E4 1.5e-5 99ilog 15.7
 c
 c dbcn 17j 2 $ Turn on analog mode
 c
-CUT:P J 20.0 $ Set photon cutoff to 20.0 MeV
-CUT:E J 1e-3 $ Set electron cutoff to 1 keV
+c CUT:P J 1e-3 $ Set photon cutoff to 20.0 MeV
+c CUT:E J 1e-3 $ Set electron cutoff to 1 keV
 c
 c Max energy, p's don't make e's, e's don't make p's, simple brem dist, skip 8, full elastic, skip 1 analog start energy
 c PHYS:E 15.7 1 1 1 8J 2 J 20.0
