@@ -39,5 +39,4 @@ cd ${OUTPUT_DIR}
 
 echo "Processing the results:"
 python ../../../mcnp_data_processor.py -d ./
-python ../../../convert_to_square_degrees.py -f ./mcnp_101.txt -o mcnp_spectrum.txt
 echo "The processed data is located at: ${OUTPUT_DIR}"

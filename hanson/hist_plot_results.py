@@ -19,6 +19,9 @@ parser = ap.ArgumentParser(description=description)
 experimental_msg = "Flag to add the experimental data to the generated plot."
 parser.add_argument('-e', help=experimental_msg, action='store_true')
 
+mcnp_comparison_msg = "Flag to compare against mcnp data run."
+parser.add_argument('-m', help=mcnp_comparison_msg, action='store_true')
+
 output_msg = "The output file name."
 parser.add_argument('-o', help=output_msg, required=False)
 
@@ -67,6 +70,8 @@ ax=plt.gca()
 
 plt.xlim(0.0,7.0)
 plt.ylim(0.0,0.05)
+if user_args.m:
+    plt.ylim(0.0,0.04)
 
 if user_args.e:
     # Get experimental data
@@ -94,7 +99,8 @@ marker_color = ['g', 'r', 'm', 'k', 'y', 'c', 'g', 'r', 'm', 'k', 'y', 'c']
 
 linestyles = [(0, ()), (0, (5, 5)), (0, (3, 5, 1, 5)), (0, (1, 1)), (0, (3, 5, 1, 5, 1, 5)), (0, (5, 1)), (0, (3, 1, 1, 1)), (0, (3, 1, 1, 1, 1, 1)), (0, (1, 5)), (0, (5, 10)), (0, (3, 10, 1, 10)), (0, (3, 10, 1, 10, 1, 10))]
 
-# names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
+if user_args.m:
+    names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
 for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
@@ -111,7 +117,8 @@ for n in range(N):
 
 plt.legend(loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
-#ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
+if user_args.m:
+    ax.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
 markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","X","D","d"]
 if user_args.e:
@@ -171,6 +178,52 @@ if user_args.e:
     plt.ylim(0.8,1.3)
     # plt.ylim(0.5,1.8)
     # plt.ylim(0.2,2.5)
+
+    # remove vertical gap between subplots
+    plt.subplots_adjust(hspace=.0)
+
+elif user_args.m:
+
+    # The C/E subplot (with shared x-axis)
+    ax1 = plt.subplot(gs[1], sharex = ax0)
+    plt.xlabel(x_label, size=14)
+    plt.ylabel('FACEMC/MCNP', size=14)
+
+    # Get mcnp data
+    experimental_x = x = map(float, data_x[0][:-2])
+    experimental_y = y = map(float, data_y[0][:-2])
+    experimental_error = map(float, data_error[0][:-2])
+
+    for n in range(1,N):
+        x = map(float, data_x[n][:-2])
+        y = map(float, data_y[n][:-2])
+        yerr = map(float, data_error[n][:-2])
+
+        # Insert first bin lower bounds as an angle of 0
+        x.insert(0,0.0)
+
+        for i in range(0, len(y)):
+          y[i] = y[i]/experimental_y[i]
+          yerr[i] = yerr[i]/experimental_y[i]
+          print x[i], ": ", (1.0-y[i])*100, "%"
+
+        # Plot histogram of results
+        m, bins, _ = ax1.hist(x[:-1], bins=x, weights=y, histtype='step', label=names[n], color=marker_color[n], linestyle=linestyles[n], linewidth=1.8 )
+        # Plot error bars
+        mid = 0.5*(bins[1:] + bins[:-1])
+        ax1.errorbar(mid, m, yerr=yerr, ecolor=marker_color[n], fmt=None)
+
+    # make x ticks for first suplot invisible
+    plt.setp(ax0.get_xticklabels(), visible=False)
+
+    # remove first tick label for the first subplot
+    yticks = ax0.yaxis.get_major_ticks()
+    yticks[0].label1.set_visible(False)
+    ax0.grid(linestyle=':')
+    ax1.grid(linestyle=':')
+
+    plt.xlim(0.0,6.78)
+    plt.ylim(0.96,1.04)
 
     # remove vertical gap between subplots
     plt.subplots_adjust(hspace=.0)
