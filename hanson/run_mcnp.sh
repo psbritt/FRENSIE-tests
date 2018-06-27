@@ -18,7 +18,7 @@ if [ "$#" -eq 1 ]; then
 fi
 
 # Turn on Condensed History mode (true/false)
-CONDENSED_HISTORY_ON="true"
+CONDENSED_HISTORY_ON="false"
 
 # Set the input file name
 NAME="mcnp.in"
