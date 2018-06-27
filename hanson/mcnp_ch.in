@@ -65,7 +65,7 @@ c --------------------
 c run in photon-electron mode to get low energy physics
 mode e
 c run for 1e8 histories
-nps 1e4
+nps 1e8
 c Surface current on back surface
 f21:e 101
 c21  0.0 0.848048096156426 0.882126866017668 0.913332365617192 &
