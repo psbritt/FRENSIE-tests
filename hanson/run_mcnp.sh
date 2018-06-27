@@ -17,9 +17,16 @@ if [ "$#" -eq 1 ]; then
     THREADS="$1"
 fi
 
+# Turn on Condensed History mode (true/false)
+CONDENSED_HISTORY_ON="true"
+
 # Set the input file name
 NAME="mcnp.in"
 OUTPUT="mcnp."
+if [ "${CONDENSED_HISTORY_ON}" = "true" ]; then
+    NAME="mcnp_ch.in"
+    OUTPUT="mcnp_ch."
+fi
 
 mkdir -p $OUTPUT_DIR
 
