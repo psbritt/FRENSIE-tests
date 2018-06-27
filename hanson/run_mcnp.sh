@@ -41,9 +41,6 @@ mv ${OUTPUT}o ${NEW_NAME}o
 mv ${OUTPUT}r ${NEW_NAME}r
 mv ${OUTPUT}m ${NEW_NAME}m
 
-# Move to output directory
-cd ${OUTPUT_DIR}
-
 echo "Processing the results:"
-python ../../../mcnp_data_processor.py -d ./
+python mcnp_data_processor.py -f ${NEW_NAME}o
 echo "The processed data is located at: ${OUTPUT_DIR}"

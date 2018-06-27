@@ -54,10 +54,12 @@ for n in range(N):
         data_error[n][:] = data[2][:]
 
 # Plot
-fig = plt.figure(num=1, figsize=(9,9))
+# fig = plt.figure(num=1, figsize=(9,9))
+fig = plt.figure(num=1, figsize=(9,7))
 
 # set height ratios for sublots
-gs = gridspec.GridSpec(2, 1, height_ratios=[2, 1])
+# gs = gridspec.GridSpec(2, 1, height_ratios=[2, 1])
+gs = gridspec.GridSpec(1, 1)
 
 # the first subplot
 ax0 = plt.subplot(gs[0])
@@ -101,6 +103,7 @@ linestyles = [(0, ()), (0, (5, 5)), (0, (3, 5, 1, 5)), (0, (1, 1)), (0, (3, 5, 1
 
 if user_args.m:
     names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
+# names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
 for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
@@ -124,63 +127,63 @@ markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","
 if user_args.e:
 
     # The C/E subplot (with shared x-axis)
-    ax1 = plt.subplot(gs[1], sharex = ax0)
-    plt.xlabel(x_label, size=14)
-    plt.ylabel('C/E', size=14)
+#     ax1 = plt.subplot(gs[1], sharex = ax0)
+#     plt.xlabel(x_label, size=14)
+#     plt.ylabel('C/E', size=14)
 
-    # Get experimental data
+#     # Get experimental data
     directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-    filename = directory + "/experimental_results.tsv"
-    with open(filename) as input:
-        data = zip(*(line.strip().split('\t') for line in input))
-        exp_x = data[0][1:]
-        exp_y = data[1][1:]
+#     filename = directory + "/experimental_results.tsv"
+#     with open(filename) as input:
+#         data = zip(*(line.strip().split('\t') for line in input))
+#         exp_x = data[0][1:]
+#         exp_y = data[1][1:]
 
-    # Calculate the experimental from the % error
-    experimental_x = map(float, exp_x)
-    experimental_y = map(float, exp_y)
+#     # Calculate the experimental from the % error
+#     experimental_x = map(float, exp_x)
+#     experimental_y = map(float, exp_y)
 
-    for n in range(N):
-        x = map(float, data_x[n][:-2])
-        y = map(float, data_y[n][:-2])
-        yerr = map(float, data_error[n][:-2])
+#     for n in range(N):
+#         x = map(float, data_x[n][:-2])
+#         y = map(float, data_y[n][:-2])
+#         yerr = map(float, data_error[n][:-2])
 
-        # Insert first bin lower bounds as an angle of 0
-        x.insert(0,0.0)
+#         # Insert first bin lower bounds as an angle of 0
+#         x.insert(0,0.0)
 
-        for i in range(0, len(y)):
-          # print "y: ", y[i], "\ty_exp: ", experimental_y[i]
-          y[i] = y[i]/experimental_y[i]
-          yerr[i] = yerr[i]/experimental_y[i]
-          print i, ": ", (1.0-y[i])*100, "%"
+#         for i in range(0, len(y)):
+#           # print "y: ", y[i], "\ty_exp: ", experimental_y[i]
+#           y[i] = y[i]/experimental_y[i]
+#           yerr[i] = yerr[i]/experimental_y[i]
+#           print i, ": ", (1.0-y[i])*100, "%"
 
-        # Plot histogram of results
-        m, bins, _ = ax1.hist(x[:-1], bins=x, weights=y, histtype='step', label=names[n], color=marker_color[n], linestyle=linestyles[n], linewidth=1.8 )
-        # Plot error bars
-        mid = 0.5*(bins[1:] + bins[:-1])
-        ax1.errorbar(mid, m, yerr=yerr, ecolor=marker_color[n], fmt=None)
+#         # Plot histogram of results
+#         m, bins, _ = ax1.hist(x[:-1], bins=x, weights=y, histtype='step', label=names[n], color=marker_color[n], linestyle=linestyles[n], linewidth=1.8 )
+#         # Plot error bars
+#         mid = 0.5*(bins[1:] + bins[:-1])
+#         ax1.errorbar(mid, m, yerr=yerr, ecolor=marker_color[n], fmt=None)
 
-        # for i in range(0, len(y)):
-        #   print i, ": ", (experimental_x[i]-mid[i])/experimental_x[i], "relative diff in x"
+#         # for i in range(0, len(y)):
+#         #   print i, ": ", (experimental_x[i]-mid[i])/experimental_x[i], "relative diff in x"
 
-        # ax1.errorbar(mid, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n])
+#         # ax1.errorbar(mid, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n])
 
-    # make x ticks for first suplot invisible
-    plt.setp(ax0.get_xticklabels(), visible=False)
+#     # make x ticks for first suplot invisible
+#     plt.setp(ax0.get_xticklabels(), visible=False)
 
-    # remove first tick label for the first subplot
-    yticks = ax0.yaxis.get_major_ticks()
-    yticks[0].label1.set_visible(False)
-    ax0.grid(linestyle=':')
-    ax1.grid(linestyle=':')
+#     # remove first tick label for the first subplot
+#     yticks = ax0.yaxis.get_major_ticks()
+#     yticks[0].label1.set_visible(False)
+#     ax0.grid(linestyle=':')
+#     ax1.grid(linestyle=':')
 
-    plt.xlim(0.0,6.78)
-    plt.ylim(0.8,1.3)
-    # plt.ylim(0.5,1.8)
-    # plt.ylim(0.2,2.5)
+#     plt.xlim(0.0,6.78)
+#     plt.ylim(0.8,1.3)
+#     # plt.ylim(0.5,1.8)
+#     # plt.ylim(0.3,2.3)
 
-    # remove vertical gap between subplots
-    plt.subplots_adjust(hspace=.0)
+#     # remove vertical gap between subplots
+#     plt.subplots_adjust(hspace=.0)
 
 elif user_args.m:
 

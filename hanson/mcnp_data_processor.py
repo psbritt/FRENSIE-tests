@@ -9,44 +9,31 @@ import math
 def main(argv):
     directory = ''
     try:
-        opts, args = getopt.getopt(argv,"hd:",["out_dir="])
+        opts, args = getopt.getopt(argv,"hf:",["filename="])
     except getopt.GetoptError:
-        print 'data_processor.py -d <directory>'
+        print 'data_processor.py -f <filename>'
         sys.exit(1)
     for opt, arg in opts:
         if opt == '-h':
-            print 'data_processor.py -d <directory>'
+            print 'data_processor.py -f <filename>'
             sys.exit(1)
-        elif opt in ("-d", "--out_dir"):
-            directory = arg
+        elif opt in ("-f", "--filename"):
+            filename = arg
 
     cell_list = ['10']
     surface_list = ['101']
     angle_list = ['', 'full' ]
 
-    # Get mcnp output file name
-    base = "mcnp"
-    mcnp_output = base+".o"
+    # Get the directory of the mcnp file
+    directory = os.path.dirname(filename)
+    base = directory + '/' + os.path.basename(filename).split('.')[0]
 
     # Check if file exists
-    if os.path.isfile(mcnp_output):
-        # Check if the output directory exists and make if necessary
-        if not os.path.isdir(directory):
-            print "Making directory",directory
-            os.makedirs(directory)
-
-        # Move file to output directory
-        new_name = str(directory)+base
-        shutil.move(mcnp_output,new_name+".o")
-        shutil.move(base+".m",new_name+".m")
-        shutil.move(base+".r",new_name+".r")
-
-        # Move to output data directory
-        os.chdir(directory)
+    if os.path.isfile(filename):
 
         today = datetime.date.today()
         # # Read the mcnp data file for surface tallies
-        # with open(mcnp_output) as data:
+        # with open(filename) as data:
         #     # go through all surface tallies
         #     for i in cell_list:
         #         start=" cell  "+i
@@ -74,7 +61,7 @@ def main(argv):
         current = [None] * (len(cosines) -1)
         error = [None] * (len(cosines) -1)
 
-        with open(mcnp_output) as data:
+        with open(filename) as data:
             # go through all surface tallies
             for i in surface_list:
                 start=" surface  "+i
@@ -107,8 +94,8 @@ def main(argv):
           num_square_degree_error[i] = float(error[j-1])/sterradians*square_degree
 
         # Write title to file
-        name = base+"_spectrum.txt"
-        out_file = open(name, 'w')
+        new_name = base+"_spectrum.txt"
+        out_file = open(new_name, 'w')
         out_file.write( "# MCNP6.2\n")
         # Write data header to file
         header = "# Degrees\t#/Square Degree\tError\t"+str(today)+"\n"
@@ -122,7 +109,7 @@ def main(argv):
             out_file.write( output )
 
     else:
-        print "File ",mcnp_output," does not exist!"
+        print "File ",filename," does not exist!"
 
 if __name__ == "__main__":
    main(sys.argv[1:])
