@@ -3,6 +3,7 @@ import argparse as ap
 import xml.etree.ElementTree as ET
 import sys; sys.path.append("../")
 from ElementTree_pretty import prettify
+import os.path
 
 # Set up the argument parser
 description = "This script allows one to write the est.xml file for FACEMC."\
@@ -27,8 +28,8 @@ geom_type = "DagMC"
 if user_args.t:
     geom_type = user_args.t
 
-# Set xml file name
-name = "est_"+str(energy)
+# Set xml file name_base
+name_base = "est_"+str(energy)
 
 # assume energy is 0.01 MeV
 bins = "{ 1e-5, 5e-5, 198i, 1e-2}"
@@ -81,7 +82,7 @@ if geom_type == "DagMC" or geom_type == "DAGMC" or geom_type == "dagmc":
 else:
     # Track Length Flux in Sphere
     tally = "Cell Track-Length Flux"
-    name += "_root"
+    name_base += "_root"
 
     parameter_3 = ET.SubElement(root, "ParameterList", name="Track Length Flux in Sphere")
 
@@ -103,6 +104,12 @@ if user_args.p == "true":
     ET.SubElement(parameter_4, "Parameter", name="Id", type="unsigned int", value=str(tally_number) )
     ET.SubElement(parameter_4, "Parameter", name="Type", type="string", value=tally)
 
-name +=".xml"
+
+name = name_base+".xml"
+i=1
+while os.path.isfile(name):
+  name = name_base+"_"+str(i)+".xml"
+  i=i+1
+
 prettify(root,name)
 print name

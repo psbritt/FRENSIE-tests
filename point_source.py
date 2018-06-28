@@ -2,6 +2,7 @@
 import argparse as ap
 import xml.etree.ElementTree as ET
 from ElementTree_pretty import prettify
+import os.path
 
 # Set up the argument parser
 description = "This script allows one to write the source.xml file for FACEMC. "\
@@ -17,8 +18,6 @@ user_args = parser.parse_args()
 energy = user_args.e
 source_energy = "{"+energy+"}"
 
-name = "source_"+energy+".xml"
-
 root = ET.Element("ParameterList", name="Source")
 
 parameters = ET.SubElement(root, "ParameterList", name="Monoenergetic, isotropic point source")
@@ -29,6 +28,13 @@ sub_list_1 = ET.SubElement(parameters, "ParameterList", name="Spatial Distributi
 ET.SubElement(sub_list_1, "Parameter", name="Position", type="Array(double)", value="{0.0,0.0,0.0}")
 
 ET.SubElement(parameters, "Parameter", name="Energy Distribution", type="Delta Distribution", value=source_energy)
+
+# Set the name of the file
+name = "source_"+energy+".xml"
+i=1
+while os.path.isfile(name):
+  name = "source_"+energy+"_"+str(i)+".xml"
+  i=i+1
 
 prettify(root,name)
 print name

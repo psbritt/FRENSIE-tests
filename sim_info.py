@@ -102,12 +102,6 @@ if ionization_bool == "false":
 if excitation_bool == "false":
     name_base += "_no_excitation"
 
-name = name_base + ".xml"
-i=1
-while os.path.isfile(name):
-  name = name_base+"_"+str(i)+".xml"
-  i=i+1
-
 root = ET.Element("ParameterList", name="Simulation Info")
 
 parameter_1 = ET.SubElement(root, "ParameterList", name="General Properties")
@@ -137,6 +131,12 @@ if elastic_bool:
 
   if elastic_distribution == "Coupled":
     ET.SubElement(parameter_2, "Parameter", name="Coupled Elastic Sampling Method", type="string", value=coupled_sampling_method )
+
+name = name_base + ".xml"
+i=1
+while os.path.isfile(name):
+  name = name_base+"_"+str(i)+".xml"
+  i=i+1
 
 prettify(root,name)
 print name

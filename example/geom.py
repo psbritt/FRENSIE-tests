@@ -3,6 +3,7 @@ import argparse as ap
 import xml.etree.ElementTree as ET
 import sys; sys.path.append("../")
 from ElementTree_pretty import prettify
+import os.path
 
 # Set up the argument parser
 description = "This script allows one to write the geom.xml file for FACEMC. "\
@@ -15,7 +16,7 @@ parser.add_argument('-t', help=geom_type_msg, required=False)
 
 # Parse the user's arguments
 user_args = parser.parse_args()
-name ="geom"
+name_base ="geom"
 
 geom_type = "DagMC"
 if user_args.t:
@@ -36,7 +37,7 @@ if geom_type == "DagMC" or geom_type == "DAGMC" or geom_type == "dagmc":
 
 elif geom_type == "ROOT" or geom_type == "root" or geom_type == "Root":
     root_file = "h_sphere.root"
-    name=name+"_root"
+    name_base=name_base+"_root"
     ET.SubElement(root, "Parameter", name="Handler", type="string", value="ROOT")
     ET.SubElement(root, "Parameter", name="Root File", type="string", value=root_file)
     ET.SubElement(root, "Parameter", name="Terminal Material Name", type="string", value="graveyard")
@@ -55,6 +56,11 @@ else:
     ET.SubElement(root, "Parameter", name="Material Property", type="string", value="mat")
     ET.SubElement(root, "Parameter", name="Density Property", type="string", value="rho")
 
-name =name+".xml"
+name =name_base+".xml"
+i=1
+while os.path.isfile(name):
+  name = name_base+"_"+str(i)+".xml"
+  i=i+1
+
 prettify(root,name)
 print name

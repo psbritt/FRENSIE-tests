@@ -13,18 +13,21 @@
 ## The electron surface and cell flux and current for three concentrtic spheres
 ## of Hydrogen for a 1, 10, 100 keV mono-energetic isotropic source of electrons.
 ## FRENSIE will be run with three variations.
-## 1. Using ACE data, which should match MCNP almost exactly.
-## 2. Using the Native data in analog mode, which uses a different interpolation
+## 1. Using the Native data in analog mode, whcih uses a different interpolation
 ## scheme than MCNP.
-## 3. Using Native data in moment preserving mode, which should give a less
+## 2. Using Native data in moment preserving mode, which should give a less
 ## acurate answer while decreasing run time.
+## 3. Using ACE (EPR14) data, which should match MCNP6.2 almost exactly.
+##---------------------------------------------------------------------------##
 
-# ------------------------------- COMMANDS ------------------------------------
+##---------------------------------------------------------------------------##
+## ------------------------------- COMMANDS ---------------------------------##
+##---------------------------------------------------------------------------##
 
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
-CROSS_SECTION_XML_PATH=/home/lkersting/mcnpdata/
-#CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA/
+CROSS_SECTION_XML_PATH=/home/lkersting/software/mcnpdata/
+CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA/
 FRENSIE=/home/lkersting/frensie
 
 INPUT="1"
@@ -92,7 +95,16 @@ NAME_REACTION=""
 if [ "${ELASTIC_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_elastic"
 elif [ ${DISTRIBUTION} = "Coupled" ]; then
-    NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+    if [ ${COUPLED_SAMPLING} = "1D" ]; then
+        NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+        TITLE="${TITLE} ${COUPLED_SAMPLING}"
+    elif [ ${COUPLED_SAMPLING} = "2D" ]; then
+        NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+        TITLE="${TITLE} M2D"
+    elif  [ ${COUPLED_SAMPLING} = "Simplified" ]; then
+        NAME_EXTENTION="${NAME_EXTENTION}_2D_simplified"
+        TITLE="${TITLE} 2D"
+    fi
 fi
 if [ "${BREM_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_brem"
@@ -142,6 +154,7 @@ fi
 echo "Running Facemc H spheres example test with ${HISTORIES} particles on ${THREADS} threads:"
 RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
 echo ${RUN}
+
 ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
 echo "Removing old xml files:"

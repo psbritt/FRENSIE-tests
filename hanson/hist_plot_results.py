@@ -125,14 +125,15 @@ if user_args.m:
 
 markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","X","D","d"]
 if user_args.e:
+  empty = True
 
-    # The C/E subplot (with shared x-axis)
+#     # The C/E subplot (with shared x-axis)
 #     ax1 = plt.subplot(gs[1], sharex = ax0)
 #     plt.xlabel(x_label, size=14)
 #     plt.ylabel('C/E', size=14)
 
 #     # Get experimental data
-    directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+#     directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 #     filename = directory + "/experimental_results.tsv"
 #     with open(filename) as input:
 #         data = zip(*(line.strip().split('\t') for line in input))

@@ -126,7 +126,16 @@ if [ "${NO_ERRORS}" = "true" ]; then
     if [ "${ELASTIC_ON}" = "false" ]; then
         NAME_REACTION="${NAME_REACTION}_no_elastic"
     elif [ ${DISTRIBUTION} = "Coupled" ]; then
-        NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+        if [ ${COUPLED_SAMPLING} = "1D" ]; then
+            NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+            TITLE="${TITLE} ${COUPLED_SAMPLING}"
+        elif [ ${COUPLED_SAMPLING} = "2D" ]; then
+            NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+            TITLE="${TITLE} M2D"
+        elif  [ ${COUPLED_SAMPLING} = "Simplified" ]; then
+            NAME_EXTENTION="${NAME_EXTENTION}_2D_simplified"
+            TITLE="${TITLE} 2D"
+        fi
     elif [ ${DISTRIBUTION} = "Decoupled" ]; then
         NAME_EXTENTION="${NAME_EXTENTION}_${DISTRIBUTION}"
     fi
