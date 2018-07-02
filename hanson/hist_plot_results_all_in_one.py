@@ -60,29 +60,33 @@ for n in range(N):
 
 # Plot
 if user_args.m:
-  fig = plt.figure(num=1, figsize=(9,7))
+  fig = plt.figure(num=1, figsize=(9,9))
 else:
-  fig = plt.figure(num=1, figsize=(9,7))
+  fig = plt.figure(num=1, figsize=(10,12))
 
 # set height ratios for sublots
 if user_args.m:
   gs = gridspec.GridSpec(2, 1, height_ratios=[2, 1])
 else:
-  gs = gridspec.GridSpec(1, 1)
+  gs = gridspec.GridSpec(3, 1)
 
 # the first subplot
 ax0 = plt.subplot(gs[0])
+ax1 = plt.subplot(gs[1], sharex = ax0)
+ax2 = plt.subplot(gs[2], sharex = ax1)
 
 x_label = 'Angle (Degree)'
-plt.xlabel(x_label, size=14)
-plt.ylabel('#/Square Degrees', size=14)
-plt.title('$\mathrm{15.7\/MeV\/Electron\/Angular\/Distribution\/from\/a\/9.658\/\mu m\/Gold\/Foil}$', size=16)
+ax2.set_xlabel(x_label, size=14)
+ax0.set_ylabel('#/Square Degrees', size=14)
+ax1.set_ylabel('#/Square Degrees', size=14)
+ax2.set_ylabel('#/Square Degrees', size=14)
+ax0.set_title('$\mathrm{15.7\/MeV\/Electron\/Angular\/Distribution\/from\/a\/9.658\/\mu m\/Gold\/Foil}$', size=16)
 ax=plt.gca()
 
-plt.xlim(0.0,7.0)
-plt.ylim(0.0,0.05)
-if user_args.m:
-    plt.ylim(0.0,0.05)
+# plt.xlim(0.0,7.0)
+# plt.ylim(0.0,0.05)
+# if user_args.m:
+#     plt.ylim(0.0,0.04)
 
 plots = []
 labels = []
@@ -101,7 +105,9 @@ if user_args.e:
     # Plot the experimental data
     x = map(float, exp_x)
     y = map(float, exp_y)
-    plt1, = plt.plot(x, y, linestyle='None', marker='s', markersize=5 )
+    plt1, = ax0.plot(x, y, linestyle='None', marker='s', markersize=5 )
+    ax1.plot(x, y, linestyle='None', marker='s', markersize=5 )
+    ax2.plot(x, y, linestyle='None', marker='s', markersize=5 )
 
     # Get a least squares fit
     gmodel = Model(gaussian)
@@ -110,7 +116,9 @@ if user_args.e:
     F0_fit = result.best_values['amp']
     Theta_fit = result.best_values['wid']
     print 'F(0)         = ',F0_fit,'\tTheta(1/e) = ',Theta_fit
-    print 'Rel Diff Fit = ',(F0_exp-F0_fit)/F0_exp,'\tRel Diff   = ',(Theta_exp-Theta_fit)/Theta_exp,'\n'
+    rel_diff0 = (F0_exp-F0_fit)/F0_exp
+    rel_diff1 = (Theta_exp-Theta_fit)/Theta_exp
+    print 'Rel Diff Fit = ','%.3e' % rel_diff0,'\tRel Diff   = ','%.3e' % rel_diff1,'\n'
 
     x = linspace(0, x[len(x)-1])
     # y = result.eval(x=x)
@@ -120,7 +128,9 @@ if user_args.e:
     y = [None] * len(x)
     for i in range(len(y)):
       y[i] = gaussian(x[i], F0_exp, Theta_exp)
-    plt3, = plt.plot(x, y, color='b' )
+    plt3, = ax0.plot(x, y, color='b' )
+    ax1.plot(x, y, color='b' )
+    ax2.plot(x, y, color='b' )
 
     plots.append( (plt1,plt3) )
     labels.append("Hanson (Exp.)" )
@@ -138,9 +148,9 @@ marker_color = ['g', 'r', 'm', 'k', 'y', 'c', 'g', 'r', 'm', 'k', 'y', 'c']
 linestyles = [(0, ()), (0, (5, 5)), (0, (3, 5, 1, 5)), (0, (1, 1)), (0, (3, 5, 1, 5, 1, 5)), (0, (5, 1)), (0, (3, 1, 1, 1)), (0, (3, 1, 1, 1, 1, 1)), (0, (1, 5)), (0, (5, 10)), (0, (3, 10, 1, 10)), (0, (3, 10, 1, 10, 1, 10))]
 
 if user_args.m:
-    names = ['Log-log Correlated 1D','Log-log Correlated 2D', 'Log-log Correlated M2D' ]
+    names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
 # names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
-for n in range(N):
+for n in range(0,4):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
     yerr = map(float, data_error[n])
@@ -149,11 +159,11 @@ for n in range(N):
     x.insert(0,0.0)
 
     # Plot histogram of results
-    m, bins, plt1 = plt.hist(x[:-1], bins=x, weights=y, histtype='step', label=names[n], color=marker_color[n], linestyle=linestyles[n], linewidth=1.8 )
+    m, bins, plt1 = ax0.hist(x[:-1], bins=x, weights=y, histtype='step', label=names[n], color=marker_color[n], linestyle=linestyles[n], linewidth=1.8 )
 
     # Plot error bars
     mid = 0.5*(bins[1:] + bins[:-1])
-    plt2 = plt.errorbar(mid, m, yerr=yerr, ecolor=marker_color[n], fmt=None)
+    plt2 = ax0.errorbar(mid, m, yerr=yerr, ecolor=marker_color[n], fmt=None)
 
     # Get a least squares fit
     gmodel = Model(gaussian)
@@ -169,18 +179,134 @@ for n in range(N):
     wid[n] = result.best_values['wid']
     print 'F(0)         = ',amp[n],'\tTheta(1/e) = ',wid[n]
     if user_args.e:
-        answer = (F0_exp-amp[n])/F0_exp
-        print 'Rel Diff Exp = ','%.6e' % answer,'\tRel Diff   = ',(Theta_exp-wid[n])/Theta_exp
-        print 'Rel Diff Fit = ',(F0_fit-amp[n])/F0_fit,'\tRel Diff   = ',(Theta_fit-wid[n])/Theta_fit
+        rel_diff0 = (F0_exp-amp[n])/F0_exp
+        rel_diff1 = (Theta_exp-wid[n])/Theta_exp
+        print 'Rel Diff Exp = ','%.3e' % rel_diff0,'\tRel Diff   = ','%.3e' % rel_diff1
+        rel_diff0 = (F0_fit-amp[n])/F0_fit
+        rel_diff1 = (Theta_fit-wid[n])/Theta_fit
+        # print 'Rel Diff Fit = ','%.3e' % rel_diff0,'\tRel Diff   = ','%.3e' % rel_diff1
 
     handle1 = Line2D([], [], c=marker_color[n], linestyle='--', dashes=linestyles[n][1], linewidth=1.8)
     plots.append( handle1 )
     labels.append(names[n])
 
-plt.legend(plots, labels, loc=1)
+ax0.legend(plots, labels, loc=1)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+
+plots1 = [plots[0]]
+labels1 = [labels[0]]
+for n in range(4,8):
+    x = map(float, data_x[n])
+    y = map(float, data_y[n])
+    yerr = map(float, data_error[n])
+
+    # Insert first bin lower bounds as an angle of 0
+    x.insert(0,0.0)
+
+    # Plot histogram of results
+    m, bins, plt1 = ax1.hist(x[:-1], bins=x, weights=y, histtype='step', label=names[n], color=marker_color[n-4], linestyle=linestyles[n-4], linewidth=1.8 )
+
+    # Plot error bars
+    mid = 0.5*(bins[1:] + bins[:-1])
+    plt2 = ax1.errorbar(mid, m, yerr=yerr, ecolor=marker_color[n-4], fmt=None)
+
+    # Get a least squares fit
+    gmodel = Model(gaussian)
+    result = gmodel.fit(y, x=mid, amp=F0_exp, wid=Theta_exp)
+    # x = linspace(0, mid[len(mid)-1], num=100)
+    # y = result.eval(x=x)
+    # plt3, = plt.plot(x, y, color=marker_color[n], linestyle='--', dashes=linestyles[n][1] )
+    # plots1.append( (plt1[0],plt2) )
+    # labels.append(names[n])
+
+    print '\n',names[n], ':\n--------------------------------------------------------'
+    amp[n] = result.best_values['amp']
+    wid[n] = result.best_values['wid']
+    print 'F(0)         = ',amp[n],'\tTheta(1/e) = ',wid[n]
+    if user_args.e:
+        rel_diff0 = (F0_exp-amp[n])/F0_exp
+        rel_diff1 = (Theta_exp-wid[n])/Theta_exp
+        print 'Rel Diff Exp = ','%.3e' % rel_diff0,'\tRel Diff   = ','%.3e' % rel_diff1
+        rel_diff0 = (F0_fit-amp[n])/F0_fit
+        rel_diff1 = (Theta_fit-wid[n])/Theta_fit
+        # print 'Rel Diff Fit = ','%.3e' % rel_diff0,'\tRel Diff   = ','%.3e' % rel_diff1
+
+    handle1 = Line2D([], [], c=marker_color[n-4], linestyle='--', dashes=linestyles[n-4][1], linewidth=1.8)
+    plots1.append( handle1 )
+    labels1.append(names[n])
+
+ax1.legend(plots1, labels1, loc=1)
+
+markers = ["--v","-.o","--<","-.>",":+","--x","-.1",":2","--3","-.4",":8","--p","-.P",":*","--h","-.H",":X","--D","-.d"]
+linestyle = ["--","-.","--","-.",":","--","-.",":","--3","-.",":","--","-.",":","--","-.",":","--","-."]
+markerssizes = [6,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
+marker_color = ['g', 'r', 'k', 'y', 'c', 'g', 'r', 'm', 'k', 'y', 'c']
+
+linestyles = [(0, ()), (0, (5, 5)), (0, (1, 1)), (0, (3, 5, 1, 5, 1, 5)), (0, (5, 1)), (0, (3, 1, 1, 1)), (0, (3, 1, 1, 1, 1, 1)), (0, (1, 5)), (0, (5, 10)), (0, (3, 10, 1, 10)), (0, (3, 10, 1, 10, 1, 10))]
+
+plots2 = [plots[0]]
+labels2 = [labels[0]]
+for n in range(8,11):
+    x = map(float, data_x[n])
+    y = map(float, data_y[n])
+    yerr = map(float, data_error[n])
+
+    # Insert first bin lower bounds as an angle of 0
+    x.insert(0,0.0)
+
+    # Plot histogram of results
+    m, bins, plt1 = ax2.hist(x[:-1], bins=x, weights=y, histtype='step', label=names[n], color=marker_color[n-8], linestyle=linestyles[n-8], linewidth=1.8 )
+
+    # Plot error bars
+    mid = 0.5*(bins[1:] + bins[:-1])
+    plt2 = ax2.errorbar(mid, m, yerr=yerr, ecolor=marker_color[n-8], fmt=None)
+
+    # Get a least squares fit
+    gmodel = Model(gaussian)
+    result = gmodel.fit(y, x=mid, amp=F0_exp, wid=Theta_exp)
+    # x = linspace(0, mid[len(mid)-1], num=100)
+    # y = result.eval(x=x)
+    # plt3, = plt.plot(x, y, color=marker_color[n], linestyle='--', dashes=linestyles[n][1] )
+    # plots2.append( (plt1[0],plt2) )
+    # labels2.append(names[n])
+
+    print '\n',names[n], ':\n--------------------------------------------------------'
+    amp[n] = result.best_values['amp']
+    wid[n] = result.best_values['wid']
+    print 'F(0)         = ',amp[n],'\tTheta(1/e) = ',wid[n]
+    if user_args.e:
+        rel_diff0 = (F0_exp-amp[n])/F0_exp
+        rel_diff1 = (Theta_exp-wid[n])/Theta_exp
+        print 'Rel Diff Exp = ','%.3e' % rel_diff0,'\tRel Diff   = ','%.3e' % rel_diff1
+        rel_diff0 = (F0_fit-amp[n])/F0_fit
+        rel_diff1 = (Theta_fit-wid[n])/Theta_fit
+        # print 'Rel Diff Fit = ','%.3e' % rel_diff0,'\tRel Diff   = ','%.3e' % rel_diff1
+
+    handle1 = Line2D([], [], c=marker_color[n-8], linestyle='--', dashes=linestyles[n-8][1], linewidth=1.8)
+    plots2.append( handle1 )
+    labels2.append(names[n])
+
+ax2.legend(plots2, labels2, loc=1)
+ax2.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
+
+
+# make x ticks for first suplot invisible
+plt.setp(ax0.get_xticklabels(), visible=False)
+plt.setp(ax1.get_xticklabels(), visible=False)
+
+# remove first tick label for the first subplot
+yticks = ax0.yaxis.get_major_ticks()
+yticks[0].label1.set_visible(False)
+yticks = ax1.yaxis.get_major_ticks()
+yticks[0].label1.set_visible(False)
+ax0.grid(linestyle=':')
+ax1.grid(linestyle=':')
+ax2.grid(linestyle=':')
+# remove vertical gap between subplots
+plt.subplots_adjust(hspace=.01)
+
 if user_args.m:
-    ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+    ax.yaxis.set_major_formatter(FormatStrFormatter('%.3f'))
 
 markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","X","D","d"]
 if user_args.e:
@@ -250,14 +376,14 @@ elif user_args.m:
     # The C/E subplot (with shared x-axis)
     ax1 = plt.subplot(gs[1], sharex = ax0)
     plt.xlabel(x_label, size=14)
-    plt.ylabel('C/R', size=14)
+    plt.ylabel('FACEMC/MCNP', size=14)
 
     # Get mcnp data
-    experimental_x = x = map(float, data_x[2][:-2])
-    experimental_y = y = map(float, data_y[2][:-2])
-    experimental_error = map(float, data_error[2][:-2])
+    experimental_x = x = map(float, data_x[0][:-2])
+    experimental_y = y = map(float, data_y[0][:-2])
+    experimental_error = map(float, data_error[0][:-2])
 
-    for n in range(0,2):
+    for n in range(1,N):
         print "\n", names[n]
         x = map(float, data_x[n][:-2])
         y = map(float, data_y[n][:-2])
@@ -287,7 +413,7 @@ elif user_args.m:
     ax1.grid(linestyle=':')
 
     plt.xlim(0.0,6.78)
-    plt.ylim(0.97,1.03)
+    plt.ylim(0.98,1.02)
 
     # remove vertical gap between subplots
     plt.subplots_adjust(hspace=.0)

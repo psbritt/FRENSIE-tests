@@ -56,9 +56,10 @@ fig = plt.figure(num=1, figsize=(10,7))
 plt.xlabel('Energy (MeV)', size=14)
 plt.ylabel('Reflection Coef.', size=14)
 plt.title('Electron Albedos for an infinite slab of Al', size=16)
+plt.xscale('log')
 ax=plt.gca()
 
-plt.xlim(0.0,120)
+plt.xlim(9e-5,.120)
 #plt.ylim(0.12,0.19)
 
 if user_args.e:
@@ -66,10 +67,11 @@ if user_args.e:
     data = np.loadtxt("./creep_experimental.txt", skiprows=2)
     plt.scatter(data[:,0], data[:,1], label="CREEP", marker='s' )
 
-markers = ["v","^","<",">","s","+","x","1","2","3","4","8","p","*","h","H","X","D","d"]
+markers = ["o","*","v","^","<",">","+","x","1","2","3","4","8","p","*","h","H","X","D","d"]
 if user_args.a:
-  # exp_names = ['assad','bishop', 'bongeler', 'bronstein', 'cosslett', 'drescher', 'heinrich', 'kanter', 'neubert', 'palluel', 'philibert', 'reimer', 'shimizu', 'wittry' ]
-  exp_names = ['assad','bishop', 'bronstein', 'drescher', 'neubert' ]
+  exp_names = ['assad','bishop', 'bongeler', 'bronstein', 'cosslett', 'drescher', 'heinrich', 'kanter', 'neubert', 'palluel', 'philibert', 'reimer', 'shimizu', 'wittry' ]
+  exp_names = ['assad','bishop', 'bronstein', 'drescher', 'heinrich', 'neubert', 'shimizu' ]
+  # exp_names = ['assad','bishop', 'bronstein', 'drescher', 'neubert' ]
 
   # Get experimental data
   directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -80,10 +82,15 @@ if user_args.a:
         name = input.readline().strip()
         input.readline()
         data = zip(*(line.strip().split('\t') for line in input))
-        x = data[0][:]
-        y = data[1][:]
+        x = [None] * len(data[0][:])
+        x = [0 for k in range(len(data[0][:]))]
+        y = [0 for k in range(len(data[1][:]))]
+        for j in range(len(x)):
+          x[j] = float(data[0][j])/1000.0
+          y[j] = float(data[1][j])
 
     plt.scatter(x, y, label=name +" (Exp.)", marker=markers[i], s=50, facecolors='none', edgecolors='b' )
+  # ax.set_xscale('log')
 
 
 # markers = ["v","^","<",">","s","+","x","1","2","3","4","8","p","*","h","H","X","D","d"]
