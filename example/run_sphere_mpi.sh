@@ -1,9 +1,9 @@
 #!/bin/sh
-# This file is named run_facemc_mpi.sh
-#SBATCH --partition=univ2
-#SBATCH --time=4-00:00:00
-#SBATCH --nodes=5
-#SBATCH --ntasks-per-node=20
+# This file is named run_al_mpi.sh
+#SBATCH --partition=pre
+#SBATCH --time=1-00:00:00
+#SBATCH --nodes=10
+#SBATCH --ntasks-per-node=16
 #SBATCH --mem-per-cpu=4000
 
 ##---------------------------------------------------------------------------##
@@ -39,9 +39,9 @@ fi
 # Changing variables
 
 # Number of threads
-THREADS="100"
-# Number of histories 1e8
-HISTORIES="100000000"
+THREADS="160"
+# Number of histories 1e7
+HISTORIES="10000000"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
