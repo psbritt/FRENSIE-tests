@@ -41,7 +41,7 @@ ENERGY=".102"
 THREADS="160"
 ELEMENT="Al"
 # Number of histories 1e6
-HISTORIES="1000000"
+HISTORIES="5000000"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
@@ -52,7 +52,7 @@ INTERP="logloglog"
 # Two D Sampling Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
 SAMPLE=1
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
-DISTRIBUTION="Coupled"
+DISTRIBUTION="Decoupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
 COUPLED_SAMPLING="2D"
 # Minimum problem energy (default 1e-4 MeV = 100 eV)
