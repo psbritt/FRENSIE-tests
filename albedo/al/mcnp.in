@@ -67,8 +67,8 @@ c Job Control
 c --------------------
 c run in photon-electron mode to get low energy physics
 mode p e
-c run for 1e8 histories
-nps 5e7
+c run for 5e6 histories
+nps 5e6
 c Surface current on front surface
 f11:e 100
 c11  0 0.99 1
@@ -79,12 +79,12 @@ c21  0 0.99 1
 c
 c Cell track length flux for additional verification
 F4:e  10
-E4 1.5e-5 99ilog 0.015
+E4 1e-04 99ilog 0.015
 c
 dbcn 17j 2 $ Turn on analog mode
 c
-CUT:P J 1.0e-02 $ Set photon cutoff to 10 keV
-CUT:E J 1.5e-05 $ Set electron cutoff to 15 eV
+CUT:P J 1.0 $ Set photon cutoff to 1 MeV
+CUT:E J 1e-04 $ Set electron cutoff to 100 eV
 c
 c Max energy, p's don't make e's, e's don't make p's, simple brem dist, skip 8, full elastic, skip 1 analog start energy
 PHYS:E 1.0 1 1 1 8J 2 J 1.0
