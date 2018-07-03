@@ -70,8 +70,8 @@ if user_args.e:
 
 markers = ["o","*","v","^","<",">","+","x","1","2","3","4","p","s","h","D","d","H","8"]
 if user_args.a:
-  exp_names = ['assad', 'bienlein','bishop', 'bongeler', 'bronshtein', 'cosslett', 'drescher', 'heinrich', 'kanter', 'lockwood', 'neubert', 'palluel', 'philibert', 'reimer', 'shimizu', 'trump', 'verdier', 'wittry', 'kulenkampff' ]
-  exp_names = ['assad', 'bienlein','bishop', 'bongeler', 'bronshtein', 'cosslett', 'drescher', 'heinrich', 'kanter', 'lockwood', 'neubert', 'reimer', 'shimizu', 'trump', 'verdier', 'wittry', 'kulenkampff' ]
+  exp_names = ['assad', 'bienlein','bishop', 'bongeler', 'bronshtein', 'cosslett', 'drescher', 'heinrich', 'kanter', 'kulenkampff', 'lockwood', 'neubert', 'palluel', 'philibert', 'reimer', 'shimizu', 'soum', 'trump', 'wittry' ]
+  exp_names = ['assad', 'bienlein','bishop', 'bongeler', 'bronshtein', 'cosslett', 'drescher', 'heinrich', 'kanter', 'kulenkampff', 'lockwood', 'neubert', 'reimer', 'shimizu', 'soum', 'trump', 'wittry' ]
 
   # Get experimental data
   directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))

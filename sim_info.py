@@ -106,7 +106,6 @@ if excitation_bool == "false":
     name_base += "_no_excitation"
 
 min_energy="1e-4"
-print user_args.m
 if user_args.m:
   min_energy=user_args.m
 
