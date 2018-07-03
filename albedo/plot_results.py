@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
 import argparse as ap
 import inspect, os
+import pylab
 
 # Set up the argument parser
 description = "This script asks for albedo data and run names which "\
@@ -59,19 +60,18 @@ plt.title('Electron Albedos for an infinite slab of Al', size=16)
 plt.xscale('log')
 ax=plt.gca()
 
-plt.xlim(9e-5,.120)
-#plt.ylim(0.12,0.19)
+plt.xlim(9e-5,.256)
+plt.ylim(0.1,0.26)
 
 if user_args.e:
     # Get experimental data
     data = np.loadtxt("./creep_experimental.txt", skiprows=2)
     plt.scatter(data[:,0], data[:,1], label="CREEP", marker='s' )
 
-markers = ["o","*","v","^","<",">","+","x","1","2","3","4","8","p","*","h","H","X","D","d"]
+markers = ["o","*","v","^","<",">","+","x","1","2","3","4","p","s","h","D","d","H","8"]
 if user_args.a:
-  exp_names = ['assad','bishop', 'bongeler', 'bronstein', 'cosslett', 'drescher', 'heinrich', 'kanter', 'neubert', 'palluel', 'philibert', 'reimer', 'shimizu', 'wittry' ]
-  exp_names = ['assad','bishop', 'bronstein', 'drescher', 'heinrich', 'neubert', 'shimizu' ]
-  # exp_names = ['assad','bishop', 'bronstein', 'drescher', 'neubert' ]
+  exp_names = ['assad', 'bienlein','bishop', 'bongeler', 'bronshtein', 'cosslett', 'drescher', 'heinrich', 'kanter', 'lockwood', 'neubert', 'palluel', 'philibert', 'reimer', 'shimizu', 'trump', 'verdier', 'wittry', 'kulenkampff' ]
+  exp_names = ['assad', 'bienlein','bishop', 'bongeler', 'bronshtein', 'cosslett', 'drescher', 'heinrich', 'kanter', 'lockwood', 'neubert', 'reimer', 'shimizu', 'trump', 'verdier', 'wittry', 'kulenkampff' ]
 
   # Get experimental data
   directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
@@ -104,7 +104,9 @@ for n in range(N):
     y = map(float, data_y[n])
     yerr = map(float, data_error[n])
     plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n] )
-plt.legend(loc=1)
+# pylab.legend(loc='best')
+lgd = plt.legend(loc="upper left", bbox_to_anchor=(1,1))
+# plt.legend(loc=3)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
 # plt.ylim(0.12,0.22)
@@ -116,5 +118,5 @@ if user_args.o:
     output = user_args.o
 
 print "Plot outputted to: ",output
-fig.savefig(output, bbox_inches='tight', dpi=300)
+fig.savefig(output, bbox_extra_artists=(lgd,), bbox_inches='tight', dpi=300)
 plt.show()
