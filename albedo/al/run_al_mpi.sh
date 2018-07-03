@@ -55,6 +55,8 @@ SAMPLE=1
 DISTRIBUTION="Coupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
 COUPLED_SAMPLING="2D"
+# Minimum problem energy (default 1e-4 MeV = 100 eV)
+MIN_ENERGY="1e-4"
 
 NAME="native"
 # NO_ERRORS="true"
@@ -69,7 +71,7 @@ NAME="native"
 
 ELASTIC="-d ${DISTRIBUTION} -c ${COUPLED_SAMPLING}"
 REACTIONS=" -t ${ELASTIC_ON} -b ${BREM_ON} -i ${IONIZATION_ON} -a ${EXCITATION_ON}"
-SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${INTERP} -s ${SAMPLE} ${REACTIONS} ${ELASTIC}"
+SIM_PARAMETERS="-e ${ENERGY} -n ${HISTORIES} -l ${INTERP} -s ${SAMPLE} -m ${MIN_ENERGY} ${REACTIONS} ${ELASTIC}"
 ENERGY_EV=$(echo $ENERGY*1000000 |bc)
 ENERGY_EV=${ENERGY_EV%.*}
 

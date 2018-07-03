@@ -20,6 +20,8 @@ if [ "${element}" == "Al" ]; then
     energies=(0.0001 0.0002 0.0003 0.0004 0.0005 0.0006 0.0008 0.001 0.0015 0.002 0.0025 0.003 0.0035 0.004 0.0045 0.005 0.006)
     # Soum source energies
     energies=( .121 .146 .172 .196 .220 .238 .256 )
+    # Low source energies (use cutoff of 20 eV)
+    energies=(0.0001 0.0002 0.0003 0.0004 0.0005 0.0006 0.0008 0.001 )
 else
     echo "Error: Element \"${element}\" is currently not supported!"
 fi

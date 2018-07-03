@@ -39,6 +39,9 @@ parser.add_argument('-i', help=ionization_msg, required=True)
 excitation_msg = "atomic excitation electron reaction on (true/false)"
 parser.add_argument('-a', help=excitation_msg, required=True)
 
+min_energy_msg = "min electron energy (in MeV)"
+parser.add_argument('-m', help=min_energy_msg, required=False)
+
 # Parse the user's arguments
 user_args = parser.parse_args()
 
@@ -102,6 +105,11 @@ if ionization_bool == "false":
 if excitation_bool == "false":
     name_base += "_no_excitation"
 
+min_energy="1e-4"
+print user_args.m
+if user_args.m:
+  min_energy=user_args.m
+
 root = ET.Element("ParameterList", name="Simulation Info")
 
 parameter_1 = ET.SubElement(root, "ParameterList", name="General Properties")
@@ -114,7 +122,7 @@ ET.SubElement(parameter_1, "Parameter", name="Histories", type="unsigned int", v
 
 parameter_2 = ET.SubElement(root, "ParameterList", name="Electron Properties")
 
-ET.SubElement(parameter_2, "Parameter", name="Min Electron Energy", type="double", value="1e-4")
+ET.SubElement(parameter_2, "Parameter", name="Min Electron Energy", type="double", value=min_energy)
 ET.SubElement(parameter_2, "Parameter", name="Max Electron Energy", type="double", value=str(energy))
 ET.SubElement(parameter_2, "Parameter", name="Electron Atomic Relaxation", type="bool", value="true" )
 ET.SubElement(parameter_2, "Parameter", name="Electron Grid Policy", type="string", value=grid )
