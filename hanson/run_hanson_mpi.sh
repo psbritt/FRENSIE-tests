@@ -150,21 +150,9 @@ TODAY=$(date +%Y-%m-%d)
 if [ ${NAME} = "ace" ] || [ ${NAME} = "epr14" ]; then
     DIR="results/${NAME}/${TODAY}"
     NAME="hanson_${NAME}${NAME_REACTION}"
-    TITLE="FACEMC-ACE"
+    TITLE="FRENSIE-ACE"
 else
     DIR="results/${INTERP}/${TODAY}"
-
-    if [ ${SAMPLE} = 1 ]; then
-        SAMPLE_NAME="unit_correlated"
-    elif [ ${SAMPLE} = 2 ]; then
-        SAMPLE_NAME="correlated"
-    elif [ ${SAMPLE} = 3 ]; then
-        SAMPLE_NAME="unit_base"
-    fi
-
-    if [ ${NAME} = "moments" ]; then
-        NAME="${NAME}_moments"
-    fi
 
     NAME="hanson_${NAME}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"
 fi

@@ -32,11 +32,11 @@ if user_args.t:
 name_base = "est_"+str(energy)
 
 # assume energy is 0.01 MeV
-bins = "{ 1e-5, 5e-5, 198i, 1e-2}"
+bins = "{ 1e-4, 137i, 7e-3, 29i, 1e-2}"
 if float(energy) == 0.001:
-    bins = "{ 1e-5, 197i, 1e-3}"
+    bins = "{ 1e-4, 197i, 1e-3}"
 if float(energy) == 0.1:
-    bins = "{ 1e-5, 1e-4, 5e-4, 198i, 1e-1}"
+    bins = "{ 1e-4, 5e-4, 198i, 1e-1}"
 
 root = ET.Element("ParameterList", name="Observers")
 

@@ -29,6 +29,7 @@ EXTRA_ARGS=$@
 CROSS_SECTION_XML_PATH=/home/lkersting/software/mcnpdata/
 # CROSS_SECTION_XML_PATH=/home/software/mcnp6.2/MCNP_DATA/
 FRENSIE=/home/lkersting/frensie
+# FRENSIE=/home/lkersting/research/frensie-repos/lkersting/
 
 INPUT="1"
 if [ "$#" -eq 1 ]; then
@@ -89,9 +90,32 @@ else
     echo "Using Native analog data!"
 fi
 
+# Set the interp in title
+TITLE=""
+if [ "${INTERP}" = "logloglog" ]; then
+    TITLE="Log-log"
+elif [ "${INTERP}" = "linlinlin" ]; then
+    TITLE="Lin-lin"
+elif [ "${INTERP}" = "linlinlog" ]; then
+    TITLE="Lin-log"
+fi
+
+# Set the sampling name
+SAMPLE_NAME=""
+if [ ${SAMPLE} = 1 ]; then
+    SAMPLE_NAME="unit_correlated"
+    TITLE="${TITLE} Unit-base Correlated"
+elif [ ${SAMPLE} = 2 ]; then
+    SAMPLE_NAME="correlated"
+    TITLE="${TITLE} Correlated"
+elif [ ${SAMPLE} = 3 ]; then
+    SAMPLE_NAME="unit_base"
+    TITLE="${TITLE} Unit-base"
+fi
+
+# Set the name raction and extention
 NAME_EXTENTION=""
 NAME_REACTION=""
-# Set the file name extentions
 if [ "${ELASTIC_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_elastic"
 elif [ ${DISTRIBUTION} = "Coupled" ]; then
@@ -105,6 +129,9 @@ elif [ ${DISTRIBUTION} = "Coupled" ]; then
         NAME_EXTENTION="${NAME_EXTENTION}_2D_simplified"
         TITLE="${TITLE} 2D"
     fi
+elif [ ${DISTRIBUTION} = "Decoupled" ]; then
+    NAME_EXTENTION="${NAME_EXTENTION}_decoupled"
+    TITLE="${TITLE} DE"
 fi
 if [ "${BREM_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_brem"
@@ -130,16 +157,9 @@ TODAY=$(date +%Y-%m-%d)
 if [ ${NAME} = "ace" ] || [ ${NAME} = "epr14" ]; then
     DIR="results/${NAME}/${TODAY}"
     NAME="example_${NAME}${NAME_REACTION}"
+    TITLE="FRENSIE-ACE"
 else
     DIR="results/${INTERP}/${TODAY}"
-
-    if [ ${SAMPLE} = 1 ]; then
-        SAMPLE_NAME="unit_correlated"
-    elif [ ${SAMPLE} = 2 ]; then
-        SAMPLE_NAME="correlated"
-    elif [ ${SAMPLE} = 3 ]; then
-        SAMPLE_NAME="unit_base"
-    fi
 
     NAME="example_${NAME}_${INTERP}_${SAMPLE_NAME}${NAME_EXTENTION}${NAME_REACTION}"
 fi
@@ -167,11 +187,10 @@ NEW_RUN_INFO="${DIR}/continue_run_${NAME}.xml"
 mv ${H5} ${NEW_NAME}
 mv continue_run.xml ${NEW_RUN_INFO}
 
-cd ${DIR}
-
 if [ "${GEOMETRY}" = "ROOT" ]; then
+    cd ${DIR}
     bash ../../../data_processor_root.sh ${NAME}
 else
-    bash ../../../data_processor.sh ${NAME}
+    python data_processor.py -f ${NEW_NAME} -t "${TITLE}"
 fi
 echo "Results will be in ./${DIR}"

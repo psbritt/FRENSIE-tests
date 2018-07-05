@@ -6,19 +6,20 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import FormatStrFormatter
+from matplotlib import gridspec
 import argparse as ap
 import inspect, os
 import pylab
 
 # Set up the argument parser
 description = "This script asks for albedo data and run names which "\
-              "which it then plots against the experimental data from CREEP paper."
+              "which it then plots against experimental data."
 
 parser = ap.ArgumentParser(description=description)
 
 
-experimental_msg = "Flag to add CREEP experimental data to the generated plot."
-parser.add_argument('-e', help=experimental_msg, action='store_true')
+mcnp_msg = "Flag to plot a comparison with mcnp (the first file should be for mcnp)."
+parser.add_argument('-m', help=mcnp_msg, action='store_true')
 
 all_experimental_msg = "Flag to add all experimental data to the generated plot."
 parser.add_argument('-a', help=all_experimental_msg, action='store_true')
@@ -53,20 +54,32 @@ for n in range(len(file_paths)):
         data_y[n] = data[1][:]
         data_error[n] = data[2][:]
 
-fig = plt.figure(num=1, figsize=(10,7))
-plt.xlabel('Energy (MeV)', size=14)
+# Plot
+if user_args.m:
+  fig = plt.figure(num=1, figsize=(9,7))
+else:
+  fig = plt.figure(num=1, figsize=(10,7))
+
+# set height ratios for sublots
+if user_args.m:
+  gs = gridspec.GridSpec(2, 1, height_ratios=[2, 1])
+else:
+  gs = gridspec.GridSpec(1, 1)
+
+# the first subplot
+ax0 = plt.subplot(gs[0])
+
+x_label = 'Energy (MeV)'
+plt.xlabel(x_label, size=14)
 plt.ylabel('Reflection Coef.', size=14)
 plt.title('Electron Albedos for an infinite slab of Al', size=16)
-plt.xscale('log')
 ax=plt.gca()
 
 plt.xlim(9e-5,.256)
 plt.ylim(0.1,0.26)
-
-if user_args.e:
-    # Get experimental data
-    data = np.loadtxt("./creep_experimental.txt", skiprows=2)
-    plt.scatter(data[:,0], data[:,1], label="CREEP", marker='s' )
+if user_args.m:
+    plt.xlim(9e-5,.256)
+    plt.ylim(0.07,0.22)
 
 markers = ["o","*","v","^","<",">","+","x","1","2","3","4","p","s","h","D","d","H","8"]
 if user_args.a:
@@ -90,28 +103,72 @@ if user_args.a:
           y[j] = float(data[1][j])
 
     plt.scatter(x, y, label=name +" (Exp.)", marker=markers[i], s=50, facecolors='none', edgecolors='b' )
-  # ax.set_xscale('log')
+ax.set_xscale('log')
 
 
 # markers = ["v","^","<",">","s","+","x","1","2","3","4","8","p","*","h","H","X","D","d"]
 # markerssizes = [7,7,7,7,6,7,7,7,7,7,7,7,7,7,7,7,7,7,7,7]
 # marker_color = ['g', 'r', 'c', 'm', 'y', 'k', 'w', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
-markers = ["s","<","x","+","8","p","*","h","H","X","D","d"]
-markerssizes = [8,8,8,8,5,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8]
-marker_color = ['y', 'c', 'g', 'r', 'm', 'k', 'w', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
+markers = ["-s","--v","-.o",":^","--p",":*","-.h","-H","--X",":D","-.d","-8"]
+markerssizes = [7,8,7,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8]
+marker_color = ['g', 'r', 'm', 'k', 'y', 'c', 'g', 'r', 'm', 'k', 'y', 'c']
+
+if user_args.m:
+    names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
 for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])
     yerr = map(float, data_error[n])
     plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n] )
-# pylab.legend(loc='best')
+
 lgd = plt.legend(loc="upper left", bbox_to_anchor=(1,1))
+if user_args.m:
+  pylab.legend(loc='best')
 # plt.legend(loc=3)
 ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 #ax.xaxis.set_major_formatter(FormatStrFormatter('%.4f'))
 # plt.ylim(0.12,0.22)
 # leg = plt.legend(loc='best', ncol=2)
 # leg.get_frame().set_alpha(0.5)
+
+if user_args.m:
+
+    # The C/E subplot (with shared x-axis)
+    ax1 = plt.subplot(gs[1], sharex = ax0)
+    plt.xlabel(x_label, size=14)
+    plt.ylabel('C/R', size=14)
+
+    # Get mcnp data
+    mcnp_x = map(float, data_x[0])
+    mcnp_y = map(float, data_y[0])
+    mcnp_yerr = map(float, data_error[0])
+
+    for n in range(1,N):
+        x = map(float, data_x[n])
+        y = map(float, data_y[n])
+        yerr = map(float, data_error[n])
+
+        for i in range(0, len(y)):
+          y[i] = y[i]/mcnp_y[i]
+          yerr[i] = yerr[i]/mcnp_y[i]
+          print mcnp_x[i], ": ", (1.0-mcnp_y[i])*100, "%"
+
+        plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n] )
+
+        # make x ticks for first suplot invisible
+        plt.setp(ax0.get_xticklabels(), visible=False)
+
+        # remove first tick label for the first subplot
+        yticks = ax0.yaxis.get_major_ticks()
+        yticks[0].label1.set_visible(False)
+        ax0.grid(linestyle=':')
+        ax1.grid(linestyle=':')
+
+
+        plt.ylim(0.0,2.0)
+
+        # remove vertical gap between subplots
+        plt.subplots_adjust(hspace=.0)
 
 output = "albedo_results.pdf"
 if user_args.o:

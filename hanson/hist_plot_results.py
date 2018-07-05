@@ -82,7 +82,7 @@ ax=plt.gca()
 plt.xlim(0.0,7.0)
 plt.ylim(0.0,0.05)
 if user_args.m:
-    plt.ylim(0.0,0.05)
+    plt.ylim(0.0,0.04)
 
 plots = []
 labels = []
@@ -138,7 +138,7 @@ marker_color = ['g', 'r', 'm', 'k', 'y', 'c', 'g', 'r', 'm', 'k', 'y', 'c']
 linestyles = [(0, ()), (0, (5, 5)), (0, (3, 5, 1, 5)), (0, (1, 1)), (0, (3, 5, 1, 5, 1, 5)), (0, (5, 1)), (0, (3, 1, 1, 1)), (0, (3, 1, 1, 1, 1, 1)), (0, (1, 5)), (0, (5, 10)), (0, (3, 10, 1, 10)), (0, (3, 10, 1, 10, 1, 10))]
 
 if user_args.m:
-    names = ['Log-log Correlated 1D','Log-log Correlated 2D', 'Log-log Correlated M2D' ]
+    names = ['MCNP6.2','FRENSIE-ACE', 'FRENSIE-ENDL' ]
 # names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
 for n in range(N):
     x = map(float, data_x[n])
@@ -253,11 +253,11 @@ elif user_args.m:
     plt.ylabel('C/R', size=14)
 
     # Get mcnp data
-    experimental_x = x = map(float, data_x[2][:-2])
-    experimental_y = y = map(float, data_y[2][:-2])
-    experimental_error = map(float, data_error[2][:-2])
+    experimental_x = x = map(float, data_x[0][:-2])
+    experimental_y = y = map(float, data_y[0][:-2])
+    experimental_error = map(float, data_error[0][:-2])
 
-    for n in range(0,2):
+    for n in range(1,N):
         print "\n", names[n]
         x = map(float, data_x[n][:-2])
         y = map(float, data_y[n][:-2])
@@ -287,7 +287,7 @@ elif user_args.m:
     ax1.grid(linestyle=':')
 
     plt.xlim(0.0,6.78)
-    plt.ylim(0.97,1.03)
+    plt.ylim(0.98,1.02)
 
     # remove vertical gap between subplots
     plt.subplots_adjust(hspace=.0)
