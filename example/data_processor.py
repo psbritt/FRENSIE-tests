@@ -58,7 +58,7 @@ def main(argv):
         # Write title to file
         out_file.write( "# " + user_args.t +"\n")
         # Write data header to file
-        header = "# Energy (MeV)\t" + names[j] + "\tError\t"+str(today)+"\n"
+        header = "# Energy (MeV)\t" + names[j] + "\tSigma\t"+str(today)+"\n"
         out_file.write(header)
 
         # Write data to file

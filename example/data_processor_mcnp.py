@@ -46,12 +46,12 @@ def main(argv):
 
               # go through the current and flux estimators
               for j in range(len(estimator_list)):
-                  name = base + estimator_list[j] + ".txt"
+                  name = base + "_" + estimator_list[j] + ".txt"
                   file = open(name, 'w')
                   # Write title to file
                   file.write( "# MCNP6.2\n")
                   # Write data header to file
-                  header = "# Energy\t"+estimator_names[j]+"\tSigma\t"+str(today)+"\n"
+                  header = "# Energy (MeV)\t"+estimator_names[j]+"\tSigma\t"+str(today)+"\n"
                   file.write(header)
                   # Skips text before the beginning of the interesting block:
                   for line in data:
@@ -64,7 +64,8 @@ def main(argv):
                           file.close()
                           break
                       line = line.lstrip()
-                      line = line.replace('   ',' ')
+                      line = line.replace('   ','\t')
+                      line = line.replace(' ','\t')
                       file.write(line)
 
       with open(filename) as data:
@@ -75,7 +76,10 @@ def main(argv):
               # go track_flux estimator
               name = base+"_track_flux.txt"
               file = open(name, 'w')
-              header = "# Energy"+"\tTrack Flux (#/cm$^2$)"+"\tSigma\t"+str(today)+"\n"
+              # Write title to file
+              file.write( "# MCNP6.2\n")
+              # Write data header to file
+              header = "# Energy (MeV)\t"+"Track Flux (#/cm$^2$)"+"\tSigma\t"+str(today)+"\n"
               file.write(header)
               # Skips text before the beginning of the interesting block:
               for line in data:
@@ -88,7 +92,8 @@ def main(argv):
                       file.close()
                       break
                   line = line.lstrip()
-                  line = line.replace('   ',' ')
+                  line = line.replace('   ','\t')
+                  line = line.replace(' ','\t')
                   file.write(line)
 
   else:

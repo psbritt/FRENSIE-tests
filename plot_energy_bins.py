@@ -35,13 +35,11 @@ parser.add_argument("input_files", nargs='*')
 # Plot every bth error bar
 b = 3
 # Set the y max and min for the main plot
-xmax = 0.008
+xmax = 0.0075
 xmin = 0.0
 # Set the y max and min for the main plot
 ymax = 500.0
 ymin = 0.0
-
-
 
 # Parse the user's arguments
 user_args = parser.parse_args()
@@ -56,6 +54,7 @@ data_y = [[] for y in range(N)]
 data_error = [[] for y in range(N)]
 names = [0 for x in range(N)]
 
+nmax = 0
 # Get computational results
 for n in range(N):
     with open(file_paths[n]) as input:
@@ -66,9 +65,14 @@ for n in range(N):
         input.readline()[1:].strip()
         # Read the data
         data = zip(*(line.strip().split('\t') for line in input))
-        data_x[n] = np.asfarray(data[0])
-        data_y[n] = np.asfarray(data[1])
-        data_error[n] = np.asfarray(data[2])
+        # get bins within max energy
+        for i in range(len(data[0])):
+          if float(data[0][i]) <= xmax+1e-5:
+            nmax = i
+
+        data_x[n] = np.asfarray(data[0][:nmax])
+        data_y[n] = np.asfarray(data[1][:nmax])
+        data_error[n] = np.asfarray(data[2][:nmax])
 
 # Get MCNP results
 if os.path.isfile(user_args.m):
@@ -80,14 +84,28 @@ if os.path.isfile(user_args.m):
         labels = input.readline()[1:].strip().split('\t')
         # Read the data
         data = zip(*(line.strip().split('\t') for line in input))
-        mcnp_x = np.asfarray(data[0])
-        mcnp_y = np.asfarray(data[1])
-        mcnp_error = np.asfarray(data[2])
+        mcnp_x = np.asfarray(data[0][:nmax])
+        mcnp_y = np.asfarray(data[1][:nmax])
+        mcnp_error = np.asfarray(data[2][:nmax])
+
+for x in range(len(data_x[0])):
+  diff = mcnp_x[x] - data_x[0][x]
+  if diff > 0.0:
+    print mcnp_x[x], " diff = ", mcnp_x[x] - data_x[0][x]
 
 # Calculate the average value in the bin
 mcnp_avg_x = 0.5*(mcnp_x[1:] + mcnp_x[:-1])
 mcnp_avg_y = mcnp_y[1:]/(mcnp_x[1:]-mcnp_x[:-1])
 mcnp_avg_error = mcnp_error[1:]/(mcnp_x[1:]-mcnp_x[:-1])
+
+mcnp_test_x = []
+mcnp_test_y = []
+mcnp_test_error = []
+for j in range(len(mcnp_x)/2-1):
+  i = j*2 + 2
+  mcnp_test_x.append( 0.5*(mcnp_x[i] + mcnp_x[i-2]) )
+  mcnp_test_y.append( ( mcnp_y[i] + mcnp_y[i-1])/(mcnp_x[i] - mcnp_x[i-2]) )
+  mcnp_test_error.append( ( mcnp_error[i] + mcnp_error[i-1])/(mcnp_x[i] - mcnp_x[i-2]) )
 
 
 # Set plot and subplots
@@ -109,11 +127,11 @@ plt.ylabel(labels[1], size=14)
 # Get the plot title
 # question = "Enter the desired title for the plot: "
 # title = raw_input(question)
-title ='test'
+title = "Surface Current for a Point Source in a H Sphere"
 plt.title(title, size=16)
 ax=plt.gca()
 
-# plt.xlim(0.0,7.0)
+plt.xlim(xmin,xmax)
 plt.ylim(ymin,ymax)
 
 # Plot MCNP results
@@ -138,6 +156,30 @@ for n in range(N):
     avg_y = data_y[n][1:]/(data_x[n][1:]-data_x[n][:-1])
     avg_error = data_error[n][1:]/(data_x[n][1:]-data_x[n][:-1])
 
+    test_x = []
+    test_y = []
+    test_error = []
+    for j in range(len(data_x[0])/2-1):
+      i = j*2 + 2
+      test_x.append( 0.5*(data_x[n][i] + data_x[n][i-2]) )
+      test_y.append( (( data_y[n][i] + data_y[n][i-1])/(data_x[n][i] - data_x[n][i-2])) )
+      test_error.append( ( data_error[n][i] + data_error[n][i-1])/(data_x[n][i] - data_x[n][i-2]) )
+
+    # Print C/R results
+    print '\n',names[n], ' C/R:\n--------------------------------------------------------'
+    max_diff = 0.0
+    diff_1 = 0
+    diff_energy = 0.0
+    for k in range(len(test_x)):
+      diff_0 = diff_1
+      diff_1 = np.abs(test_y[k]-mcnp_test_y[k])*100/mcnp_test_y[k]
+      if diff_1 > max_diff:
+        max_diff = diff_1
+        diff_energy = test_x[k]
+      print test_x[k], ": ",diff_1, "%"
+    print '--------------------------------------------------------'
+    print "Maximum percent relative difference at ", diff_energy, ": ", max_diff, "%"
+
     # Plot the results
     plt2 = plt.errorbar(avg_x, avg_y, yerr=avg_error, linestyle='--', dashes=linestyles[n][1], label=names[n], color=marker_color[n], errorevery=b )
 
@@ -158,6 +200,22 @@ if user_args.c:
         avg_error = data_error[n][1:]/(data_x[n][1:]-data_x[n][:-1])
         y = avg_y[:]/mcnp_avg_y[:]
 
+        # Print C/R results
+        print '\n',names[n], ' C/R:\n--------------------------------------------------------'
+        max_diff = 0.0
+        diff_1 = 0
+        diff_energy = 0.0
+        for k in range(len(avg_x)):
+          diff_0 = diff_1
+          diff_1 = np.abs(1.0-y[k])*100
+          if diff_1 > max_diff:
+            max_diff = diff_1
+            diff_energy = avg_x[k]
+          print avg_x[k], ": ",diff_1, "%"
+        print '--------------------------------------------------------'
+        print "Maximum percent relative difference at ", diff_energy, ": ", max_diff, "%"
+
+
         # Calculate the propagated uncertainty
         prop_uncert = []
 
@@ -171,8 +229,8 @@ if user_args.c:
         ax1.errorbar(avg_x, y, yerr=prop_uncert, linestyle='--', dashes=linestyles[n][1], label=names[n], color=marker_color[n] )
 
 
-    # plt.xlim(0.0,6.78)
-    # plt.ylim(0.3,2.3)
+    plt.xlim(xmin,xmax)
+    plt.ylim(0.9,1.1)
 
     # make x ticks for first suplot invisible
     plt.setp(ax0.get_xticklabels(), visible=False)
