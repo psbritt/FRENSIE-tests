@@ -41,8 +41,8 @@ fi
 
 # Number of threads
 THREADS="160"
-# Number of histories 1e7
-HISTORIES="10000000"
+# Number of histories 1e8
+HISTORIES="100000000"
 # Turn certain reactions on (true/false)
 ELASTIC_ON="true"
 BREM_ON="true"
@@ -51,9 +51,9 @@ EXCITATION_ON="true"
 # Two D Interp Policy (logloglog, linlinlin, linlinlog)
 INTERP="logloglog"
 # Two D Sampling Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
-SAMPLE=1
+SAMPLE=2
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
-DISTRIBUTION="Coupled"
+DISTRIBUTION="Decoupled"
 # Elastic coupled sampling method ( Simplified, 1D, 2D )
 COUPLED_SAMPLING="2D"
 
