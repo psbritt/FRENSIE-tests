@@ -55,7 +55,7 @@ f04:e  100 $ average flux in cell (f4)
 f02:e  10 $ average surface flux (f2)
 f01:e  10 $ surface current (f1)
 c
-e0     1e-4, 137i, 7e-3, 29i, 1e-2 $ Specify the electron energy bins
+e0     1e-4 137i 7e-3 29i 1e-2 $ Specify the electron energy bins
 c Skip 17, turn single scatter electrons on
 dbcn 17j 2 $ Turn on analog mode
 c
