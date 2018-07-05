@@ -18,7 +18,7 @@ fi
 ENERGY="10kev"
 
 # Set the input file name
-FILE="h_sphere.inp"
+FILE="mcnp.in"
 NAME="mcnp"
 
 # Make directory for the test results
@@ -29,7 +29,7 @@ mkdir -p $DIR
 echo "Running MCNP6.2 H sphere test with ${THREADS} threads:"
 RUN="${MCNP} n="${FILE}" tasks ${THREADS}"
 echo ${RUN}
-${RUN} > ${DIR}/${NAME}.txt 2>&1
+${RUN} > ${DIR}/${NAME}.txt
 
 echo "Processing the results:"
 NEW_NAME="${DIR}/${NAME}"
@@ -39,7 +39,6 @@ mv ${FILE}o ${NEW_NAME}.o
 mv ${FILE}r ${NEW_NAME}.r
 mv ${FILE}m ${NEW_NAME}.m
 
-# Move to output directory
-cd ${DIR}
-python ../../../data_processor_mcnp.py -f ${NAME}
+# Process the files
+python ./data_processor_mcnp.py -f ${NEW_NAME}.o
 echo "The processed data is located at: ${DIR}"

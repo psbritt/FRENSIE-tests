@@ -34,7 +34,7 @@ def main(argv):
 
     today = datetime.date.today()
     tallies = ["track_flux", "flux", "current"]
-    names = ["Flux (#/cm$^2$)", "Flux (#/cm$^2$)", "Current (#)"]
+    names = ["Track Flux (#/cm$^2$)", "Surface Flux (#/cm$^2$)", "Surface Current (#)"]
     # Read the data file for surface tallies
     with open(filename) as data:
       for j in range(len(tallies)):
