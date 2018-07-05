@@ -8,8 +8,6 @@ EXTRA_ARGS=$@
 MCNP6_1=/home/software/mcnp6.1.1/bin/mcnp611_linux_x86_64_omp
 MCNP6_2=/home/software/mcnp6.2/bin/mcnp6
 MCNP=$MCNP6_2
-TODAY=$(date +%Y-%m-%d)
-OUTPUT_DIR="./results/mcnp/${TODAY}/"
 
 THREADS="8"
 if [ "$#" -eq 1 ]; then
@@ -28,13 +26,16 @@ if [ "${CONDENSED_HISTORY_ON}" = "true" ]; then
     OUTPUT="mcnp_ch."
 fi
 
-mkdir -p $OUTPUT_DIR
+# Make directory for the test results
+TODAY=$(date +%Y-%m-%d)
+DIR="./results/mcnp/${TODAY}"
+mkdir -p ${DIR}
 
 echo "Running MCNP6.2 with ${THREADS} threads:"
 echo "${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}"
 ${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}
 
-NEW_NAME=${OUTPUT_DIR}${OUTPUT}
+NEW_NAME=${DIR}${OUTPUT}
 
 # Move output files to test directory
 mv ${OUTPUT}o ${NEW_NAME}o
@@ -43,4 +44,4 @@ mv ${OUTPUT}m ${NEW_NAME}m
 
 echo "Processing the results:"
 python mcnp_data_processor.py -f ${NEW_NAME}o
-echo "The processed data is located at: ${OUTPUT_DIR}"
+echo "The processed data is located at: ${DIR}"

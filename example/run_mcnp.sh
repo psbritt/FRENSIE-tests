@@ -18,27 +18,28 @@ fi
 ENERGY="10kev"
 
 # Set the input file name
-FILE="mcnp.in"
-NAME="mcnp"
+NAME="mcnp.in"
+OUTPUT="mcnp."
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
 DIR="./results/mcnp/${TODAY}"
-mkdir -p $DIR
+mkdir -p ${DIR}
 
 echo "Running MCNP6.2 H sphere test with ${THREADS} threads:"
-RUN="${MCNP} n="${FILE}" tasks ${THREADS}"
+RUN="${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}"
 echo ${RUN}
-${RUN} > ${DIR}/${NAME}.txt
+${RUN}
 
 echo "Processing the results:"
-NEW_NAME="${DIR}/${NAME}"
+NEW_NAME=${DIR}${OUTPUT}
 
 # Move output files to test directory
-mv ${FILE}o ${NEW_NAME}.o
-mv ${FILE}r ${NEW_NAME}.r
-mv ${FILE}m ${NEW_NAME}.m
+mv ${OUTPUT}o ${NEW_NAME}o
+mv ${OUTPUT}r ${NEW_NAME}r
+mv ${OUTPUT}m ${NEW_NAME}m
 
-# Process the files
-python ./data_processor_mcnp.py -f ${NEW_NAME}.o
+# Process the results
+echo "Processing the results:"
+python mcnp_data_processor.py -f ${NEW_NAME}o
 echo "The processed data is located at: ${DIR}"
