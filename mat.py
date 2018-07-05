@@ -26,12 +26,6 @@ element_symbol = user_args.n
 file_type = user_args.t
 interp = user_args.i
 
-name="mat_"+element_symbol+"_"+file_type+"_"+interp+".xml"
-i=1
-while os.path.isfile(name):
-  name = "mat_"+element_symbol+"_"+file_type+"_"+interp+"_" +str(i)+".xml"
-  i=i+1
-
 filename = "{" + element_symbol
 
 if file_type == "ace":
@@ -52,6 +46,12 @@ parameter_1 = ET.SubElement(root, "ParameterList", name=element_symbol)
 ET.SubElement(parameter_1, "Parameter", name="Id", type="unsigned int", value="1")
 ET.SubElement(parameter_1, "Parameter", name="Fractions", type="Array", value="{1.0}")
 ET.SubElement(parameter_1, "Parameter", name="Isotopes", type="Array(string)", value=filename)
+
+name="mat_"+element_symbol+"_"+file_type+"_"+interp+".xml"
+i=1
+while os.path.isfile(name):
+  name = "mat_"+element_symbol+"_"+file_type+"_"+interp+"_" +str(i)+".xml"
+  i=i+1
 
 prettify(root,name)
 print name

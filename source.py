@@ -15,7 +15,6 @@ parser.add_argument('-e', help=source_energy_msg, required=True)
 # Parse the user's arguments
 user_args = parser.parse_args()
 energy = user_args.e
-name = "source_"+str(energy)+".xml"
 
 root = ET.Element("ParameterList", name="Source")
 
@@ -30,7 +29,13 @@ ET.SubElement(sub_list_1, "Parameter", name="Position", type="Array(double)", va
 
 ET.SubElement(parameters, "Parameter", name="Energy Distribution", type="Delta Distribution", value="{" + str(energy) + "}")
 
-ET.SubElement(parameters, "Parameter", name="Directionn", type="Array(double)", value="{1.0,0.0,0.0}")
+ET.SubElement(parameters, "Parameter", name="Direction", type="Array(double)", value="{1.0,0.0,0.0}")
+
+name = "source_"+str(energy)+".xml"
+i=1
+while os.path.isfile(name):
+  name = "source_"+str(energy)+"_"+str(i)+".xml"
+  i=i+1
 
 prettify(root,name)
 print name

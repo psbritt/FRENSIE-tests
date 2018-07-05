@@ -30,10 +30,10 @@ ET.SubElement(sub_list_1, "Parameter", name="Position", type="Array(double)", va
 ET.SubElement(parameters, "Parameter", name="Energy Distribution", type="Delta Distribution", value=source_energy)
 
 # Set the name of the file
-name = "source_"+energy+".xml"
+name = "source_"+str(energy)+".xml"
 i=1
 while os.path.isfile(name):
-  name = "source_"+energy+"_"+str(i)+".xml"
+  name = "source_"+str(energy)+"_"+str(i)+".xml"
   i=i+1
 
 prettify(root,name)
