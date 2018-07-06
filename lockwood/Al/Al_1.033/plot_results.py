@@ -98,7 +98,7 @@ if user_args.e:
 markers = ["--v","-.o",":^","--<","-.>",":+","--x","-.1",":2","--3","-.4",":8","--p","-.P",":*","--h","-.H",":X","--D","-.d"]
 markerssizes = [6,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
 marker_color = ['g', 'r', 'c', 'm', 'y', 'k', 'w', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
-# names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
+# names = ['MCNP6.2','FRENSIE-ACE', 'FRENSIE-ENDL' ]
 for n in range(N):
     x = map(float, data_x[n])
     y = map(float, data_y[n])

@@ -38,7 +38,7 @@ parser.add_argument("input_files", nargs='*')
 # Plot every bth error bar
 b = 3
 # Set the x max and min for the main plot
-xmaxes = [0.0075, 0.0075, 0.01]
+xmaxes = [0.0072, 0.0072, 0.01]
 xmax = 0.01
 xmin = 0.0
 # Set the y maxes and mins for the main plot
@@ -57,10 +57,10 @@ N = len(file_paths)
 # Number of data points in each file
 data_x = [[] for y in range(N)]
 data_y = [[] for y in range(N)]
-data_error = [[] for y in range(N)]
+data_rel_error = [[] for y in range(N)]
 mcnp_x = [[] for y in range(N)]
 mcnp_y = [[] for y in range(N)]
-mcnp_error = [[] for y in range(N)]
+mcnp_rel_error = [[] for y in range(N)]
 labels = [0 for x in range(N)]
 names = [0 for x in range(N)]
 
@@ -90,12 +90,12 @@ for n in range(N):
 
     data_x[n] = np.asfarray(data[0][:nmax[n]])
     data_y[n] = np.asfarray(data[1][:nmax[n]])
-    data_error[n] = np.asfarray(data[2][:nmax[n]])
+    data_rel_error[n] = np.asfarray(data[2][:nmax[n]])
 
   # Calculate the average value in the bin
   avg_x[n] = 0.5*(data_x[n][1:] + data_x[n][:-1])
   avg_y[n] = data_y[n][1:]/(data_x[n][1:]-data_x[n][:-1])
-  avg_error[n] = data_error[n][1:]/(data_x[n][1:]-data_x[n][:-1])
+  avg_error[n] = data_rel_error[n][1:]*avg_y[n]
 
 # Get MCNP results
 mcnp_files = [user_args.m1,user_args.m2,user_args.m3]
@@ -110,7 +110,7 @@ for n in range(N):
         data = zip(*(line.strip().split('\t') for line in input))
         mcnp_x[n] = np.asfarray(data[0][:nmax[n]])
         mcnp_y[n] = np.asfarray(data[1][:nmax[n]])
-        mcnp_error[n] = np.asfarray(data[2][:nmax[n]])
+        mcnp_rel_error[n] = np.asfarray(data[2][:nmax[n]])
 
   for x in range(len(data_x[n])):
     diff = mcnp_x[n][x] - data_x[n][x]
@@ -120,7 +120,7 @@ for n in range(N):
   # Calculate the average value in the bin
   mcnp_avg_x[n] = 0.5*(mcnp_x[n][1:] + mcnp_x[n][:-1])
   mcnp_avg_y[n] = mcnp_y[n][1:]/(mcnp_x[n][1:]-mcnp_x[n][:-1])
-  mcnp_avg_error[n] = mcnp_error[n][1:]/(mcnp_x[n][1:]-mcnp_x[n][:-1])
+  mcnp_avg_error[n] = mcnp_rel_error[n][1:]*mcnp_avg_y[n]
 
 gs = [[] for y in range(N)]
 axes = [[] for y in range(2*N)]
@@ -188,37 +188,29 @@ pylab.legend(loc='best')
 
 # Got through files
 for n in range(N):
-    # Calculate the average value in the bin
+    # Calculate the C/R value
     y = avg_y[n][:]/mcnp_avg_y[n][:]
+    # Calculate the propagated uncertainty
+    prop_uncert = np.sqrt( ((1.0/mcnp_avg_y[n][:])**2)*(avg_error[n][:])**2 + ((avg_y[n][:]/mcnp_avg_y[n][:]**2)**2)*(mcnp_avg_error[n][:])**2 )
 
     # Print C/R results
     print '\n',names[n], ' C/R:\n--------------------------------------------------------'
     max_diff = 0.0
-    diff_1 = 0
     diff_energy = 0.0
+    diff_error = 0.0
     for k in range(len(avg_x[n])):
-      diff_0 = diff_1
-      diff_1 = np.abs(1.0-y[k])*100
-      if diff_1 > max_diff and avg_x[n][k] < 0.0075:
-        max_diff = diff_1
+      diff = (1.0-y[k])*100.0
+      print avg_x[n][k], ": ",diff, u"\u00B1", prop_uncert[k]*100.0, "%"
+      if abs(diff) > abs(max_diff) and avg_x[n][k] < 0.0075:
+        max_diff = diff
         diff_energy = avg_x[n][k]
-      print avg_x[n][k], ": ",diff_1, "%"
+        diff_error = prop_uncert[k]*100.0
     print '--------------------------------------------------------'
-    print "Maximum percent relative difference at ", diff_energy, ": ", max_diff, "%"
-
-    # Calculate the propagated uncertainty
-    prop_uncert = []
-
-    for i in range(len(mcnp_avg_x[n])):
-      if mcnp_avg_y[n][i] > 0:
-          prop_uncert.append( np.sqrt( ((1.0/mcnp_avg_y[n][i])**2)*(avg_y[n][i]*data_error[n][i+1])**2 + ((avg_y[n][i]/mcnp_avg_y[n][i]**2)**2)*(mcnp_avg_y[n][i]*mcnp_error[n][i+1])**2 ) )
-      else:
-          prop_uncert.append( 0.0 )
-          print 'energy = ', avg_x[i], '\tmcnp_avg_y = ',mcnp_avg_y[i]
+    print "Maximum percent relative difference at ", diff_energy, ": ", max_diff, u"\u00B1", diff_error, "%"
 
     j = n*2+1
     axes[j].errorbar(avg_x[n], y, yerr=prop_uncert, linestyle='--', dashes=linestyles[n][1], label=names[n], color=marker_color[n] )
-    axes[j].set_ylim(0.95,1.05)
+    axes[j].set_ylim(0.96,1.06)
 
 plt.xlim(xmin,xmax)
 

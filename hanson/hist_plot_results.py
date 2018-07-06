@@ -54,9 +54,9 @@ for n in range(N):
         print names[n]
         print input.readline().strip()[1:]
         data = zip(*(line.strip().split('\t') for line in input))
-        data_x[n][:] = data[0][0:M]
-        data_y[n][:] = data[1][0:M]
-        data_error[n][:] = data[2][0:M]
+        data_x[n] = np.asfarray(data[0][0:M])
+        data_y[n] = np.asfarray(data[1][0:M])
+        data_error[n] = np.asfarray(data[2][0:M])*data_y[n]
 
 # Plot
 if user_args.m:
@@ -82,7 +82,7 @@ ax=plt.gca()
 plt.xlim(0.0,7.0)
 plt.ylim(0.0,0.05)
 if user_args.m:
-    plt.ylim(0.0,0.04)
+    plt.ylim(0.0,0.05)
 
 plots = []
 labels = []
@@ -95,24 +95,22 @@ if user_args.e:
     filename = directory + "/experimental_results.tsv"
     with open(filename) as input:
         data = zip(*(line.strip().split('\t') for line in input))
-        exp_x = data[0][1:14]
-        exp_y = data[1][1:14]
+        exp_x = np.asfarray(data[0][1:14])
+        exp_y = np.asfarray(data[1][1:14])
 
     # Plot the experimental data
-    x = map(float, exp_x)
-    y = map(float, exp_y)
-    plt1, = plt.plot(x, y, linestyle='None', marker='s', markersize=5 )
+    plt1, = plt.plot(exp_x, exp_y, linestyle='None', marker='s', markersize=5 )
 
     # Get a least squares fit
     gmodel = Model(gaussian)
-    result = gmodel.fit(y, x=x, amp=F0_exp, wid=Theta_exp)
+    result = gmodel.fit(exp_y, x=exp_x, amp=F0_exp, wid=Theta_exp)
     print 'Hanson Fit:\n--------------------------------------------------------'
     F0_fit = result.best_values['amp']
     Theta_fit = result.best_values['wid']
     print 'F(0)         = ',F0_fit,'\tTheta(1/e) = ',Theta_fit
     print 'Rel Diff Fit = ',(F0_exp-F0_fit)/F0_exp,'\tRel Diff   = ',(Theta_exp-Theta_fit)/Theta_exp,'\n'
 
-    x = linspace(0, x[len(x)-1])
+    x = linspace(0, exp_x[len(exp_x)-1])
     # y = result.eval(x=x)
     # plt2, = plt.plot(x, y, 'b--' )
 
@@ -139,30 +137,21 @@ linestyles = [(0, ()), (0, (5, 5)), (0, (3, 5, 1, 5)), (0, (1, 1)), (0, (3, 5, 1
 
 if user_args.m:
     names = ['MCNP6.2','FRENSIE-ACE', 'FRENSIE-ENDL' ]
-# names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
+# names = ['MCNP6.2','FRENSIE-ACE', 'FRENSIE-ENDL' ]
 for n in range(N):
-    x = map(float, data_x[n])
-    y = map(float, data_y[n])
-    yerr = map(float, data_error[n])
-
     # Insert first bin lower bounds as an angle of 0
-    x.insert(0,0.0)
+    x = np.insert( data_x[n], 0, 0.0)
 
     # Plot histogram of results
-    m, bins, plt1 = plt.hist(x[:-1], bins=x, weights=y, histtype='step', label=names[n], color=marker_color[n], linestyle=linestyles[n], linewidth=1.8 )
+    m, bins, plt1 = plt.hist(x[:-1], bins=x, weights=data_y[n], histtype='step', label=names[n], color=marker_color[n], linestyle=linestyles[n], linewidth=1.8 )
 
     # Plot error bars
     mid = 0.5*(bins[1:] + bins[:-1])
-    plt2 = plt.errorbar(mid, m, yerr=yerr, ecolor=marker_color[n], fmt=None)
+    plt2 = plt.errorbar(mid, m, yerr=data_error[n], ecolor=marker_color[n], fmt=None)
 
     # Get a least squares fit
     gmodel = Model(gaussian)
-    result = gmodel.fit(y, x=mid, amp=F0_exp, wid=Theta_exp)
-    # x = linspace(0, mid[len(mid)-1], num=100)
-    # y = result.eval(x=x)
-    # plt3, = plt.plot(x, y, color=marker_color[n], linestyle='--', dashes=linestyles[n][1] )
-    # plots.append( (plt1[0],plt2) )
-    # labels.append(names[n])
+    result = gmodel.fit(data_y[n], x=mid, amp=F0_exp, wid=Theta_exp)
 
     print '\n',names[n], ':\n--------------------------------------------------------'
     amp[n] = result.best_values['amp']
@@ -252,24 +241,18 @@ elif user_args.m:
     plt.xlabel(x_label, size=14)
     plt.ylabel('C/R', size=14)
 
-    # Get mcnp data
-    experimental_x = x = map(float, data_x[0][:-2])
-    experimental_y = y = map(float, data_y[0][:-2])
-    experimental_error = map(float, data_error[0][:-2])
-
     for n in range(1,N):
         print "\n", names[n]
-        x = map(float, data_x[n][:-2])
-        y = map(float, data_y[n][:-2])
-        yerr = map(float, data_error[n][:-2])
-
         # Insert first bin lower bounds as an angle of 0
-        x.insert(0,0.0)
+        x = np.insert( data_x[n][:-2], 0, 0.0)
 
+        # Calculate C/R
+        yerr = np.sqrt( ((1.0/data_y[0][:-2])**2)*(data_error[n][:-2])**2 + ((data_y[n][:-2]/data_y[0][:-2]**2)**2)*(data_error[0][:-2])**2 )
+        y = data_y[n][:-2]/data_y[0][:-2]
+
+        # Print C/R results
         for i in range(0, len(y)):
-          y[i] = y[i]/experimental_y[i]
-          yerr[i] = yerr[i]/experimental_y[i]
-          print x[i], ": ", (1.0-y[i])*100, "%"
+          print x[i+1], ": ", (1.0-y[i])*100, u"\u00B1", yerr[i]*100, "%"
 
         # Plot histogram of results
         m, bins, _ = ax1.hist(x[:-1], bins=x, weights=y, histtype='step', label=names[n], color=marker_color[n], linestyle=linestyles[n], linewidth=1.8 )
@@ -287,7 +270,7 @@ elif user_args.m:
     ax1.grid(linestyle=':')
 
     plt.xlim(0.0,6.78)
-    plt.ylim(0.98,1.02)
+    plt.ylim(0.99,1.01)
 
     # remove vertical gap between subplots
     plt.subplots_adjust(hspace=.0)

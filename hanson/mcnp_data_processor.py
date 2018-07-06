@@ -62,7 +62,7 @@ def main(argv):
         # cosines = [ -1.00000000000000E+00, 9.91894442590030E-01, 9.92331937885489E-01, 9.93611310520008E-01, 9.93999199399457E-01, 9.96041065410770E-01, 9.96345296190906E-01, 9.96492859249504E-01, 9.96778878456247E-01, 9.97288851511543E-01, 9.97440782930944E-01, 9.98015754214463E-01, 9.98166626538801E-01, 9.98421217972777E-01, 9.98536670326212E-01, 9.98611205219883E-01, 9.98736956606018E-01, 9.98954674260241E-01, 9.99048221581858E-01, 9.99289472640589E-01, 9.99341123963171E-01, 9.99414947916632E-01, 9.99461728392073E-01, 9.99777013105531E-01, 9.99805523312194E-01, 9.99907336812014E-01, 9.99921044203816E-01, 9.99987190864844E-01, 9.99991942880066E-01, 1.00000000000000E+00 ]
 
         current = [None] * (len(cosines) -1)
-        error = [None] * (len(cosines) -1)
+        rel_error = [None] * (len(cosines) -1)
 
         with open(filename) as data:
             # go through all surface tallies
@@ -75,7 +75,7 @@ def main(argv):
                 for line in data:
                     if line.startswith(start):
                         data.next()
-                        current[i], error[i] = data.next().strip().split(' ')
+                        current[i], rel_error[i] = data.next().strip().split(' ')
                         i+=1
                         if i == len(cosines):
                             break
@@ -83,7 +83,7 @@ def main(argv):
         # Convert to #/Square Degree
         size = len(cosines)-1
         num_square_degree = [None] * size
-        num_square_degree_error = [None] * size
+        num_square_degree_rel_error = [None] * size
         angles = [None] * size
 
         for i in range(0, size):
@@ -94,7 +94,7 @@ def main(argv):
           sterradians = 2.0*math.pi*cosine_diff
           num_per_ster = float(current[j-1])/sterradians
           num_square_degree[i] = num_per_ster*square_degree
-          num_square_degree_error[i] = float(error[j-1])/sterradians*square_degree
+          num_square_degree_rel_error[i] = float(rel_error[j-1])
 
         # Write title to file
         new_name = base+"_spectrum.txt"
@@ -108,7 +108,7 @@ def main(argv):
         for i in range(0, size):
             output = '%.4e' % angles[i] + "\t" + \
                     '%.16e' % num_square_degree[i] + "\t" + \
-                    '%.16e' % num_square_degree_error[i] + "\n"
+                    '%.16e' % num_square_degree_rel_error[i] + "\n"
             out_file.write( output )
 
     else:

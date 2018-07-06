@@ -29,6 +29,10 @@ def main(argv):
   # Get output file name
   base = filename[:-3]
 
+  # Rename Simplified to 2D_Simplified
+  if ( base.split('_')[-1] == "Simplified"):
+    base = base[:-10] + "2D_Simplified"
+
   # Check if file exists
   if os.path.isfile(filename):
 
@@ -50,26 +54,32 @@ def main(argv):
       size = len(data)-1
       cosines = [None] * size
       current = [None] * size
-      current_error = [None] * size
+      current_rel_error = [None] * size
 
       for i in range(1,len(data)):
-        cosines[i-1], current[i-1], current_error[i-1] = data[i].split(' ')
+        cosines[i-1], current[i-1], current_rel_error[i-1] = data[i].split(' ')
 
       # Convert to #/Square Degree
       size = len(cosines)-1
       num_square_degree = [None] * size
-      num_square_degree_error = [None] * size
+      num_square_degree_rel_error = [None] * size
       angles = [None] * size
 
       for i in range(0, size):
         j = size-i
         k = j-1
+
+        # Calculate the angle from the cosines
         angles[i] = math.acos(float(cosines[k]))/degree
+
+        # Calculate the current in 1/square degrees
         cosine_diff = float(cosines[j]) - float(cosines[k])
         sterradians = 2.0*math.pi*cosine_diff
         num_per_ster = float(current[j])/sterradians
         num_square_degree[i] = num_per_ster*square_degree
-        num_square_degree_error[i] = float(current_error[j])/sterradians*square_degree
+
+        # Set the relative error
+        num_square_degree_rel_error[i] = float(current_rel_error[j])
 
       # Write title to file
       out_file.write( "# " + user_args.t +"\n")
@@ -81,7 +91,7 @@ def main(argv):
       for i in range(0, size):
           output = '%.4e' % angles[i] + "\t" + \
                   '%.16e' % num_square_degree[i] + "\t" + \
-                  '%.16e' % num_square_degree_error[i] + "\n"
+                  '%.16e' % num_square_degree_rel_error[i] + "\n"
           out_file.write( output )
 
   else:

@@ -50,9 +50,9 @@ for n in range(len(file_paths)):
         names[n] = names[n].replace("\n","")
         next(input)
         data = zip(*(line.strip().split() for line in input))
-        data_x[n] = data[0][:]
-        data_y[n] = data[1][:]
-        data_error[n] = data[2][:]
+        data_x[n] = np.asfarray(data[0][:])
+        data_y[n] = np.asfarray(data[1][:])
+        data_error[n] = np.asfarray(data[2][:])*data_y[n]
 
 # Plot
 if user_args.m:
@@ -114,11 +114,11 @@ markerssizes = [7,8,7,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8]
 marker_color = ['g', 'r', 'm', 'k', 'y', 'c', 'g', 'r', 'm', 'k', 'y', 'c']
 
 if user_args.m:
-    names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
+    names = ['MCNP6.2','FRENSIE-ACE', 'FRENSIE-ENDL' ]
 for n in range(N):
-    x = map(float, data_x[n])
-    y = map(float, data_y[n])
-    yerr = map(float, data_error[n])
+    x = np.asfarray(data_x[n])
+    y = np.asfarray(data_y[n])
+    yerr = np.asfarray(data_error[n])*y
     plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n] )
 
 lgd = plt.legend(loc="upper left", bbox_to_anchor=(1,1))
@@ -139,21 +139,56 @@ if user_args.m:
     plt.ylabel('C/R', size=14)
 
     # Get mcnp data
-    mcnp_x = map(float, data_x[0])
-    mcnp_y = map(float, data_y[0])
-    mcnp_yerr = map(float, data_error[0])
+    mcnp_x = np.asfarray(data_x[0])
+    mcnp_y = np.asfarray(data_y[0])
+    mcnp_yerr = np.asfarray(data_error[0])*mcnp_y
 
     for n in range(1,N):
-        x = map(float, data_x[n])
-        y = map(float, data_y[n])
-        yerr = map(float, data_error[n])
+        x = np.asfarray(data_x[n])
+        y = np.asfarray(data_y[n])
+        yerr = np.asfarray(data_error[n])*y
 
-        for i in range(0, len(y)):
-          y[i] = y[i]/mcnp_y[i]
-          yerr[i] = yerr[i]/mcnp_y[i]
-          print mcnp_x[i], ": ", (1.0-mcnp_y[i])*100, "%"
+        print '\n------ ',names[n], ' ------'
+        max_diff = 0.0
+        diff_energy = 0.0
+        diff_x = []
+        diff_y = []
+        diff_error = []
+        c_index = 0
+        r_index = 0
+        max_diff = 0
+        while True:
+          if mcnp_x[r_index] < x[c_index]:
+            r_index += 1
+          elif mcnp_x[r_index] > x[c_index]:
+            c_index += 1
+          else:
+            # Calculate the relative difference and prop. error
+            c_over_r = y[c_index]/mcnp_y[r_index]
+            diff = (1.0 - c_over_r)*100.0
+            error = np.sqrt( ((1.0/mcnp_y[r_index])**2)*(yerr[c_index])**2 + ((y[c_index]/mcnp_y[r_index]**2)**2)*(mcnp_yerr[r_index])**2 )
 
-        plt.errorbar(x, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n] )
+            # Add data to list
+            diff_x.append( mcnp_x[r_index] )
+            diff_y.append( c_over_r )
+            diff_error.append( error )
+
+            # Print results
+            print mcnp_x[r_index], ": ", diff, "% ", error
+            if abs(diff) > abs(max_diff):
+              max_diff = diff
+              max_energy = mcnp_x[r_index]
+              max_error = error
+
+            c_index += 1
+            r_index += 1
+          if r_index == len(mcnp_x) or c_index == len(x):
+            break
+
+        print '--------------------------'
+        print 'Max Relative Diff: ',diff_energy, ": ", max_diff, "% ", error,"\n"
+
+        plt.errorbar(diff_x, diff_y, yerr=diff_error, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n] )
 
         # make x ticks for first suplot invisible
         plt.setp(ax0.get_xticklabels(), visible=False)
@@ -164,8 +199,8 @@ if user_args.m:
         ax0.grid(linestyle=':')
         ax1.grid(linestyle=':')
 
-
-        plt.ylim(0.0,2.0)
+        plt.xlim(1e-4,.3)
+        # plt.ylim(0.97,1.05)
 
         # remove vertical gap between subplots
         plt.subplots_adjust(hspace=.0)

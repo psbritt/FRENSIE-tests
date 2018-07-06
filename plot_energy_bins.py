@@ -51,7 +51,7 @@ N = len(file_paths)
 # Number of data points in each file
 data_x = [[] for y in range(N)]
 data_y = [[] for y in range(N)]
-data_error = [[] for y in range(N)]
+data_rel_error = [[] for y in range(N)]
 names = [0 for x in range(N)]
 
 nmax = 0
@@ -72,7 +72,7 @@ for n in range(N):
 
         data_x[n] = np.asfarray(data[0][:nmax])
         data_y[n] = np.asfarray(data[1][:nmax])
-        data_error[n] = np.asfarray(data[2][:nmax])
+        data_rel_error[n] = np.asfarray(data[2][:nmax])
 
 # Get MCNP results
 if os.path.isfile(user_args.m):
@@ -86,7 +86,7 @@ if os.path.isfile(user_args.m):
         data = zip(*(line.strip().split('\t') for line in input))
         mcnp_x = np.asfarray(data[0][:nmax])
         mcnp_y = np.asfarray(data[1][:nmax])
-        mcnp_error = np.asfarray(data[2][:nmax])
+        mcnp_rel_error = np.asfarray(data[2][:nmax])
 
 for x in range(len(data_x[0])):
   diff = mcnp_x[x] - data_x[0][x]
@@ -96,17 +96,7 @@ for x in range(len(data_x[0])):
 # Calculate the average value in the bin
 mcnp_avg_x = 0.5*(mcnp_x[1:] + mcnp_x[:-1])
 mcnp_avg_y = mcnp_y[1:]/(mcnp_x[1:]-mcnp_x[:-1])
-mcnp_avg_error = mcnp_error[1:]/(mcnp_x[1:]-mcnp_x[:-1])
-
-mcnp_test_x = []
-mcnp_test_y = []
-mcnp_test_error = []
-for j in range(len(mcnp_x)/2-1):
-  i = j*2 + 2
-  mcnp_test_x.append( 0.5*(mcnp_x[i] + mcnp_x[i-2]) )
-  mcnp_test_y.append( ( mcnp_y[i] + mcnp_y[i-1])/(mcnp_x[i] - mcnp_x[i-2]) )
-  mcnp_test_error.append( ( mcnp_error[i] + mcnp_error[i-1])/(mcnp_x[i] - mcnp_x[i-2]) )
-
+mcnp_avg_error = mcnp_rel_error[1:]*mcnp_avg_y
 
 # Set plot and subplots
 if user_args.c:
@@ -115,7 +105,6 @@ if user_args.c:
 else:
   fig = plt.figure(num=1, figsize=(10,5))
   gs = gridspec.GridSpec(1, 1)
-
 
 # the first subplot
 ax0 = plt.subplot(gs[0])
@@ -154,37 +143,12 @@ for n in range(N):
     # Calculate the average value in the bin
     avg_x = 0.5*(data_x[n][1:] + data_x[n][:-1])
     avg_y = data_y[n][1:]/(data_x[n][1:]-data_x[n][:-1])
-    avg_error = data_error[n][1:]/(data_x[n][1:]-data_x[n][:-1])
-
-    test_x = []
-    test_y = []
-    test_error = []
-    for j in range(len(data_x[0])/2-1):
-      i = j*2 + 2
-      test_x.append( 0.5*(data_x[n][i] + data_x[n][i-2]) )
-      test_y.append( (( data_y[n][i] + data_y[n][i-1])/(data_x[n][i] - data_x[n][i-2])) )
-      test_error.append( ( data_error[n][i] + data_error[n][i-1])/(data_x[n][i] - data_x[n][i-2]) )
-
-    # Print C/R results
-    print '\n',names[n], ' C/R:\n--------------------------------------------------------'
-    max_diff = 0.0
-    diff_1 = 0
-    diff_energy = 0.0
-    for k in range(len(test_x)):
-      diff_0 = diff_1
-      diff_1 = np.abs(test_y[k]-mcnp_test_y[k])*100/mcnp_test_y[k]
-      if diff_1 > max_diff:
-        max_diff = diff_1
-        diff_energy = test_x[k]
-      print test_x[k], ": ",diff_1, "%"
-    print '--------------------------------------------------------'
-    print "Maximum percent relative difference at ", diff_energy, ": ", max_diff, "%"
+    avg_error = data_rel_error[n][1:]*avg_y
 
     # Plot the results
     plt2 = plt.errorbar(avg_x, avg_y, yerr=avg_error, linestyle='--', dashes=linestyles[n][1], label=names[n], color=marker_color[n], errorevery=b )
 
 pylab.legend(loc='best')
-
 
 if user_args.c:
     # The C/R subplot (with shared x-axis)
@@ -197,34 +161,27 @@ if user_args.c:
         # Calculate the average value in the bin
         avg_x = 0.5*(data_x[n][1:] + data_x[n][:-1])
         avg_y = data_y[n][1:]/(data_x[n][1:]-data_x[n][:-1])
-        avg_error = data_error[n][1:]/(data_x[n][1:]-data_x[n][:-1])
+        avg_error = data_rel_error[n][1:]*avg_y
+
+        # Calculate the C/R value
         y = avg_y[:]/mcnp_avg_y[:]
+        # Calculate the propagated uncertainty
+        prop_uncert = np.sqrt( ((1.0/mcnp_avg_y[:])**2)*(avg_error[:])**2 + ((avg_y[:]/mcnp_avg_y[:]**2)**2)*(mcnp_avg_error[:])**2 )
 
         # Print C/R results
         print '\n',names[n], ' C/R:\n--------------------------------------------------------'
         max_diff = 0.0
-        diff_1 = 0
         diff_energy = 0.0
+        diff_error = 0.0
         for k in range(len(avg_x)):
-          diff_0 = diff_1
-          diff_1 = np.abs(1.0-y[k])*100
-          if diff_1 > max_diff:
-            max_diff = diff_1
+          diff = np.abs(1.0-y[k])*100
+          if diff > max_diff:
+            max_diff = diff
             diff_energy = avg_x[k]
-          print avg_x[k], ": ",diff_1, "%"
+            diff_error = prop_uncert[k]*100.0
+          print avg_x[k], ": ",diff, u"\u00B1", prop_uncert[k]*100.0, "%"
         print '--------------------------------------------------------'
-        print "Maximum percent relative difference at ", diff_energy, ": ", max_diff, "%"
-
-
-        # Calculate the propagated uncertainty
-        prop_uncert = []
-
-        for i in range(len(mcnp_avg_x)):
-            if mcnp_avg_y[i] > 0:
-                prop_uncert.append( np.sqrt( ((1.0/mcnp_avg_y[i])**2)*(avg_y[i]*data_error[n][i+1])**2 + ((avg_y[i]/mcnp_avg_y[i]**2)**2)*(mcnp_avg_y[i]*mcnp_error[i+1])**2 ) )
-            else:
-                prop_uncert.append( 0.0 )
-                print 'energy = ', avg_x[i], '\tmcnp_avg_y = ',mcnp_avg_y[i]
+        print "Maximum percent relative difference at ", diff_energy, ": ", max_diff, u"\u00B1", diff_error, "%"
 
         ax1.errorbar(avg_x, y, yerr=prop_uncert, linestyle='--', dashes=linestyles[n][1], label=names[n], color=marker_color[n] )
 

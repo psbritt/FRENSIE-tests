@@ -49,10 +49,9 @@ for n in range(N):
         print names[n]
         input.readline().strip()[1:]
         data = zip(*(line.strip().split('\t') for line in input))
-        data_x[n][:] = data[0][0:M]
-        data_y[n][:] = data[1][0:M]
-        data_error[n][:] = data[2][0:M]
-
+        data_x[n] = np.asfarray(data[0][0:M])
+        data_y[n] = np.asfarray(data[1][0:M])
+        data_error[n] = np.asfarray(data[2][0:M])*data_y[n]
 
 # Plot
 fig = plt.figure(num=1, figsize=(10,6))
@@ -80,18 +79,16 @@ if user_args.e:
     filename = directory + "/experimental_results.tsv"
     with open(filename) as input:
         data = zip(*(line.strip().split('\t') for line in input))
-        exp_x = data[0][1:14]
-        exp_y = data[1][1:14]
+        exp_x = np.asfarray(data[0][1:14])
+        exp_y = np.asfarray(data[1][1:14])
 
     # Plot the experimental data
-    x = np.array(map(float, exp_x))
-    y = np.array(map(float, exp_y))
-    pl1, =plt.plot(x, y, linestyle='None', marker='s', markersize=5 )
+    pl1, =plt.plot(exp_x, exp_y, linestyle='None', marker='s', markersize=5 )
 
     # Plot a least squares fit
     gmodel = Model(gaussian)
-    result = gmodel.fit(y, x=x, amp=0.0441, wid=2.58)
-    x = linspace(0, x[len(x)-1])
+    result = gmodel.fit(exp_y, x=exp_x, amp=0.0441, wid=2.58)
+    x = linspace(0, exp_x[len(exp_x)-1])
     y = result.eval(x=x)
     pl2, = plt.plot(x, y, 'b--' )
 
@@ -107,24 +104,20 @@ markers = ["v","o","^","<",">","+","x","1","2","3","4","8","p","P","*","h","H","
 linestyle = ["--","-.",":","--","-.",":","--","-.",":","--3","-.",":","--","-.",":","--","-.",":","--","-."]
 markerssizes = [6,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
 marker_color = ['g', 'r', 'k', 'm', 'y', 'c', 'w', 'g', 'r', 'k', 'm', 'y', 'c', 'w']
-# names = ['MCNP6.2','FACEMC-ACE', 'FACEMC-ENDL' ]
+# names = ['MCNP6.2','FRENSIE-ACE', 'FRENSIE-ENDL' ]
 for n in range(N):
-    x = map(float, data_x[n])
-    y = map(float, data_y[n])
-    yerr = map(float, data_error[n])
+    # Insert first bin lower bounds as an angle of 0
+    x = np.insert( data_x[n], 0, 0.0)
 
     # Calculate bin mid points
-    mid = [None] * len(x)
-    x.insert(0, 0.0)
-    for i in range(len(mid)):
-      mid[i] = 0.5*(x[i+1] + x[i])
+    mid = 0.5*(x[1:] + x[:-1])
 
     # Plot the data at the midpoints
-    plt1 = plt.errorbar(mid, y, yerr=yerr, fmt=markers[n], markersize=markerssizes[n], color=marker_color[n] )
+    plt1 = plt.errorbar(mid, data_y[n], yerr=data_error[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n] )
 
     # Plot a least squares fit
     gmodel = Model(gaussian)
-    result = gmodel.fit(y, x=mid, amp=0.0441, wid=2.58)
+    result = gmodel.fit(data_y[n], x=mid, amp=0.0441, wid=2.58)
     x = linspace(0, mid[len(mid)-1], num=100)
     y = result.eval(x=x)
     plt2, = plt.plot(x, y, color=marker_color[n], linestyle=linestyle[n] )
@@ -144,34 +137,19 @@ if user_args.e:
     plt.xlabel(x_label, size=14)
     plt.ylabel('C/E', size=14)
 
-    # Get experimental data
-    directory = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-    filename = directory + "/experimental_results.tsv"
-    with open(filename) as input:
-        data = zip(*(line.strip().split('\t') for line in input))
-        exp_x = data[0][1:]
-        exp_y = data[1][1:]
-
-    # Calculate the experimental from the % error
-    experimental_x = map(float, exp_x)
-    experimental_y = map(float, exp_y)
-
     for n in range(N):
-        x = map(float, data_x[n][:-2])
-        y = map(float, data_y[n][:-2])
-        yerr = map(float, data_error[n][:-2])
+        # Insert first bin lower bounds as an angle of 0
+        x = np.insert( data_x[n], 0, 0.0)
+
+        # Calculate C/R
+        yerr = data_error[n]/exp_y
+        y = data_y[n]/exp_y
 
         # Calculate bin mid points
-        mid = [None] * len(x)
-        x.insert(0, 0.0)
-        for i in range(len(mid)):
-          mid[i] = 0.5*(x[i+1] + x[i])
+        mid = 0.5*(x[1:] + x[:-1])
 
         for i in range(0, len(y)):
-          # print "y: ", y[i], "\ty_exp: ", experimental_y[i]
-          y[i] = y[i]/experimental_y[i]
-          yerr[i] = yerr[i]/experimental_y[i]
-          print i, ": ", (1.0-y[i])*100, "%"
+          print i, ": ", (1.0-y[i])*100, u"\u00B1", yerr[i]*100, "%"
         ax1.errorbar(mid, y, yerr=yerr, label=names[n], fmt=markers[n], markersize=markerssizes[n], color=marker_color[n])
 
     # make x ticks for first suplot invisible
@@ -198,10 +176,3 @@ if user_args.o:
 print "Plot outputted to: ",output
 fig.savefig(output, bbox_inches='tight', dpi=600)
 plt.show()
-
-  # xdata = np.array([0.26, 0.75, 1.17, 1.92, 2.12, 2.56, 2.95, 3.16, 3.54, 4.16, 4.70, 5.00, 6.38])
-  # ydata = np.array([4.34500E-02, 4.05250E-02, 3.44000E-02, 2.38500E-02, 2.04000E-02, 1.54500E-02, 1.06000E-02, 9.54993E-03, 7.49894E-03, 3.80189E-03, 2.42661E-03, 1.84077E-03, 7.32825E-04])
-
-  # init_vals = [0.0441, 2.58]  # for [amp, wid]
-  # best_vals, covar = curve_fit(gaussian, xdata, ydata, p0=init_vals)
-  # print(best_vals)
