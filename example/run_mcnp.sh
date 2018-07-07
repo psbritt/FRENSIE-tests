@@ -23,7 +23,7 @@ OUTPUT="mcnp."
 
 # Make directory for the test results
 TODAY=$(date +%Y-%m-%d)
-DIR="./results/mcnp/${TODAY}"
+DIR="./results/mcnp/${TODAY}/"
 mkdir -p ${DIR}
 
 echo "Running MCNP6.2 H sphere test with ${THREADS} threads:"

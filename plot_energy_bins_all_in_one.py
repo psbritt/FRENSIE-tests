@@ -38,7 +38,7 @@ parser.add_argument("input_files", nargs='*')
 # Plot every bth error bar
 b = 3
 # Set the x max and min for the main plot
-xmaxes = [0.0072, 0.0072, 0.01]
+xmaxes = [0.0075, 0.0075, 0.01]
 xmax = 0.01
 xmin = 0.0
 # Set the y maxes and mins for the main plot
@@ -142,7 +142,6 @@ axes[0].set_title('Results for a 0.01 MeV Point Source in a H Sphere', size=16)
 
 for i in range(1,len(axes)):
   j = i/2
-  print j
   # Shared axes with C/R
   axes[i] = fig.add_subplot(gs[j][i,:], sharex=axes[i-1])
   # Hide shared x-tick labels
@@ -175,14 +174,14 @@ marker_color = ['g', 'r', 'm', 'k', 'y', 'c', 'g', 'r', 'm', 'k', 'y', 'c']
 # Plot the Computational data
 for n in range(N):
   j = n*2
-  axes[j].errorbar(avg_x[n], avg_y[n], yerr=avg_error[n], linestyle='--', dashes=linestyles[n][1], label=names[n], color=marker_color[n], errorevery=b )
+  axes[j].errorbar(avg_x[n], avg_y[n], yerr=avg_error[n], linestyle='--', dashes=linestyles[0][1], label='FRENSIE-ACE', color=marker_color[0], errorevery=b, linewidth=1.8 )
 
   axes[j].set_ylim(ymins[n],ymaxes[n])
   # Set the y scale
   axes[j].set_yscale(scales[n])
 
-pylab.legend(loc='best')
-
+# Plot the legend on the first plot only
+axes[0].legend(loc='best')
 
 # The C/R subplots (with shared x-axis)
 
@@ -195,21 +194,41 @@ for n in range(N):
 
     # Print C/R results
     print '\n',names[n], ' C/R:\n--------------------------------------------------------'
-    max_diff = 0.0
-    diff_energy = 0.0
-    diff_error = 0.0
+    energy_range = [ 0.0, 0.001, 0.006, 0.01]
+    max_diff = [0 for x in range(len(energy_range)-1)]
+    diff_energy = [0 for x in range(len(energy_range)-1)]
+    diff_error = [0 for x in range(len(energy_range)-1)]
+    sum_diff = [0 for x in range(len(energy_range)-1)]
+    sum_err = [0 for x in range(len(energy_range)-1)]
+    range_len = [0 for x in range(len(energy_range)-1)]
+    e_i = 0
+    sum_tot_diff = np.average( np.abs(1.0 - y))*100
+    sum_tot_err = np.average( np.abs(prop_uncert) )*100
     for k in range(len(avg_x[n])):
       diff = (1.0-y[k])*100.0
       print avg_x[n][k], ": ",diff, u"\u00B1", prop_uncert[k]*100.0, "%"
-      if abs(diff) > abs(max_diff) and avg_x[n][k] < 0.0075:
-        max_diff = diff
-        diff_energy = avg_x[n][k]
-        diff_error = prop_uncert[k]*100.0
+      for j in range(1,len(energy_range)-1):
+        if avg_x[n][k] > energy_range[j] and avg_x[n][k] < energy_range[j+1]:
+          e_i = j
+          break
+
+      sum_diff[e_i] += abs(diff)
+      sum_err[e_i] += abs(prop_uncert[k])*100.0
+      range_len[e_i] += 1
+      if abs(diff) > abs(max_diff[e_i]):
+        max_diff[e_i] = diff
+        diff_energy[e_i] = avg_x[n][k]
+        diff_error[e_i] = prop_uncert[k]*100.0
     print '--------------------------------------------------------'
-    print "Maximum percent relative difference at ", diff_energy, ": ", max_diff, u"\u00B1", diff_error, "%"
+    for j in range(len(max_diff)):
+      print "--- range [",energy_range[j] ,",",energy_range[j+1] ,"] ---"
+      print "Maximum percent relative diff:", max_diff[j], u"\u00B1", diff_error[j], "% at", diff_energy[j]
+      print "Average percent relative diff:", sum_diff[j]/range_len[j], u"\u00B1", sum_err[j]/range_len[j], "%"
+    print '--------------------------------------------------------'
+    print "Average percent relative diff: ", sum_tot_diff, u"\u00B1", sum_tot_err, "%"
 
     j = n*2+1
-    axes[j].errorbar(avg_x[n], y, yerr=prop_uncert, linestyle='--', dashes=linestyles[n][1], label=names[n], color=marker_color[n] )
+    axes[j].errorbar(avg_x[n], y, yerr=prop_uncert, linestyle='--', dashes=linestyles[0][1], label=names[n], color=marker_color[0] )
     axes[j].set_ylim(0.96,1.06)
 
 plt.xlim(xmin,xmax)
@@ -234,5 +253,5 @@ if user_args.o:
     output = user_args.o
 
 print "Plot outputted to: ",output
-# fig.savefig(output, bbox_inches='tight', dpi=600)
+fig.savefig(output, bbox_inches='tight', dpi=600)
 plt.show()
