@@ -37,9 +37,10 @@ parser.add_argument("input_files", nargs='*')
 
 # Plot every bth error bar
 b = 3
+keV = 1000
 # Set the x max and min for the main plot
 xmaxes = [0.0075, 0.0075, 0.01]
-xmax = 0.01
+xmax = 0.01*keV
 xmin = 0.0
 # Set the y maxes and mins for the main plot
 ymaxes = [350.0, 3e5, 9e5]
@@ -151,7 +152,7 @@ for i in range(1,len(axes)):
 
 
 # Set the x label
-x_label = labels[0][0]
+x_label = 'Energy (keV)'
 axes[5].set_xlabel(x_label, size=14)
 
 ax=plt.gca()
@@ -160,7 +161,7 @@ ax=plt.gca()
 # Plot the MCNP data
 for n in range(N):
   j = n*2
-  axes[j].errorbar(mcnp_avg_x[n], mcnp_avg_y[n], yerr=mcnp_avg_error[n], linestyle='-', label=mcnp_name, errorevery=b )
+  axes[j].errorbar(mcnp_avg_x[n]*keV, mcnp_avg_y[n], yerr=mcnp_avg_error[n], linestyle='-', label=mcnp_name, errorevery=b, color='g', linewidth=1.8 )
 
 
 # linestyles: 'solid', 'dashed', 'dashdotted', 'densely dotted', 'dashdotdotted', 'densely dashed', 'densely dashdotted', 'densely dashdotdotted', 'dotted', 'loosely dashed', 'loosely dashdotted', 'loosely dashdotdotted')
@@ -169,12 +170,12 @@ linestyles = [(0, (5, 5)), (0, (3, 5, 1, 5)), (0, (1, 1)), (0, (3, 5, 1, 5, 1, 5
 markers = ["--v","-.o",":^","--<","-.>",":+","--x","-.1",":2","--3","-.4",":8","--p","-.P",":*","--h","-.H",":X","--D","-.d"]
 linestyle = ["--","-.",":","--","-.",":","--","-.",":","--3","-.",":","--","-.",":","--","-.",":","--","-."]
 markerssizes = [6,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6]
-marker_color = ['g', 'r', 'm', 'k', 'y', 'c', 'g', 'r', 'm', 'k', 'y', 'c']
+marker_color = ['r', 'm', 'k', 'y', 'c', 'g', 'r', 'm', 'k', 'y', 'c']
 
 # Plot the Computational data
 for n in range(N):
   j = n*2
-  axes[j].errorbar(avg_x[n], avg_y[n], yerr=avg_error[n], linestyle='--', dashes=linestyles[0][1], label='FRENSIE-ACE', color=marker_color[0], errorevery=b, linewidth=1.8 )
+  axes[j].errorbar(avg_x[n]*keV, avg_y[n], yerr=avg_error[n], linestyle='--', dashes=linestyles[0][1], label='FRENSIE-ACE', color=marker_color[0], errorevery=b, linewidth=1.8 )
 
   axes[j].set_ylim(ymins[n],ymaxes[n])
   # Set the y scale
@@ -228,7 +229,7 @@ for n in range(N):
     print "Average percent relative diff: ", sum_tot_diff, u"\u00B1", sum_tot_err, "%"
 
     j = n*2+1
-    axes[j].errorbar(avg_x[n], y, yerr=prop_uncert, linestyle='--', dashes=linestyles[0][1], label=names[n], color=marker_color[0] )
+    axes[j].errorbar(avg_x[n]*keV, y, yerr=prop_uncert, linestyle='--', dashes=linestyles[0][1], label=names[n], color=marker_color[0] )
     axes[j].set_ylim(0.96,1.06)
 
 plt.xlim(xmin,xmax)

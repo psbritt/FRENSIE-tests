@@ -2,7 +2,7 @@
 # This file is named run_facemc_mpi.sh
 #SBATCH --partition=pre
 #SBATCH --time=1-00:00:00
-#SBATCH --nodes=7
+#SBATCH --nodes=10
 #SBATCH --ntasks-per-node=16
 #SBATCH --mem-per-cpu=4000
 
@@ -41,7 +41,7 @@ fi
 # Al: 0.314 MeV & tests 0-11, 0.512 MeV & test 0-17, 1.033 MeV & tests 0-25
 ELEMENT="Al"; ENERGY="0.314"; TEST_NUMBER="11"
 
-THREADS="112"
+THREADS="160"
 # Number of histories 1e6
 HISTORIES="1000000"
 # Turn certain reactions on (true/false)
