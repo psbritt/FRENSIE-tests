@@ -66,7 +66,7 @@ plt.ylim(0.0,6.0)
 
 if user_args.e:
     # Get experimental data
-    with open("./Al_0.314/experimental_results.txt") as input:
+    with open("./experimental_results.txt") as input:
         data = zip(*(line.strip().split('\t') for line in input))
         data_name = data[0][0] + data[1][0] + data[2][0]
         exp_x = data[0][1:]
@@ -99,6 +99,8 @@ ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
 output = "lockwood_results.pdf"
 if user_args.o:
     output = user_args.o
+
+ax.grid(linestyle=':')
 
 print "Plot outputted to: ",output
 fig.savefig(output, bbox_inches='tight', dpi=300)
