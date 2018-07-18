@@ -33,8 +33,8 @@ EXCITATION_ON="true"
 INTERP="logloglog"
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
 DISTRIBUTION="Coupled"
-# Elastic coupled sampling method ( Simplified, 1D, 2D )
-COUPLED_SAMPLING="2D"
+# Elastic coupled sampling method (( 2D, 1D, 2DM ))
+COUPLED_SAMPLING="2DM"
 # Option to turn on particle tracker (true/false)
 PARTICLE_TRACKER="false"
 

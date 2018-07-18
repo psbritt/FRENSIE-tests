@@ -29,10 +29,6 @@ def main(argv):
   # Get output file name
   base = filename[:-3]
 
-  # Rename Simplified to 2D_Simplified
-  if ( base.split('_')[-1] == "Simplified"):
-    base = base[:-10] + "2D_Simplified"
-
   # Check if file exists
   if os.path.isfile(filename):
 

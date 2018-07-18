@@ -43,8 +43,8 @@ INTERP="logloglog"
 SAMPLE=1
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
 DISTRIBUTION="Coupled"
-# Elastic coupled sampling method ( Simplified, 1D, 2D )
-COUPLED_SAMPLING="2D"
+# Elastic coupled sampling method ( 2D, 1D, 2DM )
+COUPLED_SAMPLING="2DM"
 
 # ROOT or DagMC
 GEOM_TYPE="DagMC"

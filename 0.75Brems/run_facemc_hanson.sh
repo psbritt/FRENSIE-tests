@@ -43,9 +43,9 @@ INTERP="logloglog"
 # Two D Sampling Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
 SAMPLE=1
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
-DISTRIBUTION="Decoupled"
-# Elastic coupled sampling method ( Simplified, 1D, 2D )
-COUPLED_SAMPLING="Simplified"
+DISTRIBUTION="Coupled"
+# Elastic coupled sampling method (( 2D, 1D, 2DM ))
+COUPLED_SAMPLING="2DM"
 
 ELEMENT="Au"
 ENERGY="15.7"
@@ -74,13 +74,15 @@ else
     echo "Using Native analog data!"
 fi
 
+# Set the name raction and extention
 NAME_EXTENTION=""
 NAME_REACTION=""
-# Set the file name extentions
 if [ "${ELASTIC_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_elastic"
 elif [ ${DISTRIBUTION} = "Coupled" ]; then
     NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+elif [ ${DISTRIBUTION} = "Decoupled" ]; then
+    NAME_EXTENTION="${NAME_EXTENTION}_${DISTRIBUTION}"
 fi
 if [ "${BREM_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_brem"

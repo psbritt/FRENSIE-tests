@@ -17,7 +17,7 @@ parser.add_argument('-n', help=history_msg, required=True)
 elastic_dist_msg = "elastic electron distribution ( Coupled, Decoupled, Hybrid )"
 parser.add_argument('-d', help=elastic_dist_msg, required=True)
 
-sampling_method_msg = "coupled elastic sampling meith ( One D Union, Two D Union, Simplified D Union)"
+sampling_method_msg = "coupled elastic sampling meith ( One D Union, Two D Union, Modified Two D Union)"
 parser.add_argument('-c', help=sampling_method_msg, required=True)
 
 elastic_msg = "elastic electron reaction on (true/false)"
@@ -48,7 +48,7 @@ excitation_bool = user_args.a
 cutoff_cosine = 1.0
 # Elastic Distribution (Coupled, Decoupled, Hybrid)
 elastic_distribution = user_args.d
-# Elastic Coupled Distribution Sampling Method ( 1D, 2D, Simplified)
+# Elastic Coupled Distribution Sampling Method ( 1D, 2D, 2DM)
 coupled_sampling_method = user_args.c
 coupled_sampling = "Two D Union"
 
@@ -66,8 +66,11 @@ else:
         elif coupled_sampling_method == "2D":
             name+="_2D"
             coupled_sampling == "Two D Union"
+        elif coupled_sampling_method == "2DM":
+            name+="_2DM"
+            coupled_sampling == "Modified Two D Union"
         else:
-            coupled_sampling == "Simplified Union"
+            coupled_sampling == ""
     elif elastic_distribution == "Hybrid":
         name+="_0.9"
         cutoff_cosine = 0.9

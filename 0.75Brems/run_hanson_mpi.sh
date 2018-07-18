@@ -54,8 +54,8 @@ INTERP="logloglog"
 SAMPLE=1
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
 DISTRIBUTION="Coupled"
-# Elastic coupled sampling method ( Simplified, 1D, 2D )
-COUPLED_SAMPLING="2D"
+# Elastic coupled sampling method (( 2D, 1D, 2DM ))
+COUPLED_SAMPLING="2DM"
 
 
 ELEMENT="Au"
@@ -91,6 +91,8 @@ if [ "${ELASTIC_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_elastic"
 elif [ ${DISTRIBUTION} = "Coupled" ]; then
     NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+elif [ ${DISTRIBUTION} = "Decoupled" ]; then
+    NAME_EXTENTION="${NAME_EXTENTION}_${DISTRIBUTION}"
 fi
 if [ "${BREM_ON}" = "false" ]; then
     NAME_REACTION="${NAME_REACTION}_no_brem"

@@ -24,7 +24,7 @@ parser.add_argument('-s', help=grid_msg, required=True)
 elastic_dist_msg = "elastic electron distribution ( Coupled, Decoupled, Hybrid )"
 parser.add_argument('-d', help=elastic_dist_msg, required=True)
 
-sampling_method_msg = "coupled elastic sampling method ( 1D, 2D, Simplified)"
+sampling_method_msg = "coupled elastic sampling method ( 1D, 2D, 2DM)"
 parser.add_argument('-c', help=sampling_method_msg, required=True )
 
 elastic_msg = "elastic electron reaction on (true/false)"
@@ -75,7 +75,7 @@ excitation_bool = user_args.a
 cutoff_cosine = 1.0
 # Elastic Distribution (Coupled, Decoupled, Hybrid)
 elastic_distribution = user_args.d
-# Elastic Coupled Distribution Sampling Method ( One D Union, Two D Union, Simplified Union)
+# Elastic Coupled Distribution Sampling Method ( One D Union, Two D Union, Modified Two D Union)
 coupled_sampling_method = user_args.c
 
 # Set xml file name
@@ -92,8 +92,11 @@ else:
         elif coupled_sampling_method == "2D":
             name_base+="_2D"
             coupled_sampling_method = "Two D Union"
+        elif coupled_sampling_method == "2DM":
+            name_base+="_2DM"
+            coupled_sampling_method = "Modified Two D Union"
         else:
-            coupled_sampling_method = "Simplified Union"
+            coupled_sampling_method = ""
     elif elastic_distribution == "Hybrid":
         name_base+="_0.9"
         cutoff_cosine = 0.9

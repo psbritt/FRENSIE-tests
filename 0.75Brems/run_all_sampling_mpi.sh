@@ -4,11 +4,11 @@
 ##---------------------------------------------------------------------------##
 ## Validation runs comparing FRENSIE and MCNP.
 ## This script will run the run_hanson_mpi.sh script for several interpolations:
-## Decoupled, 2D Coupled, 1D Coupled , and Simplified Coupled
+## Decoupled, 1D Coupled, 2D Coupled , and Modified 2D Coupled
 ##---------------------------------------------------------------------------##
 
 # interpolations to run for mpi
-sample_methods=( 2D 1D Simplified )
+sample_methods=( 2D 1D 2DM )
 # file type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12)
 file_type=1
 

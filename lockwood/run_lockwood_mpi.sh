@@ -55,8 +55,8 @@ INTERP="logloglog"
 SAMPLE=1
 # Elastic distribution ( Decoupled, Coupled, Hybrid )
 DISTRIBUTION="Coupled"
-# Elastic coupled sampling method ( Simplified, 1D, 2D )
-COUPLED_SAMPLING="2D"
+# Elastic coupled sampling method ( 2D, 1D, 2DM )
+COUPLED_SAMPLING="2DM"
 
 # ROOT or DagMC (temp DagMC_test)
 GEOM_TYPE="DagMC"
@@ -126,15 +126,11 @@ if [ "${NO_ERRORS}" = "true" ]; then
     if [ "${ELASTIC_ON}" = "false" ]; then
         NAME_REACTION="${NAME_REACTION}_no_elastic"
     elif [ ${DISTRIBUTION} = "Coupled" ]; then
-        if [ ${COUPLED_SAMPLING} = "1D" ]; then
-            NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
-            TITLE="${TITLE} ${COUPLED_SAMPLING}"
-        elif [ ${COUPLED_SAMPLING} = "2D" ]; then
-            NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
-            TITLE="${TITLE} M2D"
-        elif  [ ${COUPLED_SAMPLING} = "Simplified" ]; then
-            NAME_EXTENTION="${NAME_EXTENTION}_2D_simplified"
-            TITLE="${TITLE} 2D"
+    NAME_EXTENTION="${NAME_EXTENTION}_${COUPLED_SAMPLING}"
+    if [ ${COUPLED_SAMPLING} = "2DM" ]; then
+        TITLE="${TITLE} M2D"
+    else
+        TITLE="${TITLE} ${COUPLED_SAMPLING}"
         fi
     elif [ ${DISTRIBUTION} = "Decoupled" ]; then
         NAME_EXTENTION="${NAME_EXTENTION}_${DISTRIBUTION}"
