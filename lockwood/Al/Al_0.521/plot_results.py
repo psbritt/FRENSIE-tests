@@ -39,10 +39,10 @@ poly = 5
 
 # Set the y min and max value for Energy Deposition
 ymin = 0.0 # Always 0.0
-ymax = 5.5 # 5.0 (correlated and unit-base correlated)
+ymax = 5.0 # 5.0 (correlated and unit-base correlated)
 # Set the y min and max value for C/E
-ratio_min = 0.94 # 0.5 (correlated), 0.4 (unit-base correlated)
-ratio_max = 1.04 # 1.5 (correlated), 1.6 (unit-base correlated)
+ratio_min = 0.5 # 0.5 (correlated), 0.4 (unit-base correlated)
+ratio_max = 1.5 # 1.5 (correlated), 1.6 (unit-base correlated)
 
 # C/E ranges
 ranges=[0.0, 0.6, 1.0]
@@ -167,7 +167,7 @@ if user_args.e:
     y = np.zeros(1000)
     for i in range(1000):
       y[i] = exp_fit(x[i])
-    plt.plot(x,y, color='b' )
+    # plt.plot(x,y, color='b' )
     print 'Integral using simpson rule = ', integrate.simps(y, x)*CSDA_R
 
     # Plot the data
@@ -200,7 +200,7 @@ for n in range(N):
     y = np.zeros(1000)
     for i in range(1000):
       y[i] = fit[n](x[i])
-    plt.plot(x,y, color=marker_color[n] )
+    # plt.plot(x,y, color=marker_color[n] )
     print 'Integral using simpson rule = ', integrate.simps(y, x)*CSDA_R
     if user_args.e:
       print 'C/E                         = ', integral[n]/exp_int

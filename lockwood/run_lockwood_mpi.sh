@@ -181,7 +181,11 @@ if [ "${NO_ERRORS}" = "true" ]; then
     ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
     echo "Removing old xml files:"
-    rm ${INFO} ${MAT} ${SOURCE} ${GEOM} ../ElementTree_pretty.pyc
+    rm ${INFO}
+    rm ${MAT}
+    rm ${SOURCE}
+    rm ${GEOM}
+    rm ../ElementTree_pretty.pyc
 
 
     echo "Processing the results:"
