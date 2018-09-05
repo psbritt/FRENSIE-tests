@@ -101,24 +101,25 @@ zaid=79000
 element="Au"
 
 # Set geometry model properties
-if geometry_type == "DagMC":
-  model_properties = DagMC.DagMCModelProperties( geomerty_path )
-  model_properties.setFacetTolerance( 1e-3 )
-  # model_properties.setTerminationCellPropertyName( "graveyard" )
-  model_properties.setMaterialPropertyName( "mat" )
-  model_properties.setDensityPropertyName( "rho" )
-  # model_properties.setEstimatorPropertyName( "tally" )
+# if geometry_type == "DagMC":
+model_properties = DagMC.DagMCModelProperties( geomerty_path )
+model_properties.setFacetTolerance( 1e-3 )
+model_properties.useFastIdLookup()
+# model_properties.setTerminationCellPropertyName( "graveyard" )
+model_properties.setMaterialPropertyName( "mat" )
+model_properties.setDensityPropertyName( "rho" )
+# model_properties.setEstimatorPropertyName( "tally" )
 
-  # Get model instance
-  geom_model = DagMC.DagMCModel.getInstance()
+# Get model instance
+geom_model = DagMC.DagMCModel.getInstance()
 
-elif geometry_type == "ROOT":
-  model_properties = ROOT.RootModelProperties( geomerty_path )
+# elif geometry_type == "ROOT":
+#   model_properties = ROOT.RootModelProperties( geomerty_path )
 
-  # Get model instance
-  geom_model = ROOT.RootModel.getInstance()
-else:
-  print "ERROR: geometry type ", geometry_type, " not supprted!"
+#   # Get model instance
+#   geom_model = ROOT.RootModel.getInstance()
+# else:
+#   print "ERROR: geometry type ", geometry_type, " not supprted!"
 
 ##---------------------------------------------------------------------------##
 ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
@@ -156,48 +157,30 @@ material_definition_database.addDefinition( element, 1, (element,), (1.0,) )
 # Initialized model
 geom_model.initialize( model_properties )
 
+material_ids = geom_model.getMaterialIds()
+print geom_model.hasSurfaceEstimatorData()
+print geom_model.hasCellEstimatorData()
+
+
+# geom_model = Geometry.InfiniteMediumModel( 1, 1, -0.1 )
+
 # Fill model
 model = Collision.FilledGeometryModel( data_directory, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
 
-# Create the particle distribution
-spatial_coord_policy = Coordinate.BasicCartesianCoordinateConversionPolicy()
-directional_coord_policy = Coordinate.BasicCartesianCoordinateConversionPolicy()
+particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
 
-# Set particle distribution
-particle_distribution = ActiveRegion.StandardParticleDistribution(
-                                       "source distribution",
-                                       spatial_coord_policy,
-                                       directional_coord_policy )
+# Set source location
+particle_distribution.setPosition( -0.5, 0.0, 0.0 )
 
-# Set the energy dimension distribution
-delta_energy = Distribution.DeltaDistribution( 15.7 )
+# Set source direction
+particle_distribution.setDirection( 1.0, 0.0, 0.0 )
+
+# Set source energy distribution
+delta_energy = Distribution.DeltaDistribution( 1e-3 ) #15.7
 energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( delta_energy )
 particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
-# Set the direction dimension distribution
-xy_delta = Distribution.DeltaDistribution( 0.0 )
-x_dimension_dir_dist = ActiveRegion.IndependentPrimaryDirectionalDimensionDistribution( xy_delta )
-particle_distribution.setDimensionDistribution( x_dimension_dir_dist )
-
-y_dimension_dir_dist = ActiveRegion.IndependentSecondaryDirectionalDimensionDistribution( xy_delta )
-particle_distribution.setDimensionDistribution( y_dimension_dir_dist )
-
-z_delta = Distribution.DeltaDistribution( 1.0 )
-z_dimension_dir_dist = ActiveRegion.IndependentTertiaryDirectionalDimensionDistribution( z_delta )
-particle_distribution.setDimensionDistribution( z_dimension_dir_dist )
-
-# Set the spatial dimension distribution
-xy_delta = Distribution.DeltaDistribution( 0.0 )
-x_dimension_pos_dist = ActiveRegion.IndependentPrimarySpatialDimensionDistribution( xy_delta )
-particle_distribution.setDimensionDistribution( x_dimension_pos_dist )
-
-y_dimension_pos_dist = ActiveRegion.IndependentSecondarySpatialDimensionDistribution( xy_delta )
-particle_distribution.setDimensionDistribution( y_dimension_pos_dist )
-
-z_delta = Distribution.DeltaDistribution( -0.5 )
-z_dimension_pos_dist = ActiveRegion.IndependentTertiarySpatialDimensionDistribution( z_delta )
-particle_distribution.setDimensionDistribution( z_dimension_pos_dist )
-
+particle_distribution.constructDimensionDistributionDependencyTree()
 
 # Set source components
 source_component = [ActiveRegion.StandardElectronSourceComponent( 0, 1.0, geom_model, particle_distribution )]
