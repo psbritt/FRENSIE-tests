@@ -52,8 +52,7 @@ properties.setMinElectronEnergy( 1e-4 )
 properties.setMaxElectronEnergy( 20.0 )
 
 # Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
-interp = MonteCarlo.LOGLOGLOG_INTERPOLATION
-properties.setElectronTwoDInterpPolicy( interp )
+properties.setElectronTwoDInterpPolicy( MonteCarlo.LOGLOGLOG_INTERPOLATION )
 
 # Set the bivariate Grid Policy (UNIT_BASE_CORRELATED, CORRELATED, UNIT_BASE)
 grid_policy = MonteCarlo.UNIT_BASE_CORRELATED_SAMPLING
@@ -102,8 +101,8 @@ properties.setBremsstrahlungAngularDistributionFunction( MonteCarlo.DIPOLE_DISTR
 
 # Set geometry path and type
 geometry_type = "DagMC" #(ROOT or DAGMC)
-#geomerty_path = "/home/lkersting/frensie/tests/hanson/geom3.sat"
-geometry_path = "/home/alexr/Research/transport/frensie-tests/hanson/geom3.sat"
+geometry_path = "/home/lkersting/frensie/tests/hanson/geom3.sat"
+# geometry_path = "/home/alexr/Research/transport/frensie-tests/hanson/geom3.sat"
 
 # Set element zaid and name
 zaid=79000
@@ -113,9 +112,10 @@ element="Au"
 if geometry_type == "DagMC":
   model_properties = DagMC.DagMCModelProperties( geometry_path )
   model_properties.setFacetTolerance( 1e-3 )
-  # model_properties.setTerminationCellPropertyName( "graveyard" )
+  model_properties.useFastIdLookup()
   model_properties.setMaterialPropertyName( "mat" )
   model_properties.setDensityPropertyName( "rho" )
+  # model_properties.setTerminationCellPropertyName( "graveyard" )
   # model_properties.setEstimatorPropertyName( "tally" )
 
   # Get model instance
@@ -137,8 +137,8 @@ else:
 threads = 1
 
 # Set database directory path.
-#database_path = "/home/lkersting/frensie/build/packages/database.xml"
-database_path = "/home/alexr/Research/transport/build/packages/database.xml"
+database_path = "/home/lkersting/frensie/build/packages/database.xml"
+# database_path = "/home/alexr/Research/transport/build/packages/database.xml"
 data_directory = os.path.dirname(database_path)
 
 # Initialized database
@@ -164,26 +164,26 @@ material_definition_database.addDefinition( element, 1, (element,), (1.0,) )
 # Initialized model
 geom_model.initialize( model_properties )
 
+material_ids = geom_model.getMaterialIds()
+print geom_model.hasSurfaceEstimatorData()
+print geom_model.hasCellEstimatorData()
+
 # Fill model
 model = Collision.FilledGeometryModel( data_directory, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
-
-# Create the particle distribution
-spatial_coord_policy = Coordinate.BasicCartesianCoordinateConversionPolicy()
-directional_coord_policy = Coordinate.BasicCartesianCoordinateConversionPolicy()
 
 # Set particle distribution
 particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
 
 # Set the energy dimension distribution
-delta_energy = Distribution.DeltaDistribution( 15.7 )
+delta_energy = Distribution.DeltaDistribution( 0.7 )
 energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( delta_energy )
 particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
 # Set the direction dimension distribution
-particle_distribution.setDirection( 1.0, 0.0, 0.0 );
+particle_distribution.setDirection( 1.0, 0.0, 0.0 )
 
 # Set the spatial dimension distribution
-particle_distribution.setPosition( -0.5, 0.0, 0.0 );
+particle_distribution.setPosition( -0.5, 0.0, 0.0 )
 
 particle_distribution.constructDimensionDistributionDependencyTree()
 
