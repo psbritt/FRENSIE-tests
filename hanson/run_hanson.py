@@ -99,7 +99,7 @@ properties.setBremsstrahlungAngularDistributionFunction( MonteCarlo.DIPOLE_DISTR
 
 # Set geometry path and type
 geometry_type = "DagMC" #(ROOT or DAGMC)
-geomerty_path = "/home/lkersting/frensie/tests/hanson/geom3.sat"
+geometry_path = "/home/lkersting/frensie/tests/hanson/geom3.sat"
 # geometry_path = "/home/alexr/Research/transport/frensie-tests/hanson/geom3.sat"
 
 # Set element zaid and name
@@ -166,6 +166,8 @@ material_ids = geom_model.getMaterialIds()
 print geom_model.hasSurfaceEstimatorData()
 print geom_model.hasCellEstimatorData()
 
+# Fill model
+model = Collision.FilledGeometryModel( data_directory, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
 
 # Set particle distribution
 particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
