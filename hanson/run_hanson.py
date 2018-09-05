@@ -37,7 +37,7 @@ properties = MonteCarlo.SimulationProperties()
 properties.setParticleMode( MonteCarlo.ELECTRON_MODE )
 
 # Set the number of histories
-properties.setNumberOfHistories( 10 )
+properties.setNumberOfHistories( 40 )
 
 ## -------------------------- NEUTRON PROPERTIES --------------------------- ##
 
@@ -130,11 +130,70 @@ else:
   print "ERROR: geometry type ", geometry_type, " not supprted!"
 
 ##---------------------------------------------------------------------------##
+## -------------------------- EVENT HANDLER SETUP -------------------------- ##
+##---------------------------------------------------------------------------##
+
+# Set event handler
+event_handler = Event.EventHandler( properties )
+
+## -------------------- Transmission Current Estimator --------------------- ##
+
+# Setup a surface current estimator for the transmission current
+estimator_id = 1
+surface_ids = [48]
+transmission_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
+
+# Set the particle type
+transmission_current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+
+# Set the cosine bins
+cosine_bins = [ -1.0, 0.0, 0.848048096156426, 0.882126866017668, 0.913332365617192, 0.938191335922484, 0.951433341895538, 0.960585317886711, 0.968669911264357, 0.974526872786577, 0.978652704312051, 0.982024659632372, 0.985229115235059, 0.988520271746353, 0.991146155097021, 0.992986158373646, 0.995072889372028, 0.996419457128586, 0.997012445565730, 0.997743253476273, 0.998187693254492, 0.998555486558339, 0.998823128276774, 0.999166134342540, 0.999378583910478, 0.999701489781183, 0.999853726281158, 0.999958816007535, 1.0 ]
+
+transmission_current_estimator.setCosineDiscretization( cosine_bins )
+
+# Add the estimator to the event handler
+event_handler.addEstimator( transmission_current_estimator )
+
+## --------------------- Reflection Current Estimator ---------------------- ##
+
+# Setup a surface current estimator for the reflection current
+estimator_id = 2
+surface_ids = [46]
+reflection_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
+
+# Set the particle type
+reflection_current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+
+# Set the cosine bins
+cosine_bins = [ -1.0, -0.999999, 1.0 ]
+reflection_current_estimator.setCosineDiscretization( cosine_bins )
+
+# Add the estimator to the event handler
+event_handler.addEstimator( reflection_current_estimator )
+
+## ---------------------- Track Length Flux Estimator ---------------------- ##
+
+# Setup a track length flux estimator
+estimator_id = 3
+cell_ids = [7]
+track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, [1.0] )
+
+# Set the particle type
+track_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+
+# Set the energy bins
+energy_bins = numpy.logspace(numpy.log10(1.5e-5), numpy.log10(15.7), num=101) #[ 1.5e-5, 99l, 15.7 ]
+track_flux_estimator.setEnergyDiscretization( energy_bins )
+
+# Add the estimator to the event handler
+event_handler.addEstimator( track_flux_estimator )
+
+##---------------------------------------------------------------------------##
 ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
 ##---------------------------------------------------------------------------##
 
 # Set the number of threads
-threads = 1
+threads = 4
 
 # Set database directory path.
 database_path = "/home/lkersting/frensie/build/packages/database.xml"
@@ -147,9 +206,6 @@ scattering_center_definition_database = Collision.ScatteringCenterDefinitionData
 
 # Set element properties
 element_properties = database.getAtomProperties( Data.Au_ATOM )
-print element_properties.photoatomicDataAvailable( Data.PhotoatomicDataProperties.ACE_EPR_FILE )
-
-
 
 element_definition = scattering_center_definition_database.createDefinition( element, Data.ZAID(zaid) )
 
@@ -165,8 +221,6 @@ material_definition_database.addDefinition( element, 1, (element,), (1.0,) )
 geom_model.initialize( model_properties )
 
 material_ids = geom_model.getMaterialIds()
-print geom_model.hasSurfaceEstimatorData()
-print geom_model.hasCellEstimatorData()
 
 # Fill model
 model = Collision.FilledGeometryModel( data_directory, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
@@ -193,9 +247,6 @@ source_component = [ActiveRegion.StandardElectronSourceComponent( 0, 1.0, geom_m
 # Set source
 source = ActiveRegion.StandardParticleSource( source_component )
 
-# Set event handler
-event_handler = Event.EventHandler( properties )
-
 factory = Manager.ParticleSimulationManagerFactory( model,
                                                     source,
                                                     event_handler,
@@ -209,7 +260,9 @@ manager = factory.getManager()
 Utility.removeAllLogs()
 session.initializeLogs( 0, False )
 
+print event_handler.getNumberOfEstimators()
 manager.runSimulation()
+manager.logSimulationSummary()
 
 # # Set the name reaction and extention
 # name_extention=""
