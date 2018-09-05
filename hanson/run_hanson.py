@@ -19,6 +19,12 @@ import os
 import sys
 
 ##---------------------------------------------------------------------------##
+## ------------------------------ MPI Session ------------------------------ ##
+##---------------------------------------------------------------------------##
+session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
+session.initializeLogs( 0, True )
+
+##---------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES ------------------------- ##
 ##---------------------------------------------------------------------------##
 properties = MonteCarlo.SimulationProperties()
@@ -94,7 +100,8 @@ properties.setBremsstrahlungAngularDistributionFunction( MonteCarlo.DIPOLE_DISTR
 
 # Set geometry path and type
 geometry_type = "DagMC" #(ROOT or DAGMC)
-geomerty_path = "/home/lkersting/frensie/tests/hanson/geom3.sat"
+#geomerty_path = "/home/lkersting/frensie/tests/hanson/geom3.sat"
+geometry_path = "/home/alexr/Research/transport/frensie-tests/hanson/geom3.sat"
 
 # Set element zaid and name
 zaid=79000
@@ -102,7 +109,7 @@ element="Au"
 
 # Set geometry model properties
 if geometry_type == "DagMC":
-  model_properties = DagMC.DagMCModelProperties( geomerty_path )
+  model_properties = DagMC.DagMCModelProperties( geometry_path )
   model_properties.setFacetTolerance( 1e-3 )
   # model_properties.setTerminationCellPropertyName( "graveyard" )
   model_properties.setMaterialPropertyName( "mat" )
@@ -113,7 +120,7 @@ if geometry_type == "DagMC":
   geom_model = DagMC.DagMCModel.getInstance()
 
 elif geometry_type == "ROOT":
-  model_properties = ROOT.RootModelProperties( geomerty_path )
+  model_properties = ROOT.RootModelProperties( geometry_path )
 
   # Get model instance
   geom_model = ROOT.RootModel.getInstance()
@@ -124,13 +131,12 @@ else:
 ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
 ##---------------------------------------------------------------------------##
 
-session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
-
 # Set the number of threads
 threads = 1
 
 # Set database directory path.
-database_path = "/home/lkersting/frensie/build/packages/database.xml"
+#database_path = "/home/lkersting/frensie/build/packages/database.xml"
+database_path = "/home/alexr/Research/transport/build/packages/database.xml"
 data_directory = os.path.dirname(database_path)
 
 # Initialized database
@@ -164,10 +170,7 @@ spatial_coord_policy = Coordinate.BasicCartesianCoordinateConversionPolicy()
 directional_coord_policy = Coordinate.BasicCartesianCoordinateConversionPolicy()
 
 # Set particle distribution
-particle_distribution = ActiveRegion.StandardParticleDistribution(
-                                       "source distribution",
-                                       spatial_coord_policy,
-                                       directional_coord_policy )
+particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
 
 # Set the energy dimension distribution
 delta_energy = Distribution.DeltaDistribution( 15.7 )
@@ -175,29 +178,12 @@ energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( del
 particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
 # Set the direction dimension distribution
-xy_delta = Distribution.DeltaDistribution( 0.0 )
-x_dimension_dir_dist = ActiveRegion.IndependentPrimaryDirectionalDimensionDistribution( xy_delta )
-particle_distribution.setDimensionDistribution( x_dimension_dir_dist )
-
-y_dimension_dir_dist = ActiveRegion.IndependentSecondaryDirectionalDimensionDistribution( xy_delta )
-particle_distribution.setDimensionDistribution( y_dimension_dir_dist )
-
-z_delta = Distribution.DeltaDistribution( 1.0 )
-z_dimension_dir_dist = ActiveRegion.IndependentTertiaryDirectionalDimensionDistribution( z_delta )
-particle_distribution.setDimensionDistribution( z_dimension_dir_dist )
+particle_distribution.setDirection( 1.0, 0.0, 0.0 );
 
 # Set the spatial dimension distribution
-xy_delta = Distribution.DeltaDistribution( 0.0 )
-x_dimension_pos_dist = ActiveRegion.IndependentPrimarySpatialDimensionDistribution( xy_delta )
-particle_distribution.setDimensionDistribution( x_dimension_pos_dist )
+particle_distribution.setPosition( -0.5, 0.0, 0.0 );
 
-y_dimension_pos_dist = ActiveRegion.IndependentSecondarySpatialDimensionDistribution( xy_delta )
-particle_distribution.setDimensionDistribution( y_dimension_pos_dist )
-
-z_delta = Distribution.DeltaDistribution( -0.5 )
-z_dimension_pos_dist = ActiveRegion.IndependentTertiarySpatialDimensionDistribution( z_delta )
-particle_distribution.setDimensionDistribution( z_dimension_pos_dist )
-
+particle_distribution.constructDimensionDistributionDependencyTree()
 
 # Set source components
 source_component = [ActiveRegion.StandardElectronSourceComponent( 0, 1.0, geom_model, particle_distribution )]
@@ -217,6 +203,10 @@ factory = Manager.ParticleSimulationManagerFactory( model,
                                                     threads )
 
 manager = factory.getManager()
+
+MPI.removeAllLogs()
+session.initializeLogs( 0, False )
+
 manager.runSimulation()
 
 # # Set the name reaction and extention
