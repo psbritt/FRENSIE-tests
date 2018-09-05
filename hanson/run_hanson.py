@@ -18,10 +18,12 @@ import numpy
 import os
 import sys
 
+
 ##---------------------------------------------------------------------------##
 ## ------------------------------ MPI Session ------------------------------ ##
 ##---------------------------------------------------------------------------##
 session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
+Utility.removeAllLogs()
 session.initializeLogs( 0, True )
 
 ##---------------------------------------------------------------------------##
@@ -204,7 +206,7 @@ factory = Manager.ParticleSimulationManagerFactory( model,
 
 manager = factory.getManager()
 
-MPI.removeAllLogs()
+Utility.removeAllLogs()
 session.initializeLogs( 0, False )
 
 manager.runSimulation()
