@@ -1,7 +1,12 @@
 #! /usr/bin/env python
-import PyFrensie.Geometry as Geometry
+import os
+import sys
+import numpy
+import PyFrensie.Data as Data
+import PyFrensie.Data.Native as Native
 import PyFrensie.Geometry.DagMC as DagMC
 import PyFrensie.Geometry.ROOT as ROOT
+import PyFrensie.Geometry as Geometry
 import PyFrensie.Utility as Utility
 import PyFrensie.Utility.MPI as MPI
 import PyFrensie.Utility.Prng as Prng
@@ -12,12 +17,6 @@ import PyFrensie.MonteCarlo.Collision as Collision
 import PyFrensie.MonteCarlo.ActiveRegion as ActiveRegion
 import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
-import PyFrensie.Data as Data
-import PyFrensie.Data.Native as Native
-import numpy
-import os
-import sys
-
 
 ##---------------------------------------------------------------------------##
 ## ------------------------------ MPI Session ------------------------------ ##
@@ -25,6 +24,35 @@ import sys
 session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
 Utility.removeAllLogs()
 session.initializeLogs( 0, True )
+
+##---------------------------------------------------------------------------##
+## ------------------------- SIMULATION VARIABLES -------------------------- ##
+##---------------------------------------------------------------------------##
+
+# Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
+interp = MonteCarlo.LOGLOGLOG_INTERPOLATION
+
+# Set the bivariate Grid Policy (UNIT_BASE_CORRELATED, CORRELATED, UNIT_BASE)
+grid_policy = MonteCarlo.UNIT_BASE_CORRELATED_SAMPLING
+
+# Set the elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
+mode = MonteCarlo.COUPLED_DISTRIBUTION
+
+# Set the elastic coupled sampling method
+# ( TWO_D_UNION, ONE_D_UNION, MODIFIED_TWO_D_UNION )
+method = MonteCarlo.TWO_D_UNION
+
+# Set the data file type (ACE_EPR_FILE, Native_EPR_FILE)
+file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
+
+# Set the number of histories
+histories = 10
+
+# Set the number of threads
+threads = 1
+
+# Set database directory path.
+database_path = "/home/lkersting/frensie/build/packages/database.xml"
 
 ##---------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES ------------------------- ##
@@ -37,7 +65,7 @@ properties = MonteCarlo.SimulationProperties()
 properties.setParticleMode( MonteCarlo.ELECTRON_MODE )
 
 # Set the number of histories
-properties.setNumberOfHistories( 40 )
+properties.setNumberOfHistories( histories )
 
 ## -------------------------- NEUTRON PROPERTIES --------------------------- ##
 
@@ -52,10 +80,9 @@ properties.setMinElectronEnergy( 1e-4 )
 properties.setMaxElectronEnergy( 20.0 )
 
 # Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
-properties.setElectronTwoDInterpPolicy( MonteCarlo.LOGLOGLOG_INTERPOLATION )
+properties.setElectronTwoDInterpPolicy( interp )
 
 # Set the bivariate Grid Policy (UNIT_BASE_CORRELATED, CORRELATED, UNIT_BASE)
-grid_policy = MonteCarlo.UNIT_BASE_CORRELATED_SAMPLING
 properties.setElectronTwoDSamplingPolicy( grid_policy )
 
 # Set the electron evaluation tolerance (Default is 1e-7)
@@ -67,11 +94,11 @@ properties.setElectronEvaluationTolerance( 1e-8 )
 # properties.setElasticModeOff()
 
 # Set the elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
-properties.setElasticElectronDistributionMode( MonteCarlo.COUPLED_DISTRIBUTION )
+properties.setElasticElectronDistributionMode( mode )
 
 # Set the elastic coupled sampling method
 # ( TWO_D_UNION, ONE_D_UNION, MODIFIED_TWO_D_UNION )
-properties.setCoupledElasticSamplingMode( MonteCarlo.TWO_D_UNION )
+properties.setCoupledElasticSamplingMode( method )
 
 # Set the elastic cutoff angle cosine ( -1.0 < mu < 1.0 )
 properties.setElasticCutoffAngleCosine( 1.0 )
@@ -102,7 +129,6 @@ properties.setBremsstrahlungAngularDistributionFunction( MonteCarlo.DIPOLE_DISTR
 # Set geometry path and type
 geometry_type = "DagMC" #(ROOT or DAGMC)
 geometry_path = "/home/lkersting/frensie/tests/hanson/geom3.sat"
-# geometry_path = "/home/alexr/Research/transport/frensie-tests/hanson/geom3.sat"
 
 # Set element zaid and name
 zaid=79000
@@ -127,7 +153,10 @@ elif geometry_type == "ROOT":
   # Get model instance
   geom_model = ROOT.RootModel.getInstance()
 else:
-  print "ERROR: geometry type ", geometry_type, " not supprted!"
+  print "ERROR: geometry type ", geometry_type, " not supported!"
+
+# Initialized model
+geom_model.initialize( model_properties )
 
 ##---------------------------------------------------------------------------##
 ## -------------------------- EVENT HANDLER SETUP -------------------------- ##
@@ -176,7 +205,7 @@ event_handler.addEstimator( reflection_current_estimator )
 # Setup a track length flux estimator
 estimator_id = 3
 cell_ids = [7]
-track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, [1.0] )
+track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, geom_model )
 
 # Set the particle type
 track_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
@@ -192,12 +221,6 @@ event_handler.addEstimator( track_flux_estimator )
 ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
 ##---------------------------------------------------------------------------##
 
-# Set the number of threads
-threads = 4
-
-# Set database directory path.
-database_path = "/home/lkersting/frensie/build/packages/database.xml"
-# database_path = "/home/alexr/Research/transport/build/packages/database.xml"
 data_directory = os.path.dirname(database_path)
 
 # Initialized database
@@ -210,16 +233,17 @@ element_properties = database.getAtomProperties( Data.Au_ATOM )
 element_definition = scattering_center_definition_database.createDefinition( element, Data.ZAID(zaid) )
 
 
+version = 1
+if file_type == Data.ElectroatomicDataProperties.ACE_EPR_FILE:
+  version = 14
+
 element_definition.setElectroatomicDataProperties(
-          element_properties.getSharedElectroatomicDataProperties(
-                     Data.ElectroatomicDataProperties.ACE_EPR_FILE, 14 ) )
+          element_properties.getSharedElectroatomicDataProperties( file_type, version ) )
 
 material_definition_database = Collision.MaterialDefinitionDatabase()
 material_definition_database.addDefinition( element, 1, (element,), (1.0,) )
 
-# Initialized model
-geom_model.initialize( model_properties )
-
+# Get the material ids
 material_ids = geom_model.getMaterialIds()
 
 # Fill model
@@ -247,12 +271,15 @@ source_component = [ActiveRegion.StandardElectronSourceComponent( 0, 1.0, geom_m
 # Set source
 source = ActiveRegion.StandardParticleSource( source_component )
 
+# Set the archive type
+archive_type = "xml"
+
 factory = Manager.ParticleSimulationManagerFactory( model,
                                                     source,
                                                     event_handler,
                                                     properties,
                                                     "test_sim",
-                                                    "xml",
+                                                    archive_type,
                                                     threads )
 
 manager = factory.getManager()
@@ -260,38 +287,104 @@ manager = factory.getManager()
 Utility.removeAllLogs()
 session.initializeLogs( 0, False )
 
-print event_handler.getNumberOfEstimators()
 manager.runSimulation()
-manager.logSimulationSummary()
 
-# # Set the name reaction and extention
-# name_extention=""
-# name_reaction=""
-# if not elastic_on:
-#     name_reaction = name_reaction + "_no_elastic"
-# elif [ ${DISTRIBUTION} = "Coupled" ]; then
-#     name_extention="${name_extention}_${COUPLED_SAMPLING}"
-#     if [ ${COUPLED_SAMPLING} = "2DM" ]; then
-#         TITLE="${TITLE} M2D"
-#     else
-#         TITLE="${TITLE} ${COUPLED_SAMPLING}"
-#     fi
-# elif [ ${DISTRIBUTION} = "Decoupled" ]; then
-#     name_extention="${name_extention}_decoupled"
-#     TITLE="${TITLE} DE"
-# fi
-# if [ "${BREM_ON}" = "false" ]; then
-#     name_reaction="${name_reaction}_no_brem"
-# fi
-# if [ "${IONIZATION_ON}" = "false" ]; then
-#     name_reaction="${name_reaction}_no_ionization"
-# fi
-# if [ "${EXCITATION_ON}" = "false" ]; then
-#     name_reaction="${name_reaction}_no_excitation"
-# fi
+# # Get the surface current estimator for the transmission current
+# transmission_current_estimator = event_handler.getEstimator(1)
 
-# if not elastic_on:
-#   properties.setElasticModeOff()
+# # Get the surface current estimator for the reflection current
+# reflection_current_estimator = event_handler.getEstimator(2)
+
+# # Setup a track length flux estimator
+# track_flux_estimator = event_handler.getEstimator(3)
+
+surface_ids = transmission_current_estimator.getEntityIds()
+print surface_ids
+
+surface_0_first_moments = transmission_current_estimator.getEntityBinDataFirstMoments( 48 )
+
+print surface_0_first_moments
+
+
+# Define a function for naming an electron simulation
+def electronSimulationName( properties ):
+
+
+  # if [ ${INPUT} -eq 2 ]; then
+  #     # Use ACE EPR14 data
+  #     NAME="epr14"
+  #     print "Using ACE EPR14 data!"
+  # elif [ ${INPUT} -eq 3 ]; then
+  #     # Use ACE EPR12 data
+  #     NAME="ace"
+  #     print "Using ACE EPR12 data!"
+  # elif [ ${DISTRIBUTION} = "Hybrid" ]; then
+  #     # Use Native moment preserving data
+  #     NAME="moments"
+  #     print "Using Native Moment Preserving data!"
+  # else
+  #     # Use Native analog data
+  #     print "Using Native analog data!"
+  # fi
+
+  if file_type == Data.ElectroatomicDataProperties.ACE_EPR_FILE:
+    # Use ACE EPR14 data
+    NAME="epr14"
+    print "Using ACE EPR14 data!"
+  else:
+    # Use Native analog data
+    print "Using Native analog data!"
+
+
+  # Set the interp in title
+  TITLE = ""
+  if properties.getElectronTwoDInterpPolicy() == MonteCarlo.LOGLOGLOG_INTERPOLATION:
+      TITLE = "Log-log"
+  elif properties.getElectronTwoDInterpPolicy() == MonteCarlo.LINLINLIN_INTERPOLATION:
+      TITLE = "Lin-lin"
+  else:
+      TITLE = "Lin-log"
+
+  # Set the sampling name
+  SAMPLE_NAME=""
+  if properties.getElectronTwoDSamplingPolicy() == MonteCarlo.UNIT_BASE_CORRELATED_SAMPLING:
+      SAMPLE_NAME = "unit_correlated"
+      TITLE += " Unit-base Correlated"
+  elif properties.getElectronTwoDSamplingPolicy() == MonteCarlo.CORRELATED_SAMPLING:
+      SAMPLE_NAME = "correlated"
+      TITLE += " Correlated"
+  else:
+      SAMPLE_NAME = "unit_base"
+      TITLE += " Unit-base"
+
+  # Set the name reaction and extention
+  name_extention = ""
+  name_reaction = ""
+  if properties.isElasticModeOn():
+    if properties.getElasticElectronDistributionMode() == MonteCarlo.COUPLED_DISTRIBUTION:
+      name_extention += "_coupled"
+      if properties.getCoupledElasticSamplingMode() == MonteCarlo.MODIFIED_TWO_D_UNION:
+        TITLE += " M2D"
+      elif properties.getCoupledElasticSamplingMode() == MonteCarlo.TWO_D_UNION:
+          TITLE += " 2D"
+      else:
+          TITLE += " 1D"
+    elif properties.getElasticElectronDistributionMode() == MonteCarlo.DECOUPLED_DISTRIBUTION:
+      name_extention += "_decoupled"
+      TITLE += " DE"
+    elif properties.getElasticElectronDistributionMode() == MonteCarlo.HYBRID_DISTRIBUTION:
+      name_extention += "_hybrid"
+      TITLE += " HE"
+  else:
+    name_reaction = name_reaction + "_no_elastic"
+
+  if not properties.isBremsstrahlungModeOn():
+    name_reaction += "_no_brem"
+  if not properties.isElectroionizationModeOn():
+      name_reaction += "_no_ionization"
+  if not properties.isAtomicExcitationModeOn():
+      name_reaction += "_no_excitation"
+
 
 # # Set database directory path.
 # EXTRA_ARGS=$@
@@ -341,18 +434,18 @@ manager.logSimulationSummary()
 # if [ ${INPUT} -eq 2 ]; then
 #     # Use ACE EPR14 data
 #     NAME="epr14"
-#     echo "Using ACE EPR14 data!"
+#     print "Using ACE EPR14 data!"
 # elif [ ${INPUT} -eq 3 ]; then
 #     # Use ACE EPR12 data
 #     NAME="ace"
-#     echo "Using ACE EPR12 data!"
+#     print "Using ACE EPR12 data!"
 # elif [ ${DISTRIBUTION} = "Hybrid" ]; then
 #     # Use Native moment preserving data
 #     NAME="moments"
-#     echo "Using Native Moment Preserving data!"
+#     print "Using Native Moment Preserving data!"
 # else
 #     # Use Native analog data
-#     echo "Using Native analog data!"
+#     print "Using Native analog data!"
 # fi
 
 # # Set the interp in title
@@ -427,17 +520,17 @@ manager.logSimulationSummary()
 
 # mkdir -p $DIR
 
-# echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
+# print "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
 # RUN="mpiexec -n ${THREADS} ${FRENSIE}/bin/facemc-mpi --sim_info=${INFO} --geom_def=${GEOM} --mat_def=${MAT} --resp_def=${RSP} --est_def=${EST} --src_def=${SOURCE} --cross_sec_dir=${CROSS_SECTION_XML_PATH} --simulation_name=${NAME}"
-# echo ${RUN}
+# print ${RUN}
 
 # ${RUN} > ${DIR}/${NAME}.txt 2>&1
 
-# echo "Removing old xml files:"
+# print "Removing old xml files:"
 # rm ${INFO} ${MAT} ../ElementTree_pretty.pyc
 
 
-# echo "Processing the results:"
+# print "Processing the results:"
 # # Move file to the test results folder
 # H5=${NAME}.h5
 # NEW_NAME="${DIR}/${H5}"
@@ -446,4 +539,4 @@ manager.logSimulationSummary()
 # mv continue_run.xml ${NEW_RUN_INFO}
 
 # python ./data_processor.py -f ${NEW_NAME} -t "${TITLE}"
-# echo "Results will be in ./${DIR}"
+# print "Results will be in ./${DIR}"
