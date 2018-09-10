@@ -46,12 +46,13 @@ method = MonteCarlo.TWO_D_UNION
 file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
 
 # Set the number of histories
-histories = 10
+histories = 1000
 
 # Set the number of threads
-threads = 1
+threads = 112
 
 # Set database directory path.
+database_path = "/home/lkersting/frensie/database.xml"
 database_path = "/home/lkersting/frensie/build/packages/database.xml"
 
 ##---------------------------------------------------------------------------##
