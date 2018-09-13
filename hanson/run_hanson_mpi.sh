@@ -30,8 +30,10 @@
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
 
-THREADS = 112
+# Set the number of threads
+THREADS=112
+# Set the number of histories
+HISTORIES=1000000
 
 echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
-RUN="mpiexec -n ${THREADS} python ./run_hanson.py
-echo ${RUN}
+mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(${THREADS}, ${HISTORIES})"
