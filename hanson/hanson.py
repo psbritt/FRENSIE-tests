@@ -7,7 +7,7 @@ import socket
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
 import PyFrensie.Geometry.DagMC as DagMC
-import PyFrensie.Geometry.ROOT as ROOT
+# import PyFrensie.Geometry.ROOT as ROOT
 import PyFrensie.Geometry as Geometry
 import PyFrensie.Utility as Utility
 import PyFrensie.Utility.MPI as MPI
@@ -155,11 +155,11 @@ def runSimulation( threads, histories ):
     # Get model instance
     geom_model = DagMC.DagMCModel.getInstance()
 
-  elif geometry_type == "ROOT":
-    model_properties = ROOT.RootModelProperties( geometry_path )
+  # elif geometry_type == "ROOT":
+  #   model_properties = ROOT.RootModelProperties( geometry_path )
 
-    # Get model instance
-    geom_model = ROOT.RootModel.getInstance()
+  #   # Get model instance
+  #   geom_model = ROOT.RootModel.getInstance()
   else:
     print "ERROR: geometry type ", geometry_type, " not supported!"
 
