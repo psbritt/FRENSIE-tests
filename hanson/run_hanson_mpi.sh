@@ -33,7 +33,12 @@ EXTRA_ARGS=$@
 # Set the number of threads
 THREADS=112
 # Set the number of histories
-HISTORIES=1000000
+HISTORIES=1120
 
 echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
+
+# Create the results directory
+python -c "import hanson; hanson.createResultsDirectory()"
+
+# Run the simulation
 mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(${THREADS}, ${HISTORIES})"

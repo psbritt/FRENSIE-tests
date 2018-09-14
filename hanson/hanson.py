@@ -119,6 +119,38 @@ def setSimulationProperties( threads, histories ):
 
   return properties
 
+##---------------------------------------------------------------------------##
+## ------------------------- SIMULATION PROPERTIES ------------------------- ##
+##---------------------------------------------------------------------------##
+def createResultsDirectory():
+
+  if file_type == Data.ElectroatomicDataProperties.ACE_EPR_FILE:
+    # Use ACE EPR14 data
+    name = "epr14"
+  else:
+    # Use Native analog data
+    name = ""
+
+  # Set the interp in results directory
+  title = ""
+  if interpolation == MonteCarlo.LOGLOGLOG_INTERPOLATION:
+      interp = "loglog"
+  elif interpolation == MonteCarlo.LINLINLIN_INTERPOLATION:
+      interp = "linlin"
+  else:
+      interp = "linlog"
+
+  date = str(datetime.datetime.today()).split()[0]
+  if name == "epr14":
+    directory = "results/" + name + "/" + date
+  else:
+    directory = "results/" + interp + "/" + date
+
+  if not os.path.exists(directory):
+    os.makedirs(directory)
+
+  return directory
+
 # Run the simulation
 def runSimulation( threads, histories ):
 
@@ -297,10 +329,6 @@ def runSimulation( threads, histories ):
   Utility.removeAllLogs()
   session.initializeLogs( 0, False )
 
-  directory = os.path.dirname(name)
-  if session.rank() == 0 and not os.path.exists(directory):
-    os.makedirs(directory)
-
   manager.runSimulation()
 
   if session.rank() == 0:
@@ -379,14 +407,12 @@ def setSimulationName( properties, file_type ):
 
   date = str(datetime.datetime.today()).split()[0]
   if name == "epr14":
-    directory = "results/" + name + "/" + date
     name = "hanson_" + name + name_reaction
     title = "FRENSIE-ACE"
   else:
-    directory = "results/" + interp + "/" + date
     name = "hanson_" + interp + "_" + sample_name + name_extention + name_reaction
 
-  output = directory + "/" + name
+  output = createResultsDirectory() + "/" + name
 
   return (output, title)
 
