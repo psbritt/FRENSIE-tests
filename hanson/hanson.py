@@ -3,6 +3,7 @@ import os
 import sys
 import numpy
 import datetime
+import socket
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
 import PyFrensie.Geometry.DagMC as DagMC
@@ -40,12 +41,12 @@ method = MonteCarlo.TWO_D_UNION
 file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
 
 # Set database directory path (for Denali)
-# database_path = "/home/lkersting/frensie/build/packages/database.xml"
-# geometry_path = "/home/lkersting/frensie/tests/hanson/geom.h5m"
-
-# Set database directory path (for Cluster)
-database_path = "/home/lkersting/new_frensie/database.xml"
-geometry_path = "/home/lkersting/new_frensie/tests/hanson/geom.h5m"
+if socket.gethostname() == "Denali":
+  database_path = "/home/lkersting/frensie/build/packages/database.xml"
+  geometry_path = "/home/lkersting/frensie/tests/hanson/geom.h5m"
+else: # Set database directory path (for Cluster)
+  database_path = "/home/lkersting/new_frensie/database.xml"
+  geometry_path = "/home/lkersting/new_frensie/tests/hanson/geom.h5m"
 
 ##---------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES ------------------------- ##
@@ -296,6 +297,10 @@ def runSimulation( threads, histories ):
   Utility.removeAllLogs()
   session.initializeLogs( 0, False )
 
+  directory = os.path.dirname(name)
+  if session.rank() == 0 and not os.path.exists(directory):
+    os.makedirs(directory)
+
   manager.runSimulation()
 
   if session.rank() == 0:
@@ -380,9 +385,6 @@ def setSimulationName( properties, file_type ):
   else:
     directory = "results/" + interp + "/" + date
     name = "hanson_" + interp + "_" + sample_name + name_extention + name_reaction
-
-  if not os.path.exists(directory):
-    os.makedirs(directory)
 
   output = directory + "/" + name
 
