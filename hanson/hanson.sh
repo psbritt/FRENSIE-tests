@@ -19,8 +19,6 @@
 ##---------------------------------------------------------------------------##
 ## ------------------------------- COMMANDS ---------------------------------##
 ##---------------------------------------------------------------------------##
-
-# Set cross_section.xml directory path.
 EXTRA_ARGS=$@
 
 # Set the number of threads
@@ -41,8 +39,8 @@ mpiexec -n ${NODES} python -c "import hanson; hanson.runSimulation(${TASKS}, ${H
 
 # Run the simulation in distributed parallel
 # echo "Running Facemc Hanson test with ${HISTORIES} particles on ${NODES} nodes:"
-# mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(1, ${HISTORIES})"
+# mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(1, ${HISTORIES}, ${TIME})"
 
 # Run the simulation in shared parallel
 # echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
-# python -c "import hanson; hanson.runSimulation(${THREADS}, ${HISTORIES})"
+# python -c "import hanson; hanson.runSimulation(${THREADS}, ${HISTORIES}, ${TIME})"

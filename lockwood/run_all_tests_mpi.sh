@@ -3,7 +3,7 @@
 ## FACEMC multiple mpi tests runner
 ##---------------------------------------------------------------------------##
 ## Validation runs using the Lockwood energy deposition data
-## This script will run the run_lockwood_mpi.sh script for all test numbers.
+## This script will run the run_lockwood.sh script for all test numbers.
 ##---------------------------------------------------------------------------##
 
 # file type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12)
@@ -35,8 +35,8 @@ for i in "${test_number[@]}"
 do
     # Change the interp
     line=s/ELEMENT=.*/ELEMENT=\"${element}\"\;\ ENERGY=\"${energy}\"\;\ TEST_NUMBER=\"$i\"/
-    sed -i "$line" run_lockwood_mpi.sh
+    sed -i "$line" run_lockwood.sh
 
      echo -e "\nRunning Lockwood ${element} ${energy} Test Number $i (file type = ${file_type})!"
-     sbatch run_lockwood_mpi.sh $file_type
+     sbatch run_lockwood.sh $file_type
 done

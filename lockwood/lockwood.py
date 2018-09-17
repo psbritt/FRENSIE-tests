@@ -7,7 +7,6 @@ import socket
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
 import PyFrensie.Geometry.DagMC as DagMC
-# import PyFrensie.Geometry.ROOT as ROOT
 import PyFrensie.Geometry as Geometry
 import PyFrensie.Utility as Utility
 import PyFrensie.Utility.MPI as MPI
@@ -24,6 +23,15 @@ import PyFrensie.MonteCarlo.Manager as Manager
 ## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
 ##---------------------------------------------------------------------------##
 
+# Al: 0.314 MeV & tests 0-11, 0.512 MeV & test 0-17, 1.033 MeV & tests 0-25
+
+# Set the element (Al)
+atom=Data.Al_ATOM; element="Al"; zaid=13000
+# Set the source energy (0.314, 0.512, 1.033)
+energy=0.314
+# Set the test number (0.314: 0-11, 0.512: 0-17, 1.033: 0-25)
+test_number=0
+
 # Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
 interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
 
@@ -38,15 +46,17 @@ mode=MonteCarlo.DECOUPLED_DISTRIBUTION
 method=MonteCarlo.ONE_D_UNION
 
 # Set the data file type (ACE_EPR_FILE, Native_EPR_FILE)
-file_type=Data.ElectroatomicDataProperties.ACE_EPR_FILE
+file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/lkersting/frensie/build/packages/database.xml"
-  geometry_path = "/home/lkersting/frensie/tests/hanson/geom.h5m"
+  geometry_path = "/home/lkersting/frensie/tests/lockwood/"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/new_frensie/database.xml"
-  geometry_path = "/home/lkersting/new_frensie/tests/hanson/geom.h5m"
+  geometry_path = "/home/lkersting/new_frensie/tests/lockwood/"
+
+geometry_path += element + "/" + element + "_" + str(energy) + "/dagmc/geom_" + str(test_number) + ".h5m"
 
 ##---------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES ------------------------- ##
@@ -173,31 +183,40 @@ def runSimulation( threads, histories, time ):
   ## ---------------------------- GEOMETRY SETUP ----------------------------- ##
   ##---------------------------------------------------------------------------##
 
+  if element == "Al":
+    calorimeter_thickness = 5.050E-03
+
+    if energy == 0.314:
+        # ranges for 0.314 MeV source (g/cm2)
+        ranges = [ 0.0025, 0.0094, 0.0181, 0.0255, 0.0336, 0.0403, 0.0477, 0.0566, 0.0654, 0.0721, 0.0810, 0.0993 ]
+    elif energy == 0.521:
+        # ranges for 0.521 MeV source (g/cm2)
+        ranges = [ 0.0025, 0.0094, 0.0180, 0.0255, 0.0335, 0.0405, 0.0475, 0.0566, 0.0653, 0.0721, 0.0807, 0.0992, 0.1111, 0.1259, 0.1439, 0.1596, 0.1825, 0.2125 ]
+    elif energy == 1.033:
+        # ranges for 1.033 MeV source (g/cm2)
+        ranges = [ 0.0025, 0.0094, 0.0180, 0.0255, 0.0336, 0.0402, 0.0476, 0.0562, 0.0654, 0.0723, 0.0808, 0.0990, 0.1110, 0.1257, 0.1440, 0.1593, 0.1821, 0.2122, 0.2225, 0.2452, 0.2521, 0.2908, 0.3141, 0.3533, 0.4188, 0.4814 ]
+    else:
+        message="Energy "+ energy + " is currently not supported!"
+        raise ValueError(message)
+  else:
+      message="Element " + element +  " is currently not supported!"
+      raise ValueError(message)
+
   # Set geometry path and type
   geometry_type = "DagMC" #(ROOT or DAGMC)
-
-  # Set element zaid and name
-  zaid=79000
-  element="Au"
 
   # Set geometry model properties
   if geometry_type == "DagMC":
     model_properties = DagMC.DagMCModelProperties( geometry_path )
     model_properties.setFacetTolerance( 1e-3 )
     model_properties.useFastIdLookup()
-    model_properties.setMaterialPropertyName( "mat" )
-    model_properties.setDensityPropertyName( "rho" )
+    # model_properties.setMaterialPropertyName( "mat" )
+    # model_properties.setDensityPropertyName( "rho" )
     # model_properties.setTerminationCellPropertyName( "graveyard" )
     # model_properties.setEstimatorPropertyName( "tally" )
 
     # Get model instance
     geom_model = DagMC.DagMCModel.getInstance()
-
-  # elif geometry_type == "ROOT":
-  #   model_properties = ROOT.RootModelProperties( geometry_path )
-
-  #   # Get model instance
-  #   geom_model = ROOT.RootModel.getInstance()
   else:
     print "ERROR: geometry type ", geometry_type, " not supported!"
 
@@ -211,57 +230,18 @@ def runSimulation( threads, histories, time ):
   # Set event handler
   event_handler = Event.EventHandler( properties )
 
-  ## -------------------- Transmission Current Estimator --------------------- ##
+  ## -------------------- Energy Deposition Calorimeter -------------------- ##
 
-  # Setup a surface current estimator for the transmission current
+  # Setup a cell pulse height estimator
   estimator_id = 1
-  surface_ids = [48]
-  transmission_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
+  cell_ids = [2]
+  energy_deposition_estimator = Event.WeightAndEnergyMultipliedCellPulseHeightEstimator( estimator_id, 1.0, cell_ids )
 
   # Set the particle type
-  transmission_current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
-
-  # Set the cosine bins
-  cosine_bins_1 = [ -1.0, 0.0, 0.848048096156426, 0.882126866017668, 0.913332365617192, 0.938191335922484, 0.951433341895538, 0.960585317886711, 0.968669911264357, 0.974526872786577, 0.978652704312051, 0.982024659632372, 0.985229115235059, 0.988520271746353, 0.991146155097021, 0.992986158373646, 0.995072889372028, 0.996419457128586, 0.997012445565730, 0.997743253476273, 0.998187693254492, 0.998555486558339, 0.998823128276774, 0.999166134342540, 0.999378583910478, 0.999701489781183, 0.999853726281158, 0.999958816007535, 1.0 ]
-
-  transmission_current_estimator.setCosineDiscretization( cosine_bins_1 )
+  energy_deposition_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
 
   # Add the estimator to the event handler
-  event_handler.addEstimator( transmission_current_estimator )
-
-  ## --------------------- Reflection Current Estimator ---------------------- ##
-
-  # Setup a surface current estimator for the reflection current
-  estimator_id = 2
-  surface_ids = [46]
-  reflection_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
-
-  # Set the particle type
-  reflection_current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
-
-  # Set the cosine bins
-  cosine_bins_2 = [ -1.0, -0.999999, 1.0 ]
-  reflection_current_estimator.setCosineDiscretization( cosine_bins_2 )
-
-  # Add the estimator to the event handler
-  event_handler.addEstimator( reflection_current_estimator )
-
-  ## ---------------------- Track Length Flux Estimator ---------------------- ##
-
-  # Setup a track length flux estimator
-  estimator_id = 3
-  cell_ids = [7]
-  track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, geom_model )
-
-  # Set the particle type
-  track_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
-
-  # Set the energy bins
-  energy_bins = numpy.logspace(numpy.log10(1.5e-5), numpy.log10(15.7), num=101) #[ 1.5e-5, 99l, 15.7 ]
-  track_flux_estimator.setEnergyDiscretization( energy_bins )
-
-  # Add the estimator to the event handler
-  event_handler.addEstimator( track_flux_estimator )
+  event_handler.addEstimator( energy_deposition_estimator )
 
   ##---------------------------------------------------------------------------##
   ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
@@ -274,12 +254,12 @@ def runSimulation( threads, histories, time ):
   scattering_center_definition_database = Collision.ScatteringCenterDefinitionDatabase()
 
   # Set element properties
-  element_properties = database.getAtomProperties( Data.Au_ATOM )
+  element_properties = database.getAtomProperties( atom )
 
   element_definition = scattering_center_definition_database.createDefinition( element, Data.ZAID(zaid) )
 
 
-  version = 1
+  version = 0
   if file_type == Data.ElectroatomicDataProperties.ACE_EPR_FILE:
     version = 14
 
@@ -299,15 +279,15 @@ def runSimulation( threads, histories, time ):
   particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
 
   # Set the energy dimension distribution
-  delta_energy = Distribution.DeltaDistribution( 0.7 )
+  delta_energy = Distribution.DeltaDistribution( energy )
   energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( delta_energy )
   particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
   # Set the direction dimension distribution
-  particle_distribution.setDirection( 1.0, 0.0, 0.0 )
+  particle_distribution.setDirection( 0.0, 0.0, 1.0 )
 
   # Set the spatial dimension distribution
-  particle_distribution.setPosition( -0.5, 0.0, 0.0 )
+  particle_distribution.setPosition( 0.0, 0.0, 0.0 )
 
   particle_distribution.constructDimensionDistributionDependencyTree()
 
@@ -340,7 +320,7 @@ def runSimulation( threads, histories, time ):
   if session.rank() == 0:
 
     print "Processing the results:"
-    processCosineBinData( transmission_current_estimator, cosine_bins_1, name, title )
+    processData( energy_deposition_estimator, name, title, ranges[test_number], calorimeter_thickness )
 
     print "Results will be in ", os.path.dirname(name)
 
@@ -413,71 +393,34 @@ def setSimulationName( properties, file_type ):
 
   date = str(datetime.datetime.today()).split()[0]
   if name == "epr14":
-    name = "hanson_" + name + name_reaction
+    name = "lockwood_" + str(test_number) + "_" + name + name_reaction
     title = "FRENSIE-ACE"
   else:
-    name = "hanson_" + interp + "_" + sample_name + name_extention + name_reaction
+    name = "lockwood_" + str(test_number) + "_" + interp + "_" + sample_name + name_extention + name_reaction
 
   output = createResultsDirectory() + "/" + name
 
   return (output, title)
 
-# This function pulls cosine estimator data outputs it to a separate file.
-def processCosineBinData( estimator, cosine_bins, filename, title ):
+# This function pulls pulse height estimator data outputs it to a separate file.
+def processData( estimator, filename, title, range, calorimeter_thickness ):
 
   ids = estimator.getEntityIds()
 
+  energy_dep_mev = estimator.getEntityBinDataFirstMoments(ids[0])[0]
+  rel_error = estimator.getEntityBinDataSecondMoments(ids[0])[0]
+
   today = datetime.date.today()
 
-  degree = numpy.pi/180.0
-  square_degree = degree*degree
-
   # Read the data file for surface tallies
-  name = filename+"_spectrum.txt"
+  name = filename+"_energy_dep.txt"
   out_file = open(name, 'w')
 
-  # Get the current and relative error
-  current = estimator.getEntityBinDataFirstMoments( ids[0] )
-  current_rel_error = estimator.getEntityBinDataSecondMoments( ids[0] )
-
-  # Convert to #/Square Degree
-  num_square_degree = [None] * len(current)
-  num_square_degree_rel_error = [None] * len(current_rel_error)
-  angle_bins = [None] * len(cosine_bins)
-
-  size = len(current)
-  for i in range(0, size ):
-    k = size - i
-    j = k - 1
-
-    # Calculate the angle from the cosine_bins
-    angle_bins[i] = numpy.arccos(float(cosine_bins[k]))/degree
-
-    # Calculate the current in 1/square degrees
-    cosine_diff = float(cosine_bins[k]) - float(cosine_bins[j])
-    sterradians = 2.0*numpy.pi*cosine_diff
-    num_per_ster = float(current[j])/sterradians
-    num_square_degree[i] = num_per_ster*square_degree
-
-    # Set the relative error
-    num_square_degree_rel_error[i] = float(current_rel_error[j])
-
-  # Set the last angle bin boundary
-  angle_bins[size] = numpy.arccos(float(cosine_bins[0]))/degree
-
-  # Write title to file
-  out_file.write( "# " + title +"\n")
-  # Write data header to file
-  header = "# Degrees\t#/Square Degree\tError\t"+str(today)+"\n"
+  # Write the header to the file
+  header = "# Range (g/cm2)\tEnergy Deposition (MeV cm2/g)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  # Write data to file
-  for i in range(0, size):
-      output = '%.4e' % angle_bins[i] + "\t" + \
-              '%.16e' % num_square_degree[i] + "\t" + \
-              '%.16e' % num_square_degree_rel_error[i] + "\n"
-      out_file.write( output )
-
-  # Write the last angle bin boundary
-  output = '%.4e' % angle_bins[size] + "\n"
-  out_file.write( output )
+  # Write the energy deposition to the file
+  data = str(range) + '\t' + str(energy_dep_mev/calorimeter_thickness) + '\t' + str(rel_error/calorimeter_thickness)
+  out_file.write(data)
+  out_file.close()
