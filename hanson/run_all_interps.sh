@@ -3,13 +3,13 @@
 ## FACEMC multiple mpi tests runner
 ##---------------------------------------------------------------------------##
 ## Validation runs comparing FRENSIE and MCNP.
-## This script will run the run_hanson_mpi.sh script for several interpolations:
+## This script will run the hanson.sh script for several interpolations:
 ## Log-Log-Log, Lin-Lin-Lin, and Lin-Lin-Log
 ##---------------------------------------------------------------------------##
 
 # interpolations to run for mpi
 interps=( LINLINLIN LINLINLOG LOGLOGLOG )
-# Sey 2D Grid Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
+# Sey 2D Grid Policy ( CORRELATED UNIT_BASE UNIT_BASE_CORRELATED )
 sample_policy=( CORRELATED UNIT_BASE UNIT_BASE_CORRELATED )
 # file type (Native, ACE)
 file_type=ACE
@@ -41,7 +41,7 @@ do
         sed -i $command hanson.py
         if [ ${i} != LINLINLOG ] || [ ${j} != ACE_EPR_FILE ]; then
             echo -e "\nRunning Native Analog with "$i" "$j" Sampling!"
-            # sbatch run_hanson_mpi.sh
+            # sbatch hanson.sh
         fi
     done
 done

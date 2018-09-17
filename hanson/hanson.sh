@@ -1,5 +1,5 @@
 #!/bin/sh
-# This file is named run_hanson_mpi.sh
+# This file is named hanson.sh
 #SBATCH --partition=pre
 #SBATCH --time=1-00:00:00
 #SBATCH --nodes=7
