@@ -51,7 +51,7 @@ else: # Set database directory path (for Cluster)
 ##---------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES ------------------------- ##
 ##---------------------------------------------------------------------------##
-def setSimulationProperties( threads, histories ):
+def setSimulationProperties( threads, histories, time ):
   properties = MonteCarlo.SimulationProperties()
 
   ## -------------------------- GENERAL PROPERTIES --------------------------- ##
@@ -61,6 +61,12 @@ def setSimulationProperties( threads, histories ):
 
   # Set the number of histories
   properties.setNumberOfHistories( histories )
+
+  # Change time from minutes to seconds
+  time_sec = time*60
+
+  # Set the wall time
+  properties.setSimulationWallTime( time_sec )
 
   ## -------------------------- NEUTRON PROPERTIES --------------------------- ##
 
@@ -152,7 +158,7 @@ def createResultsDirectory():
   return directory
 
 # Run the simulation
-def runSimulation( threads, histories ):
+def runSimulation( threads, histories, time ):
 
   ##---------------------------------------------------------------------------##
   ## ------------------------------ MPI Session ------------------------------ ##
@@ -161,7 +167,7 @@ def runSimulation( threads, histories ):
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
 
-  properties = setSimulationProperties( threads, histories )
+  properties = setSimulationProperties( threads, histories, time )
 
   ##---------------------------------------------------------------------------##
   ## ---------------------------- GEOMETRY SETUP ----------------------------- ##

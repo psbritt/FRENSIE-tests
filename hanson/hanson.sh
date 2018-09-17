@@ -15,12 +15,6 @@
 ## lowest cosine bin (ie: -1). Surface current is needed so DagMC will be used.
 ## The #/steradians can be changed to #/square degree by multiplying by
 ## (pi/180)^2.
-## FRENSIE will be run with three variations.
-## 1. Using ACE data, which should match MCNP almost exactly.
-## 2. Using the Native data in analog mode, whcih uses a different interpolation
-## scheme than MCNP.
-## 3. Using Native data in moment preserving mode, which should give a less
-## acurate answer while decreasing run time.
 
 ##---------------------------------------------------------------------------##
 ## ------------------------------- COMMANDS ---------------------------------##
@@ -35,17 +29,20 @@ NODES=7
 TASKS=16
 # Set the number of histories
 HISTORIES=1000000
-
-echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
+# Set the max runtime (in minutes, 1 day = 1440 )
+TIME=1400
 
 # Create the results directory
 python -c "import hanson; hanson.createResultsDirectory()"
 
+# Run the simulation in hybrid parallel
+echo "Running Facemc Hanson test with ${HISTORIES} particles on ${NODES} nodes with ${TASKS} tasks:"
+mpiexec -n ${NODES} python -c "import hanson; hanson.runSimulation(${TASKS}, ${HISTORIES}, ${TIME})"
+
 # Run the simulation in distributed parallel
+# echo "Running Facemc Hanson test with ${HISTORIES} particles on ${NODES} nodes:"
 # mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(1, ${HISTORIES})"
 
 # Run the simulation in shared parallel
+# echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
 # python -c "import hanson; hanson.runSimulation(${THREADS}, ${HISTORIES})"
-
-# Run the simulation in hybrid parallel
-mpiexec -n ${NODES} python -c "import hanson; hanson.runSimulation(${TASKS}, ${HISTORIES})"
