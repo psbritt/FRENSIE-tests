@@ -1,10 +1,9 @@
 #!/bin/sh
-# This file is named run_facemc_mpi.sh
+# This file is named run_hanson_mpi.sh
 #SBATCH --partition=pre
 #SBATCH --time=1-00:00:00
 #SBATCH --nodes=7
 #SBATCH --ntasks-per-node=16
-#SBATCH --mem-per-cpu=4000
 
 ##---------------------------------------------------------------------------##
 ## ---------------------------- FACEMC test runner --------------------------##
@@ -32,8 +31,10 @@ EXTRA_ARGS=$@
 
 # Set the number of threads
 THREADS=112
+NODES=7
+TASKS=16
 # Set the number of histories
-HISTORIES=1120
+HISTORIES=550
 
 echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
 
@@ -41,4 +42,5 @@ echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threa
 python -c "import hanson; hanson.createResultsDirectory()"
 
 # Run the simulation
-mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(${THREADS}, ${HISTORIES})"
+mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(1, ${HISTORIES})"
+mpiexec -n ${NODES} python -c "import hanson; hanson.runSimulation(${TASKS}, ${HISTORIES})"
