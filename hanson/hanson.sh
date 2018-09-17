@@ -34,13 +34,18 @@ THREADS=112
 NODES=7
 TASKS=16
 # Set the number of histories
-HISTORIES=550
+HISTORIES=1000000
 
 echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
 
 # Create the results directory
 python -c "import hanson; hanson.createResultsDirectory()"
 
-# Run the simulation
-mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(1, ${HISTORIES})"
+# Run the simulation in distributed parallel
+# mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(1, ${HISTORIES})"
+
+# Run the simulation in shared parallel
+# python -c "import hanson; hanson.runSimulation(${THREADS}, ${HISTORIES})"
+
+# Run the simulation in hybrid parallel
 mpiexec -n ${NODES} python -c "import hanson; hanson.runSimulation(${TASKS}, ${HISTORIES})"
