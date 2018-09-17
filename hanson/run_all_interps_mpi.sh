@@ -8,26 +8,40 @@
 ##---------------------------------------------------------------------------##
 
 # interpolations to run for mpi
-interps=( linlinlin linlinlog logloglog )
+interps=( LINLINLIN LINLINLOG LOGLOGLOG )
 # Sey 2D Grid Policy (1 = unit-base correlated, 2 = correlated, 3 = unit-base)
-sample_policy=( 1 2 3 )
-# file type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12)
-file_type=1
+sample_policy=( CORRELATED UNIT_BASE UNIT_BASE_CORRELATED )
+# file type (Native, ACE)
+file_type=ACE
+# elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
+mode=COUPLED
+# elastic coupled sampling method ( TWO_D, ONE_D, MODIFIED_TWO_D )
+method=TWO_D
+
+# Set the file type
+command=s/file_type=Data.ElectroatomicDataProperties.*/file_type=Data.ElectroatomicDataProperties.${file_type}_EPR_FILE/
+sed -i $command hanson.py
+# Set the elastic distribution mode
+command=s/mode=MonteCarlo.*/mode=MonteCarlo.${mode}_DISTRIBUTION/
+sed -i $command hanson.py
+# Set the elastic coupled sampling method
+command=s/method=MonteCarlo.*/method=MonteCarlo.${method}_UNION/
+sed -i $command hanson.py
 
 # loop through interps and run mpi script
 for i in "${interps[@]}"
 do
     # Change the interp
-    command=s/INTERP=.*/INTERP=\"$i\"/
-    sed -i $command run_hanson_mpi.sh
+    command=s/interpolation=MonteCarlo.*/interpolation=MonteCarlo.${i}_INTERPOLATION/
+    sed -i $command hanson.py
     # Set 2D grid policy
     for j in "${sample_policy[@]}"
     do
-        command=s/SAMPLE=.*/SAMPLE=\"$j\"/
-        sed -i $command run_hanson_mpi.sh
-        if [ ${i} != linlinlog ] || [ ${j} != 2 ]; then
+        command=s/grid_policy=MonteCarlo.*/grid_policy=MonteCarlo.${j}_SAMPLING/
+        sed -i $command hanson.py
+        if [ ${i} != LINLINLOG ] || [ ${j} != ACE_EPR_FILE ]; then
             echo -e "\nRunning Native Analog with "$i" "$j" Sampling!"
-            sbatch run_hanson_mpi.sh $file_type
+            # sbatch run_hanson_mpi.sh
         fi
     done
 done

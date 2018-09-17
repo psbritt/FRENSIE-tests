@@ -25,20 +25,20 @@ import PyFrensie.MonteCarlo.Manager as Manager
 ##---------------------------------------------------------------------------##
 
 # Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
-interpolation = MonteCarlo.LOGLOGLOG_INTERPOLATION
+interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
 
 # Set the bivariate Grid Policy (UNIT_BASE_CORRELATED, CORRELATED, UNIT_BASE)
-grid_policy = MonteCarlo.UNIT_BASE_CORRELATED_SAMPLING
+grid_policy=MonteCarlo.UNIT_BASE_CORRELATED_SAMPLING
 
 # Set the elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
-mode = MonteCarlo.COUPLED_DISTRIBUTION
+mode=MonteCarlo.DECOUPLED_DISTRIBUTION
 
 # Set the elastic coupled sampling method
 # ( TWO_D_UNION, ONE_D_UNION, MODIFIED_TWO_D_UNION )
-method = MonteCarlo.TWO_D_UNION
+method=MonteCarlo.ONE_D_UNION
 
 # Set the data file type (ACE_EPR_FILE, Native_EPR_FILE)
-file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
+file_type=Data.ElectroatomicDataProperties.ACE_EPR_FILE
 
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
