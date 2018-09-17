@@ -23,7 +23,7 @@ THREADS=160
 NODES=10
 TASKS=16
 # Set the number of histories
-HISTORIES=10
+HISTORIES=1000000
 # Set the max runtime (in minutes, 1 day = 1440 )
 TIME=1400
 

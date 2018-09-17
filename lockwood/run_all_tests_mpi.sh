@@ -6,8 +6,16 @@
 ## This script will run the run_lockwood.sh script for all test numbers.
 ##---------------------------------------------------------------------------##
 
-# file type (1 = Native, 2 = ACE EPR14, 3 = ACE EPR12)
-file_type=1
+# interpolations to run for mpi ( LINLINLIN LINLINLOG LOGLOGLOG )
+interp=( LOGLOGLOG )
+# Sey 2D Grid Policy ( CORRELATED UNIT_BASE UNIT_BASE_CORRELATED )
+sample_policy=( UNIT_BASE_CORRELATED )
+# file type (Native, ACE)
+file_type=Native
+# elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
+mode=COUPLED
+# elastic coupled sampling method ( TWO_D, ONE_D, MODIFIED_TWO_D )
+method=MODIFIED_TWO_D
 # Material element
 element="Al"
 # Energy (0.314, 0.521, 1.033) MeV
@@ -30,13 +38,37 @@ else
     echo "Error: Element \"${element}\" is currently not supported!"
 fi
 
+
+# Set the file type
+command=s/file_type=Data.ElectroatomicDataProperties.*/file_type=Data.ElectroatomicDataProperties.${file_type}_EPR_FILE/
+sed -i $command hanson.py
+# Set the interp
+command=s/interpolation=MonteCarlo.*/interpolation=MonteCarlo.${interp}_INTERPOLATION/
+sed -i $command hanson.py
+# Set 2D grid policy
+command=s/grid_policy=MonteCarlo.*/grid_policy=MonteCarlo.${sample_policy}_SAMPLING/
+sed -i $command hanson.py
+# Set the elastic distribution mode
+command=s/mode=MonteCarlo.*/mode=MonteCarlo.${mode}_DISTRIBUTION/
+sed -i $command hanson.py
+
+if [ "${mode}" == "COUPLED" ]; then
+  # Set the elastic coupled sampling method
+  command=s/method=MonteCarlo.*/method=MonteCarlo.${method}_UNION/
+  sed -i $command hanson.py
+fi
+
 # loop through test numbers and run mpi script
 for i in "${test_number[@]}"
 do
-    # Change the interp
-    line=s/ELEMENT=.*/ELEMENT=\"${element}\"\;\ ENERGY=\"${energy}\"\;\ TEST_NUMBER=\"$i\"/
-    sed -i "$line" run_lockwood.sh
+    # Change the energy
+    line=s/energy=.*/energy=${energy}/
+    sed -i "$line" lockwood.py
 
-     echo -e "\nRunning Lockwood ${element} ${energy} Test Number $i (file type = ${file_type})!"
-     sbatch run_lockwood.sh $file_type
+    # Change the test number
+    line=s/test_number=.*/test_number=${i}/
+    sed -i "$line" lockwood.py
+
+     echo -e "\nRunning Lockwood ${element} ${energy} ${interp} ${sample_policy} ${method}Test Number ${i}!"
+     sbatch run_lockwood.sh
 done

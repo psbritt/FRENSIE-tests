@@ -14,7 +14,7 @@ sample_policy=( UNIT_BASE_CORRELATED )
 # file type (Native, ACE)
 file_type=ACE
 # elastic coupled sampling method ( TWO_D, ONE_D, MODIFIED_TWO_D )
-method=( TWO_D, ONE_D, MODIFIED_TWO_D )
+methods=( TWO_D, ONE_D, MODIFIED_TWO_D )
 
 # Set the file type
 command=s/file_type=Data.ElectroatomicDataProperties.*/file_type=Data.ElectroatomicDataProperties.${file_type}_EPR_FILE/
@@ -37,10 +37,10 @@ command=s/mode=MonteCarlo.*/mode=MonteCarlo.COUPLED_DISTRIBUTION/
 sed -i $command hanson.py
 
 # loop through coupled sampling methods and run mpi script
-for i in "${sample_methods[@]}"
+for i in "${methods[@]}"
 do
     # Set the elastic coupled sampling method
-    command=s/method=MonteCarlo.*/method=MonteCarlo.${method}_UNION/
+    command=s/method=MonteCarlo.*/method=MonteCarlo.${i}_UNION/
     sed -i $command hanson.py
     echo -e "\nRunning Native Analog with Elastic "$i" Coupled Sampling!"
     sbatch hanson.sh
