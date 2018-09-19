@@ -28,7 +28,7 @@ import PyFrensie.MonteCarlo.Manager as Manager
 interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
 
 # Set the bivariate Grid Policy (UNIT_BASE_CORRELATED, CORRELATED, UNIT_BASE)
-grid_policy=MonteCarlo.UNIT_BASE_CORRELATED_SAMPLING
+grid_policy=MonteCarlo.UNIT_BASE_CORRELATED_GRID
 
 # Set the elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
 mode=MonteCarlo.DECOUPLED_DISTRIBUTION
@@ -45,8 +45,8 @@ if socket.gethostname() == "Denali":
   database_path = "/home/lkersting/frensie/build/packages/database.xml"
   geometry_path = "/home/lkersting/frensie/tests/hanson/geom.h5m"
 else: # Set database directory path (for Cluster)
-  database_path = "/home/lkersting/new_frensie/database.xml"
-  geometry_path = "/home/lkersting/new_frensie/tests/hanson/geom.h5m"
+  database_path = "/home/lkersting/dag_frensie/database.xml"
+  geometry_path = "/home/lkersting/dag_frensie/tests/hanson/geom.h5m"
 
 ##---------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES ------------------------- ##
@@ -84,7 +84,7 @@ def setSimulationProperties( threads, histories, time ):
   properties.setElectronTwoDInterpPolicy( interpolation )
 
   # Set the bivariate Grid Policy (UNIT_BASE_CORRELATED, CORRELATED, UNIT_BASE)
-  properties.setElectronTwoDSamplingPolicy( grid_policy )
+  properties.setElectronTwoDGridPolicy( grid_policy )
 
   # Set the electron evaluation tolerance (Default is 1e-7)
   properties.setElectronEvaluationTolerance( 1e-8 )
@@ -183,26 +183,16 @@ def runSimulation( threads, histories, time ):
   # Set geometry model properties
   if geometry_type == "DagMC":
     model_properties = DagMC.DagMCModelProperties( geometry_path )
-    model_properties.setFacetTolerance( 1e-3 )
     model_properties.useFastIdLookup()
     model_properties.setMaterialPropertyName( "mat" )
     model_properties.setDensityPropertyName( "rho" )
     # model_properties.setTerminationCellPropertyName( "graveyard" )
     # model_properties.setEstimatorPropertyName( "tally" )
-
-    # Get model instance
-    geom_model = DagMC.DagMCModel.getInstance()
-
-  # elif geometry_type == "ROOT":
-  #   model_properties = ROOT.RootModelProperties( geometry_path )
-
-  #   # Get model instance
-  #   geom_model = ROOT.RootModel.getInstance()
   else:
     print "ERROR: geometry type ", geometry_type, " not supported!"
 
-  # Initialized model
-  geom_model.initialize( model_properties )
+  # Set model
+  geom_model = DagMC.DagMCModel( model_properties )
 
   ##---------------------------------------------------------------------------##
   ## -------------------------- EVENT HANDLER SETUP -------------------------- ##
