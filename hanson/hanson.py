@@ -361,10 +361,10 @@ def setSimulationName( properties, file_type ):
 
   # Set the sampling name
   sample_name=""
-  if properties.getElectronTwoDSamplingPolicy() == MonteCarlo.UNIT_BASE_CORRELATED_SAMPLING:
+  if properties.getElectronTwoDGridPolicy() == MonteCarlo.UNIT_BASE_CORRELATED_GRID:
       sample_name = "unit_correlated"
       title += " Unit-base Correlated"
-  elif properties.getElectronTwoDSamplingPolicy() == MonteCarlo.CORRELATED_SAMPLING:
+  elif properties.getElectronTwoDGridPolicy() == MonteCarlo.CORRELATED_GRID:
       sample_name = "correlated"
       title += " Correlated"
   else:
