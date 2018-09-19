@@ -45,7 +45,7 @@ if socket.gethostname() == "Denali":
   database_path = "/home/lkersting/frensie/build/packages/database.xml"
   geometry_path = "/home/lkersting/frensie/tests/hanson/geom.h5m"
 else: # Set database directory path (for Cluster)
-  database_path = "/home/lkersting/dag_frensie/database.xml"
+  database_path = "/home/lkersting/dag_frensie/FRENSIE/packages/database.xml"
   geometry_path = "/home/lkersting/dag_frensie/tests/hanson/geom.h5m"
 
 ##---------------------------------------------------------------------------##
