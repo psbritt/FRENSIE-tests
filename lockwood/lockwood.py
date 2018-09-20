@@ -213,14 +213,11 @@ def runSimulation( threads, histories, time ):
     # model_properties.setDensityPropertyName( "rho" )
     # model_properties.setTerminationCellPropertyName( "graveyard" )
     # model_properties.setEstimatorPropertyName( "tally" )
-
-    # Get model instance
-    geom_model = DagMC.DagMCModel.getInstance()
   else:
     print "ERROR: geometry type ", geometry_type, " not supported!"
 
-  # Initialized model
-  geom_model.initialize( model_properties )
+  # Construct model
+  geom_model = DagMC.DagMCModel( model_properties )
 
   ##---------------------------------------------------------------------------##
   ## -------------------------- EVENT HANDLER SETUP -------------------------- ##
