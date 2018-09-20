@@ -36,7 +36,7 @@ test_number=0
 interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
 
 # Set the bivariate Grid Policy (UNIT_BASE_CORRELATED, CORRELATED, UNIT_BASE)
-grid_policy=MonteCarlo.UNIT_BASE_CORRELATED_SAMPLING
+grid_policy=MonteCarlo.UNIT_BASE_CORRELATED_GRID
 
 # Set the elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
 mode=MonteCarlo.DECOUPLED_DISTRIBUTION
@@ -53,7 +53,7 @@ if socket.gethostname() == "Denali":
   database_path = "/home/lkersting/frensie/build/packages/database.xml"
   geometry_path = "/home/lkersting/frensie/tests/lockwood/"
 else: # Set database directory path (for Cluster)
-  database_path = "/home/lkersting/new_frensie/database.xml"
+  database_path = "/home/lkersting/new_frensie/FRENSIE/packages/database.xml"
   geometry_path = "/home/lkersting/new_frensie/tests/lockwood/"
 
 geometry_path += element + "/" + element + "_" + str(energy) + "/dagmc/geom_" + str(test_number) + ".h5m"
@@ -94,7 +94,7 @@ def setSimulationProperties( threads, histories, time ):
   properties.setElectronTwoDInterpPolicy( interpolation )
 
   # Set the bivariate Grid Policy (UNIT_BASE_CORRELATED, CORRELATED, UNIT_BASE)
-  properties.setElectronTwoDSamplingPolicy( grid_policy )
+  properties.setElectronTwoDGridPolicy( grid_policy )
 
   # Set the electron evaluation tolerance (Default is 1e-7)
   properties.setElectronEvaluationTolerance( 1e-8 )
@@ -208,7 +208,6 @@ def runSimulation( threads, histories, time ):
   # Set geometry model properties
   if geometry_type == "DagMC":
     model_properties = DagMC.DagMCModelProperties( geometry_path )
-    model_properties.setFacetTolerance( 1e-3 )
     model_properties.useFastIdLookup()
     # model_properties.setMaterialPropertyName( "mat" )
     # model_properties.setDensityPropertyName( "rho" )
@@ -351,10 +350,10 @@ def setSimulationName( properties, file_type ):
 
   # Set the sampling name
   sample_name=""
-  if properties.getElectronTwoDSamplingPolicy() == MonteCarlo.UNIT_BASE_CORRELATED_SAMPLING:
+  if properties.getElectronTwoDGridPolicy() == MonteCarlo.UNIT_BASE_CORRELATED_GRID:
       sample_name = "unit_correlated"
       title += " Unit-base Correlated"
-  elif properties.getElectronTwoDSamplingPolicy() == MonteCarlo.CORRELATED_SAMPLING:
+  elif properties.getElectronTwoDGridPolicy() == MonteCarlo.CORRELATED_GRID:
       sample_name = "correlated"
       title += " Correlated"
   else:
