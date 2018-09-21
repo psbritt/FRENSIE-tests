@@ -7,7 +7,6 @@ import socket
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
 import PyFrensie.Geometry.DagMC as DagMC
-# import PyFrensie.Geometry.ROOT as ROOT
 import PyFrensie.Geometry as Geometry
 import PyFrensie.Utility as Utility
 import PyFrensie.Utility.MPI as MPI
@@ -412,10 +411,40 @@ def setSimulationName( properties, file_type ):
 
   return (output, title)
 
+# This function pulls data from the .xml results file
+def processData( results_file, raw_file_type ):
+
+  Collision.FilledGeometryModel.setDefaultDatabasePath( os.path.dirname(database_path) )
+
+  # Load data from file
+  manager = Manager.ParticleSimulationManagerFactory( results_file ).getManager()
+  event_handler = manager.getEventHandler()
+
+  # Get the estimator data
+  estimator_1 = event_handler.getEstimator( 1 )
+  cosine_bins = estimator_1.getCosineDiscretization()
+
+  # Get the simulation name and title
+  properties = manager.getSimulationProperties()
+
+  if raw_file_type == "ace":
+    file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
+  elif raw_file_type == "native":
+    file_type = Data.ElectroatomicDataProperties.Native_EPR_FILE
+  else:
+    ValueError
+  filename, title = setSimulationName( properties, file_type )
+
+  print "Processing the results:"
+  processCosineBinData( estimator_1, cosine_bins, filename, title )
+
+  print "Results will be in ", os.path.dirname(filename)
+
+
 # This function pulls cosine estimator data outputs it to a separate file.
 def processCosineBinData( estimator, cosine_bins, filename, title ):
 
-  ids = estimator.getEntityIds()
+  ids = list(estimator.getEntityIds() )
 
   today = datetime.date.today()
 
@@ -471,3 +500,4 @@ def processCosineBinData( estimator, cosine_bins, filename, title ):
   # Write the last angle bin boundary
   output = '%.4e' % angle_bins[size] + "\n"
   out_file.write( output )
+  out_file.close()
