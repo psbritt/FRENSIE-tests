@@ -440,6 +440,14 @@ def processData( results_file, raw_file_type ):
 
   print "Results will be in ", os.path.dirname(filename)
 
+  filename = filename + "_reflection"
+  # Get the estimator data
+  estimator_2 = event_handler.getEstimator( 2 )
+  cosine_bins = estimator_2.getCosineDiscretization()
+  print cosine_bins
+
+  processCosineBinData( estimator_2, cosine_bins, filename, title )
+
 
 # This function pulls cosine estimator data outputs it to a separate file.
 def processCosineBinData( estimator, cosine_bins, filename, title ):
@@ -456,8 +464,12 @@ def processCosineBinData( estimator, cosine_bins, filename, title ):
   out_file = open(name, 'w')
 
   # Get the current and relative error
-  current = estimator.getEntityBinDataFirstMoments( ids[0] )
-  current_rel_error = estimator.getEntityBinDataSecondMoments( ids[0] )
+  # current = estimator.getEntityBinDataFirstMoments( ids[0] )/1000000.0
+  # current_rel_error = estimator.getEntityBinDataSecondMoments( ids[0] )/1000000.0
+
+  processed_data = estimator.getEntityBinProcessedData( ids[0] )
+  current1 = list(processed_data['mean'])
+  current_rel_error2 = list(processed_data['re'])
 
   # Convert to #/Square Degree
   num_square_degree = [None] * len(current)
@@ -511,7 +523,7 @@ def processCosineBinData( estimator, cosine_bins, filename, title ):
   # Write title to file
   out_file.write( "# " + title +"\n")
   # Write data header to file
-  header = "# Cosine\t#/Current\tError\t"+str(today)+"\n"
+  header = "# Cosine\tCurrent\tError\t"+str(today)+"\n"
   out_file.write(header)
 
   current = numpy.insert( current, 0, 0.0 )
@@ -519,10 +531,9 @@ def processCosineBinData( estimator, cosine_bins, filename, title ):
 
   # Write data to file
   for i in range(0, size):
-      output = '%.4e' % cosine_bins[i] + "\t" + \
+      output = '%.6e' % cosine_bins[i] + "\t" + \
               '%.16e' % current[i] + "\t" + \
               '%.16e' % current_rel_error[i] + "\n"
       out_file.write( output )
 
-  out_file.write( output )
   out_file.close()

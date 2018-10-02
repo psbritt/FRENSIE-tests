@@ -33,14 +33,14 @@ TIME=1400
 # Create the results directory
 python -c "import hanson; hanson.createResultsDirectory()"
 
-# Run the simulation in hybrid parallel
-echo "Running Facemc Hanson test with ${HISTORIES} particles on ${NODES} nodes with ${TASKS} tasks:"
-mpiexec -n ${NODES} python -c "import hanson; hanson.runSimulation(${TASKS}, ${HISTORIES}, ${TIME})"
+# # Run the simulation in hybrid parallel
+# echo "Running Facemc Hanson test with ${HISTORIES} particles on ${NODES} nodes with ${TASKS} tasks:"
+# mpiexec -n ${NODES} python -c "import hanson; hanson.runSimulation(${TASKS}, ${HISTORIES}, ${TIME})"
 
 # Run the simulation in distributed parallel
-# echo "Running Facemc Hanson test with ${HISTORIES} particles on ${NODES} nodes:"
-# mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(1, ${HISTORIES}, ${TIME})"
+echo "Running Facemc Hanson test with ${HISTORIES} particles on ${NODES} nodes:"
+mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(1, ${HISTORIES}, ${TIME})"
 
-# Run the simulation in shared parallel
+# # Run the simulation in shared parallel
 # echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
 # python -c "import hanson; hanson.runSimulation(${THREADS}, ${HISTORIES}, ${TIME})"
