@@ -30,21 +30,21 @@ interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
 grid_policy=MonteCarlo.UNIT_BASE_CORRELATED_GRID
 
 # Set the elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
-mode=MonteCarlo.DECOUPLED_DISTRIBUTION
+mode=MonteCarlo.COUPLED_DISTRIBUTION
 
 # Set the elastic coupled sampling method
 # ( TWO_D_UNION, ONE_D_UNION, MODIFIED_TWO_D_UNION )
-method=MonteCarlo.ONE_D_UNION
+method=MonteCarlo.MODIFIED_TWO_D_UNION
 
 # Set the data file type (ACE_EPR_FILE, Native_EPR_FILE)
-file_type=Data.ElectroatomicDataProperties.ACE_EPR_FILE
+file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/lkersting/frensie/build/packages/database.xml"
   geometry_path = "/home/lkersting/frensie/tests/hanson/geom.h5m"
 else: # Set database directory path (for Cluster)
-  database_path = "/home/lkersting/dag_frensie/FRENSIE/packages/database.xml"
+  database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
   geometry_path = "/home/lkersting/dag_frensie/tests/hanson/geom.h5m"
 
 ##---------------------------------------------------------------------------##
@@ -464,12 +464,9 @@ def processCosineBinData( estimator, cosine_bins, filename, title ):
   out_file = open(name, 'w')
 
   # Get the current and relative error
-  # current = estimator.getEntityBinDataFirstMoments( ids[0] )/1000000.0
-  # current_rel_error = estimator.getEntityBinDataSecondMoments( ids[0] )/1000000.0
-
   processed_data = estimator.getEntityBinProcessedData( ids[0] )
-  current1 = list(processed_data['mean'])
-  current_rel_error2 = list(processed_data['re'])
+  current = list(processed_data['mean'])
+  current_rel_error = list(processed_data['re'])
 
   # Convert to #/Square Degree
   num_square_degree = [None] * len(current)

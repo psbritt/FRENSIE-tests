@@ -30,14 +30,14 @@ TIME=1400
 # Create the results directory
 python -c "import lockwood; lockwood.createResultsDirectory()"
 
-# Run the simulation in hybrid parallel
-echo "Running Facemc Lockwood test with ${HISTORIES} particles on ${NODES} nodes with ${TASKS} tasks:"
-mpiexec -n ${NODES} python -c "import lockwood; lockwood.runSimulation(${TASKS}, ${HISTORIES}, ${TIME})"
+# # Run the simulation in hybrid parallel
+# echo "Running Facemc Lockwood test with ${HISTORIES} particles on ${NODES} nodes with ${TASKS} tasks:"
+# mpiexec -n ${NODES} python -c "import lockwood; lockwood.runSimulation(${TASKS}, ${HISTORIES}, ${TIME})"
 
 # Run the simulation in distributed parallel
-# echo "Running Facemc Lockwood test with ${HISTORIES} particles on ${NODES} nodes:"
-# mpiexec -n ${THREADS} python -c "import lockwood; lockwood.runSimulation(1, ${HISTORIES}, ${TIME})"
+echo "Running Facemc Lockwood test with ${HISTORIES} particles on ${NODES} nodes:"
+mpiexec -n ${THREADS} python -c "import lockwood; lockwood.runSimulation(1, ${HISTORIES}, ${TIME})"
 
-# Run the simulation in shared parallel
+# # Run the simulation in shared parallel
 # echo "Running Facemc Lockwood test with ${HISTORIES} particles on ${THREADS} threads:"
 # python -c "import lockwood; lockwood.runSimulation(${THREADS}, ${HISTORIES}, ${TIME})"

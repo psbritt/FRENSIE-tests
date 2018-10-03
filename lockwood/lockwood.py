@@ -50,10 +50,11 @@ file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
-  database_path = "/home/lkersting/frensie/build/packages/database.xml"
+  # database_path = "/home/lkersting/frensie/build/packages/database.xml"
+  database_path = "/home/software/mcnp6.2/MCNP_DATA/database.xml"
   geometry_path = "/home/lkersting/frensie/tests/lockwood/"
 else: # Set database directory path (for Cluster)
-  database_path = "/home/lkersting/dag_frensie/FRENSIE/packages/database.xml"
+  database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
   geometry_path = "/home/lkersting/dag_frensie/tests/lockwood/"
 
 geometry_path += element + "/" + element + "_" + str(energy) + "/dagmc/geom_" + str(test_number) + ".h5m"
@@ -403,8 +404,9 @@ def processData( estimator, filename, title, range, calorimeter_thickness ):
 
   ids = estimator.getEntityIds()
 
-  energy_dep_mev = estimator.getEntityBinDataFirstMoments(ids[0])[0]
-  rel_error = estimator.getEntityBinDataSecondMoments(ids[0])[0]
+  processed_data = estimator.getEntityBinProcessedData( ids[0] )
+  energy_dep_mev = list(processed_data['mean'])
+  rel_error = list(processed_data['re'])
 
   today = datetime.date.today()
 
