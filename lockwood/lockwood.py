@@ -244,8 +244,6 @@ def runSimulation( threads, histories, time ):
   ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
   ##---------------------------------------------------------------------------##
 
-  data_directory = os.path.dirname(database_path)
-
   # Initialized database
   database = Data.ScatteringCenterPropertiesDatabase(database_path)
   scattering_center_definition_database = Collision.ScatteringCenterDefinitionDatabase()
@@ -270,7 +268,7 @@ def runSimulation( threads, histories, time ):
   material_ids = geom_model.getMaterialIds()
 
   # Fill model
-  model = Collision.FilledGeometryModel( data_directory, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
+  model = Collision.FilledGeometryModel( database_path, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
 
   # Set particle distribution
   particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
@@ -363,7 +361,7 @@ def setSimulationName( properties, file_type ):
   name_reaction = ""
   if properties.isElasticModeOn():
     if properties.getElasticElectronDistributionMode() == MonteCarlo.COUPLED_DISTRIBUTION:
-      if properties.getCoupledElasticSamplingMode() == MonteCarlo.SIMPLIFIED_UNION:
+      if properties.getCoupledElasticSamplingMode() == MonteCarlo.MODIFIED_TWO_D_UNION:
         name_extention += "_m2d"
         title += " M2D"
       elif properties.getCoupledElasticSamplingMode() == MonteCarlo.TWO_D_UNION:

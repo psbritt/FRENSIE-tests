@@ -41,7 +41,7 @@ file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
-  database_path = "/home/lkersting/frensie/build/packages/database.xml"
+  database_path = "/home/software/mcnpdata/database.xml"
   geometry_path = "/home/lkersting/frensie/tests/hanson/geom.h5m"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
@@ -256,8 +256,6 @@ def runSimulation( threads, histories, time ):
   ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
   ##---------------------------------------------------------------------------##
 
-  data_directory = os.path.dirname(database_path)
-
   # Initialized database
   database = Data.ScatteringCenterPropertiesDatabase(database_path)
   scattering_center_definition_database = Collision.ScatteringCenterDefinitionDatabase()
@@ -268,7 +266,7 @@ def runSimulation( threads, histories, time ):
   element_definition = scattering_center_definition_database.createDefinition( element, Data.ZAID(zaid) )
 
 
-  version = 1
+  version = 0
   if file_type == Data.ElectroatomicDataProperties.ACE_EPR_FILE:
     version = 14
 
@@ -282,7 +280,7 @@ def runSimulation( threads, histories, time ):
   material_ids = geom_model.getMaterialIds()
 
   # Fill model
-  model = Collision.FilledGeometryModel( data_directory, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
+  model = Collision.FilledGeometryModel( database_path, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
 
   # Set particle distribution
   particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
@@ -375,7 +373,7 @@ def setSimulationName( properties, file_type ):
   name_reaction = ""
   if properties.isElasticModeOn():
     if properties.getElasticElectronDistributionMode() == MonteCarlo.COUPLED_DISTRIBUTION:
-      if properties.getCoupledElasticSamplingMode() == MonteCarlo.SIMPLIFIED_UNION:
+      if properties.getCoupledElasticSamplingMode() == MonteCarlo.MODIFIED_TWO_D_UNION:
         name_extention += "_m2d"
         title += " M2D"
       elif properties.getCoupledElasticSamplingMode() == MonteCarlo.TWO_D_UNION:
