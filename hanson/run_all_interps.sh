@@ -10,7 +10,7 @@
 # interpolations to run for mpi
 interps=( LINLINLIN LINLINLOG LOGLOGLOG )
 # Sey 2D Grid Policy ( CORRELATED UNIT_BASE UNIT_BASE_CORRELATED )
-sample_policy=( CORRELATED UNIT_BASE UNIT_BASE_CORRELATED )
+grid_policy=( CORRELATED UNIT_BASE UNIT_BASE_CORRELATED )
 # file type (Native, ACE)
 file_type=ACE
 # elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
@@ -35,9 +35,9 @@ do
     command=s/interpolation=MonteCarlo.*/interpolation=MonteCarlo.${i}_INTERPOLATION/
     sed -i $command hanson.py
     # Set 2D grid policy
-    for j in "${sample_policy[@]}"
+    for j in "${grid_policy[@]}"
     do
-        command=s/grid_policy=MonteCarlo.*/grid_policy=MonteCarlo.${j}_SAMPLING/
+        command=s/grid_policy=MonteCarlo.*/grid_policy=MonteCarlo.${j}_GRID/
         sed -i $command hanson.py
         if [ ${i} != LINLINLOG ] || [ ${j} != ACE_EPR_FILE ]; then
             echo -e "\nRunning Native Analog with "$i" "$j" Sampling!"

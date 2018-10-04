@@ -9,7 +9,7 @@
 # interpolations to run for mpi ( LINLINLIN LINLINLOG LOGLOGLOG )
 interp=( LOGLOGLOG )
 # Sey 2D Grid Policy ( CORRELATED UNIT_BASE UNIT_BASE_CORRELATED )
-sample_policy=( UNIT_BASE_CORRELATED )
+grid_policy=( UNIT_BASE_CORRELATED )
 # file type (Native, ACE)
 file_type=Native
 # elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
@@ -46,7 +46,7 @@ sed -i $command hanson.py
 command=s/interpolation=MonteCarlo.*/interpolation=MonteCarlo.${interp}_INTERPOLATION/
 sed -i $command hanson.py
 # Set 2D grid policy
-command=s/grid_policy=MonteCarlo.*/grid_policy=MonteCarlo.${sample_policy}_SAMPLING/
+command=s/grid_policy=MonteCarlo.*/grid_policy=MonteCarlo.${grid_policy}_GRID/
 sed -i $command hanson.py
 # Set the elastic distribution mode
 command=s/mode=MonteCarlo.*/mode=MonteCarlo.${mode}_DISTRIBUTION/
@@ -69,6 +69,6 @@ do
     line=s/test_number=.*/test_number=${i}/
     sed -i "$line" lockwood.py
 
-     echo -e "\nRunning Lockwood ${element} ${energy} ${interp} ${sample_policy} ${method}Test Number ${i}!"
+     echo -e "\nRunning Lockwood ${element} ${energy} ${interp} ${grid_policy} ${method}Test Number ${i}!"
      sbatch run_lockwood.sh
 done
