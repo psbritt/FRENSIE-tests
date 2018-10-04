@@ -27,14 +27,8 @@ import simulation_setup as setup
 ## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
 ##---------------------------------------------------------------------------##
 
-# Al: 0.314 MeV & tests 0-11, 0.512 MeV & test 0-17, 1.033 MeV & tests 0-25
-
-# Set the element (Al)
-atom=Data.Al_ATOM; element="Al"; zaid=13000
-# Set the source energy (0.314, 0.512, 1.033)
-energy=0.314
-# Set the test number (0.314: 0-11, 0.512: 0-17, 1.033: 0-25)
-test_number=0
+# Set the source energy (0.001, 0.01, 0.1)
+energy=0.01
 
 # Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
 interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
@@ -55,12 +49,10 @@ file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
-  geometry_path = "/home/lkersting/frensie/tests/lockwood/"
+  geometry_path = "/home/lkersting/frensie/tests/example/h_sphere.h5m"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
-  geometry_path = "/home/lkersting/dag_frensie/tests/lockwood/"
-
-geometry_path += element + "/" + element + "_" + str(energy) + "/dagmc/geom_" + str(test_number) + ".h5m"
+  geometry_path = "/home/lkersting/dag_frensie/tests/example/h_sphere.h5m"
 
 # Run the simulation
 def runSimulation( threads, histories, time ):
@@ -78,24 +70,8 @@ def runSimulation( threads, histories, time ):
   ## ---------------------------- GEOMETRY SETUP ----------------------------- ##
   ##---------------------------------------------------------------------------##
 
-  if element == "Al":
-    calorimeter_thickness = 5.050E-03
-
-    if energy == 0.314:
-        # ranges for 0.314 MeV source (g/cm2)
-        ranges = [ 0.0025, 0.0094, 0.0181, 0.0255, 0.0336, 0.0403, 0.0477, 0.0566, 0.0654, 0.0721, 0.0810, 0.0993 ]
-    elif energy == 0.521:
-        # ranges for 0.521 MeV source (g/cm2)
-        ranges = [ 0.0025, 0.0094, 0.0180, 0.0255, 0.0335, 0.0405, 0.0475, 0.0566, 0.0653, 0.0721, 0.0807, 0.0992, 0.1111, 0.1259, 0.1439, 0.1596, 0.1825, 0.2125 ]
-    elif energy == 1.033:
-        # ranges for 1.033 MeV source (g/cm2)
-        ranges = [ 0.0025, 0.0094, 0.0180, 0.0255, 0.0336, 0.0402, 0.0476, 0.0562, 0.0654, 0.0723, 0.0808, 0.0990, 0.1110, 0.1257, 0.1440, 0.1593, 0.1821, 0.2122, 0.2225, 0.2452, 0.2521, 0.2908, 0.3141, 0.3533, 0.4188, 0.4814 ]
-    else:
-        message="Energy "+ energy + " is currently not supported!"
-        raise ValueError(message)
-  else:
-      message="Element " + element +  " is currently not supported!"
-      raise ValueError(message)
+  # Set the element (H)
+  atom=Data.H_ATOM; element="H"; zaid=1000
 
   # Set geometry path and type
   geometry_type = "DagMC" #(ROOT or DAGMC)
@@ -104,8 +80,8 @@ def runSimulation( threads, histories, time ):
   if geometry_type == "DagMC":
     model_properties = DagMC.DagMCModelProperties( geometry_path )
     model_properties.useFastIdLookup()
-    # model_properties.setMaterialPropertyName( "mat" )
-    # model_properties.setDensityPropertyName( "rho" )
+    model_properties.setMaterialPropertyName( "mat" )
+    model_properties.setDensityPropertyName( "rho" )
     # model_properties.setTerminationCellPropertyName( "graveyard" )
     # model_properties.setEstimatorPropertyName( "tally" )
   else:
@@ -121,22 +97,67 @@ def runSimulation( threads, histories, time ):
   # Set event handler
   event_handler = Event.EventHandler( properties )
 
-  ## -------------------- Energy Deposition Calorimeter -------------------- ##
+  # Set the energy bins
+  if energy == 0.1:
+    bins = list(Utility.doubleArrayFromString( "{ 1e-4, 5e-4, 198i, 1e-1}" ))
+  elif energy == 0.01:
+    bins = list(Utility.doubleArrayFromString( "{ 1e-4, 137i, 7e-3, 29i, 1e-2}" ))
+  elif energy == 0.001:
+    bins = list(Utility.doubleArrayFromString( "{ 1e-4, 197i, 1e-3}" ))
+  else:
+    print "ERROR: energy ", energy, " not supported!"
 
-  # Setup a cell pulse height estimator
+  ## -------------------------- Track Length Flux --------------------------- ##
+
+  # Setup a track length flux estimator
   estimator_id = 1
-  cell_ids = [2]
-  energy_deposition_estimator = Event.WeightAndEnergyMultipliedCellPulseHeightEstimator( estimator_id, 1.0, cell_ids )
+  cell_ids = [1]
+  track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, geom_model )
 
   # Set the particle type
-  energy_deposition_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+  track_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+
+  # Set the energy bins
+  track_flux_estimator.setEnergyDiscretization( bins )
 
   # Add the estimator to the event handler
-  event_handler.addEstimator( energy_deposition_estimator )
+  event_handler.addEstimator( track_flux_estimator )
 
-  ##---------------------------------------------------------------------------##
-  ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
-  ##---------------------------------------------------------------------------##
+  ## ------------------------ Surface Flux Estimator ------------------------ ##
+
+  # Setup a surface flux estimator
+  estimator_id = 2
+  surface_ids = [1]
+  surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( estimator_id, 1.0, surface_ids, geom_model )
+
+  # Set the particle type
+  surface_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+
+  # Set the energy bins
+  surface_flux_estimator.setEnergyDiscretization( bins )
+
+  # Add the estimator to the event handler
+  event_handler.addEstimator( surface_flux_estimator )
+
+  ## ---------------------- Surface Current Estimator ----------------------- ##
+
+  # Setup a surface current estimator
+  estimator_id = 3
+  surface_ids = [1]
+  surface_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
+
+  # Set the particle type
+  surface_current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+
+  # Set the energy bins
+  surface_current_estimator.setEnergyDiscretization( bins )
+
+  # Add the estimator to the event handler
+  event_handler.addEstimator( surface_current_estimator )
+
+  ##--------------------------------------------------------------------------##
+  ## ----------------------- SIMULATION MANAGER SETUP ----------------------- ##
+  ##--------------------------------------------------------------------------##
 
   # Initialized database
   database = Data.ScatteringCenterPropertiesDatabase(database_path)
@@ -172,8 +193,8 @@ def runSimulation( threads, histories, time ):
   energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( delta_energy )
   particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
-  # Set the direction dimension distribution
-  particle_distribution.setDirection( 0.0, 0.0, 1.0 )
+  # # Set the direction dimension distribution
+  # particle_distribution.setDirection( 0.0, 0.0, 1.0 )
 
   # Set the spatial dimension distribution
   particle_distribution.setPosition( 0.0, 0.0, 0.0 )
@@ -209,7 +230,7 @@ def runSimulation( threads, histories, time ):
   if session.rank() == 0:
 
     print "Processing the results:"
-    processData( energy_deposition_estimator, name, title, ranges[test_number], calorimeter_thickness )
+    processData( event_handler, name, title )
 
     print "Results will be in ", os.path.dirname(name)
 
@@ -246,7 +267,7 @@ def createResultsDirectory():
 # Define a function for naming an electron simulation
 def setSimulationName( properties, file_type ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
-  name = "lockwood_" + str(test_number) + extension
+  name = "example" + extension
   output = createResultsDirectory() + "/" + name
 
   return (output, title)
@@ -254,27 +275,19 @@ def setSimulationName( properties, file_type ):
 ##----------------------------------------------------------------------------##
 ##------------------------------- processData --------------------------------##
 ##----------------------------------------------------------------------------##
+def processData( event_handler, filename, title ):
 
-# This function pulls pulse height estimator data outputs it to a separate file.
-def processData( estimator, filename, title, range, calorimeter_thickness ):
+  # Process track flux data
+  track_flux = event_handler.getEstimator( 2 )
+  ids = list( track_flux.getEntityIds() )
+  setup.processTrackFluxData( track_flux, ids[0], filename, title )
 
-  ids = list(estimator.getEntityIds())
+  # Process track flux data
+  surface_flux = event_handler.getEstimator( 1 )
+  ids = list( surface_flux.getEntityIds() )
+  setup.processTrackFluxData( surface_flux, ids[0], filename, title )
 
-  processed_data = estimator.getEntityBinProcessedData( ids[0] )
-  energy_dep_mev = processed_data['mean']
-  rel_error = processed_data['re']
-
-  today = datetime.date.today()
-
-  # Read the data file for surface tallies
-  name = filename+"_energy_dep.txt"
-  out_file = open(name, 'w')
-
-  # Write the header to the file
-  header = "# Range (g/cm2)\tEnergy Deposition (MeV cm2/g)\tError\t"+str(today)+"\n"
-  out_file.write(header)
-
-  # Write the energy deposition to the file
-  data = str(range) + '\t' + str(energy_dep_mev/calorimeter_thickness) + '\t' + str(rel_error/calorimeter_thickness)
-  out_file.write(data)
-  out_file.close()
+  # Process track flux data
+  surface_current = event_handler.getEstimator( 3 )
+  ids = list( surface_current.getEntityIds() )
+  setup.processTrackFluxData( surface_current, ids[0], filename, title )
