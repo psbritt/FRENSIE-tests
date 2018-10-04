@@ -6,7 +6,7 @@
 # Set cross_section.xml directory path.
 EXTRA_ARGS=$@
 MCNP6_1=/home/software/mcnp6.1.1/bin/mcnp611_linux_x86_64_omp
-MCNP6_2=/home/software/mcnp6.2/bin/mcnp6
+MCNP6_2=/home/software/mcnp6.2/MCNP_CODE/bin/mcnp6
 MCNP=$MCNP6_2
 
 THREADS="8"
@@ -35,7 +35,7 @@ echo "Running MCNP6.2 with ${THREADS} threads:"
 echo "${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}"
 ${MCNP} i=${NAME} n=${OUTPUT} tasks ${THREADS}
 
-NEW_NAME=${DIR}${OUTPUT}
+NEW_NAME="${DIR}/${OUTPUT}"
 
 # Move output files to test directory
 mv ${OUTPUT}o ${NEW_NAME}o

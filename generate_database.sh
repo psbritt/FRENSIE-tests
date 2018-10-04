@@ -36,7 +36,7 @@ bash ./endl_downloader.sh -d ./
 endl_to_native_endl.py -a
 
 # Create a directory for native epr data
-mkdir native; mkdir native/epr
+mkdir -p native; mkdir -p native/epr
 
 # Generate native epr data
 generate_native_epr.py -o --log_file=generate_native_epr_log.out
