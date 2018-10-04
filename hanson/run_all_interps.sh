@@ -9,7 +9,7 @@
 
 # interpolations to run for mpi
 interps=( LINLINLIN LINLINLOG LOGLOGLOG )
-# Sey 2D Grid Policy ( CORRELATED UNIT_BASE UNIT_BASE_CORRELATED )
+# Set 2D Grid Policy ( CORRELATED UNIT_BASE UNIT_BASE_CORRELATED )
 grid_policy=( CORRELATED UNIT_BASE UNIT_BASE_CORRELATED )
 # file type (Native, ACE)
 file_type=ACE

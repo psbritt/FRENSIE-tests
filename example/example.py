@@ -280,14 +280,14 @@ def processData( event_handler, filename, title ):
   # Process track flux data
   track_flux = event_handler.getEstimator( 2 )
   ids = list( track_flux.getEntityIds() )
-  setup.processTrackFluxData( track_flux, ids[0], filename, title )
+  setup.processTrackFluxEnergyBinData( track_flux, ids[0], filename, title )
 
   # Process track flux data
   surface_flux = event_handler.getEstimator( 1 )
   ids = list( surface_flux.getEntityIds() )
-  setup.processTrackFluxData( surface_flux, ids[0], filename, title )
+  setup.processSurfaceFluxEnergyBinData( surface_flux, ids[0], filename, title )
 
   # Process track flux data
   surface_current = event_handler.getEstimator( 3 )
   ids = list( surface_current.getEntityIds() )
-  setup.processTrackFluxData( surface_current, ids[0], filename, title )
+  setup.processSurfaceCurrentEnergyBinData( surface_current, ids[0], filename, title )

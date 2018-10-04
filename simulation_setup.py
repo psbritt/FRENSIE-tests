@@ -207,9 +207,9 @@ def createResultsDirectory(file_type, interpolation):
   return directory
 
 ##----------------------------------------------------------------------------##
-##--------------------------- processTrackFluxData ---------------------------##
+##---------------------- processTrackFluxEnergyBinData -----------------------##
 ##----------------------------------------------------------------------------##
-def processTrackFluxData( estimator, est_id, filename, title ):
+def processTrackFluxEnergyBinData( estimator, est_id, filename, title ):
 
   processed_data = estimator.getEntityBinProcessedData( est_id )
   flux = processed_data['mean']
@@ -234,9 +234,9 @@ def processTrackFluxData( estimator, est_id, filename, title ):
   out_file.close()
 
 ##----------------------------------------------------------------------------##
-##-------------------------- processSurfaceFluxData --------------------------##
+##--------------------- processSurfaceFluxEnergyBinData ----------------------##
 ##----------------------------------------------------------------------------##
-def processSurfaceFluxData( estimator, est_id, filename, title ):
+def processSurfaceFluxEnergyBinData( estimator, est_id, filename, title ):
 
   processed_data = estimator.getEntityBinProcessedData( est_id )
   flux = processed_data['mean']
@@ -261,9 +261,9 @@ def processSurfaceFluxData( estimator, est_id, filename, title ):
   out_file.close()
 
 ##----------------------------------------------------------------------------##
-##------------------------ processSurfaceCurrentData -------------------------##
+##-------------------- processSurfaceCurrentEnergyBinData --------------------##
 ##----------------------------------------------------------------------------##
-def processSurfaceFluxData( estimator, est_id, filename, title ):
+def processSurfaceCurrentEnergyBinData( estimator, est_id, filename, title ):
 
   processed_data = estimator.getEntityBinProcessedData( est_id )
   current = processed_data['mean']
@@ -281,6 +281,33 @@ def processSurfaceFluxData( estimator, est_id, filename, title ):
 
   # Write the header to the file
   header = "# Energy (MeV)\tSurface Current (#)\tError\t"+str(today)+"\n"
+  out_file.write(header)
+
+  data = str(energy_bins) + '\t' + str(current) + '\t' + str(rel_error)
+  out_file.write(data)
+  out_file.close()
+
+##----------------------------------------------------------------------------##
+##-------------------- processSurfaceCurrentCosineBinData --------------------##
+##----------------------------------------------------------------------------##
+def processSurfaceCurrentCosineBinData( estimator, est_id, filename, title ):
+
+  processed_data = estimator.getEntityBinProcessedData( est_id )
+  current = processed_data['mean']
+  rel_error = processed_data['re']
+  cosine_bins = estimator.getCosineDiscretization()
+
+  today = datetime.date.today()
+
+  # Write the current data to a file
+  name = filename+"_current.txt"
+  out_file = open(name, 'w')
+
+  # Write title to file
+  out_file.write( "# " + title +"\n")
+
+  # Write the header to the file
+  header = "# Cosine \tSurface Current (#)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
   data = str(energy_bins) + '\t' + str(current) + '\t' + str(rel_error)
