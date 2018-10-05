@@ -54,7 +54,7 @@ command=s/interpolation=MonteCarlo.*/interpolation=MonteCarlo.${interp}_INTERPOL
 sed -i $command lockwood.py
 # Set 2D grid policy
 command=s/grid_policy=MonteCarlo.*/grid_policy=MonteCarlo.${grid_policy}_GRID/
-sed -i $command hanson.py
+sed -i $command lockwood.py
 # Set the elastic distribution mode
 command=s/mode=MonteCarlo.*/mode=MonteCarlo.${mode}_DISTRIBUTION/
 sed -i $command lockwood.py
