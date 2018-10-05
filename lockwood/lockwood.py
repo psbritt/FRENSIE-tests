@@ -27,27 +27,31 @@ import simulation_setup as setup
 ## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
 ##---------------------------------------------------------------------------##
 
+# C: 1 MeV & tests 0-9
+
+
+
 # Al: 0.314 MeV & tests 0-11, 0.512 MeV & test 0-17, 1.033 MeV & tests 0-25
 
-# Set the element (Al)
-atom=Data.Al_ATOM; element="Al"; zaid=13000
-# Set the source energy (0.314, 0.512, 1.033)
-energy=0.314
-# Set the test number (0.314: 0-11, 0.512: 0-17, 1.033: 0-25)
-test_number=0
+# Set the element (Al,C)
+atom=Data.C_ATOM; element="C"; zaid=6000
+# Set the source energy ({0.314, 0.512, 1.033},{1})
+energy=1
+# Set the test number ({0.314: 0-11, 0.512: 0-17, 1.033: 0-25},{1.0: 0-9})
+test_number=9
 
 # Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
 interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
 
 # Set the bivariate Grid Policy (UNIT_BASE_CORRELATED, CORRELATED, UNIT_BASE)
-grid_policy=MonteCarlo.UNIT_BASE_CORRELATED_GRID
+grid_policy=MonteCarlo.UNIT_BASE_CORRELATED_SAMPLING
 
 # Set the elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
-mode=MonteCarlo.DECOUPLED_DISTRIBUTION
+mode=MonteCarlo.COUPLED_DISTRIBUTION
 
 # Set the elastic coupled sampling method
 # ( TWO_D_UNION, ONE_D_UNION, MODIFIED_TWO_D_UNION )
-method=MonteCarlo.ONE_D_UNION
+method=MonteCarlo.MODIFIED_TWO_D_UNION
 
 # Set the data file type (ACE_EPR_FILE, Native_EPR_FILE)
 file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
@@ -56,6 +60,9 @@ file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
   geometry_path = "/home/lkersting/frensie/tests/lockwood/"
+elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus)
+  database_path = "/home/software/mcnpdata/database.xml"
+  geometry_path = "/home/ligross/frensie/tests/lockwood/"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
   geometry_path = "/home/lkersting/dag_frensie/tests/lockwood/"
@@ -90,6 +97,16 @@ def runSimulation( threads, histories, time ):
     elif energy == 1.033:
         # ranges for 1.033 MeV source (g/cm2)
         ranges = [ 0.0025, 0.0094, 0.0180, 0.0255, 0.0336, 0.0402, 0.0476, 0.0562, 0.0654, 0.0723, 0.0808, 0.0990, 0.1110, 0.1257, 0.1440, 0.1593, 0.1821, 0.2122, 0.2225, 0.2452, 0.2521, 0.2908, 0.3141, 0.3533, 0.4188, 0.4814 ]
+    else:
+        message="Energy "+ energy + " is currently not supported!"
+        raise ValueError(message)
+  elif element == "C":
+    calorimeter_thickness = 0.01561
+
+    if energy == 1.0:
+        # ranges for 1.0 MeV source (g/cm2)
+        ranges = [0.007805, 0.060883, 0.112662, 0.164441, 0.215082, 0.268568, 0.323192, 0.382937, 0.444389, 0.502427 ]
+
     else:
         message="Energy "+ energy + " is currently not supported!"
         raise ValueError(message)

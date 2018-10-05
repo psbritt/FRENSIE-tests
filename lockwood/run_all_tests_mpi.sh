@@ -17,9 +17,9 @@ mode=COUPLED
 # elastic coupled sampling method ( TWO_D, ONE_D, MODIFIED_TWO_D )
 method=MODIFIED_TWO_D
 # Material element
-element="Al"
+element="C"
 # Energy (0.314, 0.521, 1.033) MeV
-energy="0.314"
+energy="1"
 
 if [ "${element}" == "Al" ]; then
   if [ ${energy} == 0.314 ]; then
@@ -34,6 +34,13 @@ if [ "${element}" == "Al" ]; then
   else
       echo "Error: Energy (MeV) \"${energy}\" is currently not supported!"
   fi
+elif [ "${element}" == "C" ]; then
+  if [ ${energy} == 1 ]; then
+      # Number of tests for 1 MeV
+      test_number=( 0 1 2 3 4 5 6 7 8 9 )
+else
+      echo "Error: Energy (MeV) \"${energy}\" is currently not supported!"
+  fi
 else
     echo "Error: Element \"${element}\" is currently not supported!"
 fi
@@ -41,21 +48,21 @@ fi
 
 # Set the file type
 command=s/file_type=Data.ElectroatomicDataProperties.*/file_type=Data.ElectroatomicDataProperties.${file_type}_EPR_FILE/
-sed -i $command hanson.py
+sed -i $command lockwood.py
 # Set the interp
 command=s/interpolation=MonteCarlo.*/interpolation=MonteCarlo.${interp}_INTERPOLATION/
-sed -i $command hanson.py
+sed -i $command lockwood.py
 # Set 2D grid policy
 command=s/grid_policy=MonteCarlo.*/grid_policy=MonteCarlo.${grid_policy}_GRID/
 sed -i $command hanson.py
 # Set the elastic distribution mode
 command=s/mode=MonteCarlo.*/mode=MonteCarlo.${mode}_DISTRIBUTION/
-sed -i $command hanson.py
+sed -i $command lockwood.py
 
 if [ "${mode}" == "COUPLED" ]; then
   # Set the elastic coupled sampling method
   command=s/method=MonteCarlo.*/method=MonteCarlo.${method}_UNION/
-  sed -i $command hanson.py
+  sed -i $command lockwood.py
 fi
 
 # loop through test numbers and run mpi script
