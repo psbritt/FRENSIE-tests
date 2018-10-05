@@ -1,0 +1,20 @@
+<ParameterList name="Source">
+
+  <ParameterList name="Mono-energetic Beam">
+    <Parameter name="Id" type="int" value="1"/>
+
+    <Parameter name="Particle Type" type="string" value="Electron"/>
+
+    <ParameterList name="Spatial Distribution">
+      <Parameter name="Position" type="Array(double)" value="{0.0,0.0,-0.01}"/>
+    </ParameterList>
+
+    <ParameterList name="Directional Distribution">
+      <Parameter name="Direction" type="Array(double)" value="{0.0,0.0,1.0}"/>
+    </ParameterList>
+
+    <Parameter name="Energy Distribution" type="Delta Distribution"
+	       value="{0.015}"/>
+  </ParameterList>
+
+</ParameterList>
