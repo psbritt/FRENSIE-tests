@@ -119,7 +119,7 @@ def runSimulation( threads, histories, time ):
   current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
 
   # Set the cosine bins
-  cosine_bins = [ -1.0, -0.99, 0.0, 0.99, 1.0 ]
+  cosine_bins = [ -1.0, -0.99, 0.0, 1.0 ]
 
   current_estimator.setCosineDiscretization( cosine_bins )
 
@@ -249,7 +249,10 @@ def setSimulationProperties( threads, histories, time ):
 ##----------------------------------------------------------------------------##
 def createResultsDirectory():
 
-  directory = setup.createResultsDirectory(file_type, interpolation)
+  directory = setup.getResultsDirectory(file_type, interpolation)
+
+  if not os.path.exists(directory):
+    os.makedirs(directory)
 
   return directory
 
@@ -264,7 +267,7 @@ def setSimulationName( properties, file_type ):
   if not cutoff_energy == 1e-4:
      name += "_" + str(cutoff_energy) + "_cutoff"
 
-  output = createResultsDirectory() + "/" + name
+  output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
 
   return (output, title)
 

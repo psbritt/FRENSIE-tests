@@ -177,7 +177,7 @@ def setSimulationNameExtention( properties, file_type ):
 ##----------------------------------------------------------------------------##
 ## ------------------------ Create Results Directory ------------------------ ##
 ##----------------------------------------------------------------------------##
-def createResultsDirectory(file_type, interpolation):
+def getResultsDirectory(file_type, interpolation):
 
   if file_type == Data.ElectroatomicDataProperties.ACE_EPR_FILE:
     # Use ACE EPR14 data
@@ -200,9 +200,6 @@ def createResultsDirectory(file_type, interpolation):
     directory = "results/" + name + "/" + date
   else:
     directory = "results/" + interp + "/" + date
-
-  if not os.path.exists(directory):
-    os.makedirs(directory)
 
   return directory
 
