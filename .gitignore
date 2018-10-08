@@ -26,6 +26,8 @@
 *.inpr
 *.inpm
 *.pyc
+runtp*
+mcta*
 results/
 old_results/
 results_linlin/
