@@ -3,7 +3,6 @@ import os
 import sys
 import PyFrensie.Geometry as Geometry
 import PyFrensie.Geometry.DagMC as DagMC
-import PyFrensie.Geometry.ROOT as ROOT
 import PyFrensie.Utility as Utility
 import PyFrensie.Utility.MPI as MPI
 import PyFrensie.Utility.Prng as Prng
