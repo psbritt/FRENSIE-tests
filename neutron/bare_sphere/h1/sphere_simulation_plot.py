@@ -43,12 +43,15 @@ def plotSphereSimulationSpectrum( rendezvous_file,
         mcnp_bin_data["re"].append( float(split_line[2]) )
         
     output_file_name = "h1_sphere_"
+    output_file_names = []
 
     if is_a_current:
-        output_file_name += "current.eps"
+        output_file_names.append( output_file_name + "current.eps" )
+        output_file_names.append( output_file_name + "current.png" )
         data_type = "Current"
     else:
-        output_file_name += "flux.eps"
+        output_file_names.append( output_file_name + "flux.eps" )
+        output_file_names.append( output_file_name + "flux.png" )
         data_type = "Flux"
         
     # Plot the data
@@ -62,4 +65,4 @@ def plotSphereSimulationSpectrum( rendezvous_file,
                                 top_ylims = top_ylims,
                                 bottom_ylims = bottom_ylims,
                                 legend_pos = legend_pos,
-                                output_plot_name = output_file_name )
+                                output_plot_names = output_file_names )
