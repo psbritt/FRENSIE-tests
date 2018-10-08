@@ -1,6 +1,0 @@
-<ParameterList name="Geometry">
-
-  <Parameter name="Handler" type="string" value="ROOT"/>
-  <Parameter name="Root File" type="string" value="/home/lkersting/frensie/frensie-tests/si_slab/si_slab.root"/>
-
-</ParameterList>
