@@ -1,0 +1,211 @@
+          Code Name & Version = MCNP_6.20, 6.2.0
+  
+     _/      _/        _/_/_/       _/      _/       _/_/_/         _/_/_/ 
+    _/_/  _/_/      _/             _/_/    _/       _/    _/     _/        
+   _/  _/  _/      _/             _/  _/  _/       _/_/_/       _/_/_/     
+  _/      _/      _/             _/    _/_/       _/           _/    _/    
+ _/      _/        _/_/_/       _/      _/       _/             _/_/       
+  
+  +-----------------------------------------------------------------------+
+  | Copyright (2018).  Los Alamos National Security, LLC.  All rights     !
+  | reserved.                                                             !
+  |  This material was produced under U.S. Government contract            !
+  | DE-AC52-06NA25396 for Los Alamos National Laboratory, which is        !
+  | operated by Los Alamos National Security, LLC for the U.S.            !
+  | Department of Energy. The Government is granted for itself and        !
+  | others acting on its behalf a paid-up, nonexclusive, irrevocable      !
+  | worldwide license in this material to reproduce, prepare derivative   !
+  | works, and perform publicly and display publicly. Beginning five (5)  !
+  | years after February 14, 2018, subject to additional five-year        !
+  | worldwide renewals, the Government is granted for itself and others   !
+  | acting on its behalf a paid-up, nonexclusive, irrevocable worldwide   !
+  | license in this material to reproduce, prepare derivative works,      !
+  | distribute copies to the public, perform publicly and display         !
+  | publicly, and to permit others to do so. NEITHER THE UNITED STATES    !
+  | NOR THE UNITED STATES DEPARTMENT OF ENERGY, NOR LOS ALAMOS NATIONAL   !
+  | SECURITY, LLC, NOR ANY OF THEIR EMPLOYEES, MAKES ANY WARRANTY,        !
+  | EXPRESS OR IMPLIED, OR ASSUMES ANY LEGAL LIABILITY OR RESPONSIBILITY  !
+  | FOR THE ACCURACY, COMPLETENESS, OR USEFULNESS OF ANY INFORMATION,     !
+  | APPARATUS, PRODUCT, OR PROCESS DISCLOSED, OR REPRESENTS THAT ITS USE  !
+  | WOULD NOT INFRINGE PRIVATELY OWNED RIGHTS.                            !
+  +-----------------------------------------------------------------------+
+  
+1mcnp     version 6     ld=02/20/18                     10/08/18 10:29:43 
+ *************************************************************************                 probid =  10/08/18 10:29:43 
+ i=mcnp_no_foil.in n=mcnp_1_0. tasks 8
+
+ 
+  comment.  Physics models disabled.
+         1-       Electron Lockwood test
+         2-       c
+         3-       c
+         4-       c -----------------------------------------------------------------------------c
+         5-       c Cell block-------------------------------------------------------------------c
+         6-       c -----------------------------------------------------------------------------c
+         7-       c
+         8-       c -----------------------------------------------------------------
+         9-       c Cell 10 is the Calorimeter
+        10-       c -----------------------------------------------------------------
+        11-       10  1  -1.8   100 -101 102 -103 104 -105 110 -111 112 -113  IMP:e=1
+        12-       c -----------------------------------------------------------------
+        13-       c Cell 30 is the "infinite" plate
+        14-       c -----------------------------------------------------------------
+        15-       30  1  -1.8   -300                                          IMP:e=1
+        16-       c -----------------------------------------------------------------
+        17-       c Cell 40 is the vacuum
+        18-       c -----------------------------------------------------------------
+        19-       40  0         -400 #10 #30                                  IMP:e=1
+        20-       c -----------------------------------------------------------------
+        21-       c Void around problem
+        22-       c -----------------------------------------------------------------
+        23-       50  0         400                                           IMP:e=0
+        24-       c
+        25-       c
+        26-       c ----------------------------------------------------------------------------c
+        27-       c MCNP necessary space--------------------------------------------------------c
+        28-       c ----------------------------------------------------------------------------c
+        29-       
+        30-       c ----------------------------------------------------------------------------c
+        31-       c Surface block---------------------------------------------------------------c
+        32-       c ----------------------------------------------------------------------------c
+        33-       c
+        34-       c The 100 series defines the Calorimeter foil
+        35-       c Calorimeter is a pentagon made by the intersection of two squares at 45 degrees to each other
+        36-       c Major square, 100 = ( 8.255 x 8.255 x R_cal=0.00867222 )
+        37-       c Minor square, 110 = ( 8.082230509 x 8.082230509 x R_cal=0.00867222 )
+        38-       c
+        39-       c 100 RPP -4.1275 4.1275 -4.1275 4.1275 5.0 5.00867222
+        40-       100 PX -4.1275
+        41-       101 PX  4.1275
+        42-       102 PY -4.1275
+        43-       103 PY  4.1275
+        44-       104 PZ  5.0
+        45-       105 PZ  5.00867222
+        46-       c 110 1 RPP -4.041115254 4.041115254 -4.041115254 4.041115254 5.0 5.00867222
+        47-       110 1 PX -4.041115254
+        48-       111 1 PX  4.041115254
+        49-       112 1 PY -4.041115254
+        50-       113 1 PY  4.041115254
+        51-       c
+        52-       c the 300 series defines the infinite plate ( H = 2, R = 3.81 )
+        53-       c
+        54-       300 RCC 0 0 5.10867222  0 0 2.0 3.81 $ 0.1 cm behind the Calorimeter
+        55-       c
+        56-       c the 400 series defines the vacuum ( H = 10, R = 10 )
+        57-       c
+        58-       400 RCC 0 0 -0.1  0 0 10.0 10.0
+        59-       c
+        60-       c ----------------------------------------------------------------------------c
+        61-       c MCNP necessary space--------------------------------------------------------c
+        62-       c ----------------------------------------------------------------------------c
+        63-       
+        64-       c ----------------------------------------------------------------------------c
+        65-       c Data block------------------------------------------------------------------c
+        66-       c ----------------------------------------------------------------------------c
+        67-       c
+        68-       c
+        69-       c Material Definition
+        70-       c -----------------------
+        71-       c Al
+        72-       c -----------------------
+        73-       m1    13000.14p  1.0
+        74-       c
+        75-       c
+        76-       c --------------------
+        77-       c Source
+        78-       c --------------------
+        79-       c monodirectional, monoenergetic point source located at the origin
+        80-       SDEF  ERG=1 POS=0 0 0 DIR=1 VEC=0 0 1 PAR=e
+        81-       c
+        82-       c --------------------
+        83-       c Job Control
+        84-       c --------------------
+        85-       c run in photon-electron mode to get low energy physics
+        86-       mode p e
+        87-       c run for 1e7 histories
+        88-       nps 1e7
+        89-       c Cell pulse height tally (in MeV) for the Calorimeter
+        90-       *f8:e 10
+        91-       c 45 degree rotation about the z-axis
+        92-       *TR1 0 0 0  45 -45 90  135 45 90  90 90 0
+        93-       c
+        94-       dbcn 17j 2 $ Turn on analog mode
+        95-       c
+        96-       CUT:P J 1e-3 $ Set photon cutoff to 1e-3 MeV
+        97-       CUT:E J 1.0e-04 $ Set electron cutoff to 100 eV
+        98-       c
+        99-       c Max energy, p's don't make e's, e's don't make p's, simple brem dist, skip 8, full elastic, skip 1 analog start energy
+       100-       PHYS:E 1.033 1 1 1 8J 2 J 20.0
+  comment.  Single-event full elastic scattering selected.
+       101-       c
+       102-       prdmp  j  1e7  1   1
+       103-       c PHYS:E entry 13 is the selection of the elastic distribution:
+       104-       c 2 = full elastic, 1 = transport x-sec cutoff, 0 = cutoff, -1 = no elastic
+
+ ***************************************************
+ * Random Number Generator  =                    1 *
+ * Random Number Seed       =       19073486328125 *
+ * Random Number Multiplier =       19073486328125 *
+ * Random Number Adder      =                    0 *
+ * Random Number Bits Used  =                   48 *
+ * Random Number Stride     =               152917 *
+ ***************************************************
+
+ 
+  comment.  photon   importances have been set equal to 1.
+1cells                                                                                                  print table 60
+
+                               atom        gram                                            photon     electron                         
+              cell      mat   density     density     volume       mass            pieces importance importance                        
+
+        1       10        1  4.01744E-02 1.80000E+00 4.79069E-01 8.62325E-01           0  1.0000E+00 1.0000E+00                        
+        2       30        1  4.01744E-02 1.80000E+00 9.12073E+01 1.64173E+02           1  1.0000E+00 1.0000E+00                        
+        3       40        0  0.00000E+00 0.00000E+00 0.00000E+00 0.00000E+00           0  1.0000E+00 1.0000E+00                        
+        4       50        0  0.00000E+00 0.00000E+00 0.00000E+00 0.00000E+00           0  0.0000E+00 0.0000E+00                        
+
+ total                                               9.16864E+01 1.65036E+02
+
+    minimum source weight = 1.0000E+00    maximum source weight = 1.0000E+00
+ 
+  comment.  threading will be used when possible in portions of mcnp6.
+ 
+  comment.  threading will be used for n/p/e table physics.
+ 
+  comment.  threading will generally not be used for model physics.
+1cross-section tables                                                                                   print table 100
+     XSDIR used: /home/software/mcnp6.2/MCNP_DATA/xsdir_mcnp6.2
+
+     table    length
+
+                        tables from file xmc/eprdata14                                                   
+
+  13000.14p   40390  EPICS2014 (D. E. Cullen): photon, electron, relaxation data for 13-AL        mat1300      07/02/15
+                     Energy range:   1.00000E-06  to  1.00000E+05 MeV.
+
+  total       40390
+
+ maximum photon energy set to      1.0 mev (maximum electron energy)
+
+                        tables from file xdata/el03                                                      
+
+  13000.03e    2337                                                                                          6/6/98    
+                     Energy range:   1.00000E-03  to  1.00000E+03 MeV.
+
+1particles and energy limits                                                                            print table 101
+
+                         particle      maximum       smallest      largest       always        always
+                         cutoff        particle      table         table         use table     use model
+   particle type         energy        energy        maximum       maximum       below         above
+
+    2  p    photon      1.0000E-03    1.0330E+00    1.0000E+05    1.0000E+05    1.0000E+36    1.0000E+36
+    3  e    electron    1.0000E-04    1.0330E+00    1.0330E+00    1.0330E+00    1.0000E+36    1.0000E+36
+ 
+ 
+  warning.  material        1 has been set to a conductor.
+
+ ***********************************************************************************************************************
+
+ dump no.    1 on file mcnp_1_0.r     nps =           0     coll =              0     ctm =        0.00   nrn =         
+        0
+
+          1 warning message so far.
