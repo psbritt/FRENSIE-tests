@@ -69,7 +69,7 @@ def sphereSimulation( sim_name,
     scattering_center_definitions = Collision.ScatteringCenterDefinitionDatabase()
     nuclide_definition = scattering_center_definitions.createDefinition( "H1", Data.ZAID(1001) )
     
-    nuclide_definition.setNuclearDataProperties( nuclide_properties.getSharedNuclearDataProperties( Data.NuclearDataProperties.ACE_FILE, 8, temp, True ) )
+    nuclide_definition.setNuclearDataProperties( nuclide_properties.getSharedNuclearDataProperties( Data.NuclearDataProperties.ACE_FILE, 8, temp, False ) )
     
     # Set the definition for material 1
     material_definitions = Collision.MaterialDefinitionDatabase()
