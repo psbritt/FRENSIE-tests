@@ -251,7 +251,10 @@ def setSimulationProperties( threads, histories, time ):
 ##----------------------------------------------------------------------------##
 def createResultsDirectory():
 
-  directory = setup.createResultsDirectory(file_type, interpolation)
+  directory = setup.getResultsDirectory(file_type, interpolation)
+
+  if not os.path.exists(directory):
+    os.makedirs(directory)
 
   return directory
 
@@ -263,7 +266,7 @@ def setSimulationName( properties, file_type ):
 
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "hanson" + extension
-  output = createResultsDirectory() + "/" + name
+  output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
 
   return (output, title)
 
