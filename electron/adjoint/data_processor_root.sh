@@ -4,7 +4,7 @@
 ##---------------------------------------------------------------------------##
 
 EXTRA_ARGS=$@
-TESTING_DIR="/home/lkersting/frensie/tests"
+TESTING_DIR="/home/lkersting/frensie/tests/electron"
 
 if [ "$#" -ne 1 ]; then
     echo "The input file is required. $# arguments provided!"
