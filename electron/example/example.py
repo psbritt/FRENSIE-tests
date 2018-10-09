@@ -49,10 +49,10 @@ file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
-  geometry_path = "/home/lkersting/frensie/tests/example/h_sphere.h5m"
+  geometry_path = "/home/lkersting/frensie/tests/electron/example/h_sphere.h5m"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
-  geometry_path = "/home/lkersting/dag_frensie/tests/example/h_sphere.h5m"
+  geometry_path = "/home/lkersting/dag_frensie/tests/electron/example/h_sphere.h5m"
 
 # Run the simulation
 def runSimulation( threads, histories, time ):
