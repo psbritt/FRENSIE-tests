@@ -5,7 +5,7 @@ import argparse as ap
 
 # Set up the argument parser
 description = "This script takes angular binned surface current data and "\
-              "return the data in #/square degree units."
+              "return the data in transmission (Frac/Deg2) units."
 
 parser = ap.ArgumentParser(description=description)
 

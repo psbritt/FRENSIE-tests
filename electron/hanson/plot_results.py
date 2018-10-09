@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # Luke Kersting
-# This script asks for #/square degree data and run names which it then plots.
+# This script asks for transmission (Frac/Deg2) data and run names which it then plots.
 import csv
 import math
 import numpy as np
@@ -11,7 +11,7 @@ import argparse as ap
 import inspect, os
 
 # Set up the argument parser
-description = "This script asks for #/square degree data and run names which "\
+description = "This script asks for transmission (Frac/Deg2) data and run names which "\
               "which it then plots."
 
 parser = ap.ArgumentParser(description=description)

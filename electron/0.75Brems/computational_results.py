@@ -4,12 +4,12 @@ import math
 import argparse as ap
 
 # Set up the argument parser
-description = "This script takes #/square degree data from MCNP, Native-ACE, "\
+description = "This script takes transmission (Frac/Deg2) data from MCNP, Native-ACE, "\
               "Native-LinLog and Native-LinLin runs and combines them."
 
 parser = ap.ArgumentParser(description=description)
 
-msg = "#/square degree data .txt files"
+msg = "transmission (Frac/Deg2) data .txt files"
 parser.add_argument("files", nargs='*', help=msg)
 
 # Parse the user's arguments
