@@ -20,8 +20,8 @@ spectrum is calculated.
 4. T = 1200 K
 
 5. T = 2500 K
-![H1 Sphere Current @ 293.6K](neutron/bare_sphere/h1/2500K/h1_sphere_current.png)
-![H1 Sphere Current @ 293.6K](neutron/bare_sphere/h1/2500K/h1_sphere_flux.png)
+![H1 Sphere Current @ 2500K](neutron/bare_sphere/h1/2500K/h1_sphere_current.png)
+![H1 Sphere Current @ 2500K](neutron/bare_sphere/h1/2500K/h1_sphere_flux.png)
 
 ## Photon Verification Tests
 
