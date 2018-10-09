@@ -32,7 +32,7 @@ atom=Data.Al_ATOM; element="Al"; zaid=13000
 # Set the source energy
 energy=0.314
 # Set the test number
-test_number="11"
+test_number=11
 
 # Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
 interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
@@ -241,7 +241,7 @@ def createResultsDirectory():
 def setSimulationName( properties, file_type ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "lockwood_" + str(test_number) + extension
-  output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
+  output = element + "/" + setup.getResultsDirectory(file_type, interpolation) + "/" + name
 
   return (output, title)
 

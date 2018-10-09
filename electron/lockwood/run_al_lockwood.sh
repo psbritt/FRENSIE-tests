@@ -161,7 +161,7 @@ do
                 for test_number in "${test_numbers[@]}"
                 do
                     # Change the test number
-                    command=s/test_number=.*/test_number=\"$test_number\"/
+                    command=s/test_number=.*/test_number=$test_number/
                     sed -i "${command}" lockwood.py
 
                     echo -e "          Running Lockwood ${energy} Test Number $test_number!\n"
