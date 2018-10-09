@@ -1,4 +1,4 @@
-# Validation and Verification for FRENSIE
+# Verification and Validation for FRENSIE
 
 ## Neutron Verification Tests
 
@@ -10,6 +10,7 @@ implementation. For each test both the current per lethargy and the flux
 spectrum is calculated.
 
 1. T = 293.6 K
+
 ![H1 Sphere Current @ 293.6K](neutron/bare_sphere/h1/293.6K/h1_sphere_current.png)
 ![H1 Sphere Current @ 293.6K](neutron/bare_sphere/h1/293.6K/h1_sphere_flux.png)
 
@@ -20,6 +21,7 @@ spectrum is calculated.
 4. T = 1200 K
 
 5. T = 2500 K
+
 ![H1 Sphere Current @ 2500K](neutron/bare_sphere/h1/2500K/h1_sphere_current.png)
 ![H1 Sphere Current @ 2500K](neutron/bare_sphere/h1/2500K/h1_sphere_flux.png)
 
