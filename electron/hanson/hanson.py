@@ -61,7 +61,7 @@ def runSimulation( threads, histories, time ):
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
 
-  properties = setSimulationProperties( threads, histories, time )
+  properties = setSimulationProperties( histories, time )
 
   ##--------------------------------------------------------------------------##
   ## ---------------------------- GEOMETRY SETUP ---------------------------- ##
@@ -231,9 +231,9 @@ def runSimulation( threads, histories, time ):
 ##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
 ##----------------------------------------------------------------------------##
-def setSimulationProperties( threads, histories, time ):
+def setSimulationProperties( histories, time ):
 
-  properties = setup.setSimulationProperties( threads, histories, time, interpolation, grid_policy, mode, method )
+  properties = setup.setSimulationProperties( histories, time, interpolation, grid_policy, mode, method )
 
 
   ## -------------------------- ELECTRON PROPERTIES ------------------------- ##
