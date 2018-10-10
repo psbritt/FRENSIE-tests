@@ -35,6 +35,13 @@ energy=0.1
 # Set the min energy (default is 100 eV )
 min_energy=1e-4
 
+# Set the elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
+mode=MonteCarlo.COUPLED_DISTRIBUTION
+
+# Set the elastic coupled sampling method
+# ( TWO_D_UNION, ONE_D_UNION, MODIFIED_TWO_D_UNION )
+method=MonteCarlo.MODIFIED_TWO_D_UNION
+
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
@@ -160,10 +167,10 @@ def runSimulation( threads, histories, time ):
 
 
   version = 0
-  file_type == Data.AdjointElectroatomicDataProperties.Native_EPR_FILE
+  file_type = Data.AdjointElectroatomicDataProperties.Native_EPR_FILE
 
-  element_definition.setElectroatomicDataProperties(
-            element_properties.getSharedElectroatomicDataProperties( file_type, version ) )
+  element_definition.setAdjointElectroatomicDataProperties(
+            element_properties.getSharedAdjointElectroatomicDataProperties( file_type, version ) )
 
   material_definition_database = Collision.MaterialDefinitionDatabase()
   material_definition_database.addDefinition( element, 1, (element,), (1.0,) )
@@ -228,7 +235,7 @@ def runSimulation( threads, histories, time ):
 ##---------------------------------------------------------------------------##
 def setSimulationProperties( histories, time ):
 
-  properties = setup.setAdjointSimulationProperties( histories, time, interpolation, grid_policy, mode, method )
+  properties = setup.setAdjointSimulationProperties( histories, time, mode, method )
 
   # Set the min electron energy in MeV (Default is 100 eV)
   properties.setMinElectronEnergy( min_energy )
