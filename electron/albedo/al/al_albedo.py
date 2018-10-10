@@ -67,7 +67,7 @@ def runSimulation( threads, histories, time ):
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
 
-  properties = setSimulationProperties( threads, histories, time )
+  properties = setSimulationProperties( histories, time )
 
   # Set the possible test energies
   energies = [0.0002, 0.0003, 0.0004, 0.0005, 0.0006, 0.0008, 0.001, 0.0015, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.006, 0.0093, 0.01, 0.011, 0.0134, 0.015, 0.0173, 0.02, 0.0252, 0.03, 0.04, 0.0415, 0.05, 0.06, 0.0621, 0.07, 0.08, 0.0818, 0.1, 0.102, 0.121, 0.146, 0.172, 0.196, 0.2, 0.238, 0.256 ]
@@ -226,9 +226,9 @@ def runSimulation( threads, histories, time ):
 ##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
 ##----------------------------------------------------------------------------##
-def setSimulationProperties( threads, histories, time ):
+def setSimulationProperties( histories, time ):
 
-  properties = setup.setSimulationProperties( threads, histories, time, interpolation, grid_policy, mode, method )
+  properties = setup.setSimulationProperties( histories, time, interpolation, grid_policy, mode, method )
 
 
   ## -------------------------- ELECTRON PROPERTIES ------------------------- ##

@@ -102,6 +102,11 @@ command=s/energy=.*/energy=${energy}/
 sed -i "${command}" lockwood.py
 
 # Set the number of threads
+command=s/\#SBATCH --nodes=.*/\#SBATCH --nodes=${NODES}/
+sed -i "${command}" lockwood.sh
+command=s/\#SBATCH --ntasks-per-node=.*/\#SBATCH --ntasks-per-node=${TASKS}/
+sed -i "${command}" lockwood.sh
+
 command=s/THREADS=.*/THREADS=${THREADS}/
 sed -i "${command}" lockwood.sh
 command=s/NODES=.*/NODES=${NODES}/
