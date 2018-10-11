@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # Luke Kersting
-# This script asks for #/square degree data and run names which it then plots.
+# This script asks for transmission (Frac/Deg2) data and run names which it then plots.
 import numpy as np
 from numpy import exp, linspace
 import matplotlib.pyplot as plt
@@ -15,7 +15,7 @@ def gaussian(x, amp, wid):
   return amp * exp(-x*x /(wid*wid) )
 
 # Set up the argument parser
-description = "This script asks for #/square degree data and run names which "\
+description = "This script asks for transmission (Frac/Deg2) data and run names which "\
               "which it then plots."
 
 parser = ap.ArgumentParser(description=description)
