@@ -238,9 +238,9 @@ def restartSimulation( threads, histories, time, rendezvous ):
   session.initializeLogs( 0, True )
 
   # Set the data path
-  # Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
+  Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
 
-  factory = Manager.ParticleSimulationManagerFactory( rendezvous, histories, time, threads )
+  factory = Manager.ParticleSimulationManagerFactory( rendezvous, 10, 130.0, 1 )
 
   manager = factory.getManager()
 
@@ -260,9 +260,10 @@ def restartSimulation( threads, histories, time, rendezvous ):
     archive_name += components[1].split(".")[1]
 
     print "Processing the results:"
-    processData( results_file, "native" )
+    processData( archive_name, "native" )
 
-    print "Results will be in ", os.path.dirname(name)
+    print "Results will be in ", os.path.dirname(archive_name)
+
 
 ##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
