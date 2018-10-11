@@ -61,7 +61,7 @@ def runSimulation( threads, histories, time ):
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
 
-  properties = setSimulationProperties( threads, histories, time )
+  properties = setSimulationProperties( histories, time )
 
   ##--------------------------------------------------------------------------##
   ## ---------------------------- GEOMETRY SETUP ---------------------------- ##
@@ -227,13 +227,49 @@ def runSimulation( threads, histories, time ):
 
     print "Results will be in ", os.path.dirname(name)
 
+# Restart the simulation
+def restartSimulation( threads, histories, time, rendezvous ):
+
+  ##--------------------------------------------------------------------------##
+  ## ------------------------------ MPI Session ----------------------------- ##
+  ##--------------------------------------------------------------------------##
+  session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
+  Utility.removeAllLogs()
+  session.initializeLogs( 0, True )
+
+  # Set the data path
+  # Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
+
+  factory = Manager.ParticleSimulationManagerFactory( rendezvous, histories, time, threads )
+
+  manager = factory.getManager()
+
+  Utility.removeAllLogs()
+  session.initializeLogs( 0, False )
+
+  manager.runSimulation()
+
+  if session.rank() == 0:
+
+    rendezvous_number = manager.getNumberOfRendezvous()
+
+    components = rendezvous.split("rendezvous_")
+    archive_name = components[0] + "rendezvous_"
+    archive_name += str( rendezvous_number - 1 )
+    archive_name += "."
+    archive_name += components[1].split(".")[1]
+
+    print "Processing the results:"
+    processData( results_file, "native" )
+
+    print "Results will be in ", os.path.dirname(name)
 
 ##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
 ##----------------------------------------------------------------------------##
-def setSimulationProperties( threads, histories, time ):
+def setSimulationProperties( histories, time ):
 
-  properties = setup.setSimulationProperties( threads, histories, time, interpolation, grid_policy, mode, method )
+  properties = setup.setSimulationProperties( histories, time, interpolation, grid_policy, mode, method )
 
 
   ## -------------------------- ELECTRON PROPERTIES ------------------------- ##
@@ -277,7 +313,7 @@ def setSimulationName( properties, file_type ):
 # This function pulls data from the .xml results file
 def processData( results_file, raw_file_type ):
 
-  Collision.FilledGeometryModel.setDefaultDatabasePath( os.path.dirname(database_path) )
+  Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
 
   # Load data from file
   manager = Manager.ParticleSimulationManagerFactory( results_file ).getManager()

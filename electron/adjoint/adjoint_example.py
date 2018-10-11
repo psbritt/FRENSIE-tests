@@ -28,17 +28,12 @@ import simulation_setup as setup
 ##---------------------------------------------------------------------------##
 
 # Set the element
-atom=Data.Al_ATOM; element="Al"; zaid=13000
-# Set the source energy
-energy=0.314
-# Set the test number
-test_number=11
+atom=Data.H_ATOM; element="H"; zaid=1000
+# Set the forward source energy ( 0.001, 0.01, 0.1 )
+energy=0.1
 
-# Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
-interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
-
-# Set the bivariate Grid Policy (UNIT_BASE_CORRELATED, CORRELATED, UNIT_BASE)
-grid_policy=MonteCarlo.UNIT_BASE_CORRELATED_GRID
+# Set the min energy (default is 100 eV )
+min_energy=1e-4
 
 # Set the elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
 mode=MonteCarlo.COUPLED_DISTRIBUTION
@@ -47,27 +42,16 @@ mode=MonteCarlo.COUPLED_DISTRIBUTION
 # ( TWO_D_UNION, ONE_D_UNION, MODIFIED_TWO_D_UNION )
 method=MonteCarlo.MODIFIED_TWO_D_UNION
 
-# Set the data file type (ACE_EPR_FILE, Native_EPR_FILE)
-file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
-
-# Set the calorimeter thickness
-calorimeter_thickness=5.050E-03
-
-# Set the ranges
-ranges=[ 0.0025, 0.0094, 0.0181, 0.0255, 0.0336, 0.0403, 0.0477, 0.0566, 0.0654, 0.0721, 0.0810, 0.0993 ]
-
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
-  geometry_path = "/home/lkersting/frensie/tests/electron/lockwood/"
+  geometry_path = "/home/lkersting/frensie/tests/electron/adjoint/h_sphere.h5m"
 elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus)
   database_path = "/home/software/mcnpdata/database.xml"
-  geometry_path = "/home/ligross/frensie/tests/lockwood/"
+  geometry_path = "/home/ligross/frensie/tests/adjoint/h_sphere.h5m"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
-  geometry_path = "/home/lkersting/dag_frensie/tests/electron/lockwood/"
-
-geometry_path += element + "/" + element + "_" + str(energy) + "/dagmc/geom_" + str(test_number) + ".h5m"
+  geometry_path = "/home/lkersting/dag_frensie/tests/electron/adjoint/h_sphere.h5m"
 
 # Run the simulation
 def runSimulation( threads, histories, time ):
@@ -93,8 +77,8 @@ def runSimulation( threads, histories, time ):
   if geometry_type == "DagMC":
     model_properties = DagMC.DagMCModelProperties( geometry_path )
     model_properties.useFastIdLookup()
-    # model_properties.setMaterialPropertyName( "mat" )
-    # model_properties.setDensityPropertyName( "rho" )
+    model_properties.setMaterialPropertyName( "mat" )
+    model_properties.setDensityPropertyName( "rho" )
     # model_properties.setTerminationCellPropertyName( "graveyard" )
     # model_properties.setEstimatorPropertyName( "tally" )
   else:
@@ -110,18 +94,63 @@ def runSimulation( threads, histories, time ):
   # Set event handler
   event_handler = Event.EventHandler( properties )
 
-  ## -------------------- Energy Deposition Calorimeter -------------------- ##
+  # Set the energy bins
+  if energy == 0.1:
+    bins = list(Utility.doubleArrayFromString( "{ 1e-4, 5e-4, 198i, 1e-1}" ))
+  elif energy == 0.01:
+    bins = list(Utility.doubleArrayFromString( "{ 1e-4, 137i, 7e-3, 29i, 1e-2}" ))
+  elif energy == 0.001:
+    bins = list(Utility.doubleArrayFromString( "{ 1e-4, 197i, 1e-3}" ))
+  else:
+    print "ERROR: energy ", energy, " not supported!"
 
-  # Setup a cell pulse height estimator
+  ## -------------------------- Track Length Flux --------------------------- ##
+
+  # Setup a track length flux estimator
   estimator_id = 1
-  cell_ids = [2]
-  energy_deposition_estimator = Event.WeightAndEnergyMultipliedCellPulseHeightEstimator( estimator_id, 1.0, cell_ids )
+  cell_ids = [1]
+  track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, geom_model )
 
   # Set the particle type
-  energy_deposition_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+  track_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+
+  # Set the energy bins
+  track_flux_estimator.setSourceEnergyDiscretization( bins )
 
   # Add the estimator to the event handler
-  event_handler.addEstimator( energy_deposition_estimator )
+  event_handler.addEstimator( track_flux_estimator )
+
+  ## ------------------------ Surface Flux Estimator ------------------------ ##
+
+  # Setup a surface flux estimator
+  estimator_id = 2
+  surface_ids = [1]
+  surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( estimator_id, 1.0, surface_ids, geom_model )
+
+  # Set the particle type
+  surface_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+
+  # Set the energy bins
+  surface_flux_estimator.setSourceEnergyDiscretization( bins )
+
+  # Add the estimator to the event handler
+  event_handler.addEstimator( surface_flux_estimator )
+
+  ## ---------------------- Surface Current Estimator ----------------------- ##
+
+  # Setup a surface current estimator
+  estimator_id = 3
+  surface_ids = [1]
+  surface_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
+
+  # Set the particle type
+  surface_current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+
+  # Set the energy bins
+  surface_current_estimator.setSourceEnergyDiscretization( bins )
+
+  # Add the estimator to the event handler
+  event_handler.addEstimator( surface_current_estimator )
 
   ##--------------------------------------------------------------------------##
   ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
@@ -138,11 +167,10 @@ def runSimulation( threads, histories, time ):
 
 
   version = 0
-  if file_type == Data.ElectroatomicDataProperties.ACE_EPR_FILE:
-    version = 14
+  file_type = Data.AdjointElectroatomicDataProperties.Native_EPR_FILE
 
-  element_definition.setElectroatomicDataProperties(
-            element_properties.getSharedElectroatomicDataProperties( file_type, version ) )
+  element_definition.setAdjointElectroatomicDataProperties(
+            element_properties.getSharedAdjointElectroatomicDataProperties( file_type, version ) )
 
   material_definition_database = Collision.MaterialDefinitionDatabase()
   material_definition_database.addDefinition( element, 1, (element,), (1.0,) )
@@ -157,12 +185,12 @@ def runSimulation( threads, histories, time ):
   particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
 
   # Set the energy dimension distribution
-  delta_energy = Distribution.DeltaDistribution( energy )
+  delta_energy = Distribution.UniformDistribution( min_energy, energy )
   energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( delta_energy )
   particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
   # Set the direction dimension distribution
-  particle_distribution.setDirection( 0.0, 0.0, 1.0 )
+  # particle_distribution.setDirection( 0.0, 0.0, 1.0 )
 
   # Set the spatial dimension distribution
   particle_distribution.setPosition( 0.0, 0.0, 0.0 )
@@ -198,7 +226,7 @@ def runSimulation( threads, histories, time ):
   if session.rank() == 0:
 
     print "Processing the results:"
-    processData( energy_deposition_estimator, name, title, ranges[test_number], calorimeter_thickness )
+    processData( event_handler, name, title )
 
     print "Results will be in ", os.path.dirname(name)
 
@@ -207,7 +235,13 @@ def runSimulation( threads, histories, time ):
 ##---------------------------------------------------------------------------##
 def setSimulationProperties( histories, time ):
 
-  properties = setup.setSimulationProperties( histories, time, interpolation, grid_policy, mode, method )
+  properties = setup.setAdjointSimulationProperties( histories, time, mode, method )
+
+  # Set the min electron energy in MeV (Default is 100 eV)
+  properties.setMinElectronEnergy( min_energy )
+
+  # Set the max electron energy in MeV (Default is 20 MeV)
+  properties.setMaxElectronEnergy( energy )
 
 
   ## -------------------------- ELECTRON PROPERTIES ------------------------- ##
@@ -227,8 +261,6 @@ def createResultsDirectory():
 
   directory = setup.getResultsDirectory(file_type, interpolation)
 
-  directory = element + "/" + directory
-
   if not os.path.exists(directory):
     os.makedirs(directory)
 
@@ -240,35 +272,27 @@ def createResultsDirectory():
 # Define a function for naming an electron simulation
 def setSimulationName( properties, file_type ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
-  name = "lockwood_" + str(test_number) + extension
-  output = element + "/" + setup.getResultsDirectory(file_type, interpolation) + "/" + name
+  name = "adjoint" + extension
+  output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
 
   return (output, title)
 
 ##----------------------------------------------------------------------------##
 ##------------------------------- processData --------------------------------##
 ##----------------------------------------------------------------------------##
+def processData( event_handler, filename, title ):
 
-# This function pulls pulse height estimator data outputs it to a separate file.
-def processData( estimator, filename, title, range, calorimeter_thickness ):
+  # Process track flux data
+  track_flux = event_handler.getEstimator( 2 )
+  ids = list( track_flux.getEntityIds() )
+  setup.processTrackFluxSourceEnergyBinData( track_flux, ids[0], filename, title )
 
-  ids = list(estimator.getEntityIds())
+  # Process track flux data
+  surface_flux = event_handler.getEstimator( 1 )
+  ids = list( surface_flux.getEntityIds() )
+  setup.processSurfaceFluxSourceEnergyBinData( surface_flux, ids[0], filename, title )
 
-  processed_data = estimator.getEntityBinProcessedData( ids[0] )
-  energy_dep_mev = processed_data['mean']
-  rel_error = processed_data['re']
-
-  today = datetime.date.today()
-
-  # Read the data file for surface tallies
-  name = filename+"_energy_dep.txt"
-  out_file = open(name, 'w')
-
-  # Write the header to the file
-  header = "# Range (g/cm2)\tEnergy Deposition (MeV cm2/g)\tError\t"+str(today)+"\n"
-  out_file.write(header)
-
-  # Write the energy deposition to the file
-  data = str(range) + '\t' + str(energy_dep_mev/calorimeter_thickness) + '\t' + str(rel_error/calorimeter_thickness)
-  out_file.write(data)
-  out_file.close()
+  # Process track flux data
+  surface_current = event_handler.getEstimator( 3 )
+  ids = list( surface_current.getEntityIds() )
+  setup.processSurfaceCurrentSourceEnergyBinData( surface_current, ids[0], filename, title )
