@@ -22,7 +22,7 @@ import PyFrensie.MonteCarlo.Manager as Manager
 ##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
 ##----------------------------------------------------------------------------##
-def setSimulationProperties( threads, histories, time, interpolation, grid_policy, elastic_mode, elastic_sampling_method ):
+def setSimulationProperties( histories, time, interpolation, grid_policy, elastic_mode, elastic_sampling_method ):
 
   properties = MonteCarlo.SimulationProperties()
 
@@ -94,6 +94,56 @@ def setSimulationProperties( threads, histories, time, interpolation, grid_polic
 
   # Turn electron atomic excitation reaction off
   # properties.setAtomicExcitationModeOff()
+
+  return properties
+
+##----------------------------------------------------------------------------##
+## ------------------------- SIMULATION PROPERTIES -------------------------- ##
+##----------------------------------------------------------------------------##
+def setAdjointSimulationProperties( histories, time, elastic_mode, elastic_sampling_method ):
+
+  properties = MonteCarlo.SimulationProperties()
+
+  ## -------------------------- GENERAL PROPERTIES -------------------------- ##
+
+  # Set the particle mode
+  properties.setParticleMode( MonteCarlo.ADJOINT_ELECTRON_MODE )
+
+  # Set the number of histories
+  properties.setNumberOfHistories( histories )
+
+  # Change time from minutes to seconds
+  time_sec = time*60
+
+  # Set the wall time
+  properties.setSimulationWallTime( time_sec )
+
+  ## ---------------------- ADJOINT NEUTRON PROPERTIES ---------------------- ##
+
+  ## ---------------------- ADJOINT PHOTON PROPERTIES ----------------------- ##
+
+  ## --------------------- ADJOINT ELECTRON PROPERTIES ---------------------- ##
+
+  # Set the min electron energy in MeV (Default is 100 eV)
+  properties.setMinAdjointElectronEnergy( 1e-4 )
+
+  # Set the max electron energy in MeV (Default is 20 MeV)
+  properties.setMaxAdjointElectronEnergy( 20.0 )
+
+  # Set the electron evaluation tolerance (Default is 1e-8)
+  properties.setAdjointElectronEvaluationTolerance( 1e-8 )
+
+  ## --- Adjoint Elastic Properties ---
+
+  # Set the elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
+  properties.setAdjointElasticElectronDistributionMode( elastic_mode )
+
+  # Set the elastic coupled sampling method
+  # ( TWO_D_UNION, ONE_D_UNION, MODIFIED_TWO_D_UNION )
+  properties.setAdjointCoupledElasticSamplingMode( elastic_sampling_method )
+
+  # Set the elastic cutoff angle cosine ( -1.0 < mu < 1.0 )
+  properties.setAdjointElasticCutoffAngleCosine( 1.0 )
 
   return properties
 
@@ -305,6 +355,87 @@ def processSurfaceCurrentCosineBinData( estimator, est_id, filename, title ):
 
   # Write the header to the file
   header = "# Cosine \tSurface Current (#)\tError\t"+str(today)+"\n"
+  out_file.write(header)
+
+  data = str(energy_bins) + '\t' + str(current) + '\t' + str(rel_error)
+  out_file.write(data)
+  out_file.close()
+
+##----------------------------------------------------------------------------##
+##------------------- processTrackFluxSourceEnergyBinData --------------------##
+##----------------------------------------------------------------------------##
+def processTrackFluxSourceEnergyBinData( estimator, est_id, filename, title ):
+
+  processed_data = estimator.getEntityBinProcessedData( est_id )
+  flux = processed_data['mean']
+  rel_error = processed_data['re']
+  energy_bins = estimator.getSourceEnergyDiscretization()
+
+  today = datetime.date.today()
+
+  # Write the flux data to a file
+  name = filename+"_track_flux.txt"
+  out_file = open(name, 'w')
+
+  # Write title to file
+  out_file.write( "# " + title +"\n")
+
+  # Write the header to the file
+  header = "# Source Energy (MeV)\tTrack Flux (#/cm$^2$)\tError\t"+str(today)+"\n"
+  out_file.write(header)
+
+  data = str(energy_bins) + '\t' + str(flux) + '\t' + str(rel_error)
+  out_file.write(data)
+  out_file.close()
+
+##----------------------------------------------------------------------------##
+##------------------ processSurfaceFluxSourceEnergyBinData -------------------##
+##----------------------------------------------------------------------------##
+def processSurfaceFluxSourceEnergyBinData( estimator, est_id, filename, title ):
+
+  processed_data = estimator.getEntityBinProcessedData( est_id )
+  flux = processed_data['mean']
+  rel_error = processed_data['re']
+  energy_bins = estimator.getSourceEnergyDiscretization()
+
+  today = datetime.date.today()
+
+  # Write the flux data to a file
+  name = filename+"_flux.txt"
+  out_file = open(name, 'w')
+
+  # Write title to file
+  out_file.write( "# " + title +"\n")
+
+  # Write the header to the file
+  header = "# Source Energy (MeV)\tSurface Flux (#/cm$^2$)\tError\t"+str(today)+"\n"
+  out_file.write(header)
+
+  data = str(energy_bins) + '\t' + str(flux) + '\t' + str(rel_error)
+  out_file.write(data)
+  out_file.close()
+
+##----------------------------------------------------------------------------##
+##---------------- processSurfaceCurrentSourceEnergyBinData ------------------##
+##----------------------------------------------------------------------------##
+def processSurfaceCurrentSourceEnergyBinData( estimator, est_id, filename, title ):
+
+  processed_data = estimator.getEntityBinProcessedData( est_id )
+  current = processed_data['mean']
+  rel_error = processed_data['re']
+  energy_bins = estimator.getSourceEnergyDiscretization()
+
+  today = datetime.date.today()
+
+  # Write the current data to a file
+  name = filename+"_current.txt"
+  out_file = open(name, 'w')
+
+  # Write title to file
+  out_file.write( "# " + title +"\n")
+
+  # Write the header to the file
+  header = "# Source Energy (MeV)\tSurface Current (#)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
   data = str(energy_bins) + '\t' + str(current) + '\t' + str(rel_error)

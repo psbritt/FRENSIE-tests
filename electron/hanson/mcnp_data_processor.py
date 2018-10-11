@@ -101,7 +101,7 @@ def main(argv):
         out_file = open(new_name, 'w')
         out_file.write( "# MCNP6.2\n")
         # Write data header to file
-        header = "# Degrees\t#/Square Degree\tError\t"+str(today)+"\n"
+        header = "# Angle (degree)\tTransmission (Frac/Deg2)\tError\t"+str(today)+"\n"
         out_file.write(header)
 
         # Write data to file

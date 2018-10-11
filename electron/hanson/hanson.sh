@@ -30,17 +30,37 @@ HISTORIES=1000000
 # Set the max runtime (in minutes, 1 day = 1440 )
 TIME=1400
 
-# Create the results directory
-python -c "import hanson; hanson.createResultsDirectory()"
+# Run from the rendezvous
+if [ "$#" -eq 1 ]; then
+    # Set the rendezvous
+    RENDEZVOUS="$1"
 
-# # Run the simulation in hybrid parallel
-# echo "Running Facemc Hanson test with ${HISTORIES} particles on ${NODES} nodes with ${TASKS} tasks:"
-# mpiexec -n ${NODES} python -c "import hanson; hanson.runSimulation(${TASKS}, ${HISTORIES}, ${TIME})"
+  # # Run the simulation in hybrid parallel
+  # echo "Restarting Facemc Hanson test for ${HISTORIES} particles on ${NODES} nodes with ${TASKS} tasks:"
+  # mpiexec -n ${NODES} python -c "import hanson; hanson.restartSimulation(${TASKS}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
 
-# Run the simulation in distributed parallel
-echo "Running Facemc Hanson test with ${HISTORIES} particles on ${NODES} nodes:"
-mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(1, ${HISTORIES}, ${TIME})"
+  # Run the simulation in distributed parallel
+  echo "Restarting Facemc Hanson test for ${HISTORIES} particles on ${NODES} nodes:"
+  python -c "import hanson; hanson.restartSimulation(1, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
 
-# # Run the simulation in shared parallel
-# echo "Running Facemc Hanson test with ${HISTORIES} particles on ${THREADS} threads:"
-# python -c "import hanson; hanson.runSimulation(${THREADS}, ${HISTORIES}, ${TIME})"
+  # # Run the simulation in shared parallel
+  # echo "Restarting Facemc Hanson test for ${HISTORIES} particles on ${THREADS} threads:"
+  # python -c "import hanson; hanson.restartSimulation(${THREADS}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
+
+else
+
+  # Create the results directory
+  python -c "import hanson; hanson.createResultsDirectory()"
+
+  # # Run the simulation in hybrid parallel
+  # echo "Running Facemc Hanson test for ${HISTORIES} particles on ${NODES} nodes with ${TASKS} tasks:"
+  # mpiexec -n ${NODES} python -c "import hanson; hanson.runSimulation(${TASKS}, ${HISTORIES}, ${TIME})"
+
+  # Run the simulation in distributed parallel
+  echo "Running Facemc Hanson test for ${HISTORIES} particles on ${NODES} nodes:"
+  mpiexec -n ${THREADS} python -c "import hanson; hanson.runSimulation(1, ${HISTORIES}, ${TIME})"
+
+  # # Run the simulation in shared parallel
+  # echo "Running Facemc Hanson test for ${HISTORIES} particles on ${THREADS} threads:"
+  # python -c "import hanson; hanson.runSimulation(${THREADS}, ${HISTORIES}, ${TIME})"
+fi
