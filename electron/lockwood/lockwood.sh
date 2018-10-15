@@ -64,12 +64,7 @@ RANGE=0.0993
 ##---------------------------------------------------------------------------##
 
 # Create a unique python script and change the parameters
-python_script="lockwood_0"
-i=1
-while [ -f ${python_script} ]; do
-  python_script="lockwood_$i"
-  i=$((i + 1))
-done
+python_script="lockwood-${SLURM_JOB_ID}"
 cp lockwood.py ${python_script}.py
 
 # Change the python_script parameters
