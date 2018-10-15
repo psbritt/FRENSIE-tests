@@ -32,7 +32,7 @@ atom=Data.Al_ATOM; element="Al"; zaid=13000
 # Set the source energy
 energy=0.314
 # Set the test number
-test_number=11
+test_number=0
 
 # Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
 interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
@@ -50,11 +50,11 @@ method=MonteCarlo.MODIFIED_TWO_D_UNION
 # Set the data file type (ACE_EPR_FILE, Native_EPR_FILE)
 file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 
-# Set the calorimeter thickness
+# Set the calorimeter thickness (g/cm2)
 calorimeter_thickness=5.050E-03
 
-# Set the ranges
-ranges=[ 0.0025, 0.0094, 0.0181, 0.0255, 0.0336, 0.0403, 0.0477, 0.0566, 0.0654, 0.0721, 0.0810, 0.0993 ]
+# Set the range (g/cm2)
+test_range=0.0025
 
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
@@ -80,6 +80,9 @@ def runSimulation( threads, histories, time ):
   session.initializeLogs( 0, True )
 
   properties = setSimulationProperties( histories, time )
+  name, title = setSimulationName( properties, file_type )
+  path_to_database = database_path
+  path_to_geometry = geometry_path
 
   ##--------------------------------------------------------------------------##
   ## ---------------------------- GEOMETRY SETUP ---------------------------- ##
@@ -91,7 +94,7 @@ def runSimulation( threads, histories, time ):
 
   # Set geometry model properties
   if geometry_type == "DagMC":
-    model_properties = DagMC.DagMCModelProperties( geometry_path )
+    model_properties = DagMC.DagMCModelProperties( path_to_geometry )
     model_properties.useFastIdLookup()
     # model_properties.setMaterialPropertyName( "mat" )
     # model_properties.setDensityPropertyName( "rho" )
@@ -128,7 +131,7 @@ def runSimulation( threads, histories, time ):
   ##--------------------------------------------------------------------------##
 
   # Initialized database
-  database = Data.ScatteringCenterPropertiesDatabase(database_path)
+  database = Data.ScatteringCenterPropertiesDatabase(path_to_database)
   scattering_center_definition_database = Collision.ScatteringCenterDefinitionDatabase()
 
   # Set element properties
@@ -151,7 +154,7 @@ def runSimulation( threads, histories, time ):
   material_ids = geom_model.getMaterialIds()
 
   # Fill model
-  model = Collision.FilledGeometryModel( database_path, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
+  model = Collision.FilledGeometryModel( path_to_database, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
 
   # Set particle distribution
   particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
@@ -178,8 +181,6 @@ def runSimulation( threads, histories, time ):
   # Set the archive type
   archive_type = "xml"
 
-  name, title = setSimulationName( properties, file_type )
-
   factory = Manager.ParticleSimulationManagerFactory( model,
                                                       source,
                                                       event_handler,
@@ -198,9 +199,46 @@ def runSimulation( threads, histories, time ):
   if session.rank() == 0:
 
     print "Processing the results:"
-    processData( energy_deposition_estimator, name, title, ranges[test_number], calorimeter_thickness )
+    processData( energy_deposition_estimator, name, title, test_range, calorimeter_thickness )
 
     print "Results will be in ", os.path.dirname(name)
+
+# Restart the simulation
+def restartSimulation( threads, histories, time, rendezvous ):
+
+  ##--------------------------------------------------------------------------##
+  ## ------------------------------ MPI Session ----------------------------- ##
+  ##--------------------------------------------------------------------------##
+  session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
+  Utility.removeAllLogs()
+  session.initializeLogs( 0, True )
+
+  # Set the data path
+  Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
+
+  factory = Manager.ParticleSimulationManagerFactory( rendezvous, histories, time, threads )
+
+  manager = factory.getManager()
+
+  Utility.removeAllLogs()
+  session.initializeLogs( 0, False )
+
+  manager.runSimulation()
+
+  if session.rank() == 0:
+
+    rendezvous_number = manager.getNumberOfRendezvous()
+
+    components = rendezvous.split("rendezvous_")
+    archive_name = components[0] + "rendezvous_"
+    archive_name += str( rendezvous_number - 1 )
+    archive_name += "."
+    archive_name += components[1].split(".")[1]
+
+    # print "Processing the results:"
+    # processData( archive_name, "native" )
+
+    # print "Results will be in ", os.path.dirname(archive_name)
 
 ##---------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES ------------------------- ##
@@ -232,6 +270,7 @@ def createResultsDirectory():
   if not os.path.exists(directory):
     os.makedirs(directory)
 
+  print directory
   return directory
 
 ##---------------------------------------------------------------------------##

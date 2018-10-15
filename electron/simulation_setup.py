@@ -254,6 +254,35 @@ def getResultsDirectory(file_type, interpolation):
   return directory
 
 ##----------------------------------------------------------------------------##
+## ------------------------ Create Results Directory ------------------------ ##
+##----------------------------------------------------------------------------##
+def getResultsDirectoryFromString(file_type, interpolation):
+
+  if file_type == "ACE":
+    # Use ACE EPR14 data
+    name = "epr14"
+  else:
+    # Use Native analog data
+    name = ""
+
+  # Set the interp in results directory
+  title = ""
+  if interpolation == "LOGLOGLOG":
+      interp = "loglog"
+  elif interpolation == "LINLINLIN":
+      interp = "linlin"
+  else:
+      interp = "linlog"
+
+  date = str(datetime.datetime.today()).split()[0]
+  if name == "epr14":
+    directory = "results/" + name + "/" + date
+  else:
+    directory = "results/" + interp + "/" + date
+
+  return directory
+
+##----------------------------------------------------------------------------##
 ##---------------------- processTrackFluxEnergyBinData -----------------------##
 ##----------------------------------------------------------------------------##
 def processTrackFluxEnergyBinData( estimator, est_id, filename, title ):
