@@ -235,21 +235,6 @@ def createResultsDirectory():
 
   return directory
 
-##----------------------------------------------------------------------------##
-## ------------------------ Create Results Directory ------------------------ ##
-##----------------------------------------------------------------------------##
-def createResultsDirectory(element_symbol, file_type_name, interp):
-
-  directory = setup.getResultsDirectoryFromString(file_type_name, interp)
-
-  directory = element_symbol + "/" + directory
-
-  if not os.path.exists(directory):
-    os.makedirs(directory)
-
-  print directory
-  return directory
-
 ##---------------------------------------------------------------------------##
 ## -------------------------- setSimulationName -----------------------------##
 ##---------------------------------------------------------------------------##

@@ -4,7 +4,6 @@
 #SBATCH --time=1-00:00:00
 #SBATCH --ntasks=40
 #SBATCH --cpus-per-task=4
-#SBATCH --output=Al/results/loglog/2018-10-15/al_lockwood_%j
 
 ##---------------------------------------------------------------------------##
 ## ---------------------------- FACEMC test runner --------------------------##
@@ -107,8 +106,10 @@ command=s/test_number=.*/test_number=${TEST_NUMBER}/
 sed -i "${command}" lockwood.py
 
 # Create the results directory
-python -c "import lockwood; lockwood.createResultsDirectory()"
+directory=$(python -c "import lockwood; lockwood.createResultsDirectory()" 2>&1)
 
 # Run the simulation
 echo "Running Facemc Lockwood test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
 mpiexec -n ${SLURM_NTASKS} python -c "import lockwood; lockwood.runSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME})"
+
+mv slurm-${SLURM_JOB_ID}.out ./${directory}
