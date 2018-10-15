@@ -87,34 +87,44 @@ calorimeter_thickness=5.050E-03
 # Material element
 element="Al"; zaid=13000
 
-# Change the element
-element_command="s/ELEMENT=.*/ELEMENT=\"${element}\"; ZAID=${zaid}/"
-# Change the calorimeter thickness
-calorimeter_command=s/CALORIMETER_THICKNESS=.*/CALORIMETER_THICKNESS=${calorimeter_thickness}/
-# Change the energy
-energy_command=s/ENERGY=.*/ENERGY=${energy}/
-# Change the number of MPI processes
-ntasks_command="s/\#SBATCH[[:space:]]--ntasks=.*/\#SBATCH --ntasks=${MPI_PROCESSES}/"
-# Change the number of OpenMP threads
-cpus_command="s/\#SBATCH[[:space:]]--cpus-per-task=.*/\#SBATCH --cpus-per-task=${OPEN_MP_THREADS}/"
-# Change the wall time
-time_command=s/TIME=.*/TIME=${TIME}/
-# Change the number of histories
-histories_command=s/HISTORIES=.*/HISTORIES=${HISTORIES}/
+# Set the element
+command="s/ELEMENT=.*/ELEMENT=\"${element}\"; ZAID=${zaid}/"
+sed -i "${command}" lockwood.sh
+
+# Set the calorimeter thickness
+command=s/CALORIMETER_THICKNESS=.*/CALORIMETER_THICKNESS=${calorimeter_thickness}/
+sed -i "${command}" lockwood.sh
+
+# Set the energy
+command=s/ENERGY=.*/ENERGY=${energy}/
+sed -i "${command}" lockwood.sh
+
+# Set the number of threads
+command="s/\#SBATCH[[:space:]]--ntasks=.*/\#SBATCH --ntasks=${MPI_PROCESSES}/"
+sed -i "${command}" lockwood.sh
+command="s/\#SBATCH[[:space:]]--cpus-per-task=.*/\#SBATCH --cpus-per-task=${OPEN_MP_THREADS}/"
+sed -i "${command}" lockwood.sh
+
+command=s/TIME=.*/TIME=${TIME}/
+sed -i "${command}" lockwood.sh
+command=s/HISTORIES=.*/HISTORIES=${HISTORIES}/
+sed -i "${command}" lockwood.sh
 
 
 for file_type in "${file_types[@]}"
 do
-  # Change the file type
-  file_command=s/FILE_TYPE=.*/FILE_TYPE=${file_type}/
+  # Set the file type
+  command=s/FILE_TYPE=.*/FILE_TYPE=${file_type}/
+  sed -i "${command}" lockwood.sh
   echo "Setting file type to ${file_type}"
 
   if [ "${file_type}" = "Native" ]; then
 
     for interp in "${interps[@]}"
     do
-      # Change the interp
-      interp_command=s/INTERP=.*/INTERP=${interp}/
+      # Set the interp
+      command=s/INTERP=.*/INTERP=${interp}/
+      sed -i "${command}" lockwood.sh
       echo "  Setting interpolation to ${interp}"
 
       for grid_policy in "${grid_policys[@]}"
@@ -123,58 +133,39 @@ do
           echo "    The interp (${interp}) and grid policy (${grid_policy}) combo will be skipped."
         else
           # Set 2D grid policy
-          grid_command=s/GRID_POLICY=.*/GRID_POLICY=${grid_policy}/
+          command=s/GRID_POLICY=.*/GRID_POLICY=${grid_policy}/
+          sed -i "${command}" lockwood.sh
           echo "    Setting grid policy to ${grid_policy}"
 
           for mode in "${modes[@]}"
           do
-            # Change the elastic distribution mode
-            mode_command=s/MODE=.*/MODE=${mode}/
+            # Set the elastic distribution mode
+            command=s/MODE=.*/MODE=${mode}/
+            sed -i "${command}" lockwood.sh
             echo "      Setting elastic mode to ${mode}"
 
             if [ "${mode}" == "COUPLED" ]; then
 
               for method in "${methods[@]}"
               do
-                # Change the elastic coupled sampling method
-                method_command=s/METHOD=.*/METHOD=${method}/
+                # Set the elastic coupled sampling method
+                command=s/METHOD=.*/METHOD=${method}/
+                sed -i "${command}" lockwood.sh
                 echo "        Setting elastic coupled sampling method to ${method}"
 
                 # loop through test numbers and run mpi script
                 for test_number in "${test_numbers[@]}"
                 do
-                  # Change the test number
-                  test_command=s/TEST_NUMBER=.*/TEST_NUMBER=$test_number/
-                  # Change the range
-                  range_command=s/RANGE=.*/RANGE=${ranges[$test_number]}/
+                    # Change the test number
+                    command=s/TEST_NUMBER=.*/TEST_NUMBER=$test_number/
+                    sed -i "${command}" lockwood.sh
 
-                  # Create a unique submit script
-                  name="lockwood_0.sh"
-                  i=1
-                  while [ -f ${name} ]; do
-                    name="lockwood_$i.sh"
-                    i=$((i + 1))
-                  done
-                  cp lockwood.sh ${name}
-                  sed -i "\$arm -- ${name}" ${name}
+                    # Set the range
+                    command=s/RANGE=.*/RANGE=${ranges[$test_number]}/
+                    sed -i "${command}" lockwood.sh
 
-                  sed -i "${element_command}" ${name}
-                  sed -i "${calorimeter_command}" ${name}
-                  sed -i "${energy_command}" ${name}
-                  sed -i "${ntasks_command=}" ${name}
-                  sed -i "${cpus_command}" ${name}
-                  sed -i "${time_command}" ${name}
-                  sed -i "${histories_command}" ${name}
-                  sed -i "${file_command}" ${name}
-                  sed -i "${interp_command}" ${name}
-                  sed -i "${grid_command}" ${name}
-                  sed -i "${mode_command}" ${name}
-                  sed -i "${method_command}" ${name}
-                  sed -i "${test_command}" ${name}
-                  sed -i "${range_command}" ${name}
-
-                  echo -e "          Running Lockwood ${energy} Test Number $test_number!\n"
-                  sbatch ${name}
+                    echo -e "          Running Lockwood ${energy} Test Number $test_number!\n"
+                    sbatch lockwood.sh
                 done
               done
             else
@@ -183,35 +174,14 @@ do
               do
                   # Change the test number
                   command=s/TEST_NUMBER=.*/TEST_NUMBER=$test_number/
-                  # Change the range
+                  sed -i "${command}" lockwood.sh
+
+                  # Set the range
                   command=s/RANGE=.*/RANGE=${ranges[$test_number]}/
-
-                  # Create a unique submit script
-                  name="lockwood_0.sh"
-                  i=1
-                  while [ -f ${name} ]; do
-                    name="lockwood_$i.sh"
-                    i=$((i + 1))
-                  done
-                  cp lockwood.sh ${name}
-                  sed -i "\$arm -- ${name}" ${name}
-
-                  sed -i "${element_command}" ${name}
-                  sed -i "${calorimeter_command}" ${name}
-                  sed -i "${energy_command}" ${name}
-                  sed -i "${ntasks_command=}" ${name}
-                  sed -i "${cpus_command}" ${name}
-                  sed -i "${time_command}" ${name}
-                  sed -i "${histories_command}" ${name}
-                  sed -i "${file_command}" ${name}
-                  sed -i "${interp_command}" ${name}
-                  sed -i "${grid_command}" ${name}
-                  sed -i "${mode_command}" ${name}
-                  sed -i "${test_command}" ${name}
-                  sed -i "${range_command}" ${name}
+                  sed -i "${command}" lockwood.sh
 
                   echo -e "        Running Lockwood ${energy} Test Number $test_number!\n"
-                  sbatch ${name}
+                  sbatch lockwood.sh
               done
             fi
           done
@@ -224,32 +194,14 @@ do
     do
         # Change the test number
         command=s/TEST_NUMBER=.*/TEST_NUMBER=$test_number/
-        # Change the range
+        sed -i "${command}" lockwood.sh
+
+        # Set the range
         command=s/RANGE=.*/RANGE=${ranges[$test_number]}/
+        sed -i "${command}" lockwood.sh
 
-        # Create a unique submit script
-        name="lockwood_0.sh"
-        i=1
-        while [ -f ${name} ]; do
-          name="lockwood_$i.sh"
-          i=$((i + 1))
-        done
-        cp lockwood.sh ${name}
-        sed -i "\$arm -- ${name}" ${name}
-
-        sed -i "${element_command}" ${name}
-        sed -i "${calorimeter_command}" ${name}
-        sed -i "${energy_command}" ${name}
-        sed -i "${ntasks_command=}" ${name}
-        sed -i "${cpus_command}" ${name}
-        sed -i "${time_command}" ${name}
-        sed -i "${histories_command}" ${name}
-        sed -i "${file_command}" ${name}
-        sed -i "${test_command}" ${name}
-        sed -i "${range_command}" ${name}
-
-        echo -e "\n  Running Lockwood ${energy} Test Number $test_number!"
-        sbatch ${name}
+        echo -e "  Running Lockwood ${energy} Test Number $test_number!\n"
+        sbatch lockwood.sh
     done
   fi
 

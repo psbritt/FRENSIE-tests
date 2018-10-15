@@ -63,53 +63,63 @@ RANGE=0.0993
 ## ------------------------------- COMMANDS ---------------------------------##
 ##---------------------------------------------------------------------------##
 
-# Change the lockwood.py parameters
+# Create a unique python script and change the parameters
+python_script="lockwood_0"
+i=1
+while [ -f ${python_script} ]; do
+  python_script="lockwood_$i"
+  i=$((i + 1))
+done
+cp lockwood.py ${python_script}.py
+
+# Change the python_script parameters
 
 # Set the element
 command=s/atom=.*/atom=Data.${ELEMENT}_ATOM\;\ element=\"${ELEMENT}\"\;\ zaid=${ZAID}/
-sed -i "${command}" lockwood.py
+sed -i "${command}" ${python_script}.py
 
 # Set the calorimeter thickness
 command=s/calorimeter_thickness=.*/calorimeter_thickness=${CALORIMETER_THICKNESS}/
-sed -i "${command}" lockwood.py
+sed -i "${command}" ${python_script}.py
 
 # Set the ranges
 command=s/test_range=.*/test_range=${RANGE}/
-sed -i "${command}" lockwood.py
+sed -i "${command}" ${python_script}.py
 
 # Set the energy
 command=s/energy=.*/energy=${ENERGY}/
-sed -i "${command}" lockwood.py
+sed -i "${command}" ${python_script}.py
 
 # Set the file type
 command=s/file_type=Data.ElectroatomicDataProperties.*/file_type=Data.ElectroatomicDataProperties.${FILE_TYPE}_EPR_FILE/
-sed -i "${command}" lockwood.py
+sed -i "${command}" ${python_script}.py
 
 # Set the interp
 command=s/interpolation=MonteCarlo.*/interpolation=MonteCarlo.${INTERP}_INTERPOLATION/
-sed -i "${command}" lockwood.py
+sed -i "${command}" ${python_script}.py
 
 # Set 2D grid policy
 command=s/grid_policy=MonteCarlo.*/grid_policy=MonteCarlo.${GRID_POLICY}_GRID/
-sed -i "${command}" lockwood.py
+sed -i "${command}" ${python_script}.py
 
 # Set the elastic distribution mode
 command=s/mode=MonteCarlo.*/mode=MonteCarlo.${MODE}_DISTRIBUTION/
-sed -i "${command}" lockwood.py
+sed -i "${command}" ${python_script}.py
 
 # Set the elastic coupled sampling method
 command=s/method=MonteCarlo.*/method=MonteCarlo.${METHOD}_UNION/
-sed -i "${command}" lockwood.py
+sed -i "${command}" ${python_script}.py
 
 # Set the test number
 command=s/test_number=.*/test_number=${TEST_NUMBER}/
-sed -i "${command}" lockwood.py
+sed -i "${command}" ${python_script}.py
 
 # Create the results directory
-directory=$(python -c "import lockwood; lockwood.createResultsDirectory()" 2>&1)
+directory=$(python -c "import ${python_script}; ${python_script}.createResultsDirectory()" 2>&1)
 
 # Run the simulation
 echo "Running Facemc Lockwood test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
-mpiexec -n ${SLURM_NTASKS} python -c "import lockwood; lockwood.runSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME})"
+mpiexec -n ${SLURM_NTASKS} python -c "import ${python_script}; ${python_script}.runSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME})"
 
 mv slurm-${SLURM_JOB_ID}.out ./${directory}
+rm ${python_script}.py*
