@@ -50,11 +50,11 @@ method=MonteCarlo.MODIFIED_TWO_D_UNION
 # Set the data file type (ACE_EPR_FILE, Native_EPR_FILE)
 file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 
-# Set the calorimeter thickness
+# Set the calorimeter thickness (g/cm2)
 calorimeter_thickness=5.050E-03
 
-# Set the ranges
-ranges=[ 0.0025, 0.0094, 0.0181, 0.0255, 0.0336, 0.0403, 0.0477, 0.0566, 0.0654, 0.0721, 0.0810, 0.0993 ]
+# Set the range (g/cm2)
+test_range=0.0993
 
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
@@ -80,6 +80,9 @@ def runSimulation( threads, histories, time ):
   session.initializeLogs( 0, True )
 
   properties = setSimulationProperties( histories, time )
+  name, title = setSimulationName( properties, file_type )
+  path_to_database = database_path
+  path_to_geometry = geometry_path
 
   ##--------------------------------------------------------------------------##
   ## ---------------------------- GEOMETRY SETUP ---------------------------- ##
@@ -91,7 +94,7 @@ def runSimulation( threads, histories, time ):
 
   # Set geometry model properties
   if geometry_type == "DagMC":
-    model_properties = DagMC.DagMCModelProperties( geometry_path )
+    model_properties = DagMC.DagMCModelProperties( path_to_geometry )
     model_properties.useFastIdLookup()
     # model_properties.setMaterialPropertyName( "mat" )
     # model_properties.setDensityPropertyName( "rho" )
@@ -128,7 +131,7 @@ def runSimulation( threads, histories, time ):
   ##--------------------------------------------------------------------------##
 
   # Initialized database
-  database = Data.ScatteringCenterPropertiesDatabase(database_path)
+  database = Data.ScatteringCenterPropertiesDatabase(path_to_database)
   scattering_center_definition_database = Collision.ScatteringCenterDefinitionDatabase()
 
   # Set element properties
@@ -151,7 +154,7 @@ def runSimulation( threads, histories, time ):
   material_ids = geom_model.getMaterialIds()
 
   # Fill model
-  model = Collision.FilledGeometryModel( database_path, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
+  model = Collision.FilledGeometryModel( path_to_database, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
 
   # Set particle distribution
   particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
@@ -178,8 +181,6 @@ def runSimulation( threads, histories, time ):
   # Set the archive type
   archive_type = "xml"
 
-  name, title = setSimulationName( properties, file_type )
-
   factory = Manager.ParticleSimulationManagerFactory( model,
                                                       source,
                                                       event_handler,
@@ -198,7 +199,7 @@ def runSimulation( threads, histories, time ):
   if session.rank() == 0:
 
     print "Processing the results:"
-    processData( energy_deposition_estimator, name, title, ranges[test_number], calorimeter_thickness )
+    processData( energy_deposition_estimator, name, title, test_range, calorimeter_thickness )
 
     print "Results will be in ", os.path.dirname(name)
 
@@ -232,6 +233,21 @@ def createResultsDirectory():
   if not os.path.exists(directory):
     os.makedirs(directory)
 
+  return directory
+
+##----------------------------------------------------------------------------##
+## ------------------------ Create Results Directory ------------------------ ##
+##----------------------------------------------------------------------------##
+def createResultsDirectory(element_symbol, file_type_name, interp):
+
+  directory = setup.getResultsDirectoryFromString(file_type_name, interp)
+
+  directory = element_symbol + "/" + directory
+
+  if not os.path.exists(directory):
+    os.makedirs(directory)
+
+  print directory
   return directory
 
 ##---------------------------------------------------------------------------##
