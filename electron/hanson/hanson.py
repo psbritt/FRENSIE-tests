@@ -259,10 +259,12 @@ def restartSimulation( threads, histories, time, rendezvous ):
     archive_name += "."
     archive_name += components[1].split(".")[1]
 
+    # Call destructor for manager and factory
+    manager = 0
+    factory = 0
+
     print "Processing the results:"
     processData( archive_name, "native" )
-
-    print "Results will be in ", os.path.dirname(archive_name)
 
 
 ##----------------------------------------------------------------------------##
@@ -312,12 +314,12 @@ def setSimulationName( properties, file_type ):
 ##----------------------------------------------------------------------------##
 
 # This function pulls data from the .xml results file
-def processData( results_file, raw_file_type ):
+def processData( rendezvous_file, raw_file_type ):
 
   Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
 
   # Load data from file
-  manager = Manager.ParticleSimulationManagerFactory( results_file ).getManager()
+  manager = Manager.ParticleSimulationManagerFactory( rendezvous_file ).getManager()
   event_handler = manager.getEventHandler()
 
   # Get the estimator data
@@ -334,6 +336,7 @@ def processData( results_file, raw_file_type ):
   else:
     ValueError
   filename, title = setSimulationName( properties, file_type )
+  filename = rendezvous_file.split("_rendezvous_")[0]
 
   print "Processing the results:"
   processCosineBinData( estimator_1, cosine_bins, filename, title )
@@ -344,7 +347,6 @@ def processData( results_file, raw_file_type ):
   # Get the estimator data
   estimator_2 = event_handler.getEstimator( 2 )
   cosine_bins = estimator_2.getCosineDiscretization()
-  print cosine_bins
 
   processCosineBinData( estimator_2, cosine_bins, filename, title )
 
