@@ -136,7 +136,7 @@ do
           # Create the output directory
           directory=$(python -c "import lockwood; lockwood.createResultsDirectory(\"${element}\", \"${file_type}\", \"${interp}\")" 2>&1)
 
-          command="s;\#SBATCH[[:space:]]--input=.*;\#SBATCH --input=${directory}/al_lockwood_%j ;"
+          command="s;\#SBATCH[[:space:]]--output=.*;\#SBATCH --output=${directory}/al_lockwood_%j ;"
           sed -i "${command}" lockwood.sh
 
           # Set 2D grid policy
@@ -169,7 +169,6 @@ do
 
                     # Set the range
                     command=s/RANGE=.*/RANGE=${ranges[$test_number]}/
-                    echo "${command}"
                     sed -i "${command}" lockwood.sh
 
                     echo -e "          Running Lockwood ${energy} Test Number $test_number!\n"
