@@ -4,7 +4,7 @@
 #SBATCH --time=1-00:00:00
 #SBATCH --ntasks=40
 #SBATCH --cpus-per-task=4
-#SBATCH --input=Al/results/loglog/2018-10-15/al_lockwood_%j 
+#SBATCH --output=Al/results/loglog/2018-10-15/al_lockwood_%j
 
 ##---------------------------------------------------------------------------##
 ## ---------------------------- FACEMC test runner --------------------------##
