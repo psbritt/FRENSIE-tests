@@ -32,7 +32,7 @@ atom=Data.Al_ATOM; element="Al"; zaid=13000
 # Set the source energy
 energy=0.314
 # Set the test number
-test_number=11
+test_number=0
 
 # Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
 interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
@@ -54,7 +54,7 @@ file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 calorimeter_thickness=5.050E-03
 
 # Set the range (g/cm2)
-test_range=0.0993
+test_range=0.0025
 
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
@@ -233,6 +233,7 @@ def createResultsDirectory():
   if not os.path.exists(directory):
     os.makedirs(directory)
 
+  print directory
   return directory
 
 ##---------------------------------------------------------------------------##

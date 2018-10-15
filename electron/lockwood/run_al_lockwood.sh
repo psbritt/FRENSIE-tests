@@ -156,7 +156,7 @@ do
                     i=$((i + 1))
                   done
                   cp lockwood.sh ${name}
-                  sed -i "\$arm -- \"$0\"" ${name}
+                  sed -i "\$arm -- ${name}" ${name}
 
                   sed -i "${element_command}" ${name}
                   sed -i "${calorimeter_command}" ${name}
@@ -194,7 +194,7 @@ do
                     i=$((i + 1))
                   done
                   cp lockwood.sh ${name}
-                  sed -i "\$arm -- \"$0\"" ${name}
+                  sed -i "\$arm -- ${name}" ${name}
 
                   sed -i "${element_command}" ${name}
                   sed -i "${calorimeter_command}" ${name}
@@ -235,7 +235,7 @@ do
           i=$((i + 1))
         done
         cp lockwood.sh ${name}
-        sed -i "\$arm -- \"$0\"" ${name}
+        sed -i "\$arm -- ${name}" ${name}
 
         sed -i "${element_command}" ${name}
         sed -i "${calorimeter_command}" ${name}
@@ -248,7 +248,7 @@ do
         sed -i "${test_command}" ${name}
         sed -i "${range_command}" ${name}
 
-        echo -e "  Running Lockwood ${energy} Test Number $test_number!\n"
+        echo -e "\n  Running Lockwood ${energy} Test Number $test_number!"
         sbatch ${name}
     done
   fi
