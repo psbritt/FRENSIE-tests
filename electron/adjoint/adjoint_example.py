@@ -133,6 +133,17 @@ def runSimulation( threads, histories, time ):
   # Set the energy bins
   surface_flux_estimator.setSourceEnergyDiscretization( bins )
 
+  # Create response function
+  delta_energy = Distribution.DeltaDistribution( energy )
+  response_functions = [None] * ( 2 )
+  response_functions[0] = ActiveRegion.ParticleResponse.getDefault()
+  response_functions[1] = ActiveRegion.EnergyParticleResponseFunction( delta_energy )
+
+  # Set delta energy response function
+  # NOTE for Alex: I tried just doing one response function and thought that might be the problem so I added a default response function as well
+  surface_flux_estimator.setResponseFunctions( response_functions )
+  surface_flux_estimator.setResponseFunctions( response_functions[0] )
+
   # Add the estimator to the event handler
   event_handler.addEstimator( surface_flux_estimator )
 
