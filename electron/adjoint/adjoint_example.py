@@ -45,6 +45,7 @@ method=MonteCarlo.MODIFIED_TWO_D_UNION
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
+  database_path = "/home/lkersting/frensie/build/packages/database.xml"
   geometry_path = "/home/lkersting/frensie/tests/electron/adjoint/h_sphere.h5m"
 elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus)
   database_path = "/home/software/mcnpdata/database.xml"
@@ -135,14 +136,11 @@ def runSimulation( threads, histories, time ):
 
   # Create response function
   delta_energy = Distribution.DeltaDistribution( energy )
-  response_functions = [None] * ( 2 )
-  response_functions[0] = ActiveRegion.ParticleResponse.getDefault()
-  response_functions[1] = ActiveRegion.EnergyParticleResponseFunction( delta_energy )
+  particle_response_function = ActiveRegion.EnergyParticleResponseFunction( delta_energy )
+  response_function = ActiveRegion.StandardParticleResponse( particle_response_function )
 
-  # Set delta energy response function
-  # NOTE for Alex: I tried just doing one response function and thought that might be the problem so I added a default response function as well
-  surface_flux_estimator.setResponseFunctions( response_functions )
-  surface_flux_estimator.setResponseFunctions( response_functions[0] )
+  # Set the response function
+  surface_flux_estimator.addResponseFunction( response_function )
 
   # Add the estimator to the event handler
   event_handler.addEstimator( surface_flux_estimator )
@@ -159,6 +157,9 @@ def runSimulation( threads, histories, time ):
 
   # Set the energy bins
   surface_current_estimator.setSourceEnergyDiscretization( bins )
+
+  # Set the response function
+  surface_current_estimator.addResponseFunction( response_function )
 
   # Add the estimator to the event handler
   event_handler.addEstimator( surface_current_estimator )
@@ -270,7 +271,8 @@ def setSimulationProperties( histories, time ):
 ##----------------------------------------------------------------------------##
 def createResultsDirectory():
 
-  directory = setup.getResultsDirectory(file_type, interpolation)
+  date = str(datetime.datetime.today()).split()[0]
+  directory = "results/" + date
 
   if not os.path.exists(directory):
     os.makedirs(directory)
@@ -284,7 +286,9 @@ def createResultsDirectory():
 def setSimulationName( properties, file_type ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "adjoint" + extension
-  output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
+  date = str(datetime.datetime.today()).split()[0]
+
+  output = "results/" + date + "/" + name
 
   return (output, title)
 
