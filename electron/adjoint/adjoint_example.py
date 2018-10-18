@@ -52,6 +52,7 @@ elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus
   geometry_path = "/home/ligross/frensie/tests/adjoint/h_sphere.h5m"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
+  database_path = "/home/lkersting/dag_frensie/build/packages/database.xml"
   geometry_path = "/home/lkersting/dag_frensie/tests/electron/adjoint/h_sphere.h5m"
 
 # Run the simulation
