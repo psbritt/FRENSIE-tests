@@ -360,6 +360,9 @@ def processData( estimator, filename, title, subzone_op ):
   name = filename+"_energy_dep.txt"
   out_file = open(name, 'w')
 
+  # Write title to file
+  out_file.write( "# " + title +"\n")
+
   # Write the header to the file
   header = "# Range (g/cm2)\tEnergy Deposition (MeV cm2/g)\tError\t"+str(today)+"\n"
   out_file.write(header)
