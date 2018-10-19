@@ -37,7 +37,7 @@ else
         cd ${FILE}
 
         # Plot results
-        plot="${TESTING_DIR}/adjoint/plot.p"
+        plot="${TESTING_DIR}/self_adjoint/plot.p"
         gnuplot ${plot}
 
     else

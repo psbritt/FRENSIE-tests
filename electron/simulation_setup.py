@@ -305,8 +305,9 @@ def processTrackFluxEnergyBinData( estimator, est_id, filename, title ):
   header = "# Energy (MeV)\tTrack Flux (#/cm$^2$)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  data = str(energy_bins) + '\t' + str(flux) + '\t' + str(rel_error)
-  out_file.write(data)
+  for i in range(0, len(flux)):
+    data = str(energy_bins[i]) + '\t' + str(flux[i]) + '\t' + str(rel_error[i]) + '\n'
+    out_file.write(data)
   out_file.close()
 
 ##----------------------------------------------------------------------------##
@@ -332,8 +333,9 @@ def processSurfaceFluxEnergyBinData( estimator, est_id, filename, title ):
   header = "# Energy (MeV)\tSurface Flux (#/cm$^2$)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  data = str(energy_bins) + '\t' + str(flux) + '\t' + str(rel_error)
-  out_file.write(data)
+  for i in range(0, len(flux)):
+    data = str(energy_bins[i]) + '\t' + str(flux[i]) + '\t' + str(rel_error[i]) + '\n'
+    out_file.write(data)
   out_file.close()
 
 ##----------------------------------------------------------------------------##
@@ -359,8 +361,9 @@ def processSurfaceCurrentEnergyBinData( estimator, est_id, filename, title ):
   header = "# Energy (MeV)\tSurface Current (#)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  data = str(energy_bins) + '\t' + str(current) + '\t' + str(rel_error)
-  out_file.write(data)
+  for i in range(0, len(current)):
+    data = str(energy_bins[i]) + '\t' + str(current[i]) + '\t' + str(rel_error[i]) + '\n'
+    out_file.write(data)
   out_file.close()
 
 ##----------------------------------------------------------------------------##
@@ -386,8 +389,9 @@ def processSurfaceCurrentCosineBinData( estimator, est_id, filename, title ):
   header = "# Cosine \tSurface Current (#)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  data = str(energy_bins) + '\t' + str(current) + '\t' + str(rel_error)
-  out_file.write(data)
+  for i in range(0, len(current)):
+    data = str(cosine_bins[i]) + '\t' + str(current[i]) + '\t' + str(rel_error[i]) + '\n'
+    out_file.write(data)
   out_file.close()
 
 ##----------------------------------------------------------------------------##
@@ -403,7 +407,7 @@ def processTrackFluxSourceEnergyBinData( estimator, est_id, filename, title ):
   today = datetime.date.today()
 
   # Write the flux data to a file
-  name = filename+"_track_flux.txt"
+  name = filename+"_source_track_flux.txt"
   out_file = open(name, 'w')
 
   # Write title to file
@@ -413,8 +417,10 @@ def processTrackFluxSourceEnergyBinData( estimator, est_id, filename, title ):
   header = "# Source Energy (MeV)\tTrack Flux (#/cm$^2$)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  data = str(energy_bins) + '\t' + str(flux) + '\t' + str(rel_error)
-  out_file.write(data)
+  print flux
+  for i in range(0, len(flux)):
+    data = str(energy_bins[i]) + '\t' + str(flux[i]) + '\t' + str(rel_error[i]) + '\n'
+    out_file.write(data)
   out_file.close()
 
 ##----------------------------------------------------------------------------##
@@ -430,7 +436,7 @@ def processSurfaceFluxSourceEnergyBinData( estimator, est_id, filename, title ):
   today = datetime.date.today()
 
   # Write the flux data to a file
-  name = filename+"_flux.txt"
+  name = filename+"_source_flux.txt"
   out_file = open(name, 'w')
 
   # Write title to file
@@ -440,8 +446,12 @@ def processSurfaceFluxSourceEnergyBinData( estimator, est_id, filename, title ):
   header = "# Source Energy (MeV)\tSurface Flux (#/cm$^2$)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  data = str(energy_bins) + '\t' + str(flux) + '\t' + str(rel_error)
-  out_file.write(data)
+  print len(energy_bins),len(flux),len(rel_error)
+  print flux
+  for i in range(0, len(flux)):
+
+    data = str(energy_bins[i]) + '\t' + str(flux[i]) + '\t' + str(rel_error[i]) + '\n'
+    out_file.write(data)
   out_file.close()
 
 ##----------------------------------------------------------------------------##
@@ -457,7 +467,7 @@ def processSurfaceCurrentSourceEnergyBinData( estimator, est_id, filename, title
   today = datetime.date.today()
 
   # Write the current data to a file
-  name = filename+"_current.txt"
+  name = filename+"_source_current.txt"
   out_file = open(name, 'w')
 
   # Write title to file
@@ -467,6 +477,7 @@ def processSurfaceCurrentSourceEnergyBinData( estimator, est_id, filename, title
   header = "# Source Energy (MeV)\tSurface Current (#)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  data = str(energy_bins) + '\t' + str(current) + '\t' + str(rel_error)
-  out_file.write(data)
+  for i in range(0, len(current)):
+    data = str(energy_bins[i]) + '\t' + str(current[i]) + '\t' + str(rel_error[i]) + '\n'
+    out_file.write(data)
   out_file.close()
