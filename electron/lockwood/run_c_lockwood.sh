@@ -23,9 +23,6 @@ HISTORIES=1000000
 # Set the max runtime (in minutes, 1 day = 1440 )
 TIME=1400
 
-# Set the test energy (0.314, 0.521, 1.033)
-energy=0.314
-
 # Set the data file type (ACE Native)
 file_types=( Native )
 
