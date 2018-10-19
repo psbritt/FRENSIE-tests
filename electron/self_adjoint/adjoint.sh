@@ -1,5 +1,5 @@
 #!/bin/sh
-# This file is named adjoint_example.sh
+# This file is named adjoint.sh
 #SBATCH --partition=pre
 #SBATCH --time=1-00:00:00
 #SBATCH --ntasks=40
@@ -34,7 +34,7 @@ if [ "$#" -eq 1 ]; then
 
   # Restart the simulation
   echo "Restarting Facemc Adjoint Example test for ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
-  mpiexec -n ${SLURM_NTASKS} python -c "import adjoint_example; adjoint_example.restartSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
+  mpiexec -n ${SLURM_NTASKS} python -c "import adjoint; adjoint.restartSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
 
 # Run new simulation
 else
@@ -46,8 +46,8 @@ else
   METHOD=MODIFIED_TWO_D
 
   # Create a unique python script and change the parameters
-  python_script="adjoint_example_${SLURM_JOB_ID}"
-  cp adjoint_example.py ${python_script}.py
+  python_script="adjoint_${SLURM_JOB_ID}"
+  cp adjoint.py ${python_script}.py
 
   # Set the elastic distribution mode
   command=s/mode=MonteCarlo.*/mode=MonteCarlo.${MODE}_DISTRIBUTION/
