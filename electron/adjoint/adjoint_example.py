@@ -45,12 +45,14 @@ method=MonteCarlo.MODIFIED_TWO_D_UNION
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
+  database_path = "/home/lkersting/frensie/build/packages/database.xml"
   geometry_path = "/home/lkersting/frensie/tests/electron/adjoint/h_sphere.h5m"
 elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus)
   database_path = "/home/software/mcnpdata/database.xml"
   geometry_path = "/home/ligross/frensie/tests/adjoint/h_sphere.h5m"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
+  database_path = "/home/lkersting/dag_frensie/build/packages/database.xml"
   geometry_path = "/home/lkersting/dag_frensie/tests/electron/adjoint/h_sphere.h5m"
 
 # Run the simulation
@@ -133,6 +135,14 @@ def runSimulation( threads, histories, time ):
   # Set the energy bins
   surface_flux_estimator.setSourceEnergyDiscretization( bins )
 
+  # Create response function
+  delta_energy = Distribution.DeltaDistribution( energy )
+  particle_response_function = ActiveRegion.EnergyParticleResponseFunction( delta_energy )
+  response_function = ActiveRegion.StandardParticleResponse( particle_response_function )
+
+  # Set the response function
+  surface_flux_estimator.addResponseFunction( response_function )
+
   # Add the estimator to the event handler
   event_handler.addEstimator( surface_flux_estimator )
 
@@ -148,6 +158,9 @@ def runSimulation( threads, histories, time ):
 
   # Set the energy bins
   surface_current_estimator.setSourceEnergyDiscretization( bins )
+
+  # Set the response function
+  surface_current_estimator.addResponseFunction( response_function )
 
   # Add the estimator to the event handler
   event_handler.addEstimator( surface_current_estimator )
@@ -259,7 +272,8 @@ def setSimulationProperties( histories, time ):
 ##----------------------------------------------------------------------------##
 def createResultsDirectory():
 
-  directory = setup.getResultsDirectory(file_type, interpolation)
+  date = str(datetime.datetime.today()).split()[0]
+  directory = "results/" + date
 
   if not os.path.exists(directory):
     os.makedirs(directory)
@@ -273,7 +287,9 @@ def createResultsDirectory():
 def setSimulationName( properties, file_type ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "adjoint" + extension
-  output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
+  date = str(datetime.datetime.today()).split()[0]
+
+  output = "results/" + date + "/" + name
 
   return (output, title)
 
