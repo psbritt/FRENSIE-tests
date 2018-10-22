@@ -4,6 +4,10 @@ import sys
 import numpy
 import datetime
 import socket
+
+# Add the parent directory to the path
+sys.path.insert(1,'../')
+import simulation_setup as setup
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
 import PyFrensie.Geometry.DagMC as DagMC
@@ -18,10 +22,6 @@ import PyFrensie.MonteCarlo.Collision as Collision
 import PyFrensie.MonteCarlo.ActiveRegion as ActiveRegion
 import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
-
-# Add the parent directory to the path
-sys.path.insert(1,'../')
-import simulation_setup as setup
 
 ##---------------------------------------------------------------------------##
 ## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
@@ -46,14 +46,13 @@ method=MonteCarlo.MODIFIED_TWO_D_UNION
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
   database_path = "/home/lkersting/frensie/build/packages/database.xml"
-  geometry_path = "/home/lkersting/frensie/tests/electron/self_adjoint/geom.h5m"
 elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus)
   database_path = "/home/software/mcnpdata/database.xml"
-  geometry_path = "/home/ligross/frensie/tests/self_adjoint/geom.h5m"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
   database_path = "/home/lkersting/dag_frensie/build/packages/database.xml"
-  geometry_path = "/home/lkersting/dag_frensie/tests/electron/self_adjoint/geom.h5m"
+
+geometry_path = os.path.dirname(os.path.realpath(__file__)) + "/geom.h5m"
 
 # Run the simulation
 def runSimulation( threads, histories, time ):
