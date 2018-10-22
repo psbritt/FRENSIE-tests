@@ -21,7 +21,7 @@ OPEN_MP_THREADS=4
 # Set the number of histories
 HISTORIES=1000000
 # Set the max runtime (in minutes, 1 day = 1440 )
-TIME=1400
+TIME=1300
 
 # Set the material ( Al polystyrene polyethylene )
 materials=( Al )
