@@ -4,6 +4,12 @@ import sys
 import numpy
 import datetime
 import socket
+
+# NOTE: If a specific version of FRENSIE is desired, the path below can be
+# uncommented and the desired path to the frensie/lib can be used.
+# sys.path.insert(1,'../../lib/python2.7/site-packages/')
+# print "WARNING: The version of PyFrensie used is installed in ", os.path.abspath('../../lib/python2.7/site-packages/')
+
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
 import PyFrensie.Geometry.DagMC as DagMC
