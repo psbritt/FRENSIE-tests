@@ -1,12 +1,12 @@
 #! /usr/bin/env python
-import os
+from os import path, makedirs
 import sys
 import numpy
 import datetime
 import socket
 
 # Add the parent directory to the path
-sys.path.insert(1,'../')
+sys.path.insert(1,path.dirname(path.dirname(path.abspath(__file__))))
 import simulation_setup as setup
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
@@ -61,7 +61,7 @@ elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
 
-geometry_path = os.path.dirname(os.path.realpath(__file__)) + "/"
+geometry_path = path.dirname(path.realpath(__file__)) + "/"
 geometry_path += material + "/geom.h5m"
 
 # Run the simulation
@@ -75,7 +75,7 @@ def runSimulation( threads, histories, time ):
   session.initializeLogs( 0, True )
 
   properties = setSimulationProperties( histories, time )
-  name, title = setSimulationName( properties, file_type )
+  name, title = setSimulationName( properties )
   path_to_database = database_path
   path_to_geometry = geometry_path
 
@@ -229,7 +229,7 @@ def runSimulation( threads, histories, time ):
     print "Processing the results:"
     processData( energy_deposition_estimator, name, title, subzone_width*density )
 
-    print "Results will be in ", os.path.dirname(name)
+    print "Results will be in ", path.dirname(name)
 
 # Restart the simulation
 def restartSimulation( threads, histories, time, rendezvous ):
@@ -266,7 +266,7 @@ def restartSimulation( threads, histories, time, rendezvous ):
     # print "Processing the results:"
     # processData( archive_name, "native" )
 
-    # print "Results will be in ", os.path.dirname(archive_name)
+    # print "Results will be in ", path.dirname(archive_name)
 
 ##---------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES ------------------------- ##
@@ -295,8 +295,8 @@ def createResultsDirectory():
 
   directory = material + "/" + directory
 
-  if not os.path.exists(directory):
-    os.makedirs(directory)
+  if not path.exists(directory):
+    makedirs(directory)
 
   print directory
   return directory
@@ -305,7 +305,7 @@ def createResultsDirectory():
 ## -------------------------- setSimulationName -----------------------------##
 ##---------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
-def setSimulationName( properties, file_type ):
+def setSimulationName( properties ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "mclaughlin" + extension
   output = material + "/" + setup.getResultsDirectory(file_type, interpolation) + "/" + name
@@ -337,13 +337,13 @@ def processDataFromFile( rendezvous_file, raw_file_type, subzone_op ):
     file_type = Data.ElectroatomicDataProperties.Native_EPR_FILE
   else:
     ValueError
-  filename, title = setSimulationName( properties, file_type )
+  filename, title = setSimulationName( properties )
   filename = rendezvous_file.split("_rendezvous_")[0]
 
   print "Processing the results:"
   processData( estimator_1, filename, title, subzone_op )
 
-  print "Results will be in ", os.path.dirname(filename)
+  print "Results will be in ", path.dirname(filename)
 
 ##----------------------------------------------------------------------------##
 ##------------------------------- processData --------------------------------##

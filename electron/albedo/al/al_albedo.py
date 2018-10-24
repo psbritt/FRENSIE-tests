@@ -198,7 +198,7 @@ def runSimulation( threads, histories, time ):
   # Set the archive type
   archive_type = "xml"
 
-  name, title = setSimulationName( properties, file_type )
+  name, title = setSimulationName( properties )
 
   factory = Manager.ParticleSimulationManagerFactory( model,
                                                       source,
@@ -260,7 +260,7 @@ def createResultsDirectory():
 ## -------------------------- setSimulationName -----------------------------##
 ##---------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
-def setSimulationName( properties, file_type ):
+def setSimulationName( properties ):
 
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "al_albedo_" + str(energy) + extension
@@ -297,7 +297,7 @@ def processData( results_file, raw_file_type ):
     file_type = Data.ElectroatomicDataProperties.Native_EPR_FILE
   else:
     ValueError
-  filename, title = setSimulationName( properties, file_type )
+  filename, title = setSimulationName( properties )
 
   print "Processing the results:"
   processCosineBinData( estimator_1, cosine_bins, filename, title )
