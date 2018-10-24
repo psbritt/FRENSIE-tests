@@ -61,7 +61,7 @@ fi
 calorimeter_thickness=1.561e-02
 
 # Material element
-element="c"; zaid=6000
+element="C"; zaid=6000
 
 # Set the element
 command="s/ELEMENT=.*/ELEMENT=\"${element}\"; ZAID=${zaid}/"

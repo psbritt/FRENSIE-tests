@@ -1,5 +1,5 @@
 #!/bin/sh
-# This file is named mclaughlin.sh
+# This file is named sumbit_script.sh
 #SBATCH --partition=pre
 #SBATCH --time=1-00:00:00
 #SBATCH --ntasks=40
@@ -8,16 +8,20 @@
 ##---------------------------------------------------------------------------##
 ## ---------------------------- FACEMC test runner --------------------------##
 ##---------------------------------------------------------------------------##
-## FRENSIE benchmark test: McLaughlin dose depth data.
-## The dose depth for a 1-D in several materials is calculated by dividing the
-## energy deposition by the subzone width (g/cm^2).
+## Basic submit script template for UW cluster
 ##---------------------------------------------------------------------------##
 EXTRA_ARGS=$@
 
+# Set the test name
+TEST_NAME="lockwood"
 # Set the number of histories
 HISTORIES=1000000
 # Set the max runtime (in minutes, 1 day = 1440 )
-TIME=1300
+TIME=1400
+
+# These parameters can be set if the cluster is not used
+SLURM_CPUS_PER_TASK=4
+SLURM_NTASKS=1
 
 # Run from the rendezvous
 if [ "$#" -eq 1 ]; then
@@ -25,14 +29,11 @@ if [ "$#" -eq 1 ]; then
   RENDEZVOUS="$1"
 
   # Restart the simulation
-  echo "Restarting Facemc McLaughlin test for ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
-  mpiexec -n ${SLURM_NTASKS} python -c "import mclaughlin; mclaughlin.restartSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
+  echo "Restarting Facemc ${TEST_NAME} test for ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
+  mpiexec -n ${SLURM_NTASKS} python -c "import ${TEST_NAME}; ${TEST_NAME}.runSimulationFromRendezvous(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
 
 # Run new simulation
 else
-
-  # Set the material ( Al, polystyrene, polyethylene )
-  MATERIAL="Al"
 
   # Set the data file type (ACE Native)
   FILE_TYPE=Native
@@ -53,59 +54,11 @@ else
   ## ------------------------------- COMMANDS ---------------------------------##
   ##---------------------------------------------------------------------------##
 
-  ENERGY=0.0
-  SUBZONE_WIDTH=0.0
-  DENSITY=0.0
-  if [ "${MATERIAL}" = "Al" ]; then
-    # Set the source energy
-    ENERGY=3.0
-    # Set the subzone width (cm)
-    SUBZONE_WIDTH=0.0148
-    # Set the material density (g/cm3)
-    DENSITY=2.7
-
-  elif [ "${MATERIAL}" = "polystyrene" ]; then
-    # Set the source energy
-    ENERGY=0.1
-    # Set the subzone width (cm)
-    SUBZONE_WIDTH=0.0004
-    # Set the material density (g/cm3)
-    DENSITY=1.06
-
-  elif [ "${MATERIAL}" = "polyethylene" ]; then
-    # Set the source energy
-    ENERGY=0.1
-    # Set the subzone width (cm)
-    SUBZONE_WIDTH=0.022
-    # Set the material density (g/cm3)
-    DENSITY=0.94
-
-  else
-    echo "Material ${MATERIAL} is currently not supported!"
-  fi
-
-
   # Create a unique python script and change the parameters
-  python_script="mclaughlin_${SLURM_JOB_ID}"
-  cp mclaughlin.py ${python_script}.py
+  python_script="${TEST_NAME}_${SLURM_JOB_ID}"
+  cp ${TEST_NAME}.py ${python_script}.py
 
   # Change the python_script parameters
-
-  # Set the material
-  command=s/material=.*/material=\"${MATERIAL}\"/
-  sed -i "${command}" ${python_script}.py
-
-  # Set the material density
-  command=s/density=.*/density=${DENSITY}/
-  sed -i "${command}" ${python_script}.py
-
-  # Set the subzone width
-  command=s/subzone_width=.*/subzone_width=${SUBZONE_WIDTH}/
-  sed -i "${command}" ${python_script}.py
-
-  # Set the energy
-  command=s/energy=.*/energy=${ENERGY}/
-  sed -i "${command}" ${python_script}.py
 
   # Set the file type
   command=s/file_type=Data.ElectroatomicDataProperties.*/file_type=Data.ElectroatomicDataProperties.${FILE_TYPE}_EPR_FILE/
@@ -130,9 +83,29 @@ else
   # Create the results directory
   directory=$(python -c "import ${python_script}; ${python_script}.createResultsDirectory()" 2>&1)
 
-  # Run the simulation
-  echo "Running Facemc McLaughlin test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
-  mpiexec -n ${SLURM_NTASKS} python -c "import ${python_script}; ${python_script}.runSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME})"
+  # Get the simulation name
+  name=$(python -c "import ${python_script}; name = ${python_script}.getSimulationName(); print name" 2>&1)
+
+  RENDEZVOUS="${name}_rendezvous_0.xml"
+
+  # Run the simulation from the last rendezvous
+  if [ -f ${RENDEZVOUS} ]; then
+
+    # Get the last rendezvous
+    i=0
+    while [ -f "${name}_rendezvous_${i}.xml" ]; do
+      RENDEZVOUS="${name}_rendezvous_${i}.xml"
+      i=$[$i+1]
+    done
+
+    # Run the simulation from the last rendezvous
+    echo "Running Facemc ${TEST_NAME} test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each from the rendezvous '${RENDEZVOUS}'!"
+    mpiexec -n ${SLURM_NTASKS} python -c "import ${python_script}; ${python_script}.runSimulationFromRendezvous(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, '${RENDEZVOUS}' )"
+  else
+    # Run the simulation from the start
+    echo "Running Facemc ${TEST_NAME} test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
+    mpiexec -n ${SLURM_NTASKS} python -c "import ${python_script}; ${python_script}.runSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME})"
+  fi
 
   # Remove the temperary python script
   rm ${python_script}.py*

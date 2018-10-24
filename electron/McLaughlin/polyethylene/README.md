@@ -1,4 +1,4 @@
-## McLaughlin polystyrene experiment ##
+## McLaughlin polyethylene experiment ##
 
 # Experimental
 100 keV electrons on polyethylene for a 1D dose profile.

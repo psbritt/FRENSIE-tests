@@ -1,9 +1,13 @@
 #! /usr/bin/env python
-import os
+from os import path, makedirs
 import sys
 import numpy
 import datetime
 import socket
+
+# Add the parent directory to the path
+sys.path.insert(1,path.dirname(path.dirname(path.abspath(__file__))))
+import simulation_setup as setup
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
 import PyFrensie.Geometry.DagMC as DagMC
@@ -18,10 +22,6 @@ import PyFrensie.MonteCarlo.Collision as Collision
 import PyFrensie.MonteCarlo.ActiveRegion as ActiveRegion
 import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
-
-# Add the parent directory to the path
-sys.path.insert(1,'../')
-import simulation_setup as setup
 
 ##---------------------------------------------------------------------------##
 ## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
@@ -49,10 +49,10 @@ file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
-  geometry_path = "/home/lkersting/frensie/tests/electron/example/h_sphere.h5m"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
-  geometry_path = "/home/lkersting/dag_frensie/tests/electron/example/h_sphere.h5m"
+
+geometry_path = path.dirname(path.realpath(__file__)) + "/geom.h5m"
 
 # Run the simulation
 def runSimulation( threads, histories, time ):
@@ -210,7 +210,7 @@ def runSimulation( threads, histories, time ):
   # Set the archive type
   archive_type = "xml"
 
-  name, title = setSimulationName( properties, file_type )
+  name, title = setSimulationName( properties )
 
   factory = Manager.ParticleSimulationManagerFactory( model,
                                                       source,
@@ -232,7 +232,7 @@ def runSimulation( threads, histories, time ):
     print "Processing the results:"
     processData( event_handler, name, title )
 
-    print "Results will be in ", os.path.dirname(name)
+    print "Results will be in ", path.dirname(name)
 
 ##---------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES ------------------------- ##
@@ -259,8 +259,8 @@ def createResultsDirectory():
 
   directory = setup.getResultsDirectory(file_type, interpolation)
 
-  if not os.path.exists(directory):
-    os.makedirs(directory)
+  if not path.exists(directory):
+    makedirs(directory)
 
   return directory
 
@@ -268,7 +268,7 @@ def createResultsDirectory():
 ## -------------------------- setSimulationName -----------------------------##
 ##---------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
-def setSimulationName( properties, file_type ):
+def setSimulationName( properties ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "example" + extension
   output = setup.getResultsDirectory(file_type, interpolation) + "/" + name

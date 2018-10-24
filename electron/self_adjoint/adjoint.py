@@ -1,9 +1,13 @@
 #! /usr/bin/env python
-import os
+from os import path, makedirs
 import sys
 import numpy
 import datetime
 import socket
+
+# Add the parent directory to the path
+sys.path.insert(1,path.dirname(path.dirname(path.abspath(__file__))))
+import simulation_setup as setup
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
 import PyFrensie.Geometry.DagMC as DagMC
@@ -19,10 +23,6 @@ import PyFrensie.MonteCarlo.ActiveRegion as ActiveRegion
 import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
 
-# Add the parent directory to the path
-sys.path.insert(1,'../')
-import simulation_setup as setup
-
 ##---------------------------------------------------------------------------##
 ## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
 ##---------------------------------------------------------------------------##
@@ -30,7 +30,7 @@ import simulation_setup as setup
 # Set the element
 atom=Data.H_ATOM; element="H"; zaid=1000
 # Set the forward source energy ( 0.001, 0.01, 0.1 )
-energy=0.1
+energy=0.01
 
 # Set the min energy (default is 100 eV )
 min_energy=1e-4
@@ -46,14 +46,13 @@ method=MonteCarlo.MODIFIED_TWO_D_UNION
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
   database_path = "/home/lkersting/frensie/build/packages/database.xml"
-  geometry_path = "/home/lkersting/frensie/tests/electron/self_adjoint/geom.h5m"
 elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus)
   database_path = "/home/software/mcnpdata/database.xml"
-  geometry_path = "/home/ligross/frensie/tests/self_adjoint/geom.h5m"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
   database_path = "/home/lkersting/dag_frensie/build/packages/database.xml"
-  geometry_path = "/home/lkersting/dag_frensie/tests/electron/self_adjoint/geom.h5m"
+
+geometry_path = path.dirname(path.realpath(__file__)) + "/geom.h5m"
 
 # Run the simulation
 def runSimulation( threads, histories, time ):
@@ -200,6 +199,13 @@ def runSimulation( threads, histories, time ):
   # Add the estimator to the event handler
   event_handler.addEstimator( surface_current_estimator )
 
+  ## -------------------------- Particle Tracker ---------------------------- ##
+
+  particle_tracker = Event.ParticleTracker( 0, 1000 )
+
+  # Add the particle tracker to the event handler
+  event_handler.addParticleTracker( particle_tracker )
+
   ##--------------------------------------------------------------------------##
   ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
   ##--------------------------------------------------------------------------##
@@ -223,9 +229,6 @@ def runSimulation( threads, histories, time ):
   material_definition_database = Collision.MaterialDefinitionDatabase()
   material_definition_database.addDefinition( element, 1, (element,), (1.0,) )
 
-  # Get the material ids
-  material_ids = geom_model.getMaterialIds()
-
   # Fill model
   model = Collision.FilledGeometryModel( database_path, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
 
@@ -233,8 +236,8 @@ def runSimulation( threads, histories, time ):
   particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
 
   # Set the energy dimension distribution
-  delta_energy = Distribution.UniformDistribution( min_energy, energy )
-  energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( delta_energy )
+  uniform_energy = Distribution.UniformDistribution( min_energy, energy )
+  energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( uniform_energy )
   particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
   # Set the direction dimension distribution
@@ -246,7 +249,7 @@ def runSimulation( threads, histories, time ):
   particle_distribution.constructDimensionDistributionDependencyTree()
 
   # Set source components
-  source_component = [ActiveRegion.StandardElectronSourceComponent( 0, 1.0, geom_model, particle_distribution )]
+  source_component = [ActiveRegion.StandardAdjointElectronSourceComponent( 0, 1.0, model, particle_distribution )]
 
   # Set source
   source = ActiveRegion.StandardParticleSource( source_component )
@@ -254,7 +257,7 @@ def runSimulation( threads, histories, time ):
   # Set the archive type
   archive_type = "xml"
 
-  name, title = setSimulationName( properties, file_type )
+  name, title = setSimulationName( properties )
 
   factory = Manager.ParticleSimulationManagerFactory( model,
                                                       source,
@@ -276,7 +279,7 @@ def runSimulation( threads, histories, time ):
     print "Processing the results:"
     processData( event_handler, name, title )
 
-    print "Results will be in ", os.path.dirname(name)
+    print "Results will be in ", path.dirname(name)
 
 ##---------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES ------------------------- ##
@@ -310,8 +313,8 @@ def createResultsDirectory():
   date = str(datetime.datetime.today()).split()[0]
   directory = "results/" + date
 
-  if not os.path.exists(directory):
-    os.makedirs(directory)
+  if not path.exists(directory):
+    makedirs(directory)
 
   return directory
 
@@ -319,7 +322,7 @@ def createResultsDirectory():
 ## -------------------------- setSimulationName -----------------------------##
 ##---------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
-def setSimulationName( properties, file_type ):
+def setSimulationName( properties ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "adjoint" + extension
   date = str(datetime.datetime.today()).split()[0]
