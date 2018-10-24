@@ -165,7 +165,7 @@ def runSimulation( threads, histories, time ):
 
     # Definition for polystyrene
     if material == "polystyrene":
-      definition = ( ("H", -0.77418), ("C", -0.922582) )
+      definition = ( ("H", -0.077418), ("C", -0.922582) )
 
     # Definition for polyethylene
     elif material == "polyethylene":
