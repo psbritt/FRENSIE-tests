@@ -30,7 +30,7 @@ import PyFrensie.MonteCarlo.Manager as Manager
 # Set the element
 atom=Data.H_ATOM; element="H"; zaid=1000
 # Set the forward source energy ( 0.001, 0.01, 0.1 )
-energy=0.1
+energy=0.01
 
 # Set the min energy (default is 100 eV )
 min_energy=1e-4
@@ -236,8 +236,8 @@ def runSimulation( threads, histories, time ):
   particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
 
   # Set the energy dimension distribution
-  delta_energy = Distribution.UniformDistribution( min_energy, energy )
-  energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( delta_energy )
+  uniform_energy = Distribution.UniformDistribution( min_energy, energy )
+  energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( uniform_energy )
   particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
   # Set the direction dimension distribution
