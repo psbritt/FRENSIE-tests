@@ -1,12 +1,12 @@
 #! /usr/bin/env python
-import os
+from os import path, makedirs
 import sys
 import numpy
 import datetime
 import socket
 
 # Add the parent directory to the path
-sys.path.insert(1,'../')
+sys.path.insert(1,path.dirname(path.dirname(path.abspath(__file__))))
 import simulation_setup as setup
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
@@ -49,9 +49,11 @@ if socket.gethostname() == "Denali":
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
 
-geometry_path = os.path.dirname(os.path.realpath(__file__)) + "/geom.h5m"
+geometry_path = path.dirname(path.realpath(__file__)) + "/geom.h5m"
 
-# Run the simulation
+##----------------------------------------------------------------------------##
+## ----------------------------- RUN SIMULATION ----------------------------- ##
+##----------------------------------------------------------------------------##
 def runSimulation( threads, histories, time ):
 
   ##--------------------------------------------------------------------------##
@@ -60,6 +62,9 @@ def runSimulation( threads, histories, time ):
   session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
+
+  if session.rank() == 0:
+    print "The PyFrensie install path is set to: ", setup.getPyFrensiePath()
 
   properties = setSimulationProperties( histories, time )
 
@@ -203,7 +208,7 @@ def runSimulation( threads, histories, time ):
   # Set the archive type
   archive_type = "xml"
 
-  name, title = setSimulationName( properties, file_type )
+  name, title = setSimulationName( properties )
 
   factory = Manager.ParticleSimulationManagerFactory( model,
                                                       source,
@@ -225,10 +230,12 @@ def runSimulation( threads, histories, time ):
     print "Processing the results:"
     processCosineBinData( transmission_current_estimator, cosine_bins_1, name, title )
 
-    print "Results will be in ", os.path.dirname(name)
+    print "Results will be in ", path.dirname(name)
 
-# Restart the simulation
-def restartSimulation( threads, histories, time, rendezvous ):
+##----------------------------------------------------------------------------##
+## --------------------- Run Simulation From Rendezvous --------------------- ##
+##----------------------------------------------------------------------------##
+def runSimulationFromRendezvous( threads, histories, time, rendezvous ):
 
   ##--------------------------------------------------------------------------##
   ## ------------------------------ MPI Session ----------------------------- ##
@@ -236,6 +243,9 @@ def restartSimulation( threads, histories, time, rendezvous ):
   session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
+
+  if session.rank() == 0:
+    print "The PyFrensie install path is set to: ", setup.getPyFrensiePath()
 
   # Set the data path
   Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
@@ -266,7 +276,6 @@ def restartSimulation( threads, histories, time, rendezvous ):
     print "Processing the results:"
     processData( archive_name, "native" )
 
-
 ##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
 ##----------------------------------------------------------------------------##
@@ -292,8 +301,8 @@ def createResultsDirectory():
 
   directory = setup.getResultsDirectory(file_type, interpolation)
 
-  if not os.path.exists(directory):
-    os.makedirs(directory)
+  if not path.exists(directory):
+    makedirs(directory)
 
   return directory
 
@@ -301,13 +310,25 @@ def createResultsDirectory():
 ## -------------------------- setSimulationName -----------------------------##
 ##---------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
-def setSimulationName( properties, file_type ):
+def setSimulationName( properties ):
 
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "hanson" + extension
   output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
 
   return (output, title)
+
+##---------------------------------------------------------------------------##
+## -------------------------- getSimulationName -----------------------------##
+##---------------------------------------------------------------------------##
+# Define a function for naming an electron simulation
+def getSimulationName():
+
+  properties = setSimulationProperties( 1, 1.0 )
+
+  name, title = setSimulationName( properties )
+
+  return name
 
 ##----------------------------------------------------------------------------##
 ##------------------------------- processData --------------------------------##
@@ -335,13 +356,13 @@ def processData( rendezvous_file, raw_file_type ):
     file_type = Data.ElectroatomicDataProperties.Native_EPR_FILE
   else:
     ValueError
-  filename, title = setSimulationName( properties, file_type )
+  filename, title = setSimulationName( properties )
   filename = rendezvous_file.split("_rendezvous_")[0]
 
   print "Processing the results:"
   processCosineBinData( estimator_1, cosine_bins, filename, title )
 
-  print "Results will be in ", os.path.dirname(filename)
+  print "Results will be in ", path.dirname(filename)
 
   filename = filename + "_reflection"
   # Get the estimator data

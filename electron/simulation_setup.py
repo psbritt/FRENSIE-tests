@@ -1,5 +1,5 @@
 #! /usr/bin/env python
-import os
+from os import path
 import sys
 import numpy
 import datetime
@@ -7,8 +7,10 @@ import socket
 
 # NOTE: If a specific version of FRENSIE is desired, the path below can be
 # uncommented and the desired path to the frensie/lib can be used.
-# sys.path.insert(1,'../../lib/python2.7/site-packages/')
-# print "WARNING: The version of PyFrensie used is installed in ", os.path.abspath('../../lib/python2.7/site-packages/')
+frensie_install = path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
+sys.path.insert(1, frensie_install + '/bin/')
+sys.path.insert(1, frensie_install + '/lib/python2.7/site-packages/')
+# print "WARNING: The version of PyFrensie used is installed in ", frensie_install
 
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
@@ -26,6 +28,12 @@ import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
 
 ##----------------------------------------------------------------------------##
+## --------------------------- Get PyFrensie Path --------------------------- ##
+##----------------------------------------------------------------------------##
+def getPyFrensiePath():
+  return frensie_install
+
+##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
 ##----------------------------------------------------------------------------##
 def setSimulationProperties( histories, time, interpolation, grid_policy, elastic_mode, elastic_sampling_method ):
@@ -39,6 +47,10 @@ def setSimulationProperties( histories, time, interpolation, grid_policy, elasti
 
   # Set the number of histories
   properties.setNumberOfHistories( histories )
+
+  # Set the minimum number of rendezvous
+  if histories > 100:
+    properties.setMinNumberOfRendezvous( 10 )
 
   # Change time from minutes to seconds
   time_sec = time*60
