@@ -1,9 +1,13 @@
 #! /usr/bin/env python
-import os
+from os import path, makedirs
 import sys
 import numpy
 import datetime
 import socket
+
+# Add the parent directory to the path
+sys.path.insert(1,path.dirname(path.dirname(path.abspath(__file__))))
+import simulation_setup as setup
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
 import PyFrensie.Geometry.DagMC as DagMC
@@ -18,10 +22,6 @@ import PyFrensie.MonteCarlo.Collision as Collision
 import PyFrensie.MonteCarlo.ActiveRegion as ActiveRegion
 import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
-
-# Add the parent directory to the path
-sys.path.insert(1,'../')
-import simulation_setup as setup
 
 ##---------------------------------------------------------------------------##
 ## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
@@ -59,14 +59,12 @@ test_range=0.0025
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
-  geometry_path = "/home/lkersting/frensie/tests/electron/lockwood/"
 elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus)
   database_path = "/home/software/mcnpdata/database.xml"
-  geometry_path = "/home/ligross/frensie/tests/lockwood/"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
-  geometry_path = "/home/lkersting/dag_frensie/tests/electron/lockwood/"
 
+geometry_path = path.dirname(path.realpath(__file__)) + "/"
 geometry_path += element + "/" + element + "_" + str(energy) + "/dagmc/geom_" + str(test_number) + ".h5m"
 
 # Run the simulation
@@ -79,8 +77,11 @@ def runSimulation( threads, histories, time ):
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
 
+  if session.rank() == 0:
+    print "The PyFrensie install path is set to: ", setup.getPyFrensiePath()
+
   properties = setSimulationProperties( histories, time )
-  name, title = setSimulationName( properties, file_type )
+  name, title = setSimulationName( properties )
   path_to_database = database_path
   path_to_geometry = geometry_path
 
@@ -90,18 +91,8 @@ def runSimulation( threads, histories, time ):
 
 
   # Set geometry path and type
-  geometry_type = "DagMC" #(ROOT or DAGMC)
-
-  # Set geometry model properties
-  if geometry_type == "DagMC":
-    model_properties = DagMC.DagMCModelProperties( path_to_geometry )
-    model_properties.useFastIdLookup()
-    # model_properties.setMaterialPropertyName( "mat" )
-    # model_properties.setDensityPropertyName( "rho" )
-    # model_properties.setTerminationCellPropertyName( "graveyard" )
-    # model_properties.setEstimatorPropertyName( "tally" )
-  else:
-    print "ERROR: geometry type ", geometry_type, " not supported!"
+  model_properties = DagMC.DagMCModelProperties( path_to_geometry )
+  model_properties.useFastIdLookup()
 
   # Construct model
   geom_model = DagMC.DagMCModel( model_properties )
@@ -201,10 +192,12 @@ def runSimulation( threads, histories, time ):
     print "Processing the results:"
     processData( energy_deposition_estimator, name, title, test_range, calorimeter_thickness )
 
-    print "Results will be in ", os.path.dirname(name)
+    print "Results will be in ", path.dirname(name)
 
-# Restart the simulation
-def restartSimulation( threads, histories, time, rendezvous ):
+##----------------------------------------------------------------------------##
+## --------------------- Run Simulation From Rendezvous --------------------- ##
+##----------------------------------------------------------------------------##
+def runSimulationFromRendezvous( threads, histories, time, rendezvous ):
 
   ##--------------------------------------------------------------------------##
   ## ------------------------------ MPI Session ----------------------------- ##
@@ -238,7 +231,7 @@ def restartSimulation( threads, histories, time, rendezvous ):
     # print "Processing the results:"
     # processData( archive_name, "native" )
 
-    # print "Results will be in ", os.path.dirname(archive_name)
+    # print "Results will be in ", path.dirname(archive_name)
 
 ##---------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES ------------------------- ##
@@ -267,8 +260,8 @@ def createResultsDirectory():
 
   directory = element + "/" + directory
 
-  if not os.path.exists(directory):
-    os.makedirs(directory)
+  if not path.exists(directory):
+    makedirs(directory)
 
   print directory
   return directory
@@ -277,12 +270,24 @@ def createResultsDirectory():
 ## -------------------------- setSimulationName -----------------------------##
 ##---------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
-def setSimulationName( properties, file_type ):
+def setSimulationName( properties ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "lockwood_" + str(test_number) + extension
   output = element + "/" + setup.getResultsDirectory(file_type, interpolation) + "/" + name
 
   return (output, title)
+
+##---------------------------------------------------------------------------##
+## -------------------------- getSimulationName -----------------------------##
+##---------------------------------------------------------------------------##
+# Define a function for naming an electron simulation
+def getSimulationName():
+
+  properties = setSimulationProperties( 1, 1.0 )
+
+  name, title = setSimulationName( properties )
+
+  return name
 
 ##----------------------------------------------------------------------------##
 ##------------------------------- processData --------------------------------##

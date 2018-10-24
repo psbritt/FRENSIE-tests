@@ -51,7 +51,7 @@ for n in range(N):
         print names[n]
         print input.readline().strip()[1:]
         data = zip(*(line.strip().split('\t') for line in input))
-        data_x[n] = np.asfarray(data[0][0:M])
+        data_x[n] = np.asfarray(data[0][0:M])*1000.0
         data_y[n] = np.asfarray(data[1][0:M])
         data_error[n]= np.asfarray(data[2][0:M])*data_y[n]
 
@@ -70,7 +70,7 @@ else:
 # the first subplot
 ax0 = plt.subplot(gs[0])
 
-x_label = 'Range ($\mathrm{g/cm^2}$)'
+x_label = 'Range ($\mathrm{mg/cm^2}$)'
 plt.xlabel(x_label, size=14)
 plt.ylabel('Dose ($\mathrm{MeV\/cm^2/g}$)', size=14)
 plt.title('$\mathrm{Energy\/Deposition\/from\/100\/keV\/Electron\/in\/Polystyrene}$', size=16)

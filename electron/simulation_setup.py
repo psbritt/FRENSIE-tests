@@ -1,9 +1,17 @@
 #! /usr/bin/env python
-import os
+from os import path
 import sys
 import numpy
 import datetime
 import socket
+
+frensie_install=''
+# NOTE: If a specific version of FRENSIE is desired, the path below can be
+# uncommented and the desired path to the frensie/lib can be used.
+# frensie_install = path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
+# sys.path.insert(1, frensie_install + '/bin/')
+# sys.path.insert(1, frensie_install + '/lib/python2.7/site-packages/')
+
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
 import PyFrensie.Geometry.DagMC as DagMC
@@ -20,6 +28,15 @@ import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
 
 ##----------------------------------------------------------------------------##
+## --------------------------- Get PyFrensie Path --------------------------- ##
+##----------------------------------------------------------------------------##
+def getPyFrensiePath():
+  if not frensie_install:
+    return frensie_install
+  else:
+    return sys.path()
+
+##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
 ##----------------------------------------------------------------------------##
 def setSimulationProperties( histories, time, interpolation, grid_policy, elastic_mode, elastic_sampling_method ):
@@ -33,6 +50,10 @@ def setSimulationProperties( histories, time, interpolation, grid_policy, elasti
 
   # Set the number of histories
   properties.setNumberOfHistories( histories )
+
+  # Set the minimum number of rendezvous
+  if histories > 100:
+    properties.setMinNumberOfRendezvous( 10 )
 
   # Change time from minutes to seconds
   time_sec = time*60

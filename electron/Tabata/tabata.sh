@@ -1,5 +1,5 @@
 #!/bin/sh
-# This file is named mclaughlin.sh
+# This file is named tabata.sh
 #SBATCH --partition=pre
 #SBATCH --time=1-00:00:00
 #SBATCH --ntasks=40
@@ -8,7 +8,7 @@
 ##---------------------------------------------------------------------------##
 ## ---------------------------- FACEMC test runner --------------------------##
 ##---------------------------------------------------------------------------##
-## FRENSIE benchmark test: McLaughlin dose depth data.
+## FRENSIE benchmark test: Tabata dose depth data.
 ## The dose depth for a 1-D in several materials is calculated by dividing the
 ## energy deposition by the subzone width (g/cm^2).
 ##---------------------------------------------------------------------------##
@@ -17,7 +17,7 @@ EXTRA_ARGS=$@
 # Set the number of histories
 HISTORIES=1000000
 # Set the max runtime (in minutes, 1 day = 1440 )
-TIME=1300
+TIME=1400
 
 # Run from the rendezvous
 if [ "$#" -eq 1 ]; then
@@ -25,13 +25,13 @@ if [ "$#" -eq 1 ]; then
   RENDEZVOUS="$1"
 
   # Restart the simulation
-  echo "Restarting Facemc McLaughlin test for ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
-  mpiexec -n ${SLURM_NTASKS} python -c "import mclaughlin; mclaughlin.restartSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
+  echo "Restarting Facemc Tabata test for ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
+  mpiexec -n ${SLURM_NTASKS} python -c "import tabata; tabata.restartSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
 
 # Run new simulation
 else
 
-  # Set the material ( Al, polystyrene, polyethylene )
+  # Set the material ( Al, Be )
   MATERIAL="Al"
 
   # Set the data file type (ACE Native)
@@ -53,32 +53,19 @@ else
   ## ------------------------------- COMMANDS ---------------------------------##
   ##---------------------------------------------------------------------------##
 
-  ENERGY=0.0
   SUBZONE_WIDTH=0.0
   DENSITY=0.0
   if [ "${MATERIAL}" = "Al" ]; then
-    # Set the source energy
-    ENERGY=3.0
     # Set the subzone width (cm)
-    SUBZONE_WIDTH=0.0148
+    SUBZONE_WIDTH=5.0
     # Set the material density (g/cm3)
     DENSITY=2.7
 
-  elif [ "${MATERIAL}" = "polystyrene" ]; then
-    # Set the source energy
-    ENERGY=0.1
+  elif [ "${MATERIAL}" = "Be" ]; then
     # Set the subzone width (cm)
-    SUBZONE_WIDTH=0.0004
+    SUBZONE_WIDTH=10.0
     # Set the material density (g/cm3)
-    DENSITY=1.06
-
-  elif [ "${MATERIAL}" = "polyethylene" ]; then
-    # Set the source energy
-    ENERGY=0.1
-    # Set the subzone width (cm)
-    SUBZONE_WIDTH=0.022
-    # Set the material density (g/cm3)
-    DENSITY=0.94
+    DENSITY=1.85
 
   else
     echo "Material ${MATERIAL} is currently not supported!"
@@ -86,8 +73,8 @@ else
 
 
   # Create a unique python script and change the parameters
-  python_script="mclaughlin_${SLURM_JOB_ID}"
-  cp mclaughlin.py ${python_script}.py
+  python_script="tabata_${SLURM_JOB_ID}"
+  cp tabata.py ${python_script}.py
 
   # Change the python_script parameters
 
@@ -101,10 +88,6 @@ else
 
   # Set the subzone width
   command=s/subzone_width=.*/subzone_width=${SUBZONE_WIDTH}/
-  sed -i "${command}" ${python_script}.py
-
-  # Set the energy
-  command=s/energy=.*/energy=${ENERGY}/
   sed -i "${command}" ${python_script}.py
 
   # Set the file type
@@ -131,7 +114,7 @@ else
   directory=$(python -c "import ${python_script}; ${python_script}.createResultsDirectory()" 2>&1)
 
   # Run the simulation
-  echo "Running Facemc McLaughlin test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
+  echo "Running Facemc Tabata test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
   mpiexec -n ${SLURM_NTASKS} python -c "import ${python_script}; ${python_script}.runSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME})"
 
   # Remove the temperary python script

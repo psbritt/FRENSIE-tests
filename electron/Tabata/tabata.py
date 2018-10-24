@@ -1,12 +1,12 @@
 #! /usr/bin/env python
-import os
+from os import path, makedirs
 import sys
 import numpy
 import datetime
 import socket
 
 # Add the parent directory to the path
-sys.path.insert(1,'../../')
+sys.path.insert(1,path.dirname(path.dirname(path.abspath(__file__))))
 import simulation_setup as setup
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
@@ -27,11 +27,11 @@ import PyFrensie.MonteCarlo.Manager as Manager
 ## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
 ##---------------------------------------------------------------------------##
 
-# Set the source energy
-energy=0.256
+# Set the material ( Al, Be )
+material="Al"
 
-# Set the cutoff energy
-cutoff_energy = 1e-4
+# Set the material density (g/cm3)
+density=2.7
 
 # Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
 interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
@@ -44,18 +44,24 @@ mode=MonteCarlo.COUPLED_DISTRIBUTION
 
 # Set the elastic coupled sampling method
 # ( TWO_D_UNION, ONE_D_UNION, MODIFIED_TWO_D_UNION )
-method=MonteCarlo.TWO_D_UNION
+method=MonteCarlo.MODIFIED_TWO_D_UNION
 
 # Set the data file type (ACE_EPR_FILE, Native_EPR_FILE)
 file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 
+# Set the width of the subzones (cm)
+subzone_width=0.0148
+
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
+  database_path = "/home/software/mcnpdata/database.xml"
+elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus)
   database_path = "/home/software/mcnpdata/database.xml"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
 
-geometry_path = os.path.dirname(os.path.realpath(__file__)) + "/geom.h5m"
+geometry_path = path.dirname(path.realpath(__file__)) + "/"
+geometry_path += material + "/geom.h5m"
 
 # Run the simulation
 def runSimulation( threads, histories, time ):
@@ -68,110 +74,100 @@ def runSimulation( threads, histories, time ):
   session.initializeLogs( 0, True )
 
   properties = setSimulationProperties( histories, time )
-
-  # Set the possible test energies
-  energies = [0.0002, 0.0003, 0.0004, 0.0005, 0.0006, 0.0008, 0.001, 0.0015, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.006, 0.0093, 0.01, 0.011, 0.0134, 0.015, 0.0173, 0.02, 0.0252, 0.03, 0.04, 0.0415, 0.05, 0.06, 0.0621, 0.07, 0.08, 0.0818, 0.1, 0.102, 0.121, 0.146, 0.172, 0.196, 0.2, 0.238, 0.256 ]
-
-  # Set the element (Al)
-  atom=Data.Al_ATOM; element="Al"; zaid=13000
-
-  if not energy in energies:
-    message="Energy "+ energy + " is currently not supported!"
-    raise ValueError(message)
+  name, title = setSimulationName( properties )
+  path_to_database = database_path
+  path_to_geometry = geometry_path
 
   ##--------------------------------------------------------------------------##
   ## ---------------------------- GEOMETRY SETUP ---------------------------- ##
   ##--------------------------------------------------------------------------##
+
 
   # Set geometry path and type
   geometry_type = "DagMC" #(ROOT or DAGMC)
 
   # Set geometry model properties
   if geometry_type == "DagMC":
-    model_properties = DagMC.DagMCModelProperties( geometry_path )
+    model_properties = DagMC.DagMCModelProperties( path_to_geometry )
     model_properties.useFastIdLookup()
-    model_properties.setMaterialPropertyName( "mat" )
-    model_properties.setDensityPropertyName( "rho" )
+    # model_properties.setMaterialPropertyName( "mat" )
+    # model_properties.setDensityPropertyName( "rho" )
     # model_properties.setTerminationCellPropertyName( "graveyard" )
     # model_properties.setEstimatorPropertyName( "tally" )
   else:
     print "ERROR: geometry type ", geometry_type, " not supported!"
-    raise ValueError(message)
 
-  # Set model
+  # Construct model
   geom_model = DagMC.DagMCModel( model_properties )
 
   ##--------------------------------------------------------------------------##
-  ##--------------------------- EVENT HANDLER SETUP --------------------------##
+  ## -------------------------- EVENT HANDLER SETUP ------------------------- ##
   ##--------------------------------------------------------------------------##
 
   # Set event handler
   event_handler = Event.EventHandler( properties )
 
-  ##----------------------- Surface Current Estimators -----------------------##
+  ## -------------------- Charge Deposition Calorimeter --------------------- ##
 
-  # Setup a surface current estimator for the transmission current
+  number_of_subzones = 40
+
+  # Setup a cell pulse height estimator
   estimator_id = 1
-  surface_ids = [4]
-  current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
+  cell_ids = range(1,number_of_subzones+1)
+  charge_deposition_estimator = Event.WeightAndChargeMultipliedCellPulseHeightEstimator( estimator_id, 1.0, cell_ids )
 
   # Set the particle type
-  current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
-
-  # Set the cosine bins
-  cosine_bins = [ -1.0, -0.99, 0.0, 1.0 ]
-
-  current_estimator.setCosineDiscretization( cosine_bins )
+  charge_deposition_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
 
   # Add the estimator to the event handler
-  event_handler.addEstimator( current_estimator )
-
-  ## ---------------------- Track Length Flux Estimator --------------------- ##
-
-  # Setup a track length flux estimator
-  estimator_id = 2
-  cell_ids = [1]
-  track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, geom_model )
-
-  # Set the particle type
-  track_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
-
-  # Set the energy bins
-  energy_bins = numpy.logspace(numpy.log10(cutoff_energy), numpy.log10(energy), num=101) #[ cutoff_energy, 99l, energy ]
-  track_flux_estimator.setEnergyDiscretization( energy_bins )
-
-  # Add the estimator to the event handler
-  event_handler.addEstimator( track_flux_estimator )
+  event_handler.addEstimator( charge_deposition_estimator )
 
   ##--------------------------------------------------------------------------##
-  ## ----------------------- SIMULATION MANAGER SETUP ----------------------- ##
+  ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
   ##--------------------------------------------------------------------------##
 
   # Initialized database
-  database = Data.ScatteringCenterPropertiesDatabase(database_path)
+  database = Data.ScatteringCenterPropertiesDatabase(path_to_database)
   scattering_center_definition_database = Collision.ScatteringCenterDefinitionDatabase()
 
-  # Set element properties
-  element_properties = database.getAtomProperties( atom )
-
-  element_definition = scattering_center_definition_database.createDefinition( element, Data.ZAID(zaid) )
-
-
+  # Set material properties
   version = 0
   if file_type == Data.ElectroatomicDataProperties.ACE_EPR_FILE:
     version = 14
 
-  element_definition.setElectroatomicDataProperties(
-            element_properties.getSharedElectroatomicDataProperties( file_type, version ) )
+  # Definition for Aluminum
+  if material == "Al":
+    al_properties = database.getAtomProperties( Data.Al_ATOM )
+
+    al_definition = scattering_center_definition_database.createDefinition( material, Data.ZAID(13000) )
+
+    al_definition.setElectroatomicDataProperties(
+      al_properties.getSharedElectroatomicDataProperties( file_type, version ) )
+
+  elif material == "Be":
+    be_properties = database.getAtomProperties( Data.Be_ATOM )
+
+    be_definition = scattering_center_definition_database.createDefinition( material, Data.ZAID(4000) )
+
+    be_definition.setElectroatomicDataProperties(
+      be_properties.getSharedElectroatomicDataProperties( file_type, version ) )
+
+  else:
+    print "ERROR: material ", material, " is currently not supported!"
+
+  definition = ( (material, 1.0), )
 
   material_definition_database = Collision.MaterialDefinitionDatabase()
-  material_definition_database.addDefinition( element, 1, (element,), (1.0,) )
+  material_definition_database.addDefinition( material, 1, definition )
 
   # Get the material ids
   material_ids = geom_model.getMaterialIds()
 
   # Fill model
-  model = Collision.FilledGeometryModel( database_path, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
+  model = Collision.FilledGeometryModel( path_to_database, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
+
+  # Set the source energy (14.9 MeV)
+  energy=14.9
 
   # Set particle distribution
   particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
@@ -182,10 +178,10 @@ def runSimulation( threads, histories, time ):
   particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
   # Set the direction dimension distribution
-  particle_distribution.setDirection( 1.0, 0.0, 0.0 )
+  particle_distribution.setDirection( 0.0, 0.0, 1.0 )
 
   # Set the spatial dimension distribution
-  particle_distribution.setPosition( -20.0, 0.0, 0.0 )
+  particle_distribution.setPosition( 0.0, 0.0, -0.01 )
 
   particle_distribution.constructDimensionDistributionDependencyTree()
 
@@ -197,8 +193,6 @@ def runSimulation( threads, histories, time ):
 
   # Set the archive type
   archive_type = "xml"
-
-  name, title = setSimulationName( properties )
 
   factory = Manager.ParticleSimulationManagerFactory( model,
                                                       source,
@@ -218,23 +212,56 @@ def runSimulation( threads, histories, time ):
   if session.rank() == 0:
 
     print "Processing the results:"
-    processCosineBinData( current_estimator, energy, name, title )
+    processData( charge_deposition_estimator, name, title, subzone_width*density )
 
-    print "Results will be in ", os.path.dirname(name)
+    print "Results will be in ", path.dirname(name)
 
+# Restart the simulation
+def restartSimulation( threads, histories, time, rendezvous ):
 
-##----------------------------------------------------------------------------##
-## ------------------------- SIMULATION PROPERTIES -------------------------- ##
-##----------------------------------------------------------------------------##
+  ##--------------------------------------------------------------------------##
+  ## ------------------------------ MPI Session ----------------------------- ##
+  ##--------------------------------------------------------------------------##
+  session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
+  Utility.removeAllLogs()
+  session.initializeLogs( 0, True )
+
+  # Set the data path
+  Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
+
+  factory = Manager.ParticleSimulationManagerFactory( rendezvous, histories, time, threads )
+
+  manager = factory.getManager()
+
+  Utility.removeAllLogs()
+  session.initializeLogs( 0, False )
+
+  manager.runSimulation()
+
+  if session.rank() == 0:
+
+    rendezvous_number = manager.getNumberOfRendezvous()
+
+    components = rendezvous.split("rendezvous_")
+    archive_name = components[0] + "rendezvous_"
+    archive_name += str( rendezvous_number - 1 )
+    archive_name += "."
+    archive_name += components[1].split(".")[1]
+
+    # print "Processing the results:"
+    # processData( archive_name, "native" )
+
+    # print "Results will be in ", path.dirname(archive_name)
+
+##---------------------------------------------------------------------------##
+## ------------------------- SIMULATION PROPERTIES ------------------------- ##
+##---------------------------------------------------------------------------##
 def setSimulationProperties( histories, time ):
 
   properties = setup.setSimulationProperties( histories, time, interpolation, grid_policy, mode, method )
 
 
   ## -------------------------- ELECTRON PROPERTIES ------------------------- ##
-
-  # Set the min electron energy
-  properties.setMinElectronEnergy( cutoff_energy )
 
   # Turn certain reactions off
   # properties.setElasticModeOff()
@@ -251,9 +278,12 @@ def createResultsDirectory():
 
   directory = setup.getResultsDirectory(file_type, interpolation)
 
-  if not os.path.exists(directory):
-    os.makedirs(directory)
+  directory = material + "/" + directory
 
+  if not path.exists(directory):
+    makedirs(directory)
+
+  print directory
   return directory
 
 ##---------------------------------------------------------------------------##
@@ -261,32 +291,27 @@ def createResultsDirectory():
 ##---------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
 def setSimulationName( properties ):
-
   extension, title = setup.setSimulationNameExtention( properties, file_type )
-  name = "al_albedo_" + str(energy) + extension
-  if not cutoff_energy == 1e-4:
-     name += "_" + str(cutoff_energy) + "_cutoff"
-
-  output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
+  name = "tabata" + extension
+  output = material + "/" + setup.getResultsDirectory(file_type, interpolation) + "/" + name
 
   return (output, title)
 
 ##----------------------------------------------------------------------------##
-##------------------------------- processData --------------------------------##
+##--------------------------- processDataFromFile ----------------------------##
 ##----------------------------------------------------------------------------##
 
 # This function pulls data from the .xml results file
-def processData( results_file, raw_file_type ):
+def processDataFromFile( rendezvous_file, raw_file_type, subzone_op ):
 
-  Collision.FilledGeometryModel.setDefaultDatabasePath( os.path.dirname(database_path) )
+  Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
 
   # Load data from file
-  manager = Manager.ParticleSimulationManagerFactory( results_file ).getManager()
+  manager = Manager.ParticleSimulationManagerFactory( rendezvous_file ).getManager()
   event_handler = manager.getEventHandler()
 
   # Get the estimator data
   estimator_1 = event_handler.getEstimator( 1 )
-  cosine_bins = estimator_1.getCosineDiscretization()
 
   # Get the simulation name and title
   properties = manager.getSimulationProperties()
@@ -298,57 +323,43 @@ def processData( results_file, raw_file_type ):
   else:
     ValueError
   filename, title = setSimulationName( properties )
+  filename = rendezvous_file.split("_rendezvous_")[0]
 
   print "Processing the results:"
-  processCosineBinData( estimator_1, cosine_bins, filename, title )
+  processData( estimator_1, filename, title, subzone_op )
 
-  print "Results will be in ", os.path.dirname(filename)
-
-  filename = filename + "_reflection"
-  # Get the estimator data
-  estimator_2 = event_handler.getEstimator( 2 )
-  cosine_bins = estimator_2.getCosineDiscretization()
-  print cosine_bins
-
-  processCosineBinData( estimator_2, cosine_bins, filename, title )
+  print "Results will be in ", path.dirname(filename)
 
 ##----------------------------------------------------------------------------##
-##--------------------------- processCosineBinData ---------------------------##
+##------------------------------- processData --------------------------------##
 ##----------------------------------------------------------------------------##
 
-# This function pulls cosine estimator data outputs it to a separate file.
-def processCosineBinData( estimator, energy, filename, title ):
-
-  ids = list(estimator.getEntityIds() )
-  if not 4 in ids:
-    print "ERROR: estimator does not contain entity 4!"
-    raise ValueError(message)
+# This function pulls pulse height estimator data outputs it to a separate file.
+def processData( estimator, filename, title, subzone_op ):
 
   today = datetime.date.today()
 
   # Read the data file for surface tallies
-  name = filename+"_albedo.txt"
+  name = filename+"_charge_dep.txt"
   out_file = open(name, 'w')
-
-  # Get the current and relative error
-  processed_data = estimator.getEntityBinProcessedData( 4 )
-  current = processed_data['mean']
-  current_rel_error = processed_data['re']
-  cosine_bins = estimator.getCosineDiscretization()
-
-  print cosine_bins
-  print current
-  print estimator.getEntityBinDataFirstMoments( 4 )
 
   # Write title to file
   out_file.write( "# " + title +"\n")
-  # Write data header to file
-  header = "# Energy (MeV)\tAlbedo\tError\t"+str(today)+"\n"
+
+  # Write the header to the file
+  header = "# Range (g/cm2)\tCharge Deposition (electron cm2/g)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  # Write data to file
-  output = '%.6e' % energy + "\t" + \
-           '%.16e' % current[-1] + "\t" + \
-           '%.16e' % current_rel_error[-1] + "\n"
-  out_file.write( output )
+  ids = list(estimator.getEntityIds())
+
+  for i in range(0,len(ids)):
+    processed_data = estimator.getEntityBinProcessedData( ids[i] )
+    energy_dep_mev = processed_data['mean']
+    rel_error = processed_data['re']
+
+    depth = subzone_op*(i+1)
+
+    # Write the energy deposition to the file
+    data = str(depth) + '\t' + str(energy_dep_mev[0]/subzone_op) + '\t' + str(rel_error[0]/subzone_op) + '\n'
+    out_file.write(data)
   out_file.close()
