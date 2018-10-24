@@ -5,6 +5,7 @@ import numpy
 import datetime
 import socket
 
+frensie_install=''
 # NOTE: If a specific version of FRENSIE is desired, the path below can be
 # uncommented and the desired path to the frensie/lib can be used.
 # frensie_install = path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
@@ -30,7 +31,10 @@ import PyFrensie.MonteCarlo.Manager as Manager
 ## --------------------------- Get PyFrensie Path --------------------------- ##
 ##----------------------------------------------------------------------------##
 def getPyFrensiePath():
-  return frensie_install
+  if not frensie_install:
+    return frensie_install
+  else:
+    return sys.path()
 
 ##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
