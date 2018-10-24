@@ -202,7 +202,7 @@ def runSimulation( threads, histories, time ):
   particle_distribution.constructDimensionDistributionDependencyTree()
 
   # Set source components
-  source_component = [ActiveRegion.StandardElectronSourceComponent( 0, 1.0, geom_model, particle_distribution )]
+  source_component = [ActiveRegion.StandardElectronSourceComponent( 0, 1.0, model, particle_distribution )]
 
   # Set source
   source = ActiveRegion.StandardParticleSource( source_component )
