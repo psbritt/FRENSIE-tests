@@ -199,6 +199,13 @@ def runSimulation( threads, histories, time ):
   # Add the estimator to the event handler
   event_handler.addEstimator( surface_current_estimator )
 
+  ## -------------------------- Particle Tracker ---------------------------- ##
+
+  particle_tracker = Event.ParticleTracker( 0, 1000 )
+
+  # Add the particle tracker to the event handler
+  event_handler.addParticleTracker( particle_tracker )
+
   ##--------------------------------------------------------------------------##
   ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
   ##--------------------------------------------------------------------------##
@@ -222,9 +229,6 @@ def runSimulation( threads, histories, time ):
   material_definition_database = Collision.MaterialDefinitionDatabase()
   material_definition_database.addDefinition( element, 1, (element,), (1.0,) )
 
-  # Get the material ids
-  material_ids = geom_model.getMaterialIds()
-
   # Fill model
   model = Collision.FilledGeometryModel( database_path, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
 
@@ -245,7 +249,7 @@ def runSimulation( threads, histories, time ):
   particle_distribution.constructDimensionDistributionDependencyTree()
 
   # Set source components
-  source_component = [ActiveRegion.StandardElectronSourceComponent( 0, 1.0, geom_model, particle_distribution )]
+  source_component = [ActiveRegion.StandardAdjointElectronSourceComponent( 0, 1.0, model, particle_distribution )]
 
   # Set source
   source = ActiveRegion.StandardParticleSource( source_component )
