@@ -41,12 +41,22 @@ if __name__ == "__main__":
       print "ERROR: The file", options.db_name, "doesn't exist!"
       sys.exit(1)
 
+    print "The PyFrensie path is set to: ", path.dirname( path.dirname(path.abspath(Data.__file__)))
+
     # Get the atom properties for the zaid
-    element_properties = database.getAtomProperties( Data.ZAID( 1000 ) )
+    if not database.doAtomPropertiesExist( Data.H_ATOM ):
+        print "The database does not contain the H data"
+        sys.exit(1)
+
+    element_properties = database.getAtomProperties( Data.H_ATOM )
 
     # Check if the native file exists
-    if element_properties.photoatomicDataAvailable( Data.PhotoatomicDataProperties.Native_ENDL_FILE ):
+    if not element_properties.photoatomicDataAvailable( Data.PhotoatomicDataProperties.Native_EPR_FILE ):
         print "The database does not contain the H native data"
+        sys.exit(1)
+
+    if not element_properties.photoatomicDataAvailable( Data.PhotoatomicDataProperties.Native_EPR_FILE, 0 ):
+        print "The database does not contain version 0 of H native data"
         sys.exit(1)
 
     data_properties = element_properties.getSharedPhotoatomicDataProperties( Data.PhotoatomicDataProperties.Native_EPR_FILE, 0 )
