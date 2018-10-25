@@ -1,11 +1,11 @@
-Albedo analysis of a 300cm x 300cm x 30 cm slab of Aluminum
+Albedo analysis of a 30 cm x 30 cm x 30 cm slab of Aluminum
 c
 c
 c -----------------------------------------------------------------------------c
 c Cell block-------------------------------------------------------------------c
 c -----------------------------------------------------------------------------c
 c
-c Cell 10 is the volume of aluminum that is doing the shielding
+c Cell 10 is the volume of aluminum
 10  1  -2.6989  100 -101 102 -103 104 -105    IMP:e=1   IMP:p=1
 c Cell 20 is a void
 20  0  200 -201 202 -203 204 -205 #10       IMP:e=1   IMP:p=1
@@ -25,19 +25,19 @@ c the 100 series define the inner cube made of aluminum
 c
 100 PX -15.0
 101 PX 15.0
-102 PY -150
-103 PY 150
-104 PZ -150
-105 PZ 150
+102 PY -15
+103 PY 15
+104 PZ -15
+105 PZ 15
 c
 c the 200 series define the outer cube filling a void
 c
-200 PX -25
-201 PX 25
-202 PY -160
-203 PY 160
-204 PZ -160
-205 PZ 160
+200 PX -16
+201 PX 16
+202 PY -16
+203 PY 16
+204 PZ -16
+205 PZ 16
 c
 c
 c

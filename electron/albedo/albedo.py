@@ -1,12 +1,12 @@
 #! /usr/bin/env python
-import os
+from os import path, makedirs
 import sys
 import numpy
 import datetime
 import socket
 
 # Add the parent directory to the path
-sys.path.insert(1,'../../')
+sys.path.insert(1,path.dirname(path.dirname(path.abspath(__file__))))
 import simulation_setup as setup
 import PyFrensie.Data as Data
 import PyFrensie.Data.Native as Native
@@ -23,13 +23,16 @@ import PyFrensie.MonteCarlo.ActiveRegion as ActiveRegion
 import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
 
+pyfrensie_path =path.dirname( path.dirname(path.abspath(MonteCarlo.__file__)))
+
 ##---------------------------------------------------------------------------##
 ## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
 ##---------------------------------------------------------------------------##
 
+# Set the element
+atom=Data.Al_ATOM; element="Al"; zaid=13000
 # Set the source energy
 energy=0.256
-
 # Set the cutoff energy
 cutoff_energy = 1e-4
 
@@ -44,7 +47,7 @@ mode=MonteCarlo.COUPLED_DISTRIBUTION
 
 # Set the elastic coupled sampling method
 # ( TWO_D_UNION, ONE_D_UNION, MODIFIED_TWO_D_UNION )
-method=MonteCarlo.TWO_D_UNION
+method=MonteCarlo.MODIFIED_TWO_D_UNION
 
 # Set the data file type (ACE_EPR_FILE, Native_EPR_FILE)
 file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
@@ -52,10 +55,13 @@ file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
+# Set database directory path (for Elbrus)
+elif socket.gethostname() == "Elbrus":
+  database_path = "/home/software/mcnpdata/database.xml"
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
 
-geometry_path = os.path.dirname(os.path.realpath(__file__)) + "/geom.h5m"
+geometry_path = path.dirname(path.realpath(__file__)) + "/" + element + "/geom.h5m"
 
 # Run the simulation
 def runSimulation( threads, histories, time ):
@@ -67,42 +73,24 @@ def runSimulation( threads, histories, time ):
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
 
+  if session.rank() == 0:
+    print "The PyFrensie path is set to: ", pyfrensie_path
+
   properties = setSimulationProperties( histories, time )
-
-  # Set the possible test energies
-  energies = [0.0002, 0.0003, 0.0004, 0.0005, 0.0006, 0.0008, 0.001, 0.0015, 0.002, 0.0025, 0.003, 0.0035, 0.004, 0.0045, 0.005, 0.006, 0.0093, 0.01, 0.011, 0.0134, 0.015, 0.0173, 0.02, 0.0252, 0.03, 0.04, 0.0415, 0.05, 0.06, 0.0621, 0.07, 0.08, 0.0818, 0.1, 0.102, 0.121, 0.146, 0.172, 0.196, 0.2, 0.238, 0.256 ]
-
-  # Set the element (Al)
-  atom=Data.Al_ATOM; element="Al"; zaid=13000
-
-  if not energy in energies:
-    message="Energy "+ energy + " is currently not supported!"
-    raise ValueError(message)
 
   ##--------------------------------------------------------------------------##
   ## ---------------------------- GEOMETRY SETUP ---------------------------- ##
   ##--------------------------------------------------------------------------##
 
   # Set geometry path and type
-  geometry_type = "DagMC" #(ROOT or DAGMC)
+  model_properties = DagMC.DagMCModelProperties( geometry_path )
+  model_properties.useFastIdLookup()
 
-  # Set geometry model properties
-  if geometry_type == "DagMC":
-    model_properties = DagMC.DagMCModelProperties( geometry_path )
-    model_properties.useFastIdLookup()
-    model_properties.setMaterialPropertyName( "mat" )
-    model_properties.setDensityPropertyName( "rho" )
-    # model_properties.setTerminationCellPropertyName( "graveyard" )
-    # model_properties.setEstimatorPropertyName( "tally" )
-  else:
-    print "ERROR: geometry type ", geometry_type, " not supported!"
-    raise ValueError(message)
-
-  # Set model
+  # Construct model
   geom_model = DagMC.DagMCModel( model_properties )
 
   ##--------------------------------------------------------------------------##
-  ##--------------------------- EVENT HANDLER SETUP --------------------------##
+  ## -------------------------- EVENT HANDLER SETUP -------------------------- ##
   ##--------------------------------------------------------------------------##
 
   # Set event handler
@@ -110,9 +98,9 @@ def runSimulation( threads, histories, time ):
 
   ##----------------------- Surface Current Estimators -----------------------##
 
-  # Setup a surface current estimator for the transmission current
+  # Setup a surface current estimator
   estimator_id = 1
-  surface_ids = [4]
+  surface_ids = [1, 2]
   current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
 
   # Set the particle type
@@ -144,7 +132,7 @@ def runSimulation( threads, histories, time ):
   event_handler.addEstimator( track_flux_estimator )
 
   ##--------------------------------------------------------------------------##
-  ## ----------------------- SIMULATION MANAGER SETUP ----------------------- ##
+  ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
   ##--------------------------------------------------------------------------##
 
   # Initialized database
@@ -182,10 +170,10 @@ def runSimulation( threads, histories, time ):
   particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
   # Set the direction dimension distribution
-  particle_distribution.setDirection( 1.0, 0.0, 0.0 )
+  particle_distribution.setDirection( 0.0, 0.0, 1.0 )
 
   # Set the spatial dimension distribution
-  particle_distribution.setPosition( -20.0, 0.0, 0.0 )
+  particle_distribution.setPosition( 0.0, 0.0, -0.1 )
 
   particle_distribution.constructDimensionDistributionDependencyTree()
 
@@ -198,6 +186,7 @@ def runSimulation( threads, histories, time ):
   # Set the archive type
   archive_type = "xml"
 
+  # Set the simulation name and title
   name, title = setSimulationName( properties )
 
   factory = Manager.ParticleSimulationManagerFactory( model,
@@ -220,12 +209,53 @@ def runSimulation( threads, histories, time ):
     print "Processing the results:"
     processCosineBinData( current_estimator, energy, name, title )
 
-    print "Results will be in ", os.path.dirname(name)
-
+    print "Results will be in ", path.dirname(name)
 
 ##----------------------------------------------------------------------------##
-## ------------------------- SIMULATION PROPERTIES -------------------------- ##
+## --------------------- Run Simulation From Rendezvous --------------------- ##
 ##----------------------------------------------------------------------------##
+def runSimulationFromRendezvous( threads, histories, time, rendezvous ):
+
+  ##--------------------------------------------------------------------------##
+  ## ------------------------------ MPI Session ----------------------------- ##
+  ##--------------------------------------------------------------------------##
+  session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
+  Utility.removeAllLogs()
+  session.initializeLogs( 0, True )
+
+  if session.rank() == 0:
+    print "The PyFrensie path is set to: ", pyfrensie_path
+
+  # Set the data path
+  Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
+
+  factory = Manager.ParticleSimulationManagerFactory( rendezvous, histories, time, threads )
+
+  manager = factory.getManager()
+
+  Utility.removeAllLogs()
+  session.initializeLogs( 0, False )
+
+  manager.runSimulation()
+
+  if session.rank() == 0:
+
+    rendezvous_number = manager.getNumberOfRendezvous()
+
+    components = rendezvous.split("rendezvous_")
+    archive_name = components[0] + "rendezvous_"
+    archive_name += str( rendezvous_number - 1 )
+    archive_name += "."
+    archive_name += components[1].split(".")[1]
+
+    print "Processing the results:"
+    processData( archive_name )
+
+    print "Results will be in ", path.dirname(archive_name)
+
+##---------------------------------------------------------------------------##
+## ------------------------- SIMULATION PROPERTIES ------------------------- ##
+##---------------------------------------------------------------------------##
 def setSimulationProperties( histories, time ):
 
   properties = setup.setSimulationProperties( histories, time, interpolation, grid_policy, mode, method )
@@ -251,9 +281,12 @@ def createResultsDirectory():
 
   directory = setup.getResultsDirectory(file_type, interpolation)
 
-  if not os.path.exists(directory):
-    os.makedirs(directory)
+  directory = element + "/" + directory
 
+  if not path.exists(directory):
+    makedirs(directory)
+
+  print directory
   return directory
 
 ##---------------------------------------------------------------------------##
@@ -261,27 +294,35 @@ def createResultsDirectory():
 ##---------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
 def setSimulationName( properties ):
-
   extension, title = setup.setSimulationNameExtention( properties, file_type )
-  name = "al_albedo_" + str(energy) + extension
-  if not cutoff_energy == 1e-4:
-     name += "_" + str(cutoff_energy) + "_cutoff"
-
-  output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
+  name = "albedo_" + element + "_" + str(energy) + extension
+  output = element + "/" + setup.getResultsDirectory(file_type, interpolation) + "/" + name
 
   return (output, title)
+
+##---------------------------------------------------------------------------##
+## -------------------------- getSimulationName -----------------------------##
+##---------------------------------------------------------------------------##
+# Define a function for naming an electron simulation
+def getSimulationName():
+
+  properties = setSimulationProperties( 1, 1.0 )
+
+  name, title = setSimulationName( properties )
+
+  return name
 
 ##----------------------------------------------------------------------------##
 ##------------------------------- processData --------------------------------##
 ##----------------------------------------------------------------------------##
 
-# This function pulls data from the .xml results file
-def processData( results_file, raw_file_type ):
+# This function pulls data from the rendezvous file
+def processData( rendezvous_file ):
 
-  Collision.FilledGeometryModel.setDefaultDatabasePath( os.path.dirname(database_path) )
+  Collision.FilledGeometryModel.setDefaultDatabasePath( path.dirname(database_path) )
 
   # Load data from file
-  manager = Manager.ParticleSimulationManagerFactory( results_file ).getManager()
+  manager = Manager.ParticleSimulationManagerFactory( rendezvous_file ).getManager()
   event_handler = manager.getEventHandler()
 
   # Get the estimator data
@@ -291,26 +332,17 @@ def processData( results_file, raw_file_type ):
   # Get the simulation name and title
   properties = manager.getSimulationProperties()
 
-  if raw_file_type == "ace":
-    file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
-  elif raw_file_type == "native":
+  if "epr14" not in rendezvous:
     file_type = Data.ElectroatomicDataProperties.Native_EPR_FILE
   else:
-    ValueError
+    file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
+
   filename, title = setSimulationName( properties )
 
   print "Processing the results:"
   processCosineBinData( estimator_1, cosine_bins, filename, title )
 
-  print "Results will be in ", os.path.dirname(filename)
-
-  filename = filename + "_reflection"
-  # Get the estimator data
-  estimator_2 = event_handler.getEstimator( 2 )
-  cosine_bins = estimator_2.getCosineDiscretization()
-  print cosine_bins
-
-  processCosineBinData( estimator_2, cosine_bins, filename, title )
+  print "Results will be in ", path.dirname(filename)
 
 ##----------------------------------------------------------------------------##
 ##--------------------------- processCosineBinData ---------------------------##
@@ -320,8 +352,8 @@ def processData( results_file, raw_file_type ):
 def processCosineBinData( estimator, energy, filename, title ):
 
   ids = list(estimator.getEntityIds() )
-  if not 4 in ids:
-    print "ERROR: estimator does not contain entity 4!"
+  if not 2 in ids:
+    print "ERROR: estimator does not contain entity 2!"
     raise ValueError(message)
 
   today = datetime.date.today()
@@ -331,15 +363,13 @@ def processCosineBinData( estimator, energy, filename, title ):
   out_file = open(name, 'w')
 
   # Get the current and relative error
-  processed_data = estimator.getEntityBinProcessedData( 4 )
+  processed_data = estimator.getEntityBinProcessedData( 2 )
   current = processed_data['mean']
   current_rel_error = processed_data['re']
   cosine_bins = estimator.getCosineDiscretization()
 
-  print cosine_bins
   print current
-  print estimator.getEntityBinDataFirstMoments( 4 )
-
+  print cosine_bins
   # Write title to file
   out_file.write( "# " + title +"\n")
   # Write data header to file

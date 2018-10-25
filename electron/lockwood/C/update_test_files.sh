@@ -1,6 +1,6 @@
 #!/bin/bash
 ##---------------------------------------------------------------------------##
-## Al Lockwood test data updater
+## C Lockwood test data updater
 ##---------------------------------------------------------------------------##
 
 # Set the database directory path.
@@ -14,13 +14,13 @@ done
 epr="../../../../bin/generate_native_epr.py"
 if [ -d "$database_directory" ]; then
 
-    # Update Al data
-    printf "Updating the Al native test data...\n"
-    $epr --db_name="$database_directory/database.xml" --zaid=13000 --version=0
+    # Update C data
+    printf "Updating the C native test data...\n"
+    $epr --db_name="$database_directory/database.xml" --zaid=6000 --version=0
     if [ $? -eq 0 ]; then
-        printf "Al native data updated successfully!\n\n"
+        printf "C native data updated successfully!\n\n"
     else
-        printf "Al native data FAILED to update!\n"
+        printf "C native data FAILED to update!\n"
         exit 1
     fi
 else

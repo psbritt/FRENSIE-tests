@@ -1,5 +1,5 @@
 #!/bin/sh
-# This file is named lockwood.sh
+# This file is named albedo.sh
 #SBATCH --partition=pre
 #SBATCH --time=1-00:00:00
 #SBATCH --ntasks=40
@@ -8,9 +8,8 @@
 ##---------------------------------------------------------------------------##
 ## ---------------------------- FACEMC test runner --------------------------##
 ##---------------------------------------------------------------------------##
-## FRENSIE benchmark test: Lockwood dose depth data.
-## The dose depth for several ranges and material is calculated by dividing the
-## energy deposition by the calorimeter thickness (g/cm^2).
+## FRENSIE benchmark test: Reflection Coeficient in semi-infinite slabs.
+## The albedo for a particular material is calculated at several energies.
 ##---------------------------------------------------------------------------##
 EXTRA_ARGS=$@
 
@@ -29,14 +28,11 @@ if [ "$#" -eq 1 ]; then
   RENDEZVOUS="$1"
 
   # Restart the simulation
-  echo "Restarting Facemc Lockwood test for ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
-  mpiexec -n ${SLURM_NTASKS} python -c "import lockwood; lockwood.restartSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
+  echo "Restarting Facemc Albedo test for ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
+  mpiexec -n ${SLURM_NTASKS} python -c "import albedo; albedo.restartSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
 
 # Run new simulation
 else
-
-  # Set the test energy
-  ENERGY=0.314
 
   # Set the data file type (ACE Native)
   FILE_TYPE=Native
@@ -53,38 +49,24 @@ else
   # Set the elastic coupled sampling method ( ONE_D TWO_D MODIFIED_TWO_D )
   METHOD=MODIFIED_TWO_D
 
+  # Set the test energy
+  ENERGY=0.01
+
   # Set the material element and zaid
   ELEMENT="Al"; ZAID=13000
-
-  # Set the test number
-  TEST_NUMBER=11
-
-  # Set the calorimeter thickness (g/cm2)
-  CALORIMETER_THICKNESS=5.050E-03
-
-  # Set the range (g/cm2)
-  RANGE=0.0993
 
   ##---------------------------------------------------------------------------##
   ## ------------------------------- COMMANDS ---------------------------------##
   ##---------------------------------------------------------------------------##
 
   # Create a unique python script and change the parameters
-  python_script="lockwood_${SLURM_JOB_ID}"
-  cp lockwood.py ${python_script}.py
+  python_script="albedo_${SLURM_JOB_ID}"
+  cp albedo.py ${python_script}.py
 
   # Change the python_script parameters
 
   # Set the element
   command=s/atom=.*/atom=Data.${ELEMENT}_ATOM\;\ element=\"${ELEMENT}\"\;\ zaid=${ZAID}/
-  sed -i "${command}" ${python_script}.py
-
-  # Set the calorimeter thickness
-  command=s/calorimeter_thickness=.*/calorimeter_thickness=${CALORIMETER_THICKNESS}/
-  sed -i "${command}" ${python_script}.py
-
-  # Set the ranges
-  command=s/test_range=.*/test_range=${RANGE}/
   sed -i "${command}" ${python_script}.py
 
   # Set the energy
@@ -111,10 +93,6 @@ else
   command=s/method=MonteCarlo.*/method=MonteCarlo.${METHOD}_UNION/
   sed -i "${command}" ${python_script}.py
 
-  # Set the test number
-  command=s/test_number=.*/test_number=${TEST_NUMBER}/
-  sed -i "${command}" ${python_script}.py
-
   # Create the results directory
   directory=$(python -c "import ${python_script}; ${python_script}.createResultsDirectory()" 2>&1)
 
@@ -134,11 +112,11 @@ else
     done
 
     # Run the simulation from the last rendezvous
-    echo "Running Facemc Lockwood test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each from the rendezvous '${RENDEZVOUS}'!"
+    echo "Running Facemc Albedo test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each from the rendezvous '${RENDEZVOUS}'!"
     mpiexec -n ${SLURM_NTASKS} python -c "import ${python_script}; ${python_script}.runSimulationFromRendezvous(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, '${RENDEZVOUS}' )"
   else
     # Run the simulation from the start
-    echo "Running Facemc Lockwood test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
+    echo "Running Facemc Albedo test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
     mpiexec -n ${SLURM_NTASKS} python -c "import ${python_script}; ${python_script}.runSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME})"
   fi
 
