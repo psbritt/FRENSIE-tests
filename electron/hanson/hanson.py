@@ -86,10 +86,6 @@ def runSimulation( threads, histories, time ):
   if geometry_type == "DagMC":
     model_properties = DagMC.DagMCModelProperties( geometry_path )
     model_properties.useFastIdLookup()
-    model_properties.setMaterialPropertyName( "mat" )
-    model_properties.setDensityPropertyName( "rho" )
-    # model_properties.setTerminationCellPropertyName( "graveyard" )
-    # model_properties.setEstimatorPropertyName( "tally" )
   else:
     print "ERROR: geometry type ", geometry_type, " not supported!"
 
@@ -107,7 +103,7 @@ def runSimulation( threads, histories, time ):
 
   # Setup a surface current estimator for the transmission current
   estimator_id = 1
-  surface_ids = [48]
+  surface_ids = [1]
   transmission_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
 
   # Set the particle type
@@ -125,14 +121,14 @@ def runSimulation( threads, histories, time ):
 
   # Setup a surface current estimator for the reflection current
   estimator_id = 2
-  surface_ids = [46]
+  surface_ids = [2]
   reflection_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
 
   # Set the particle type
   reflection_current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
 
   # Set the cosine bins
-  cosine_bins_2 = [ -1.0, -0.999999, 1.0 ]
+  cosine_bins_2 = [ -1.0, -0.999999, 0.0, 1.0 ]
   reflection_current_estimator.setCosineDiscretization( cosine_bins_2 )
 
   # Add the estimator to the event handler
@@ -142,7 +138,7 @@ def runSimulation( threads, histories, time ):
 
   # Setup a track length flux estimator
   estimator_id = 3
-  cell_ids = [7]
+  cell_ids = [1]
   track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, geom_model )
 
   # Set the particle type
@@ -194,10 +190,10 @@ def runSimulation( threads, histories, time ):
   particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
   # Set the direction dimension distribution
-  particle_distribution.setDirection( 1.0, 0.0, 0.0 )
+  particle_distribution.setDirection( 0.0, 0.0, 1.0 )
 
   # Set the spatial dimension distribution
-  particle_distribution.setPosition( -0.5, 0.0, 0.0 )
+  particle_distribution.setPosition( 0.0, 0.0, -0.1 )
 
   particle_distribution.constructDimensionDistributionDependencyTree()
 

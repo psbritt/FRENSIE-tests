@@ -176,25 +176,25 @@ def setSimulationNameExtention( properties, file_type ):
   title = ""
   if properties.getElectronTwoDInterpPolicy() == MonteCarlo.LOGLOGLOG_INTERPOLATION:
       interp = "loglog"
-      title = "Log-log"
+      title = "Log-Log"
   elif properties.getElectronTwoDInterpPolicy() == MonteCarlo.LINLINLIN_INTERPOLATION:
       interp = "linlin"
-      title = "Lin-lin"
+      title = "Lin-Lin"
   else:
       interp = "linlog"
-      title = "Lin-log"
+      title = "Lin-Log"
 
   # Set the sampling name
   sample_name=""
   if properties.getElectronTwoDGridPolicy() == MonteCarlo.UNIT_BASE_CORRELATED_GRID:
       sample_name = "unit_correlated"
-      title += " Unit-base Correlated"
+      title += " Unit Base Correlated"
   elif properties.getElectronTwoDGridPolicy() == MonteCarlo.CORRELATED_GRID:
       sample_name = "correlated"
       title += " Correlated"
   else:
       sample_name = "unit_base"
-      title += " Unit-base"
+      title += " Unit Base"
 
   # Set the name reaction and extention
   name_extention = ""
