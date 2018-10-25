@@ -23,9 +23,11 @@ import PyFrensie.MonteCarlo.ActiveRegion as ActiveRegion
 import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
 
-##---------------------------------------------------------------------------##
-## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
-##---------------------------------------------------------------------------##
+pyfrensie_path =path.dirname( path.dirname(path.abspath(MonteCarlo.__file__)))
+
+##----------------------------------------------------------------------------##
+## ---------------------- GLOBAL SIMULATION VARIABLES ----------------------- ##
+##----------------------------------------------------------------------------##
 
 # Set the element
 atom=Data.H_ATOM; element="H"; zaid=1000
@@ -45,12 +47,12 @@ method=MonteCarlo.MODIFIED_TWO_D_UNION
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
-  database_path = "/home/lkersting/frensie/build/packages/database.xml"
-elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus)
+# Set database directory path (for Elbrus)
+elif socket.gethostname() == "Elbrus":
   database_path = "/home/software/mcnpdata/database.xml"
-else: # Set database directory path (for Cluster)
+# Set database directory path (for Cluster)
+else:
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
-  database_path = "/home/lkersting/dag_frensie/build/packages/database.xml"
 
 geometry_path = path.dirname(path.realpath(__file__)) + "/geom.h5m"
 
@@ -64,6 +66,9 @@ def runSimulation( threads, histories, time ):
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
 
+  if session.rank() == 0:
+    print "The PyFrensie path is set to: ", pyfrensie_path
+
   properties = setSimulationProperties( histories, time )
 
   ##--------------------------------------------------------------------------##
@@ -72,20 +77,14 @@ def runSimulation( threads, histories, time ):
 
 
   # Set geometry path and type
-  geometry_type = "DagMC" #(ROOT or DAGMC)
-
-  # Set geometry model properties
-  if geometry_type == "DagMC":
-    model_properties = DagMC.DagMCModelProperties( geometry_path )
-    model_properties.useFastIdLookup()
-  else:
-    print "ERROR: geometry type ", geometry_type, " not supported!"
+  model_properties = DagMC.DagMCModelProperties( geometry_path )
+  model_properties.useFastIdLookup()
 
   # Construct model
   geom_model = DagMC.DagMCModel( model_properties )
 
   ##--------------------------------------------------------------------------##
-  ## -------------------------- EVENT HANDLER SETUP -------------------------- ##
+  ## -------------------------- EVENT HANDLER SETUP ------------------------- ##
   ##--------------------------------------------------------------------------##
 
   # Set event handler
@@ -207,7 +206,7 @@ def runSimulation( threads, histories, time ):
   event_handler.addParticleTracker( particle_tracker )
 
   ##--------------------------------------------------------------------------##
-  ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
+  ## ----------------------- SIMULATION MANAGER SETUP ----------------------- ##
   ##--------------------------------------------------------------------------##
 
   # Initialized database
@@ -240,9 +239,6 @@ def runSimulation( threads, histories, time ):
   energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( uniform_energy )
   particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
-  # Set the direction dimension distribution
-  # particle_distribution.setDirection( 0.0, 0.0, 1.0 )
-
   # Set the spatial dimension distribution
   particle_distribution.setPosition( 0.0, 0.0, 0.0 )
 
@@ -257,6 +253,7 @@ def runSimulation( threads, histories, time ):
   # Set the archive type
   archive_type = "xml"
 
+  # Set the simulation name and title
   name, title = setSimulationName( properties )
 
   factory = Manager.ParticleSimulationManagerFactory( model,
@@ -278,21 +275,59 @@ def runSimulation( threads, histories, time ):
 
     print "Processing the results:"
     processData( event_handler, name, title )
-
     print "Results will be in ", path.dirname(name)
 
-##---------------------------------------------------------------------------##
-## ------------------------- SIMULATION PROPERTIES ------------------------- ##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## --------------------- Run Simulation From Rendezvous --------------------- ##
+##----------------------------------------------------------------------------##
+def runSimulationFromRendezvous( threads, histories, time, rendezvous ):
+
+  ##--------------------------------------------------------------------------##
+  ## ------------------------------ MPI Session ----------------------------- ##
+  ##--------------------------------------------------------------------------##
+  session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
+  Utility.removeAllLogs()
+  session.initializeLogs( 0, True )
+
+  if session.rank() == 0:
+    print "The PyFrensie path is set to: ", pyfrensie_path
+
+  # Set the data path
+  Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
+
+  factory = Manager.ParticleSimulationManagerFactory( rendezvous, histories, time, threads )
+
+  manager = factory.getManager()
+
+  Utility.removeAllLogs()
+  session.initializeLogs( 0, False )
+
+  manager.runSimulation()
+
+  if session.rank() == 0:
+
+    rendezvous_number = manager.getNumberOfRendezvous()
+
+    components = rendezvous.split("rendezvous_")
+    archive_name = components[0] + "rendezvous_"
+    archive_name += str( rendezvous_number - 1 )
+    archive_name += "."
+    archive_name += components[1].split(".")[1]
+
+    processDataFromRendezvous( archive_name )
+
+##----------------------------------------------------------------------------##
+## ------------------------- SIMULATION PROPERTIES -------------------------- ##
+##----------------------------------------------------------------------------##
 def setSimulationProperties( histories, time ):
 
   properties = setup.setAdjointSimulationProperties( histories, time, mode, method )
 
   # Set the min electron energy in MeV (Default is 100 eV)
-  properties.setMinElectronEnergy( min_energy )
+  properties.setMinAdjointElectronEnergy( min_energy )
 
   # Set the max electron energy in MeV (Default is 20 MeV)
-  properties.setMaxElectronEnergy( energy )
+  properties.setMaxAdjointElectronEnergy( energy )
 
 
   ## -------------------------- ELECTRON PROPERTIES ------------------------- ##
@@ -316,13 +351,15 @@ def createResultsDirectory():
   if not path.exists(directory):
     makedirs(directory)
 
+  print directory
   return directory
 
-##---------------------------------------------------------------------------##
-## -------------------------- setSimulationName -----------------------------##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## -------------------------- setSimulationName ------------------------------##
+##----------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
 def setSimulationName( properties ):
+  file_type = Data.AdjointElectroatomicDataProperties.Native_EPR_FILE
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "adjoint" + extension
   date = str(datetime.datetime.today()).split()[0]
@@ -330,6 +367,41 @@ def setSimulationName( properties ):
   output = "results/" + date + "/" + name
 
   return (output, title)
+
+##----------------------------------------------------------------------------##
+## -------------------------- getSimulationName ------------------------------##
+##----------------------------------------------------------------------------##
+# Define a function for naming an electron simulation
+def getSimulationName():
+
+  properties = setSimulationProperties( 1, 1.0 )
+
+  name, title = setSimulationName( properties )
+
+  return name
+
+##----------------------------------------------------------------------------##
+##------------------------ processDataFromRendezvous -------------------------##
+##----------------------------------------------------------------------------##
+
+# This function pulls data from the rendezvous file
+def processDataFromRendezvous( rendezvous_file ):
+
+  Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
+
+  # Load data from file
+  manager = Manager.ParticleSimulationManagerFactory( rendezvous_file ).getManager()
+  event_handler = manager.getEventHandler()
+
+  # Get the simulation name and title
+  properties = manager.getSimulationProperties()
+
+  filename, title = setSimulationName( properties )
+
+  print "Processing the results:"
+  processData( event_handler, filename, title )
+
+  print "Results will be in ", path.dirname(filename)
 
 ##----------------------------------------------------------------------------##
 ##------------------------------- processData --------------------------------##

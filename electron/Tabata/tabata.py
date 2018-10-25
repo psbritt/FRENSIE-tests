@@ -160,9 +160,6 @@ def runSimulation( threads, histories, time ):
   material_definition_database = Collision.MaterialDefinitionDatabase()
   material_definition_database.addDefinition( material, 1, definition )
 
-  # Get the material ids
-  material_ids = geom_model.getMaterialIds()
-
   # Fill model
   model = Collision.FilledGeometryModel( path_to_database, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
 

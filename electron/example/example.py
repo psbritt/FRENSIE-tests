@@ -178,9 +178,6 @@ def runSimulation( threads, histories, time ):
   material_definition_database = Collision.MaterialDefinitionDatabase()
   material_definition_database.addDefinition( element, 1, (element,), (1.0,) )
 
-  # Get the material ids
-  material_ids = geom_model.getMaterialIds()
-
   # Fill model
   model = Collision.FilledGeometryModel( database_path, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
 
@@ -226,7 +223,7 @@ def runSimulation( threads, histories, time ):
   if session.rank() == 0:
 
     print "Processing the results:"
-    processDataEstimatorData( event_handler, name, title )
+    processData( event_handler, name, title )
 
     print "Results will be in ", path.dirname(name)
 
@@ -272,7 +269,7 @@ def runSimulationFromRendezvous( threads, histories, time, rendezvous ):
     factory = 0
 
     print "Processing the results:"
-    processData( archive_name )
+    processDataFromRendezvous( archive_name )
 
 ##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
@@ -329,11 +326,11 @@ def getSimulationName():
   return name
 
 ##----------------------------------------------------------------------------##
-##------------------------------- processData --------------------------------##
+##------------------------ processDataFromRendezvous -------------------------##
 ##----------------------------------------------------------------------------##
 
 # This function pulls data from the rendezvous file
-def processData( rendezvous_file ):
+def processDataFromRendezvous( rendezvous_file ):
 
   Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
 
@@ -352,14 +349,14 @@ def processData( rendezvous_file ):
   filename, title = setSimulationName( properties )
 
   print "Processing the results:"
-  processDataEstimatorData( event_handler, filename, title )
+  processData( event_handler, filename, title )
 
   print "Results will be in ", path.dirname(filename)
 
 ##----------------------------------------------------------------------------##
 ##------------------------------- processData --------------------------------##
 ##----------------------------------------------------------------------------##
-def processDataEstimatorData( event_handler, filename, title ):
+def processData( event_handler, filename, title ):
 
   # Process track flux data
   track_flux = event_handler.getEstimator( 2 )
