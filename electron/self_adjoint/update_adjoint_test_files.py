@@ -5,7 +5,7 @@
 
 
 import sys
-from os import path
+from os import path, makedirs
 import datetime
 from optparse import *
 
@@ -62,7 +62,13 @@ if __name__ == "__main__":
     data_properties = element_properties.getSharedPhotoatomicDataProperties( Data.PhotoatomicDataProperties.Native_EPR_FILE, 0 )
 
     epr_file_name = path.dirname(options.db_name) + "/" + data_properties.filePath()
-    aepr_file_name = path.dirname( epr_file_name ) + "/aepr_native_1.xml"
+
+    # Get/create the aepr directory path
+    aepr_directory = aepr_file_name = path.dirname(path.dirname( epr_file_name ))
+    makedirs( aepr_directory )
+
+    # Ste the aepr file name
+    aepr_file_name = aepr_directory + "aepr/aepr_native_1.xml"
 
     # Get the date for the table notes
     today = str(datetime.datetime.today())
