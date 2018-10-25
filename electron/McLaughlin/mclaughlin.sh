@@ -19,6 +19,10 @@ HISTORIES=1000000
 # Set the max runtime (in minutes, 1 day = 1440 )
 TIME=1300
 
+# These parameters can be set if the cluster is not used
+# SLURM_CPUS_PER_TASK=1
+# SLURM_NTASKS=1
+
 # Run from the rendezvous
 if [ "$#" -eq 1 ]; then
   # Set the rendezvous
@@ -49,9 +53,10 @@ else
   # Set the elastic coupled sampling method ( ONE_D TWO_D MODIFIED_TWO_D )
   METHOD=MODIFIED_TWO_D
 
-  ##---------------------------------------------------------------------------##
-  ## ------------------------------- COMMANDS ---------------------------------##
-  ##---------------------------------------------------------------------------##
+
+  ##--------------------------------------------------------------------------##
+  ## ------------------------------- COMMANDS --------------------------------##
+  ##--------------------------------------------------------------------------##
 
   ENERGY=0.0
   SUBZONE_WIDTH=0.0
@@ -83,7 +88,6 @@ else
   else
     echo "Material ${MATERIAL} is currently not supported!"
   fi
-
 
   # Create a unique python script and change the parameters
   python_script="mclaughlin_${SLURM_JOB_ID}"
@@ -130,9 +134,29 @@ else
   # Create the results directory
   directory=$(python -c "import ${python_script}; ${python_script}.createResultsDirectory()" 2>&1)
 
-  # Run the simulation
-  echo "Running Facemc McLaughlin test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
-  mpiexec -n ${SLURM_NTASKS} python -c "import ${python_script}; ${python_script}.runSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME})"
+  # Get the simulation name
+  name=$(python -c "import ${python_script}; name = ${python_script}.getSimulationName(); print name" 2>&1)
+
+  RENDEZVOUS="${name}_rendezvous_0.xml"
+
+  # Run the simulation from the last rendezvous
+  if [ -f ${RENDEZVOUS} ]; then
+
+    # Get the last rendezvous
+    i=0
+    while [ -f "${name}_rendezvous_${i}.xml" ]; do
+      RENDEZVOUS="${name}_rendezvous_${i}.xml"
+      i=$[$i+1]
+    done
+
+    # Run the simulation from the last rendezvous
+    echo "Running Facemc McLaughlin test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each from the rendezvous '${RENDEZVOUS}'!"
+    mpiexec -n ${SLURM_NTASKS} python -c "import ${python_script}; ${python_script}.runSimulationFromRendezvous(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, '${RENDEZVOUS}' )"
+  else
+    # Run the simulation from the start
+    echo "Running Facemc McLaughlin test with ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
+    mpiexec -n ${SLURM_NTASKS} python -c "import ${python_script}; ${python_script}.runSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME})"
+  fi
 
   # Remove the temperary python script
   rm ${python_script}.py*

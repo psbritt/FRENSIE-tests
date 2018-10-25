@@ -23,9 +23,11 @@ import PyFrensie.MonteCarlo.ActiveRegion as ActiveRegion
 import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
 
-##---------------------------------------------------------------------------##
-## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
-##---------------------------------------------------------------------------##
+pyfrensie_path =path.dirname( path.dirname(path.abspath(MonteCarlo.__file__)))
+
+##----------------------------------------------------------------------------##
+## ---------------------- GLOBAL SIMULATION VARIABLES ----------------------- ##
+##----------------------------------------------------------------------------##
 
 # Set the material ( Al, polystyrene, polyethylene )
 material="Al"
@@ -56,9 +58,11 @@ subzone_width=0.0148
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
-elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus)
+# Set database directory path (for Elbrus)
+elif socket.gethostname() == "Elbrus":
   database_path = "/home/software/mcnpdata/database.xml"
-else: # Set database directory path (for Cluster)
+# Set database directory path (for Cluster)
+else:
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
 
 geometry_path = path.dirname(path.realpath(__file__)) + "/"
@@ -74,10 +78,10 @@ def runSimulation( threads, histories, time ):
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
 
+  if session.rank() == 0:
+    print "The PyFrensie path is set to: ", pyfrensie_path
+
   properties = setSimulationProperties( histories, time )
-  name, title = setSimulationName( properties )
-  path_to_database = database_path
-  path_to_geometry = geometry_path
 
   ##--------------------------------------------------------------------------##
   ## ---------------------------- GEOMETRY SETUP ---------------------------- ##
@@ -85,30 +89,20 @@ def runSimulation( threads, histories, time ):
 
 
   # Set geometry path and type
-  geometry_type = "DagMC" #(ROOT or DAGMC)
-
-  # Set geometry model properties
-  if geometry_type == "DagMC":
-    model_properties = DagMC.DagMCModelProperties( path_to_geometry )
-    model_properties.useFastIdLookup()
-    # model_properties.setMaterialPropertyName( "mat" )
-    # model_properties.setDensityPropertyName( "rho" )
-    # model_properties.setTerminationCellPropertyName( "graveyard" )
-    # model_properties.setEstimatorPropertyName( "tally" )
-  else:
-    print "ERROR: geometry type ", geometry_type, " not supported!"
+  model_properties = DagMC.DagMCModelProperties( geometry_path )
+  model_properties.useFastIdLookup()
 
   # Construct model
   geom_model = DagMC.DagMCModel( model_properties )
 
   ##--------------------------------------------------------------------------##
-  ## -------------------------- EVENT HANDLER SETUP -------------------------- ##
+  ## -------------------------- EVENT HANDLER SETUP ------------------------- ##
   ##--------------------------------------------------------------------------##
 
   # Set event handler
   event_handler = Event.EventHandler( properties )
 
-  ## -------------------- Energy Deposition Calorimeter -------------------- ##
+  ## -------------------- Energy Deposition Calorimeter --------------------- ##
 
   number_of_subzones = 50
 
@@ -117,18 +111,15 @@ def runSimulation( threads, histories, time ):
   cell_ids = range(1,number_of_subzones+1)
   energy_deposition_estimator = Event.WeightAndEnergyMultipliedCellPulseHeightEstimator( estimator_id, 1.0, cell_ids )
 
-  # Set the particle type
-  energy_deposition_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
-
   # Add the estimator to the event handler
   event_handler.addEstimator( energy_deposition_estimator )
 
   ##--------------------------------------------------------------------------##
-  ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
+  ## ----------------------- SIMULATION MANAGER SETUP ----------------------- ##
   ##--------------------------------------------------------------------------##
 
   # Initialized database
-  database = Data.ScatteringCenterPropertiesDatabase(path_to_database)
+  database = Data.ScatteringCenterPropertiesDatabase(database_path)
   scattering_center_definition_database = Collision.ScatteringCenterDefinitionDatabase()
 
   # Set material properties
@@ -182,7 +173,7 @@ def runSimulation( threads, histories, time ):
   material_ids = geom_model.getMaterialIds()
 
   # Fill model
-  model = Collision.FilledGeometryModel( path_to_database, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
+  model = Collision.FilledGeometryModel( database_path, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
 
   # Set particle distribution
   particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
@@ -209,6 +200,9 @@ def runSimulation( threads, histories, time ):
   # Set the archive type
   archive_type = "xml"
 
+  # Set the simulation name and title
+  name, title = setSimulationName( properties )
+
   factory = Manager.ParticleSimulationManagerFactory( model,
                                                       source,
                                                       event_handler,
@@ -231,8 +225,10 @@ def runSimulation( threads, histories, time ):
 
     print "Results will be in ", path.dirname(name)
 
-# Restart the simulation
-def restartSimulation( threads, histories, time, rendezvous ):
+##----------------------------------------------------------------------------##
+## --------------------- Run Simulation From Rendezvous --------------------- ##
+##----------------------------------------------------------------------------##
+def runSimulationFromRendezvous( threads, histories, time, rendezvous ):
 
   ##--------------------------------------------------------------------------##
   ## ------------------------------ MPI Session ----------------------------- ##
@@ -240,6 +236,9 @@ def restartSimulation( threads, histories, time, rendezvous ):
   session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
+
+  if session.rank() == 0:
+    print "The PyFrensie path is set to: ", pyfrensie_path
 
   # Set the data path
   Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
@@ -263,14 +262,14 @@ def restartSimulation( threads, histories, time, rendezvous ):
     archive_name += "."
     archive_name += components[1].split(".")[1]
 
-    # print "Processing the results:"
-    # processData( archive_name, "native" )
+    print "Processing the results:"
+    processDataFromRendezvous( archive_name )
 
-    # print "Results will be in ", path.dirname(archive_name)
+    print "Results will be in ", path.dirname(archive_name)
 
-##---------------------------------------------------------------------------##
-## ------------------------- SIMULATION PROPERTIES ------------------------- ##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## ------------------------- SIMULATION PROPERTIES -------------------------- ##
+##----------------------------------------------------------------------------##
 def setSimulationProperties( histories, time ):
 
   properties = setup.setSimulationProperties( histories, time, interpolation, grid_policy, mode, method )
@@ -301,9 +300,9 @@ def createResultsDirectory():
   print directory
   return directory
 
-##---------------------------------------------------------------------------##
-## -------------------------- setSimulationName -----------------------------##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## -------------------------- setSimulationName ------------------------------##
+##----------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
 def setSimulationName( properties ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
@@ -313,11 +312,23 @@ def setSimulationName( properties ):
   return (output, title)
 
 ##----------------------------------------------------------------------------##
-##--------------------------- processDataFromFile ----------------------------##
+## -------------------------- getSimulationName ------------------------------##
+##----------------------------------------------------------------------------##
+# Define a function for naming an electron simulation
+def getSimulationName():
+
+  properties = setSimulationProperties( 1, 1.0 )
+
+  name, title = setSimulationName( properties )
+
+  return name
+
+##----------------------------------------------------------------------------##
+##------------------------ processDataFromRendezvous -------------------------##
 ##----------------------------------------------------------------------------##
 
-# This function pulls data from the .xml results file
-def processDataFromFile( rendezvous_file, raw_file_type, subzone_op ):
+# This function pulls data from the rendezvous file
+def processDataFromRendezvous( rendezvous_file ):
 
   Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
 
@@ -331,14 +342,22 @@ def processDataFromFile( rendezvous_file, raw_file_type, subzone_op ):
   # Get the simulation name and title
   properties = manager.getSimulationProperties()
 
-  if raw_file_type == "ace":
-    file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
-  elif raw_file_type == "native":
+  if "epr14" not in rendezvous_file:
     file_type = Data.ElectroatomicDataProperties.Native_EPR_FILE
   else:
-    ValueError
+    file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
+
   filename, title = setSimulationName( properties )
-  filename = rendezvous_file.split("_rendezvous_")[0]
+
+  # Manually get the subzone optical path based on the file name
+  if "Al" in rendezvous_file:
+    subzone_op = 0.0148*2.7
+  elif "polystyrene" in rendezvous_file:
+    subzone_op = 0.0004*1.06
+  elif "polyethylene" in rendezvous_file:
+    subzone_op = 0.022*0.94
+  else:
+    print "Rendezvous file", rendezvous_file, "not recognized!"
 
   print "Processing the results:"
   processData( estimator_1, filename, title, subzone_op )
