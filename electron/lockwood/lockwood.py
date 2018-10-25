@@ -23,6 +23,8 @@ import PyFrensie.MonteCarlo.ActiveRegion as ActiveRegion
 import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
 
+pyfrensie_path =path.dirname( path.dirname(path.abspath(MonteCarlo.__file__)))
+
 ##---------------------------------------------------------------------------##
 ## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
 ##---------------------------------------------------------------------------##
@@ -78,7 +80,7 @@ def runSimulation( threads, histories, time ):
   session.initializeLogs( 0, True )
 
   if session.rank() == 0:
-    print "The PyFrensie install path is set to: ", setup.getPyFrensiePath()
+    print "The PyFrensie path is set to: ", pyfrensie_path
 
   properties = setSimulationProperties( histories, time )
   name, title = setSimulationName( properties )
@@ -205,6 +207,9 @@ def runSimulationFromRendezvous( threads, histories, time, rendezvous ):
   session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
+
+  if session.rank() == 0:
+    print "The PyFrensie path is set to: ", pyfrensie_path
 
   # Set the data path
   Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )

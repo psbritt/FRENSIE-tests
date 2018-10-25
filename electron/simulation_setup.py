@@ -28,15 +28,6 @@ import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
 
 ##----------------------------------------------------------------------------##
-## --------------------------- Get PyFrensie Path --------------------------- ##
-##----------------------------------------------------------------------------##
-def getPyFrensiePath():
-  if not frensie_install:
-    return frensie_install
-  else:
-    return sys.path()
-
-##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
 ##----------------------------------------------------------------------------##
 def setSimulationProperties( histories, time, interpolation, grid_policy, elastic_mode, elastic_sampling_method ):
