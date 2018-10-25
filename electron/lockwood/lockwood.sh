@@ -20,7 +20,6 @@ HISTORIES=1000000
 TIME=1400
 
 # These parameters can be set if the cluster is not used
-# HISTORIES=10
 # SLURM_CPUS_PER_TASK=4
 # SLURM_NTASKS=1
 
