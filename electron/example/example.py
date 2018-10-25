@@ -23,9 +23,11 @@ import PyFrensie.MonteCarlo.ActiveRegion as ActiveRegion
 import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
 
-##---------------------------------------------------------------------------##
-## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
-##---------------------------------------------------------------------------##
+pyfrensie_path =path.dirname( path.dirname(path.abspath(MonteCarlo.__file__)))
+
+##----------------------------------------------------------------------------##
+## ---------------------- GLOBAL SIMULATION VARIABLES ----------------------- ##
+##----------------------------------------------------------------------------##
 
 # Set the source energy (0.001, 0.01, 0.1)
 energy=0.01
@@ -37,11 +39,11 @@ interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
 grid_policy=MonteCarlo.UNIT_BASE_CORRELATED_GRID
 
 # Set the elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
-mode=MonteCarlo.DECOUPLED_DISTRIBUTION
+mode=MonteCarlo.COUPLED_DISTRIBUTION
 
 # Set the elastic coupled sampling method
 # ( TWO_D_UNION, ONE_D_UNION, MODIFIED_TWO_D_UNION )
-method=MonteCarlo.ONE_D_UNION
+method=MonteCarlo.MODIFIED_TWO_D_UNION
 
 # Set the data file type (ACE_EPR_FILE, Native_EPR_FILE)
 file_type=Data.ElectroatomicDataProperties.Native_EPR_FILE
@@ -54,45 +56,42 @@ else: # Set database directory path (for Cluster)
 
 geometry_path = path.dirname(path.realpath(__file__)) + "/geom.h5m"
 
-# Run the simulation
+##----------------------------------------------------------------------------##
+## ----------------------------- RUN SIMULATION ----------------------------- ##
+##----------------------------------------------------------------------------##
 def runSimulation( threads, histories, time ):
 
-  ##---------------------------------------------------------------------------##
-  ## ------------------------------ MPI Session ------------------------------ ##
-  ##---------------------------------------------------------------------------##
+  ##--------------------------------------------------------------------------##
+  ## ------------------------------ MPI Session ----------------------------- ##
+  ##--------------------------------------------------------------------------##
   session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
   Utility.removeAllLogs()
   session.initializeLogs( 0, True )
 
+  if session.rank() == 0:
+    print "The PyFrensie path is set to: ", pyfrensie_path
+
   properties = setSimulationProperties( histories, time )
 
-  ##---------------------------------------------------------------------------##
-  ## ---------------------------- GEOMETRY SETUP ----------------------------- ##
-  ##---------------------------------------------------------------------------##
+  ##--------------------------------------------------------------------------##
+  ## ---------------------------- GEOMETRY SETUP ---------------------------- ##
+  ##--------------------------------------------------------------------------##
 
-  # Set the element (H)
-  atom=Data.H_ATOM; element="H"; zaid=1000
+  # Set element zaid and name
+  atom=Data.H_ATOM
+  zaid=1000
+  element="H"
 
   # Set geometry path and type
-  geometry_type = "DagMC" #(ROOT or DAGMC)
+  model_properties = DagMC.DagMCModelProperties( geometry_path )
+  model_properties.useFastIdLookup()
 
-  # Set geometry model properties
-  if geometry_type == "DagMC":
-    model_properties = DagMC.DagMCModelProperties( geometry_path )
-    model_properties.useFastIdLookup()
-    model_properties.setMaterialPropertyName( "mat" )
-    model_properties.setDensityPropertyName( "rho" )
-    # model_properties.setTerminationCellPropertyName( "graveyard" )
-    # model_properties.setEstimatorPropertyName( "tally" )
-  else:
-    print "ERROR: geometry type ", geometry_type, " not supported!"
-
-  # Construct model
+  # Set model
   geom_model = DagMC.DagMCModel( model_properties )
 
-  ##---------------------------------------------------------------------------##
-  ## -------------------------- EVENT HANDLER SETUP -------------------------- ##
-  ##---------------------------------------------------------------------------##
+  ##--------------------------------------------------------------------------##
+  ## -------------------------- EVENT HANDLER SETUP ------------------------- ##
+  ##--------------------------------------------------------------------------##
 
   # Set event handler
   event_handler = Event.EventHandler( properties )
@@ -193,9 +192,6 @@ def runSimulation( threads, histories, time ):
   energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( delta_energy )
   particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
-  # # Set the direction dimension distribution
-  # particle_distribution.setDirection( 0.0, 0.0, 1.0 )
-
   # Set the spatial dimension distribution
   particle_distribution.setPosition( 0.0, 0.0, 0.0 )
 
@@ -230,13 +226,57 @@ def runSimulation( threads, histories, time ):
   if session.rank() == 0:
 
     print "Processing the results:"
-    processData( event_handler, name, title )
+    processDataEstimatorData( event_handler, name, title )
 
     print "Results will be in ", path.dirname(name)
 
-##---------------------------------------------------------------------------##
-## ------------------------- SIMULATION PROPERTIES ------------------------- ##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## --------------------- Run Simulation From Rendezvous --------------------- ##
+##----------------------------------------------------------------------------##
+def runSimulationFromRendezvous( threads, histories, time, rendezvous ):
+
+  ##--------------------------------------------------------------------------##
+  ## ------------------------------ MPI Session ----------------------------- ##
+  ##--------------------------------------------------------------------------##
+  session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
+  Utility.removeAllLogs()
+  session.initializeLogs( 0, True )
+
+  if session.rank() == 0:
+    print "The PyFrensie path is set to: ", pyfrensie_path
+
+  # Set the data path
+  Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
+
+  factory = Manager.ParticleSimulationManagerFactory( rendezvous, histories, time, threads )
+
+  manager = factory.getManager()
+
+  Utility.removeAllLogs()
+  session.initializeLogs( 0, False )
+
+  manager.runSimulation()
+
+  if session.rank() == 0:
+
+    rendezvous_number = manager.getNumberOfRendezvous()
+
+    components = rendezvous.split("rendezvous_")
+    archive_name = components[0] + "rendezvous_"
+    archive_name += str( rendezvous_number - 1 )
+    archive_name += "."
+    archive_name += components[1].split(".")[1]
+
+    # Call destructor for manager and factory
+    manager = 0
+    factory = 0
+
+    print "Processing the results:"
+    processData( archive_name )
+
+##----------------------------------------------------------------------------##
+## ------------------------- SIMULATION PROPERTIES -------------------------- ##
+##----------------------------------------------------------------------------##
 def setSimulationProperties( histories, time ):
 
   properties = setup.setSimulationProperties( histories, time, interpolation, grid_policy, mode, method )
@@ -264,11 +304,12 @@ def createResultsDirectory():
 
   return directory
 
-##---------------------------------------------------------------------------##
-## -------------------------- setSimulationName -----------------------------##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## -------------------------- setSimulationName ------------------------------##
+##----------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
 def setSimulationName( properties ):
+
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "example" + extension
   output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
@@ -276,9 +317,49 @@ def setSimulationName( properties ):
   return (output, title)
 
 ##----------------------------------------------------------------------------##
+## -------------------------- getSimulationName ------------------------------##
+##----------------------------------------------------------------------------##
+# Define a function for naming an electron simulation
+def getSimulationName():
+
+  properties = setSimulationProperties( 1, 1.0 )
+
+  name, title = setSimulationName( properties )
+
+  return name
+
+##----------------------------------------------------------------------------##
 ##------------------------------- processData --------------------------------##
 ##----------------------------------------------------------------------------##
-def processData( event_handler, filename, title ):
+
+# This function pulls data from the rendezvous file
+def processData( rendezvous_file ):
+
+  Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
+
+  # Load data from file
+  manager = Manager.ParticleSimulationManagerFactory( rendezvous_file ).getManager()
+  event_handler = manager.getEventHandler()
+
+  # Get the simulation name and title
+  properties = manager.getSimulationProperties()
+
+  if "epr14" not in rendezvous_file:
+    file_type = Data.ElectroatomicDataProperties.Native_EPR_FILE
+  else:
+    file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
+
+  filename, title = setSimulationName( properties )
+
+  print "Processing the results:"
+  processDataEstimatorData( event_handler, filename, title )
+
+  print "Results will be in ", path.dirname(filename)
+
+##----------------------------------------------------------------------------##
+##------------------------------- processData --------------------------------##
+##----------------------------------------------------------------------------##
+def processDataEstimatorData( event_handler, filename, title ):
 
   # Process track flux data
   track_flux = event_handler.getEstimator( 2 )
