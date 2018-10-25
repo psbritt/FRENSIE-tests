@@ -29,7 +29,7 @@ if [ "$#" -eq 1 ]; then
 
   # Restart the simulation
   echo "Restarting Facemc Albedo test for ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
-  mpiexec -n ${SLURM_NTASKS} python -c "import albedo; albedo.restartSimulation(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
+  mpiexec -n ${SLURM_NTASKS} python -c "import albedo; albedo.runSimulationFromRendezvous(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
 
 # Run new simulation
 else

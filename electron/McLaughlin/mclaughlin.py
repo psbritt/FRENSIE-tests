@@ -262,10 +262,9 @@ def runSimulationFromRendezvous( threads, histories, time, rendezvous ):
     archive_name += "."
     archive_name += components[1].split(".")[1]
 
-    print "Processing the results:"
+    manager = 0
+    factory = 0
     processDataFromRendezvous( archive_name )
-
-    print "Results will be in ", path.dirname(archive_name)
 
 ##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
@@ -361,7 +360,6 @@ def processDataFromRendezvous( rendezvous_file ):
 
   print "Processing the results:"
   processData( estimator_1, filename, title, subzone_op )
-
   print "Results will be in ", path.dirname(filename)
 
 ##----------------------------------------------------------------------------##
