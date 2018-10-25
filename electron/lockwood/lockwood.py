@@ -112,9 +112,6 @@ def runSimulation( threads, histories, time ):
   cell_ids = [2]
   energy_deposition_estimator = Event.WeightAndEnergyMultipliedCellPulseHeightEstimator( estimator_id, 1.0, cell_ids )
 
-  # Set the particle type
-  energy_deposition_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
-
   # Add the estimator to the event handler
   event_handler.addEstimator( energy_deposition_estimator )
 
