@@ -99,7 +99,7 @@ group "material_3_density_-2.7" add vol 49, 50
 group "material_3_density_-0.0009988815" add vol 54
 group "estimator_1.cell.pulse.height.e" add vol 25 to 48
 group "estimator_1.cell.pulse.height.p" add vol 25 to 48
-export dagmc "path-to-frensie-tests/Sandford/geom.h5m" faceting_tolerance 1.e-5 make_watertight
+export dagmc "path-to-frensie-tests/Sanford/geom.h5m" faceting_tolerance 1.e-5 make_watertight
 
 # Running the simulation if FRENSIE
 
