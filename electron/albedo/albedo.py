@@ -332,7 +332,7 @@ def processData( rendezvous_file ):
   # Get the simulation name and title
   properties = manager.getSimulationProperties()
 
-  if "epr14" not in rendezvous:
+  if "epr14" not in rendezvous_file:
     file_type = Data.ElectroatomicDataProperties.Native_EPR_FILE
   else:
     file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE

@@ -25,9 +25,9 @@ import PyFrensie.MonteCarlo.Manager as Manager
 
 pyfrensie_path =path.dirname( path.dirname(path.abspath(MonteCarlo.__file__)))
 
-##---------------------------------------------------------------------------##
-## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## ---------------------- GLOBAL SIMULATION VARIABLES ----------------------- ##
+##----------------------------------------------------------------------------##
 
 # Set the element
 atom=Data.Al_ATOM; element="Al"; zaid=13000
@@ -99,13 +99,13 @@ def runSimulation( threads, histories, time ):
   geom_model = DagMC.DagMCModel( model_properties )
 
   ##--------------------------------------------------------------------------##
-  ## -------------------------- EVENT HANDLER SETUP -------------------------- ##
+  ## -------------------------- EVENT HANDLER SETUP ------------------------- ##
   ##--------------------------------------------------------------------------##
 
   # Set event handler
   event_handler = Event.EventHandler( properties )
 
-  ## -------------------- Energy Deposition Calorimeter -------------------- ##
+  ## -------------------- Energy Deposition Calorimeter --------------------- ##
 
   # Setup a cell pulse height estimator
   estimator_id = 1
@@ -119,7 +119,7 @@ def runSimulation( threads, histories, time ):
   event_handler.addEstimator( energy_deposition_estimator )
 
   ##--------------------------------------------------------------------------##
-  ## ----------------------- SIMULATION MANAGER SETUP ------------------------ ##
+  ## ----------------------- SIMULATION MANAGER SETUP ----------------------- ##
   ##--------------------------------------------------------------------------##
 
   # Initialized database
@@ -236,13 +236,13 @@ def runSimulationFromRendezvous( threads, histories, time, rendezvous ):
     archive_name += components[1].split(".")[1]
 
     # print "Processing the results:"
-    # processData( archive_name, "native" )
+    # processData( archive_name )
 
     # print "Results will be in ", path.dirname(archive_name)
 
-##---------------------------------------------------------------------------##
-## ------------------------- SIMULATION PROPERTIES ------------------------- ##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## ------------------------- SIMULATION PROPERTIES -------------------------- ##
+##----------------------------------------------------------------------------##
 def setSimulationProperties( histories, time ):
 
   properties = setup.setSimulationProperties( histories, time, interpolation, grid_policy, mode, method )
@@ -273,9 +273,9 @@ def createResultsDirectory():
   print directory
   return directory
 
-##---------------------------------------------------------------------------##
-## -------------------------- setSimulationName -----------------------------##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## -------------------------- setSimulationName ------------------------------##
+##----------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
 def setSimulationName( properties ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
@@ -284,9 +284,9 @@ def setSimulationName( properties ):
 
   return (output, title)
 
-##---------------------------------------------------------------------------##
-## -------------------------- getSimulationName -----------------------------##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## -------------------------- getSimulationName ------------------------------##
+##----------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
 def getSimulationName():
 

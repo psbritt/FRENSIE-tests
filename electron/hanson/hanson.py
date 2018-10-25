@@ -25,9 +25,9 @@ import PyFrensie.MonteCarlo.Manager as Manager
 
 pyfrensie_path =path.dirname( path.dirname(path.abspath(MonteCarlo.__file__)))
 
-##---------------------------------------------------------------------------##
-## ---------------------- GLOBAL SIMULATION VARIABLES ---------------------- ##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## ---------------------- GLOBAL SIMULATION VARIABLES ----------------------- ##
+##----------------------------------------------------------------------------##
 
 # Set the bivariate interpolation (LOGLOGLOG, LINLINLIN, LINLINLOG)
 interpolation=MonteCarlo.LOGLOGLOG_INTERPOLATION
@@ -82,12 +82,9 @@ def runSimulation( threads, histories, time ):
   zaid=79000
   element="Au"
 
-  # Set geometry model properties
-  if geometry_type == "DagMC":
-    model_properties = DagMC.DagMCModelProperties( geometry_path )
-    model_properties.useFastIdLookup()
-  else:
-    print "ERROR: geometry type ", geometry_type, " not supported!"
+  # Set geometry path and type
+  model_properties = DagMC.DagMCModelProperties( geometry_path )
+  model_properties.useFastIdLookup()
 
   # Set model
   geom_model = DagMC.DagMCModel( model_properties )
@@ -272,7 +269,7 @@ def runSimulationFromRendezvous( threads, histories, time, rendezvous ):
     factory = 0
 
     print "Processing the results:"
-    processData( archive_name, "native" )
+    processData( archive_name )
 
 ##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
@@ -304,9 +301,9 @@ def createResultsDirectory():
 
   return directory
 
-##---------------------------------------------------------------------------##
-## -------------------------- setSimulationName -----------------------------##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## -------------------------- setSimulationName ------------------------------##
+##----------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
 def setSimulationName( properties ):
 
@@ -316,9 +313,9 @@ def setSimulationName( properties ):
 
   return (output, title)
 
-##---------------------------------------------------------------------------##
-## -------------------------- getSimulationName -----------------------------##
-##---------------------------------------------------------------------------##
+##----------------------------------------------------------------------------##
+## -------------------------- getSimulationName ------------------------------##
+##----------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
 def getSimulationName():
 
@@ -348,7 +345,7 @@ def processData( rendezvous_file ):
   # Get the simulation name and title
   properties = manager.getSimulationProperties()
 
-  if "epr14" not in rendezvous:
+  if "epr14" not in rendezvous_file:
     file_type = Data.ElectroatomicDataProperties.Native_EPR_FILE
   else:
     file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
