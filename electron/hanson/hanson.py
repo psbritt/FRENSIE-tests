@@ -336,8 +336,8 @@ def getSimulationName():
 ##------------------------------- processData --------------------------------##
 ##----------------------------------------------------------------------------##
 
-# This function pulls data from the .xml results file
-def processData( rendezvous_file, raw_file_type ):
+# This function pulls data from the rendezvous file
+def processData( rendezvous_file ):
 
   Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
 
@@ -352,26 +352,17 @@ def processData( rendezvous_file, raw_file_type ):
   # Get the simulation name and title
   properties = manager.getSimulationProperties()
 
-  if raw_file_type == "ace":
-    file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
-  elif raw_file_type == "native":
+  if "epr14" not in rendezvous:
     file_type = Data.ElectroatomicDataProperties.Native_EPR_FILE
   else:
-    ValueError
+    file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
+
   filename, title = setSimulationName( properties )
-  filename = rendezvous_file.split("_rendezvous_")[0]
 
   print "Processing the results:"
   processCosineBinData( estimator_1, cosine_bins, filename, title )
 
   print "Results will be in ", path.dirname(filename)
-
-  filename = filename + "_reflection"
-  # Get the estimator data
-  estimator_2 = event_handler.getEstimator( 2 )
-  cosine_bins = estimator_2.getCosineDiscretization()
-
-  processCosineBinData( estimator_2, cosine_bins, filename, title )
 
 ##----------------------------------------------------------------------------##
 ##--------------------------- processCosineBinData ---------------------------##
@@ -437,28 +428,4 @@ def processCosineBinData( estimator, cosine_bins, filename, title ):
   # Write the last angle bin boundary
   output = '%.4e' % angle_bins[size] + "\n"
   out_file.write( output )
-  out_file.close()
-
-  # Read the raw data file for surface tallies
-  name = filename+"_raw_spectrum.txt"
-  out_file = open(name, 'w')
-
-  size = len(cosine_bins)
-
-  # Write title to file
-  out_file.write( "# " + title +"\n")
-  # Write data header to file
-  header = "# Cosine\tCurrent\tError\t"+str(today)+"\n"
-  out_file.write(header)
-
-  current = numpy.insert( current, 0, 0.0 )
-  current_rel_error = numpy.insert( current_rel_error, 0, 0.0 )
-
-  # Write data to file
-  for i in range(0, size):
-      output = '%.6e' % cosine_bins[i] + "\t" + \
-              '%.16e' % current[i] + "\t" + \
-              '%.16e' % current_rel_error[i] + "\n"
-      out_file.write( output )
-
   out_file.close()

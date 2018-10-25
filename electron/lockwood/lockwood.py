@@ -61,9 +61,11 @@ test_range=0.0025
 # Set database directory path (for Denali)
 if socket.gethostname() == "Denali":
   database_path = "/home/software/mcnpdata/database.xml"
-elif socket.gethostname() == "Elbrus": # Set database directory path (for Elbrus)
+# Set database directory path (for Elbrus)
+elif socket.gethostname() == "Elbrus":
   database_path = "/home/software/mcnpdata/database.xml"
-else: # Set database directory path (for Cluster)
+# Set database directory path (for Cluster)
+else:
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
 
 geometry_path = path.dirname(path.realpath(__file__)) + "/"
@@ -83,9 +85,6 @@ def runSimulation( threads, histories, time ):
     print "The PyFrensie path is set to: ", pyfrensie_path
 
   properties = setSimulationProperties( histories, time )
-  name, title = setSimulationName( properties )
-  path_to_database = database_path
-  path_to_geometry = geometry_path
 
   ##--------------------------------------------------------------------------##
   ## ---------------------------- GEOMETRY SETUP ---------------------------- ##
@@ -93,7 +92,7 @@ def runSimulation( threads, histories, time ):
 
 
   # Set geometry path and type
-  model_properties = DagMC.DagMCModelProperties( path_to_geometry )
+  model_properties = DagMC.DagMCModelProperties( geometry_path )
   model_properties.useFastIdLookup()
 
   # Construct model
@@ -124,7 +123,7 @@ def runSimulation( threads, histories, time ):
   ##--------------------------------------------------------------------------##
 
   # Initialized database
-  database = Data.ScatteringCenterPropertiesDatabase(path_to_database)
+  database = Data.ScatteringCenterPropertiesDatabase(database_path)
   scattering_center_definition_database = Collision.ScatteringCenterDefinitionDatabase()
 
   # Set element properties
@@ -147,7 +146,7 @@ def runSimulation( threads, histories, time ):
   material_ids = geom_model.getMaterialIds()
 
   # Fill model
-  model = Collision.FilledGeometryModel( path_to_database, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
+  model = Collision.FilledGeometryModel( database_path, scattering_center_definition_database, material_definition_database, properties, geom_model, True )
 
   # Set particle distribution
   particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
@@ -173,6 +172,9 @@ def runSimulation( threads, histories, time ):
 
   # Set the archive type
   archive_type = "xml"
+
+  # Set the simulation name and title
+  name, title = setSimulationName( properties )
 
   factory = Manager.ParticleSimulationManagerFactory( model,
                                                       source,
@@ -277,7 +279,7 @@ def createResultsDirectory():
 # Define a function for naming an electron simulation
 def setSimulationName( properties ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
-  name = "lockwood_" + str(test_number) + extension
+  name = "lockwood_" + "_" + element + str(test_number) + extension
   output = element + "/" + setup.getResultsDirectory(file_type, interpolation) + "/" + name
 
   return (output, title)
