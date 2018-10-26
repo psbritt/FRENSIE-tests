@@ -163,7 +163,7 @@ def runSimulation( threads, histories, time ):
   response_function = ActiveRegion.StandardParticleResponse( particle_response_function )
 
   # Set the response function
-  surface_flux_estimator.addResponseFunction( response_function )
+  surface_flux_estimator.setResponseFunctions( [response_function] )
 
   # Add the estimator to the event handler
   event_handler.addEstimator( surface_flux_estimator )
