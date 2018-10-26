@@ -314,7 +314,18 @@ def runSimulationFromRendezvous( threads, histories, time, rendezvous ):
     archive_name += "."
     archive_name += components[1].split(".")[1]
 
-    processDataFromRendezvous( archive_name )
+    # Get the event handler
+    event_handler = manager.getEventHandler()
+
+    # Get the simulation name and title
+    properties = manager.getSimulationProperties()
+
+    filename, title = setSimulationName( properties )
+
+    print "Processing the results:"
+    processData( event_handler, filename, title )
+
+    print "Results will be in ", path.dirname(filename)
 
 ##----------------------------------------------------------------------------##
 ## ------------------------- SIMULATION PROPERTIES -------------------------- ##
