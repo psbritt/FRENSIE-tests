@@ -340,6 +340,9 @@ def setSimulationProperties( histories, time ):
   # Set the max electron energy in MeV (Default is 20 MeV)
   properties.setMaxAdjointElectronEnergy( energy )
 
+  # Set the critical line energies
+  properties.setCriticalAdjointElectronLineEnergies( [energy] )
+
 
   ## -------------------------- ELECTRON PROPERTIES ------------------------- ##
 
@@ -370,8 +373,7 @@ def createResultsDirectory():
 ##----------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
 def setSimulationName( properties ):
-  file_type = Data.AdjointElectroatomicDataProperties.Native_EPR_FILE
-  extension, title = setup.setSimulationNameExtention( properties, file_type )
+  extension, title = setup.setAdjointSimulationNameExtention( properties )
   name = "adjoint" + extension
   date = str(datetime.datetime.today()).split()[0]
 
@@ -446,9 +448,14 @@ def processData( event_handler, filename, title ):
   # Process surface flux data
   surface_flux = event_handler.getEstimator( 5 )
   ids = list( surface_flux.getEntityIds() )
+  # print ids
+  # processed_data = surface_flux.getEntityBinProcessedData( ids[0] )
+  # print processed_data['mean']
   setup.processSurfaceFluxSourceEnergyBinData( surface_flux, ids[0], filename, title )
 
   # Process surface current data
   surface_current = event_handler.getEstimator( 6 )
   ids = list( surface_current.getEntityIds() )
+  # processed_data = surface_current.getEntityBinProcessedData( ids[0] )
+  # print processed_data['mean']
   setup.processSurfaceCurrentSourceEnergyBinData( surface_current, ids[0], filename, title )
