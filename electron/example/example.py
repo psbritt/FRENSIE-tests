@@ -54,7 +54,17 @@ if socket.gethostname() == "Denali":
 else: # Set database directory path (for Cluster)
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
 
-geometry_path = path.dirname(path.realpath(__file__)) + "/geom.h5m"
+geometry_path = path.dirname(path.realpath(__file__)) + "/geom_"
+
+# Set the energy bins
+if energy == 0.1:
+  geometry_path += "100keV.h5m"
+elif energy == 0.01:
+  geometry_path += "10keV.h5m"
+elif energy == 0.001:
+  geometry_path += "1keV.h5m"
+else:
+  print "ERROR: energy ", energy, " not supported!"
 
 ##----------------------------------------------------------------------------##
 ## ----------------------------- RUN SIMULATION ----------------------------- ##
@@ -308,7 +318,7 @@ def createResultsDirectory():
 def setSimulationName( properties ):
 
   extension, title = setup.setSimulationNameExtention( properties, file_type )
-  name = "example" + extension
+  name = "example_" + str(energy) + extension
   output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
 
   return (output, title)
@@ -359,16 +369,17 @@ def processDataFromRendezvous( rendezvous_file ):
 def processData( event_handler, filename, title ):
 
   # Process track flux data
-  track_flux = event_handler.getEstimator( 2 )
+  track_flux = event_handler.getEstimator( 1 )
   ids = list( track_flux.getEntityIds() )
   setup.processTrackFluxEnergyBinData( track_flux, ids[0], filename, title )
 
   # Process track flux data
-  surface_flux = event_handler.getEstimator( 1 )
+  surface_flux = event_handler.getEstimator( 2 )
   ids = list( surface_flux.getEntityIds() )
   setup.processSurfaceFluxEnergyBinData( surface_flux, ids[0], filename, title )
 
   # Process track flux data
   surface_current = event_handler.getEstimator( 3 )
   ids = list( surface_current.getEntityIds() )
+  print ids
   setup.processSurfaceCurrentEnergyBinData( surface_current, ids[0], filename, title )

@@ -235,6 +235,48 @@ def setSimulationNameExtention( properties, file_type ):
 
   return (name, title)
 
+##----------------------------------------------------------------------------##
+## ------------------ setAdjointSimulationNameExtention ----------------------##
+##----------------------------------------------------------------------------##
+# Define a function for naming an electron simulation
+def setAdjointSimulationNameExtention( properties ):
+
+  # Set the name reaction and extention
+  title = ""
+  name_extention = ""
+  name_reaction = ""
+  if properties.isAdjointElasticModeOn():
+    if properties.getAdjointElasticElectronDistributionMode() == MonteCarlo.COUPLED_DISTRIBUTION:
+      if properties.getAdjointCoupledElasticSamplingMode() == MonteCarlo.MODIFIED_TWO_D_UNION:
+        name_extention += "_m2d"
+        title += " M2D"
+      elif properties.getAdjointCoupledElasticSamplingMode() == MonteCarlo.TWO_D_UNION:
+        name_extention += "_2d"
+        title += " 2D"
+      else:
+        name_extention += "_1d"
+        title += " 1D"
+    elif properties.getAdjointElasticElectronDistributionMode() == MonteCarlo.DECOUPLED_DISTRIBUTION:
+      name_extention += "_decoupled"
+      title += " DE"
+    elif properties.getAdjointElasticElectronDistributionMode() == MonteCarlo.HYBRID_DISTRIBUTION:
+      name_extention += "_hybrid"
+      title += " HE"
+  else:
+    name_reaction = name_reaction + "_no_elastic"
+
+  if not properties.isAdjointBremsstrahlungModeOn():
+    name_reaction += "_no_brem"
+  if not properties.isAdjointElectroionizationModeOn():
+      name_reaction += "_no_ionization"
+  if not properties.isAdjointAtomicExcitationModeOn():
+      name_reaction += "_no_excitation"
+
+  date = str(datetime.datetime.today()).split()[0]
+  name = name_extention + name_reaction
+
+  return (name, title)
+
 
 ##----------------------------------------------------------------------------##
 ## ------------------------ Create Results Directory ------------------------ ##
