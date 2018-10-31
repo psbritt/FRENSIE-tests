@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 ##----------------------------------------------------------------------------##
 ## ---------------------------- FACEMC test runner ---------------------------##
 ##----------------------------------------------------------------------------##
@@ -24,7 +24,7 @@ if [ "$#" -eq 1 ]; then
   # Restart the simulation
   echo "Processing ${RENDEZVOUS}!"
   cd ./C/C_1/dagmc
-  python -c "import sys; sys.path.insert(1,path.abspath(__file__)); import lockwood; lockwood.processDataFromRendezvous(\"${RENDEZVOUS}\", ${range}, ${calorimeter_thickness} )"
+  python -c "from os import path; import sys; sys.path.insert(1,'../../../'); import lockwood; lockwood.processDataFromRendezvous(\"${RENDEZVOUS}\", ${range}, ${calorimeter_thickness} )"
 
 # Run new simulation
 else
