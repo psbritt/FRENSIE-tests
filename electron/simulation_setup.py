@@ -471,7 +471,6 @@ def processTrackFluxSourceEnergyBinData( estimator, est_id, filename, title ):
   header = "# Source Energy (MeV)\tTrack Flux (#/cm$^2$)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  print flux
   for i in range(0, len(flux)):
     data = str(energy_bins[i]) + '\t' + str(flux[i]) + '\t' + str(rel_error[i]) + '\n'
     out_file.write(data)
@@ -500,8 +499,6 @@ def processSurfaceFluxSourceEnergyBinData( estimator, est_id, filename, title ):
   header = "# Source Energy (MeV)\tSurface Flux (#/cm$^2$)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  print len(energy_bins),len(flux),len(rel_error)
-  print flux
   for i in range(0, len(flux)):
 
     data = str(energy_bins[i]) + '\t' + str(flux[i]) + '\t' + str(rel_error[i]) + '\n'

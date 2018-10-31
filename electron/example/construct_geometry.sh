@@ -1,10 +1,11 @@
 #!/bin/sh
-# This file is named contruct_geom.sh
+# This file is named contruct_geometry.sh
 ##---------------------------------------------------------------------------##
 ## ---------------------- Example Geometry Constructor ----------------------##
 ##---------------------------------------------------------------------------##
 ## This script can be used to construct the Trelis geometry.
-## To construct geom_10keV.h5m run 'geom_constructor.sh'
+## To construct a geometry run 'geom_constructor.sh' and then entered the
+## the desired source energy.
 ##---------------------------------------------------------------------------##
 
 temp_file=$(mktemp)

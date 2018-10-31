@@ -6,7 +6,7 @@ H sphere of density 8.988E-5 g/cm3 and radius 20.0, 0.5, or 0.01 cm surrounded b
 Measure flux and current on the surface of the sphere and the track flux in the sphere. Set energy bins for all estimators.
 
 # Trelis geometry commands
-To construct the geometry run 'construct_geom.sh' and enter the desired energy.
+To construct the geometry run 'construct_geometry.sh' and enter the desired energy.
 
 # Running the simulation if FRENSIE
 
