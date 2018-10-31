@@ -291,6 +291,37 @@ def getSimulationName():
   return name
 
 ##----------------------------------------------------------------------------##
+##----------------------- processDataFromRendezvous --------------------------##
+##----------------------------------------------------------------------------##
+
+# This function pulls pulse height estimator data outputs it to a separate file.
+def processDataFromRendezvous( rendezvous, range, calorimeter_thickness ):
+
+  Collision.FilledGeometryModel.setDefaultDatabasePath( database_path )
+
+  # Load data from file
+  manager = Manager.ParticleSimulationManagerFactory( rendezvous_file ).getManager()
+  event_handler = manager.getEventHandler()
+
+  # Get the estimator data
+  estimator_1 = event_handler.getEstimator( 1 )
+
+  # Get the simulation name and title
+  properties = manager.getSimulationProperties()
+
+  if "epr14" not in rendezvous_file:
+    file_type = Data.ElectroatomicDataProperties.Native_EPR_FILE
+  else:
+    file_type = Data.ElectroatomicDataProperties.ACE_EPR_FILE
+
+  filename, title = setSimulationName( properties )
+
+  print "Processing the results:"
+  processData( estimator_1, filename, title, range, calorimeter_thickness )
+
+  print "Results will be in ", path.dirname(filename)
+
+##----------------------------------------------------------------------------##
 ##------------------------------- processData --------------------------------##
 ##----------------------------------------------------------------------------##
 
