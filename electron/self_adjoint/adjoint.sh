@@ -15,13 +15,13 @@
 EXTRA_ARGS=$@
 
 # Set the number of histories
-HISTORIES=100
+HISTORIES=1000000
 # Set the max runtime (in minutes, 1 day = 1440 )
 TIME=1400
 
 # These parameters can be set if the cluster is not used
-SLURM_CPUS_PER_TASK=4
-SLURM_NTASKS=1
+# SLURM_CPUS_PER_TASK=4
+# SLURM_NTASKS=1
 
 # Run from the rendezvous
 if [ "$#" -eq 1 ]; then
@@ -34,6 +34,9 @@ if [ "$#" -eq 1 ]; then
 
 # Run new simulation
 else
+
+  # Set the source energy (0.001, 0.01, 0.1)
+  ENERGY=0.01
 
   # Set the elastic distribution mode ( DECOUPLED COUPLED HYBRID )
   MODE=COUPLED
@@ -50,6 +53,10 @@ else
   cp adjoint.py ${python_script}.py
 
   # Change the python_script parameters
+
+  # Set the energy
+  command=s/energy=.*/energy=${ENERGY}/
+  sed -i "${command}" ${python_script}.py
 
   # Set the elastic distribution mode
   command=s/mode=MonteCarlo.*/mode=MonteCarlo.${MODE}_DISTRIBUTION/

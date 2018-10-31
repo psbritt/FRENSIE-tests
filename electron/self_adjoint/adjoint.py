@@ -35,7 +35,7 @@ atom=Data.H_ATOM; element="H"; zaid=1000
 energy=0.01
 
 # Set the min energy (default is 100 eV )
-min_energy=1e-4
+energy_cutoff=1e-4
 
 # Set the elastic distribution mode ( DECOUPLED, COUPLED, HYBRID )
 mode=MonteCarlo.COUPLED_DISTRIBUTION
@@ -54,7 +54,17 @@ elif socket.gethostname() == "Elbrus":
 else:
   database_path = "/home/lkersting/software/mcnp6.2/MCNP_DATA/database.xml"
 
-geometry_path = path.dirname(path.realpath(__file__)) + "/geom.h5m"
+geometry_path = path.dirname(path.realpath(__file__)) + "/geom_"
+
+# Set the energy bins
+if energy == 0.1:
+  geometry_path += "100keV.h5m"
+elif energy == 0.01:
+  geometry_path += "10keV.h5m"
+elif energy == 0.001:
+  geometry_path += "1keV.h5m"
+else:
+  print "ERROR: energy ", energy, " not supported!"
 
 # Run the simulation
 def runSimulation( threads, histories, time ):
@@ -102,20 +112,6 @@ def runSimulation( threads, histories, time ):
 
   ## -------------------------- Track Length Flux --------------------------- ##
 
-  # Setup a track length flux estimator
-  estimator_id = 1
-  cell_ids = [1]
-  forward_track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, geom_model )
-
-  # Set the particle type
-  forward_track_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
-
-  # Set the energy bins
-  forward_track_flux_estimator.setEnergyDiscretization( bins )
-
-  # Add the estimator to the event handler
-  event_handler.addEstimator( forward_track_flux_estimator )
-
   # Setup an adjoint track length flux estimator
   estimator_id = 4
   cell_ids = [1]
@@ -131,20 +127,6 @@ def runSimulation( threads, histories, time ):
   event_handler.addEstimator( track_flux_estimator )
 
   ## ------------------------ Surface Flux Estimator ------------------------ ##
-
-  # Setup a surface flux estimator
-  estimator_id = 2
-  surface_ids = [1]
-  forward_surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( estimator_id, 1.0, surface_ids, geom_model )
-
-  # Set the particle type
-  forward_surface_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
-
-  # Set the energy bins
-  forward_surface_flux_estimator.setEnergyDiscretization( bins )
-
-  # Add the estimator to the event handler
-  event_handler.addEstimator( forward_surface_flux_estimator )
 
   # Setup an adjoint surface flux estimator
   estimator_id = 5
@@ -169,20 +151,6 @@ def runSimulation( threads, histories, time ):
   event_handler.addEstimator( surface_flux_estimator )
 
   ## ---------------------- Surface Current Estimator ----------------------- ##
-
-  # Setup a surface current estimator
-  estimator_id = 3
-  surface_ids = [1]
-  surface_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
-
-  # Set the particle type
-  surface_current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
-
-  # Set the energy bins
-  surface_current_estimator.setEnergyDiscretization( bins )
-
-  # Add the estimator to the event handler
-  event_handler.addEstimator( surface_current_estimator )
 
   # Setup an adjoint surface current estimator
   estimator_id = 6
@@ -235,7 +203,7 @@ def runSimulation( threads, histories, time ):
   particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
 
   # Set the energy dimension distribution
-  uniform_energy = Distribution.UniformDistribution( min_energy, energy )
+  uniform_energy = Distribution.UniformDistribution( energy_cutoff, energy )
   energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( uniform_energy )
   particle_distribution.setDimensionDistribution( energy_dimension_dist )
 
@@ -335,7 +303,7 @@ def setSimulationProperties( histories, time ):
   properties = setup.setAdjointSimulationProperties( histories, time, mode, method )
 
   # Set the min electron energy in MeV (Default is 100 eV)
-  properties.setMinAdjointElectronEnergy( min_energy )
+  properties.setMinAdjointElectronEnergy( energy_cutoff )
 
   # Set the max electron energy in MeV (Default is 20 MeV)
   properties.setMaxAdjointElectronEnergy( energy )
@@ -360,7 +328,7 @@ def setSimulationProperties( histories, time ):
 def createResultsDirectory():
 
   date = str(datetime.datetime.today()).split()[0]
-  directory = "results/" + date
+  directory = "results/adjoint/" + date
 
   if not path.exists(directory):
     makedirs(directory)
@@ -374,10 +342,10 @@ def createResultsDirectory():
 # Define a function for naming an electron simulation
 def setSimulationName( properties ):
   extension, title = setup.setAdjointSimulationNameExtention( properties )
-  name = "adjoint" + extension
+  name = "adjoint_" + str(energy) + extension
   date = str(datetime.datetime.today()).split()[0]
 
-  output = "results/" + date + "/" + name
+  output = "results/adjoint/" + date + "/" + name
 
   return (output, title)
 
@@ -421,25 +389,6 @@ def processDataFromRendezvous( rendezvous_file ):
 ##----------------------------------------------------------------------------##
 def processData( event_handler, filename, title ):
 
-  # -- Process the Forward Data -- #
-
-  # Process track flux data
-  track_flux = event_handler.getEstimator( 1 )
-  ids = list( track_flux.getEntityIds() )
-  setup.processTrackFluxEnergyBinData( track_flux, ids[0], filename, title )
-
-  # Process surface flux data
-  surface_flux = event_handler.getEstimator( 2 )
-  ids = list( surface_flux.getEntityIds() )
-  setup.processSurfaceFluxEnergyBinData( surface_flux, ids[0], filename, title )
-
-  # Process surface current data
-  surface_current = event_handler.getEstimator( 3 )
-  ids = list( surface_current.getEntityIds() )
-  setup.processSurfaceCurrentEnergyBinData( surface_current, ids[0], filename, title )
-
-  # -- Process the Adjoint Data -- #
-
   # Process track flux data
   track_flux = event_handler.getEstimator( 4 )
   ids = list( track_flux.getEntityIds() )
@@ -448,14 +397,9 @@ def processData( event_handler, filename, title ):
   # Process surface flux data
   surface_flux = event_handler.getEstimator( 5 )
   ids = list( surface_flux.getEntityIds() )
-  # print ids
-  # processed_data = surface_flux.getEntityBinProcessedData( ids[0] )
-  # print processed_data['mean']
   setup.processSurfaceFluxSourceEnergyBinData( surface_flux, ids[0], filename, title )
 
   # Process surface current data
   surface_current = event_handler.getEstimator( 6 )
   ids = list( surface_current.getEntityIds() )
-  # processed_data = surface_current.getEntityBinProcessedData( ids[0] )
-  # print processed_data['mean']
   setup.processSurfaceCurrentSourceEnergyBinData( surface_current, ids[0], filename, title )
