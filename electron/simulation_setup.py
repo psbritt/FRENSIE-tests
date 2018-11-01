@@ -142,8 +142,8 @@ def setAdjointSimulationProperties( histories, time, elastic_mode, elastic_sampl
   # Set the max electron energy in MeV (Default is 20 MeV)
   properties.setMaxAdjointElectronEnergy( 20.0 )
 
-  # Set the electron evaluation tolerance (Default is 1e-8)
-  properties.setAdjointElectronEvaluationTolerance( 1e-8 )
+  # Set the electron evaluation tolerance (Default is 1e-6)
+  properties.setAdjointElectronEvaluationTolerance( 1e-6 )
 
   ## --- Adjoint Elastic Properties ---
 
