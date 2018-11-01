@@ -310,7 +310,6 @@ def createResultsDirectory():
   if not path.exists(directory):
     makedirs(directory)
 
-  print directory
   return directory
 
 ##----------------------------------------------------------------------------##
