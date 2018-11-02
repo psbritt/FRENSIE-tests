@@ -110,7 +110,7 @@ def runSimulation( threads, histories, time ):
   if energy == 0.1:
     bins = list(Utility.doubleArrayFromString( "{ 1e-4, 5e-4, 198i, 1e-1}" ))
   elif energy == 0.01:
-    bins = list(Utility.doubleArrayFromString( "{ 1e-4, 137i, 7e-3, 29i, 1e-2}" ))
+    bins = list(Utility.doubleArrayFromString( "{ 1e-4, 58i, 6e-3, 99i, 1e-2}" ))
   elif energy == 0.001:
     bins = list(Utility.doubleArrayFromString( "{ 1e-4, 197i, 1e-3}" ))
   else:
