@@ -3,9 +3,15 @@ from os import path
 import sys
 import numpy
 import datetime
-import socket
+import getpass
 
 frensie_install=''
+# Set frensie install for the lkersting (always the same directory as frensie-tests)
+if getpass.getuser() == 'lkersting':
+  frensie_install = path.dirname(path.dirname(path.dirname(path.abspath(__file__))))
+  sys.path.insert(1, frensie_install + '/bin/')
+  sys.path.insert(1, frensie_install + '/lib/python2.7/site-packages/')
+
 # NOTE: If a specific version of FRENSIE is desired, the path below can be
 # uncommented and the desired path to the frensie/lib can be used.
 # frensie_install = path.dirname(path.dirname(path.dirname(path.abspath(__file__))))

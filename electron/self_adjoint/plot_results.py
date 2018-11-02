@@ -33,7 +33,7 @@ forward_path = user_args.f
 
 # Number of data points in each file
 M = 169
-
+NORM=536.7
 # Get Adjoint Data
 with open(adjoint_path) as input:
       adjoint_name = input.readline()[1:].strip()
@@ -41,7 +41,7 @@ with open(adjoint_path) as input:
       print input.readline().strip()[1:]
       data = zip(*(line.strip().split('\t') for line in input))
       adjoint_x = np.asfarray(data[0][0:M])
-      adjoint_y = np.asfarray(data[1][0:M])
+      adjoint_y = np.asfarray(data[1][0:M])/NORM
       adjoint_error = np.asfarray(data[2][0:M])*adjoint_y
 
 # Get forward data
@@ -91,7 +91,7 @@ print "adjoint_x = \t", adjoint_x, "\n"
 x = np.insert( adjoint_x, 0, 0.0)
 
 # Plot histogram of results
-m, bins, plt1 = plt.hist(x[:-1], bins=x, weights=adjoint_y, histtype='step', label="adjoint/400", color='b', linestyle=linestyles[0], linewidth=1.8 )
+m, bins, plt1 = plt.hist(x[:-1], bins=x, weights=adjoint_y, histtype='step', label="adjoint/537", color='b', linestyle=linestyles[0], linewidth=1.8 )
 
 # Plot error bars
 mid = 0.5*(bins[1:] + bins[:-1])
@@ -146,8 +146,8 @@ y = adjoint_y[:-N]/forward_y[:-N]
 
 # Print C/R results
 for i in range(0, len(y)):
-  print x[i+1], ": ", (1.0-y[i])*100, u"\u00B1", yerr[i]*100, "%"
-  # print x[i+1], ": ", y[i], "\t",forward_y[i]
+  # print x[i+1], ": ", (1.0-y[i])*100, u"\u00B1", yerr[i]*100, "%"
+  print x[i+1], ": ", y[i], "\t",forward_y[i]
 
 # Plot histogram of results
 m, bins, _ = ax1.hist(x[:-1], bins=x, weights=y, histtype='step', label="ratio", color='b', linestyle=linestyles[0], linewidth=1.8 )
