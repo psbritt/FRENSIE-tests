@@ -10,7 +10,7 @@ delete=""
 while getopts "d" opt; do
   case $opt in
     a)
-      delete="-d"
+      delete="true"
       ;;
     \?)
       echo "Invalid option: -$OPTARG" >&2

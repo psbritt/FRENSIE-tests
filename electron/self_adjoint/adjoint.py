@@ -319,10 +319,10 @@ def setSimulationProperties( histories, time ):
   ## -------------------------- ELECTRON PROPERTIES ------------------------- ##
 
   # Turn certain reactions off
-  # properties.setElasticModeOff()
-  # properties.setElectroionizationModeOff()
-  # properties.setBremsstrahlungModeOff()
-  # properties.setAtomicExcitationModeOff()
+  # properties.setAdjointElasticModeOff()
+  # properties.setAdjointElectroionizationModeOff()
+  # properties.setAdjointBremsstrahlungModeOff()
+  # properties.setAdjointAtomicExcitationModeOff()
 
   return properties
 
