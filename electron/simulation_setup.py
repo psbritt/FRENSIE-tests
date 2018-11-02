@@ -124,6 +124,10 @@ def setAdjointSimulationProperties( histories, time, elastic_mode, elastic_sampl
   # Set the number of histories
   properties.setNumberOfHistories( histories )
 
+  # Set the minimum number of rendezvous
+  if histories > 100:
+    properties.setMinNumberOfRendezvous( 10 )
+
   # Change time from minutes to seconds
   time_sec = time*60
 
