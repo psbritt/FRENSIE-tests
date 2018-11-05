@@ -317,11 +317,9 @@ def createResultsDirectory():
 ##----------------------------------------------------------------------------##
 # Define a function for naming an electron simulation
 def setSimulationName( properties ):
-  extension, title = setup.setSimulationNameExtention( properties )
+  extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "forward_" + str(energy) + extension
-  date = str(datetime.datetime.today()).split()[0]
-
-  output = "results/forward/" + date + "/" + name
+  output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
 
   return (output, title)
 
