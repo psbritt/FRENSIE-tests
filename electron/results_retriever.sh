@@ -50,9 +50,9 @@ echo -e "\nGet hanson results:"
 cd ../../
 
 # Get lockwood results
-cd ./lockwood/results
+cd ./lockwood
 echo -e "\nGet lockwood results:"
-  cd ./Al
+  cd ./Al/results
   echo -e "\n  Get Al results:"
     # Copy results to this location
     scp -r aci2:${INSTALL}/lockwood/Al/results/* ./
@@ -65,10 +65,10 @@ echo -e "\nGet lockwood results:"
 cd ../
 
 # Get McLaughlin results
-cd ./McLaughlin/results
+cd ./McLaughlin
 echo -e "\nGet McLaughlin results:"
   # Get Al results
-  cd ./Al
+  cd ./Al/results
   echo -e "\n  Get Al results:"
     # Copy results to this location
     scp -r aci2:${INSTALL}/McLaughlin/Al/results/* ./
