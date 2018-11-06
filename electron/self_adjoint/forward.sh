@@ -66,24 +66,24 @@ else
 
   # Turn off elastic scattering
   if [ "${ELASTIC}" = "off" ]; then
-    command='s/# properties.setAdjointElasticModeOff().*/properties.setAdjointElasticModeOff()/'
+    command='s/# properties.setElasticModeOff().*/properties.setElasticModeOff()/'
     sed -i "${command}" ${python_script}.py
   fi
 
   # Turn off atomic excitation reactions
   if [ "${EXCITATION}" = "off" ]; then
-    command='s/# properties.setAdjointAtomicExcitationModeOff().*/properties.setAdjointAtomicExcitationModeOff()/'
+    command='s/# properties.setAtomicExcitationModeOff().*/properties.setAtomicExcitationModeOff()/'
     sed -i "${command}" ${python_script}.py
   fi
   # Turn off bremsstrahlung reactions
   if [ "${BREM}" = "off" ]; then
-    command='s/# properties.setAdjointBremsstrahlungModeOff(.*/properties.setAdjointBremsstrahlungModeOff()/'
+    command='s/# properties.setBremsstrahlungModeOff(.*/properties.setBremsstrahlungModeOff()/'
     sed -i "${command}" ${python_script}.py
   fi
 
   # Turn off electro-ionization reactions
   if [ "${IONIZATION}" = "off" ]; then
-    command='s/# properties.setAdjointElectroionizationModeOff().*/properties.setAdjointElectroionizationModeOff()/'
+    command='s/# properties.setElectroionizationModeOff().*/properties.setElectroionizationModeOff()/'
     sed -i "${command}" ${python_script}.py
   fi
 
