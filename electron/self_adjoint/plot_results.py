@@ -31,17 +31,24 @@ user_args = parser.parse_args()
 adjoint_path = user_args.a
 forward_path = user_args.f
 
-# Number of data points in each file
-M = 169
+# Adjoint normalization factor
 NORM=550
+
 # Get Adjoint Data
 with open(adjoint_path) as input:
       adjoint_name = input.readline()[1:].strip()
       print adjoint_name
       print input.readline().strip()[1:]
       data = zip(*(line.strip().split('\t') for line in input))
+      # Get the adjoint x bin boundaries
       adjoint_x = np.asfarray(data[0][:])
-      adjoint_y = np.asfarray(data[1][:])/NORM
+      # Get the x bin widths
+      bin_widths = (adjoint_x[1:] - adjoint_x[:-1])
+      # Get the binned adjoint surface flux
+      adjoint_bin_y = np.asfarray(data[1][:])/NORM
+      # Average the flux to the bin width
+      adjoint_y = adjoint_bin_y/bin_widths
+      # Calculate the error for the bin averaged surface flux
       adjoint_error = np.asfarray(data[2][:])*adjoint_y
 
 # Get forward data
@@ -50,8 +57,15 @@ with open(forward_path) as input:
       print forward_name
       print input.readline().strip()[1:]
       data = zip(*(line.strip().split('\t') for line in input))
+      # Get the forward x bin boundaries
       forward_x = np.asfarray(data[0][:])
-      forward_y = np.asfarray(data[1][:])
+      # Get the x bin widths
+      bin_widths = (forward_x[1:] - forward_x[:-1])
+      # Get the binned forward surface flux
+      forward_bin_y = np.asfarray(data[1][:])
+      # Average the flux to the bin width
+      forward_y = forward_bin_y/bin_widths
+      # Calculate the error for the bin averaged surface flux
       forward_error = np.asfarray(data[2][:])*forward_y
 
 # Plot
@@ -85,24 +99,11 @@ plots = []
 labels = []
 # Plot Adjoint Data
 
-# Insert first bin lower bounds as an angle of 0
-print "adjoint_x = \t", adjoint_x, "\n"
-
-x = np.insert( adjoint_x, 0, 0.0)
-
-# Average bin data
-diff = (x[1:] - x[:-1])
-print diff, len(diff)
-print len(adjoint_y)
-adjoint_y = adjoint_y/diff
-forward_y = forward_y/diff
-print adjoint_y
-
 # Plot histogram of results
 label = "adjoint"
 if NORM > 1.0:
   label += "/" + str(NORM)
-m, bins, plt1 = plt.hist(x[:-1], bins=x, weights=adjoint_y, histtype='step', label=label, color='b', linestyle=linestyles[0], linewidth=1.8 )
+m, bins, plt1 = plt.hist(adjoint_x[:-1], bins=adjoint_x, weights=adjoint_y, histtype='step', label=label, color='b', linestyle=linestyles[0], linewidth=1.8 )
 
 # Plot error bars
 mid = 0.5*(bins[1:] + bins[:-1])
@@ -116,11 +117,8 @@ labels.append("adjoint")
 
 # Plot Forward Data
 
-# Insert first bin lower bounds as an angle of 0
-x = np.insert( forward_x, 0, 0.0)
-
 # Plot histogram of results
-m, bins, plt1 = plt.hist(x[:-1], bins=x, weights=forward_y, histtype='step', label="forward", color='g', linestyle=linestyles[1], linewidth=1.8 )
+m, bins, plt1 = plt.hist(forward_x[:-1], bins=forward_x, weights=forward_y, histtype='step', label="forward", color='g', linestyle=linestyles[1], linewidth=1.8 )
 
 # Plot error bars
 mid = 0.5*(bins[1:] + bins[:-1])
@@ -146,22 +144,19 @@ ax1 = plt.subplot(gs[1], sharex = ax0)
 plt.xlabel(x_label, size=14)
 plt.ylabel('C/R', size=14)
 
-# Insert first bin lower bounds as an angle of 0
-x = np.insert( adjoint_x, 0, 0.0)
-
-yerr = np.sqrt( ((1.0/forward_y)**2)*(adjoint_error)**2 + ((adjoint_x/forward_y**2)**2)*(forward_error)**2 )
+yerr = np.sqrt( ((1.0/forward_y)**2)*(adjoint_error)**2 + ((adjoint_x[:-1]/forward_y**2)**2)*(forward_error)**2 )
 y = adjoint_y/forward_y
 
 # Print C/R results
 for i in range(0, len(y)):
   # print x[i+1], ": ", (1.0-y[i])*100, u"\u00B1", yerr[i]*100, "%"
-  print x[i+1], ": ", y[i], "\t",forward_y[i]
+  print adjoint_x[i+1], ": ", y[i], "\t",forward_y[i]
   if not np.isfinite( y[i] ):
     y[i] = 0
     yerr[i] = 0
 
 # Plot histogram of results
-m, bins, _ = ax1.hist(x[:-1], bins=x, weights=y, histtype='step', label="ratio", color='b', linestyle=linestyles[0], linewidth=1.8 )
+m, bins, _ = ax1.hist(adjoint_x[:-1], bins=adjoint_x, weights=y, histtype='step', label="ratio", color='b', linestyle=linestyles[0], linewidth=1.8 )
 # Plot error bars
 mid = 0.5*(bins[1:] + bins[:-1])
 ax1.errorbar(mid, m, yerr=yerr, ecolor='b', fmt=None)
