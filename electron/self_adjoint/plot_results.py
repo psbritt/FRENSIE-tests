@@ -33,16 +33,16 @@ forward_path = user_args.f
 
 # Number of data points in each file
 M = 169
-NORM=536.7
+NORM=550
 # Get Adjoint Data
 with open(adjoint_path) as input:
       adjoint_name = input.readline()[1:].strip()
       print adjoint_name
       print input.readline().strip()[1:]
       data = zip(*(line.strip().split('\t') for line in input))
-      adjoint_x = np.asfarray(data[0][0:M])
-      adjoint_y = np.asfarray(data[1][0:M])/NORM
-      adjoint_error = np.asfarray(data[2][0:M])*adjoint_y
+      adjoint_x = np.asfarray(data[0][:])
+      adjoint_y = np.asfarray(data[1][:])/NORM
+      adjoint_error = np.asfarray(data[2][:])*adjoint_y
 
 # Get forward data
 with open(forward_path) as input:
@@ -50,9 +50,9 @@ with open(forward_path) as input:
       print forward_name
       print input.readline().strip()[1:]
       data = zip(*(line.strip().split('\t') for line in input))
-      forward_x = np.asfarray(data[0][0:M])
-      forward_y = np.asfarray(data[1][0:M])
-      forward_error = np.asfarray(data[2][0:M])*forward_y
+      forward_x = np.asfarray(data[0][:])
+      forward_y = np.asfarray(data[1][:])
+      forward_error = np.asfarray(data[2][:])*forward_y
 
 # Plot
 fig = plt.figure(num=1, figsize=(10,6))
@@ -70,7 +70,7 @@ plt.title('$\mathrm{0.01\/MeV\/Electron\/Surface\/Flux\/on\/a\/0.5\/cm\/Hydrogen
 ax=plt.gca()
 
 # plt.xlim(0.0,7.0)
-plt.ylim(0.0,0.03)
+# plt.ylim(0.0,0.03)
 
 # plt.plot(exp_x, exp_y, label="Hanson (Exp.)", marker='s', markersize=5 )
 
@@ -90,8 +90,19 @@ print "adjoint_x = \t", adjoint_x, "\n"
 
 x = np.insert( adjoint_x, 0, 0.0)
 
+# Average bin data
+diff = (x[1:] - x[:-1])
+print diff, len(diff)
+print len(adjoint_y)
+adjoint_y = adjoint_y/diff
+forward_y = forward_y/diff
+print adjoint_y
+
 # Plot histogram of results
-m, bins, plt1 = plt.hist(x[:-1], bins=x, weights=adjoint_y, histtype='step', label="adjoint/537", color='b', linestyle=linestyles[0], linewidth=1.8 )
+label = "adjoint"
+if NORM > 1.0:
+  label += "/" + str(NORM)
+m, bins, plt1 = plt.hist(x[:-1], bins=x, weights=adjoint_y, histtype='step', label=label, color='b', linestyle=linestyles[0], linewidth=1.8 )
 
 # Plot error bars
 mid = 0.5*(bins[1:] + bins[:-1])
@@ -135,19 +146,19 @@ ax1 = plt.subplot(gs[1], sharex = ax0)
 plt.xlabel(x_label, size=14)
 plt.ylabel('C/R', size=14)
 
-N=8
-
 # Insert first bin lower bounds as an angle of 0
-x = np.insert( adjoint_x[:-N], 0, 0.0)
+x = np.insert( adjoint_x, 0, 0.0)
 
-# Calculate C/R
-yerr = np.sqrt( ((1.0/forward_y[:-N])**2)*(adjoint_error[:-N])**2 + ((adjoint_x[:-N]/forward_y[:-N]**2)**2)*(forward_error[:-N])**2 )
-y = adjoint_y[:-N]/forward_y[:-N]
+yerr = np.sqrt( ((1.0/forward_y)**2)*(adjoint_error)**2 + ((adjoint_x/forward_y**2)**2)*(forward_error)**2 )
+y = adjoint_y/forward_y
 
 # Print C/R results
 for i in range(0, len(y)):
   # print x[i+1], ": ", (1.0-y[i])*100, u"\u00B1", yerr[i]*100, "%"
   print x[i+1], ": ", y[i], "\t",forward_y[i]
+  if not np.isfinite( y[i] ):
+    y[i] = 0
+    yerr[i] = 0
 
 # Plot histogram of results
 m, bins, _ = ax1.hist(x[:-1], bins=x, weights=y, histtype='step', label="ratio", color='b', linestyle=linestyles[0], linewidth=1.8 )
@@ -165,15 +176,15 @@ ax0.grid(linestyle=':')
 ax1.grid(linestyle=':')
 
 # plt.xlim(0.0,6.78)
-plt.ylim(0.1,5.0)
+plt.ylim(0.0,1.0)
 
 # remove vertical gap between subplots
 plt.subplots_adjust(hspace=.0)
 
-output = "sefl_adjoint_results.pdf"
+output = "self_adjoint_results.pdf"
 if user_args.o:
     output = user_args.o
 
 print "Plot outputted to: ",output
-# fig.savefig(output, bbox_inches='tight', dpi=600)
+fig.savefig(output, bbox_inches='tight', dpi=600)
 plt.show()
