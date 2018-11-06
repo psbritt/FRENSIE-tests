@@ -168,10 +168,10 @@ def runSimulation( threads, histories, time ):
 
   ## -------------------------- Particle Tracker ---------------------------- ##
 
-  particle_tracker = Event.ParticleTracker( 0, 1000 )
+  # particle_tracker = Event.ParticleTracker( 0, 1000 )
 
-  # Add the particle tracker to the event handler
-  event_handler.addParticleTracker( particle_tracker )
+  # # Add the particle tracker to the event handler
+  # event_handler.addParticleTracker( particle_tracker )
 
   ##--------------------------------------------------------------------------##
   ## ----------------------- SIMULATION MANAGER SETUP ----------------------- ##
@@ -393,17 +393,17 @@ def processDataFromRendezvous( rendezvous_file ):
 ##----------------------------------------------------------------------------##
 def processData( event_handler, filename, title ):
 
-  # Process track flux data
-  track_flux = event_handler.getEstimator( 4 )
-  ids = list( track_flux.getEntityIds() )
-  setup.processTrackFluxSourceEnergyBinData( track_flux, ids[0], filename, title )
+  # # Process track flux data
+  # track_flux = event_handler.getEstimator( 4 )
+  # ids = list( track_flux.getEntityIds() )
+  # setup.processTrackFluxSourceEnergyBinData( track_flux, ids[0], filename, title )
 
   # Process surface flux data
   surface_flux = event_handler.getEstimator( 5 )
   ids = list( surface_flux.getEntityIds() )
   setup.processSurfaceFluxSourceEnergyBinData( surface_flux, ids[0], filename, title )
 
-  # Process surface current data
-  surface_current = event_handler.getEstimator( 6 )
-  ids = list( surface_current.getEntityIds() )
-  setup.processSurfaceCurrentSourceEnergyBinData( surface_current, ids[0], filename, title )
+  # # Process surface current data
+  # surface_current = event_handler.getEstimator( 6 )
+  # ids = list( surface_current.getEntityIds() )
+  # setup.processSurfaceCurrentSourceEnergyBinData( surface_current, ids[0], filename, title )

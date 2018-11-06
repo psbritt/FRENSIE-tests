@@ -291,6 +291,9 @@ def setSimulationProperties( histories, time ):
 
   ## -------------------------- ELECTRON PROPERTIES ------------------------- ##
 
+  # Turn off Atomic Relaxation
+  properties.setAtomicRelaxationModeOff( MonteCarlo.ELECTRON )
+
   # Turn certain reactions off
   # properties.setElasticModeOff()
   # properties.setElectroionizationModeOff()
@@ -319,7 +322,11 @@ def createResultsDirectory():
 def setSimulationName( properties ):
   extension, title = setup.setSimulationNameExtention( properties, file_type )
   name = "forward_" + str(energy) + extension
-  output = setup.getResultsDirectory(file_type, interpolation) + "/" + name
+
+  date = str(datetime.datetime.today()).split()[0]
+  directory = "results/forward/" + date
+
+  output = directory + "/" + name
 
   return (output, title)
 
@@ -368,17 +375,17 @@ def processDataFromRendezvous( rendezvous_file ):
 ##----------------------------------------------------------------------------##
 def processData( event_handler, filename, title ):
 
-  # Process track flux data
-  track_flux = event_handler.getEstimator( 1 )
-  ids = list( track_flux.getEntityIds() )
-  setup.processTrackFluxEnergyBinData( track_flux, ids[0], filename, title )
+  # # Process track flux data
+  # track_flux = event_handler.getEstimator( 1 )
+  # ids = list( track_flux.getEntityIds() )
+  # setup.processTrackFluxEnergyBinData( track_flux, ids[0], filename, title )
 
-  # Process track flux data
+  # Process surface flux data
   surface_flux = event_handler.getEstimator( 2 )
   ids = list( surface_flux.getEntityIds() )
   setup.processSurfaceFluxEnergyBinData( surface_flux, ids[0], filename, title )
 
-  # Process track flux data
-  surface_current = event_handler.getEstimator( 3 )
-  ids = list( surface_current.getEntityIds() )
-  setup.processSurfaceCurrentEnergyBinData( surface_current, ids[0], filename, title )
+  # # Process surface current data
+  # surface_current = event_handler.getEstimator( 3 )
+  # ids = list( surface_current.getEntityIds() )
+  # setup.processSurfaceCurrentEnergyBinData( surface_current, ids[0], filename, title )
