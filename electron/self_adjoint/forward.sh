@@ -48,9 +48,44 @@ else
   # Set the elastic coupled sampling method ( ONE_D TWO_D MODIFIED_TWO_D )
   METHOD=MODIFIED_TWO_D
 
+  # Set certain reactions to "off"
+  ELASTIC=''
+  EXCITATION=''
+  BREM=''
+  IONIZATION=''
+
+  ##--------------------------------------------------------------------------##
+  ## ------------------------------- COMMANDS --------------------------------##
+  ##--------------------------------------------------------------------------##
+
   # Create a unique python script and change the parameters
   python_script="forward_${SLURM_JOB_ID}"
   cp forward.py ${python_script}.py
+
+  # Change the python_script parameters
+
+  # Turn off elastic scattering
+  if [ "${ELASTIC}" = "off" ]; then
+    command='s/# properties.setAdjointElasticModeOff().*/properties.setAdjointElasticModeOff()/'
+    sed -i "${command}" ${python_script}.py
+  fi
+
+  # Turn off atomic excitation reactions
+  if [ "${EXCITATION}" = "off" ]; then
+    command='s/# properties.setAdjointAtomicExcitationModeOff().*/properties.setAdjointAtomicExcitationModeOff()/'
+    sed -i "${command}" ${python_script}.py
+  fi
+  # Turn off bremsstrahlung reactions
+  if [ "${BREM}" = "off" ]; then
+    command='s/# properties.setAdjointBremsstrahlungModeOff(.*/properties.setAdjointBremsstrahlungModeOff()/'
+    sed -i "${command}" ${python_script}.py
+  fi
+
+  # Turn off electro-ionization reactions
+  if [ "${IONIZATION}" = "off" ]; then
+    command='s/# properties.setAdjointElectroionizationModeOff().*/properties.setAdjointElectroionizationModeOff()/'
+    sed -i "${command}" ${python_script}.py
+  fi
 
   # Set the energy
   command=s/energy=.*/energy=${ENERGY}/
