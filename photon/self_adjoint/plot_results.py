@@ -85,9 +85,6 @@ labels = []
 # Plot Adjoint Data
 
 # Insert first bin lower bounds as an angle of 0
-print "adjoint_x = \t", adjoint_x, "\n"
-print "forward_x = \t", forward_x, "\n"
-
 x = np.insert( adjoint_x, 0, 0.0)
 
 label = "adjoint"
