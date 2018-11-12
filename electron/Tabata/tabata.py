@@ -351,12 +351,12 @@ def processData( estimator, filename, title, subzone_op ):
 
   for i in range(0,len(ids)):
     processed_data = estimator.getEntityBinProcessedData( ids[i] )
-    energy_dep_mev = processed_data['mean']
+    charge_dep = processed_data['mean']
     rel_error = processed_data['re']
 
     depth = subzone_op*(i+1)
 
     # Write the energy deposition to the file
-    data = str(depth) + '\t' + str(energy_dep_mev[0]/subzone_op) + '\t' + str(rel_error[0]/subzone_op) + '\n'
+    data = str(depth) + '\t' + str(charge_dep[0]/subzone_op) + '\t' + str(rel_error[0]/subzone_op) + '\n'
     out_file.write(data)
   out_file.close()

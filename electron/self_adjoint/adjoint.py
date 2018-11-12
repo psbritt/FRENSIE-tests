@@ -110,21 +110,21 @@ def runSimulation( threads, histories, time ):
   else:
     print "ERROR: energy ", energy, " not supported!"
 
-  ## -------------------------- Track Length Flux --------------------------- ##
+  # ## -------------------------- Track Length Flux --------------------------- ##
 
-  # Setup an adjoint track length flux estimator
-  estimator_id = 4
-  cell_ids = [1]
-  track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, geom_model )
+  # # Setup an adjoint track length flux estimator
+  # estimator_id = 4
+  # cell_ids = [1]
+  # track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, geom_model )
 
-  # Set the particle type
-  track_flux_estimator.setParticleTypes( [MonteCarlo.ADJOINT_ELECTRON] )
+  # # Set the particle type
+  # track_flux_estimator.setParticleTypes( [MonteCarlo.ADJOINT_ELECTRON] )
 
-  # Set the energy bins
-  track_flux_estimator.setSourceEnergyDiscretization( bins )
+  # # Set the energy bins
+  # track_flux_estimator.setSourceEnergyDiscretization( bins )
 
-  # Add the estimator to the event handler
-  event_handler.addEstimator( track_flux_estimator )
+  # # Add the estimator to the event handler
+  # event_handler.addEstimator( track_flux_estimator )
 
   ## ------------------------ Surface Flux Estimator ------------------------ ##
 
@@ -150,21 +150,42 @@ def runSimulation( threads, histories, time ):
   # Add the estimator to the event handler
   event_handler.addEstimator( surface_flux_estimator )
 
-  ## ---------------------- Surface Current Estimator ----------------------- ##
 
-  # Setup an adjoint surface current estimator
-  estimator_id = 6
+  # Setup an adjoint surface flux estimator
+  estimator_id = 7
   surface_ids = [1]
-  surface_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
+  surface_flux_estimator2 = Event.WeightMultipliedSurfaceFluxEstimator( estimator_id, 1.0, surface_ids, geom_model )
 
   # Set the particle type
-  surface_current_estimator.setParticleTypes( [MonteCarlo.ADJOINT_ELECTRON] )
+  surface_flux_estimator2.setParticleTypes( [MonteCarlo.ADJOINT_ELECTRON] )
 
-  # Set the energy bins
-  surface_current_estimator.setSourceEnergyDiscretization( bins )
+  # Create response function
+  delta_energy = Distribution.DeltaDistribution( energy )
+  particle_response_function = ActiveRegion.EnergyParticleResponseFunction( delta_energy )
+  response_function = ActiveRegion.StandardParticleResponse( particle_response_function )
+
+  # Set the response function
+  surface_flux_estimator2.setResponseFunctions( [response_function] )
 
   # Add the estimator to the event handler
-  event_handler.addEstimator( surface_current_estimator )
+  event_handler.addEstimator( surface_flux_estimator2 )
+
+
+  # ## ---------------------- Surface Current Estimator ----------------------- ##
+
+  # # Setup an adjoint surface current estimator
+  # estimator_id = 6
+  # surface_ids = [1]
+  # surface_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
+
+  # # Set the particle type
+  # surface_current_estimator.setParticleTypes( [MonteCarlo.ADJOINT_ELECTRON] )
+
+  # # Set the energy bins
+  # surface_current_estimator.setSourceEnergyDiscretization( bins )
+
+  # # Add the estimator to the event handler
+  # event_handler.addEstimator( surface_current_estimator )
 
   ## -------------------------- Particle Tracker ---------------------------- ##
 
