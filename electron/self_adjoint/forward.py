@@ -116,21 +116,21 @@ def runSimulation( threads, histories, time ):
   else:
     print "ERROR: energy ", energy, " not supported!"
 
-  ## -------------------------- Track Length Flux --------------------------- ##
+  # ## -------------------------- Track Length Flux --------------------------- ##
 
-  # Setup a track length flux estimator
-  estimator_id = 1
-  cell_ids = [1]
-  track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, geom_model )
+  # # Setup a track length flux estimator
+  # estimator_id = 1
+  # cell_ids = [1]
+  # track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, geom_model )
 
-  # Set the particle type
-  track_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+  # # Set the particle type
+  # track_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
 
-  # Set the energy bins
-  track_flux_estimator.setEnergyDiscretization( bins )
+  # # Set the energy bins
+  # track_flux_estimator.setEnergyDiscretization( bins )
 
-  # Add the estimator to the event handler
-  event_handler.addEstimator( track_flux_estimator )
+  # # Add the estimator to the event handler
+  # event_handler.addEstimator( track_flux_estimator )
 
   ## ------------------------ Surface Flux Estimator ------------------------ ##
 
@@ -148,21 +148,32 @@ def runSimulation( threads, histories, time ):
   # Add the estimator to the event handler
   event_handler.addEstimator( surface_flux_estimator )
 
-  ## ---------------------- Surface Current Estimator ----------------------- ##
-
-  # Setup a surface current estimator
-  estimator_id = 3
+  # Setup a surface flux estimator
+  estimator_id = 7
   surface_ids = [1]
-  surface_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
+  surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( estimator_id, 1.0, surface_ids, geom_model )
 
   # Set the particle type
-  surface_current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
-
-  # Set the energy bins
-  surface_current_estimator.setEnergyDiscretization( bins )
+  surface_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
 
   # Add the estimator to the event handler
-  event_handler.addEstimator( surface_current_estimator )
+  event_handler.addEstimator( surface_flux_estimator )
+
+  # ## ---------------------- Surface Current Estimator ----------------------- ##
+
+  # # Setup a surface current estimator
+  # estimator_id = 3
+  # surface_ids = [1]
+  # surface_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
+
+  # # Set the particle type
+  # surface_current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+
+  # # Set the energy bins
+  # surface_current_estimator.setEnergyDiscretization( bins )
+
+  # # Add the estimator to the event handler
+  # event_handler.addEstimator( surface_current_estimator )
 
   ##--------------------------------------------------------------------------##
   ## ----------------------- SIMULATION MANAGER SETUP ----------------------- ##

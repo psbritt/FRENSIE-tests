@@ -8,9 +8,9 @@
 ##---------------------------------------------------------------------------##
 ## ---------------------------- FACEMC test runner --------------------------##
 ##---------------------------------------------------------------------------##
-## FRENSIE benchmark test: Tabata dose depth data.
-## The dose depth for a 1-D in several materials is calculated by dividing the
-## energy deposition by the subzone width (g/cm^2).
+## FRENSIE benchmark test: Tabata charge deposition data.
+## The charge deposition for several materials in 1-D is calculated by dividing
+## the charge deposition by the subzone width (g/cm^2).
 ##---------------------------------------------------------------------------##
 EXTRA_ARGS=$@
 
