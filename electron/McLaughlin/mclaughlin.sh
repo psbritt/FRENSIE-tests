@@ -79,7 +79,7 @@ else
 
   elif [ "${MATERIAL}" = "polyethylene" ]; then
     # Set the source energy
-    ENERGY=0.1
+    ENERGY=2.0
     # Set the subzone width (cm)
     SUBZONE_WIDTH=0.022
     # Set the material density (g/cm3)
