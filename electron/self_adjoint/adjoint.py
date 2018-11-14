@@ -155,11 +155,11 @@ def runSimulation( threads, histories, time ):
   element_definition = scattering_center_definition_database.createDefinition( element, Data.ZAID(zaid) )
 
 
-  version = 0
-  # if energy == 0.1:
-    # version = 0
-  # else:
-  #   version = 1
+  # version = 0
+  if "debug" in pyfrensie_path:
+    version = 1
+  else:
+    version = 0
   file_type = Data.AdjointElectroatomicDataProperties.Native_EPR_FILE
 
   element_definition.setAdjointElectroatomicDataProperties(
