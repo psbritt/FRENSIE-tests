@@ -80,7 +80,7 @@ if __name__ == "__main__":
     print bcolors.BOLD + "Updating the adjoint H native test data ...\n" + bcolors.ENDC
 
 
-    max_electron_energies = [ 0.1, 0.01, 0.001 ]
+    max_electron_energies = [ 0.01 ]
 
     min_photon_energy = 1e-3
     max_photon_energy = 3.0
