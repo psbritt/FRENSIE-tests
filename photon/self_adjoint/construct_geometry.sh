@@ -22,9 +22,9 @@ if [ ${energy} = "0.1" ]; then
   tol="1e-3"
 elif [ ${energy} = "0.01" ]; then
   echo "Constructing geometry for source energy 0.01 MeV!"
-  radius="100.0"
-  length1="250.5"
-  length2="300.0"
+  radius="300.0"
+  length1="3000.0"
+  length2="3010.0"
   name="geom_10keV.h5m"
   tol="1e-3"
 elif [ ${energy} = "0.001" ]; then
@@ -33,7 +33,7 @@ elif [ ${energy} = "0.001" ]; then
   length1="0.05"
   length2="0.1"
   name="geom_1keV.h5m"
-  tol="1e-3"
+  tol="1e-2"
 else
   echo "The desired energy ${energy} is currently not supported!"
   exit 1

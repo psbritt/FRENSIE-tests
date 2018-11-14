@@ -9,7 +9,8 @@
 delete=""
 while getopts "d" opt; do
   case $opt in
-    a)
+    d)
+      echo "Results will be deleted from the cluster."
       delete="true"
       ;;
     \?)
@@ -140,17 +141,17 @@ echo -e "\nGet h_sphere results:"
   fi
 cd ../../
 
-# # Get Tabata results
-# cd ./Tabata/results
-# echo -e "\nGet Tabata results:"
-#   # Copy results to this location
-#   scp -r aci2:${INSTALL}/Tabata/results/* ./
+# Get Tabata results
+cd ./Tabata/results
+echo -e "\nGet Tabata results:"
+  # Copy results to this location
+  scp -r aci2:${INSTALL}/Tabata/results/* ./
 
-#   # Erase files from cluster
-#   if [ "$delete" = "true" ]; then
-#     ssh aci2 "rm -rf ${INSTALL}/Tabata/results/*"
-#   fi
-# cd ../../
+  # Erase files from cluster
+  if [ "$delete" = "true" ]; then
+    ssh aci2 "rm -rf ${INSTALL}/Tabata/results/*"
+  fi
+cd ../../
 
 # # Get Dolan results
 # cd ./Dolan/results
