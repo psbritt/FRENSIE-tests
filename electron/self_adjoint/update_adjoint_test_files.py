@@ -69,9 +69,6 @@ if __name__ == "__main__":
     if not path.exists(aepr_directory):
       makedirs( aepr_directory )
 
-    # Ste the aepr file name
-    aepr_file_name = aepr_directory + "/aepr_native_1.xml"
-
     # Get the date for the table notes
     today = str(datetime.datetime.today())
     notes="This table was generated on " + today + ". It is for testing only!"
@@ -126,11 +123,12 @@ if __name__ == "__main__":
     electroion_abs_diff_tol = 1e-20
     electroion_dist_tol = 1e-16
 
-    # Generate the data
-    # try:
-
     for i in range(len(max_electron_energies) ):
       max_electron_energy = max_electron_energies[i]
+
+      # Set the aepr file name
+      version=i
+      aepr_file_name = aepr_directory + "/aepr_native_1_v" + str(version) + ".xml"
 
       print bcolors.BOLD + "Updating file version" + str(i) + "with a max energy of" + str(max_electron_energy) + "MeV\n" + bcolors.ENDC
 
@@ -185,7 +183,7 @@ if __name__ == "__main__":
                     database,
                     data_container.getAtomicNumber(),
                     data_container.getAtomicWeight(),
-                    i )
+                    version )
 
       database.saveToFile( options.db_name, True )
 
