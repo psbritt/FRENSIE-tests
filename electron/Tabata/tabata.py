@@ -116,9 +116,6 @@ def runSimulation( threads, histories, time ):
   cell_ids = range(1,number_of_subzones+1)
   charge_deposition_estimator = Event.WeightAndChargeMultipliedCellPulseHeightEstimator( estimator_id, 1.0, cell_ids )
 
-  # Set the particle type
-  charge_deposition_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
-
   # Add the estimator to the event handler
   event_handler.addEstimator( charge_deposition_estimator )
 
