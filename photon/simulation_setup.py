@@ -130,6 +130,21 @@ def setSimulationNameExtention( properties, file_type ):
     name = ""
     title = "FRENSIE-Native"
 
+  model = properties.getIncoherentModelType()
+
+  if model == MonteCarlo.KN_INCOHERENT_MODEL:
+    name += '_KN'
+    title += ' KN'
+  elif model == MonteCarlo.WH_INCOHERENT_MODEL:
+    name += '_WH'
+    title += ' WH'
+  elif model == MonteCarlo.IMPULSE_INCOHERENT_MODEL:
+    name += '_Impulse'
+    title += ' Impulse'
+  else:
+    name += 'Other_DB_Impulse'
+    title += ' Other DB Impulse'
+
   return (name, title)
 
 ##----------------------------------------------------------------------------##
@@ -141,6 +156,21 @@ def setAdjointSimulationNameExtention( properties ):
   # Set the name reaction and extention
   title = ""
   name = ""
+
+  model = properties.getIncoherentAdjointModelType()
+
+  if model == MonteCarlo.KN_INCOHERENT_ADJOINT_MODEL:
+    name += '_KN'
+    title += ' KN'
+  elif model == MonteCarlo.WH_INCOHERENT_ADJOINT_MODEL:
+    name += '_WH'
+    title += ' WH'
+  elif model == MonteCarlo.IMPULSE_INCOHERENT_ADJOINT_MODEL:
+    name += '_Impulse'
+    title += ' Impulse'
+  elif model == MonteCarlo.DB_IMPULSE_INCOHERENT_ADJOINT_MODEL:
+    name += '_DB_Impulse'
+    title += ' DB Impulse'
 
   return (name, title)
 
