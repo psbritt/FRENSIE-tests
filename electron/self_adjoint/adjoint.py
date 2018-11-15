@@ -274,6 +274,8 @@ def setSimulationProperties( histories, time ):
 
   properties = setup.setAdjointSimulationProperties( histories, time, mode, method )
 
+  ## -------------------------- ELECTRON PROPERTIES ------------------------- ##
+
   # Set the min electron energy in MeV (Default is 100 eV)
   properties.setMinAdjointElectronEnergy( energy_cutoff )
 
@@ -283,8 +285,9 @@ def setSimulationProperties( histories, time ):
   # Set the critical line energies
   properties.setCriticalAdjointElectronLineEnergies( [energy] )
 
-
-  ## -------------------------- ELECTRON PROPERTIES ------------------------- ##
+  # Set the cutoff weight properties for rouletting
+  properties.setAdjointElectronRouletteThresholdWeight( 1e-20 )
+  properties.setAdjointElectronRouletteSurvivalWeight( 1e-18 )
 
   # Turn certain reactions off
   # properties.setAdjointElasticModeOff()
