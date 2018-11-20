@@ -32,7 +32,7 @@ adjoint_path = user_args.a
 forward_path = user_args.f
 
 # Adjoint normalization factor
-NORM=440
+NORM=1
 
 # Get Adjoint Data
 with open(adjoint_path) as input:

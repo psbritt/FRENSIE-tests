@@ -351,10 +351,10 @@ def processData( event_handler, filename, title ):
   surface_flux = event_handler.getEstimator( 2 )
 
   file1 = filename + "_1"
-  setup.processSurfaceFluxSourceEnergyBinData( surface_flux, 1, filename, title )
+  setup.processSurfaceFluxSourceEnergyBinData( surface_flux, 1, file1, title )
 
   file1 = filename + "_2"
-  setup.processSurfaceFluxSourceEnergyBinData( surface_flux, 18, filename, title )
+  setup.processSurfaceFluxSourceEnergyBinData( surface_flux, 18, file2, title )
 
   file1 = filename + "_5"
-  setup.processSurfaceFluxSourceEnergyBinData( surface_flux, 16, filename, title )
+  setup.processSurfaceFluxSourceEnergyBinData( surface_flux, 16, file3, title )
