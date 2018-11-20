@@ -32,7 +32,7 @@ adjoint_path = user_args.a
 forward_path = user_args.f
 
 # Adjoint normalization factor
-NORM=1500
+NORM=100
 
 # Get Adjoint Data
 with open(adjoint_path) as input:
@@ -172,7 +172,7 @@ ax0.grid(linestyle=':')
 ax1.grid(linestyle=':')
 
 # plt.xlim(0.0,6.78)
-plt.ylim(0.0,50.0)
+plt.ylim(0.0,10.0)
 
 # remove vertical gap between subplots
 plt.subplots_adjust(hspace=.0)
