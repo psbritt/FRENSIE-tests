@@ -105,9 +105,9 @@ echo -e "\nGet McLaughlin results:"
   cd ../../
 cd ../
 
-# Get self_adjoint results
+# Get self-adjoint results
 cd ./self_adjoint/results
-echo -e "\nGet self_adjoint results:"
+echo -e "\nGet self-adjoint results:"
   # Copy results to this location
   scp -r aci2:${INSTALL}/self_adjoint/results/* ./
 
@@ -116,6 +116,18 @@ echo -e "\nGet self_adjoint results:"
     ssh aci2 "rm -rf ${INSTALL}/self_adjoint/results/*"
   fi
 cd ../../
+
+# Get low density self-adjoint results
+cd ./self_adjoint/low_density/results
+echo -e "\nGet low density self-adjoint results:"
+  # Copy results to this location
+  scp -r aci2:${INSTALL}/self_adjoint/low_density/results/* ./
+
+  # Erase files from cluster
+  if [ "$delete" = "true" ]; then
+    ssh aci2 "rm -rf ${INSTALL}/self_adjoint/low_density/results/*"
+  fi
+cd ../../../
 
 # Get example results
 cd ./example/results
