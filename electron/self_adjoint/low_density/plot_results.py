@@ -77,14 +77,16 @@ gs = gridspec.GridSpec(2, 1, height_ratios=[2, 1])
 # the first subplot
 ax0 = plt.subplot(gs[0])
 
+radius = forward_path.split("_")[-2]
+plot_title = '$\mathrm{0.01\/MeV\/Electron\/Surface\/Flux\/on\/a\/' + radius +'\/cm\/Hydrogen\/Sphere}$'
 x_label = 'Energy (MeV)'
 plt.xlabel(x_label, size=14)
 plt.ylabel('Surface Flux (#/cm$^2$)', size=14)
-plt.title('$\mathrm{0.01\/MeV\/Electron\/Surface\/Flux\/on\/a\/0.5\/cm\/Hydrogen\/Sphere}$', size=16)
+plt.title( plot_title, size=16)
 ax=plt.gca()
 
-# plt.xlim(0.0,7.0)
-# plt.ylim(0.0,0.03)
+plt.xlim(0.006,0.01)
+# plt.ylim(0.0,2000)
 
 # plt.plot(exp_x, exp_y, label="Hanson (Exp.)", marker='s', markersize=5 )
 
@@ -132,8 +134,9 @@ plots.append( handle1 )
 labels.append("forward")
 
 
-plt.legend(loc='best')
-ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+plt.legend(loc=2)
+ax.yaxis.set_major_formatter(FormatStrFormatter('%.2e'))
+ax.xaxis.set_major_formatter(FormatStrFormatter('%.1e'))
 
 
 
@@ -171,8 +174,8 @@ yticks[0].label1.set_visible(False)
 ax0.grid(linestyle=':')
 ax1.grid(linestyle=':')
 
-# plt.xlim(0.0,6.78)
-plt.ylim(0.0,6.0)
+plt.xlim(0.006,0.01)
+plt.ylim(0.0,1.1)
 
 # remove vertical gap between subplots
 plt.subplots_adjust(hspace=.0)
