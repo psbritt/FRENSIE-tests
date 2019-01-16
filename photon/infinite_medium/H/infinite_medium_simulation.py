@@ -139,7 +139,8 @@ def runAdjointInfiniteMediumSimulation( sim_name,
                                         source_energy,
                                         energy_bins,
                                         threads,
-                                        log_file = None ):
+                                        log_file = None,
+                                        col_bins = None ):
 
     ## Initialize the MPI session
     session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
@@ -227,6 +228,10 @@ def runAdjointInfiniteMediumSimulation( sim_name,
     # Create the surface flux estimator
     surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, 1.0, [1, 3, 6, 9, 12], model )
     surface_flux_estimator.setSourceEnergyDiscretization( energy_bins )
+
+    if not col_bins is None:
+        surface_flux_estimator.setCollisionNumberDiscretization( col_bins )
+    
     surface_flux_estimator.setResponseFunctions( [response] )
     surface_flux_estimator.setParticleTypes( [MonteCarlo.ADJOINT_PHOTON] )
 
