@@ -226,7 +226,7 @@ def runAdjointInfiniteMediumSimulation( sim_name,
     response = ActiveRegion.StandardParticleResponse( response_function )
 
     # Create the surface flux estimator
-    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, 1.0, [1, 3, 6, 9, 12], model )
+    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, (source_energy - energy_cutoff), [1, 3, 6, 9, 12], model )
     surface_flux_estimator.setSourceEnergyDiscretization( energy_bins )
 
     if not col_bins is None:

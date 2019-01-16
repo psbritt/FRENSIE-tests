@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys, os
 from optparse import *
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../../..'))
 from infinite_medium_simulation_plot import plotInfiniteMediumSimulationSpectrum
 
 if __name__ == "__main__":
@@ -14,6 +14,8 @@ if __name__ == "__main__":
                       help="the estimator id to use")
     parser.add_option("--entity_id", type="int", dest="entity_id",
                       help="the entity id to use")
+    parser.add_option("--col_bin", type="int", dest="col_bin",
+                      help="the collision number bin to use")
     parser.add_option("--mcnp_file", type="string", dest="mcnp_file",
                       help="the mcnp output file to load")
     parser.add_option("--mcnp_file_start", type="int", dest="mcnp_file_start",
@@ -32,23 +34,23 @@ if __name__ == "__main__":
 
     if options.entity_id == 1:
         top_ylims = [0.0, 0.3]
-        bottom_ylims = [0.8, 1.4]
+        bottom_ylims = [0.5, 1.5]
         legend_pos = (0.95,0.95)
     elif options.entity_id == 3:
         top_ylims = [0.0, 0.15]
-        bottom_ylims = [0.8, 1.5]
+        bottom_ylims = [0.5, 1.5]
         legend_pos = (0.95,0.95)
     elif options.entity_id == 6:
-        top_ylims = [0.0, 0.06]
+        top_ylims = [0.0, 0.075]
         bottom_ylims = [0.5, 1.5]
         legend_pos = (0.95,0.95)
     elif options.entity_id == 9:
-        top_ylims = [0.0, 0.02]
-        bottom_ylims = [0.0, 10.0]
+        top_ylims = [0.0, 0.03]
+        bottom_ylims = [0.5, 1.5]
         legend_pos = (0.95,0.95)
     elif options.entity_id == 12:
         top_ylims = [0.0, 0.005]
-        bottom_ylims = [0.0, 10.0]
+        bottom_ylims = [0.5, 1.5]
         legend_pos = (0.95,0.95)
         
     # Plot the spectrum
@@ -60,6 +62,7 @@ if __name__ == "__main__":
                                           options.mcnp_file_end,
                                           options.is_a_current,
                                           options.is_forward,
+                                          col_bin = options.col_bin,
                                           top_ylims = top_ylims,
                                           bottom_ylims = bottom_ylims,
                                           xlims = [0.0, 0.1],

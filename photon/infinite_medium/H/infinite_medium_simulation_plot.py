@@ -20,6 +20,7 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
                                           mcnp_file_end,
                                           is_a_current,
                                           is_forward,
+                                          col_bin = None,
                                           top_ylims = None,
                                           bottom_ylims = None,
                                           xlims = None,
@@ -40,13 +41,26 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
 
     full_entity_bin_data = estimator.getEntityBinProcessedData( entity_id )
 
-    start_index = 0
-    
-    if is_forward:
-        end_index = estimator.getNumberOfBins( Event.OBSERVER_ENERGY_DIMENSION )
-    else:
-        end_index = estimator.getNumberOfBins( Event.OBSERVER_SOURCE_ENERGY_DIMENSION )
+    num_energy_bins = 0
 
+    if is_forward:
+        num_energy_bins = estimator.getNumberOfBins( Event.OBSERVER_ENERGY_DIMENSION )
+    else:
+        num_energy_bins = estimator.getNumberOfBins( Event.OBSERVER_SOURCE_ENERGY_DIMENSION )
+
+    start_index = 0
+    end_index = num_energy_bins
+
+    if not col_bin is None:
+        num_col_bins = estimator.getNumberOfBins( Event.OBSERVER_COLLISION_NUMBER_DIMENSION )
+        
+        if col_bin >= num_col_bins:
+            print "There are only", num_col_bins, "collision number bins!"
+            sys.exit(1)
+        
+        start_index = col_bin*num_energy_bins
+        end_index = start_index + num_energy_bins
+    
     entity_bin_data = {"mean": [], "re": [], "e_bins": []}
 
     for i in range(start_index, end_index):

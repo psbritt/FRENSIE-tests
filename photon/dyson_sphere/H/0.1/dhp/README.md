@@ -21,12 +21,31 @@
 
 10. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=2 --entity_id=4 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=70008 --mcnp_file_end=79988 --emin=0.093 --emax=0.096 --top_ymax=6e-9 --bottom_ymin=0.6 --bottom_ymax=1.4 --legend_xpos=1.01 --legend_ypos=1.05`
 
-5. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=1 --entity_id=3 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=512776 --mcnp_file_end=513774 --emin=0.089 --emax=0.093 --top_ymax=4e-9 --bottom_ymin=0.8 --bottom_ymax=1.2 --legend_xpos=1.00 --legend_ypos=1.00`
-6. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=1 --entity_id=4 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=659506 --mcnp_file_end=660504 --emin=0.085 --emax=0.090 --top_ymax=2.5e-9 --bottom_ymin=0.8 --bottom_ymax=1.2 --legend_xpos=1.00 --legend_ypos=1.02`
-7. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=1 --entity_id=5 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=808246 --mcnp_file_end=809244 --emin=0.081 --emax=0.087 --top_ymax=2e-9 --bottom_ymin=0.8 --bottom_ymax=1.2 --legend_xpos=1.00 --legend_ypos=1.02`
-8. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=1 --entity_id=6 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=956986 --mcnp_file_end=957984 --emin=0.0785 --emax=0.082 --top_ymax=2e-9 --bottom_ymin=0.8 --bottom_ymax=1.2 --legend_xpos=1.00 --legend_ypos=1.02`
-9. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=1 --entity_id=7 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=1103716 --mcnp_file_end=1104714 --emin=0.075 --emax=0.080 --top_ymax=2e-9 --bottom_ymin=0.8 --bottom_ymax=1.2 --legend_xpos=1.00 --legend_ypos=1.02`
-10. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=1 --entity_id=8 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=1252456 --mcnp_file_end=1253454 --emin=0.072 --emax=0.078 --top_ymax=2.5e-9 --bottom_ymin=0.8 --bottom_ymax=1.2 --legend_xpos=1.00 --legend_ypos=1.02`
-11. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=1 --entity_id=9 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=1612246 --mcnp_file_end=1613244 --emin=0.070 --emax=0.074 --top_ymax=3e-9 --bottom_ymin=0.8 --bottom_ymax=1.2 --legend_xpos=1.00 --legend_ypos=1.02`
+# Phi = Pi/3
+11. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=1 --entity_id=5 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=12825 --mcnp_file_end=13823 --emin=0.0895 --emax=0.0925 --top_ymax=4e-9 --bottom_ymin=0.6 --bottom_ymax=1.4 --legend_xpos=1.01 --legend_ypos=1.05`
+
+12. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=2 --entity_id=5 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=79994 --mcnp_file_end=89974 --emin=0.0895 --emax=0.0925 --top_ymax=4e-9 --bottom_ymin=0.6 --bottom_ymax=1.4 --legend_xpos=1.01 --legend_ypos=1.05`
+
+# Phi = 5Pi/12
+13. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=1 --entity_id=6 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=13830 --mcnp_file_end=14828 --emin=0.0855 --emax=0.089 --top_ymax=2.5e-9 --bottom_ymin=0.6 --bottom_ymax=1.4 --legend_xpos=1.01 --legend_ypos=1.05`
+
+14. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=2 --entity_id=6 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=89980 --mcnp_file_end=99960 --emin=0.0855 --emax=0.089 --top_ymax=2.5e-9 --bottom_ymin=0.6 --bottom_ymax=1.4 --legend_xpos=1.01 --legend_ypos=1.05`
+
+# Phi = Pi/2
+15. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=1 --entity_id=7 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=16845 --mcnp_file_end=17843 --emin=0.0855 --emax=0.089 --top_ymax=2.5e-9 --bottom_ymin=0.6 --bottom_ymax=1.4 --legend_xpos=1.01 --legend_ypos=1.05`
+
+16. run `../dyson_sphere-plot.py --rendezvous_file="dyson_sphere_rendezvous_10.xml" --estimator_id=2 --entity_id=7 --mcnp_file=../dyson_sphere_mcnp.o --mcnp_file_start=99966 --mcnp_file_end=109946 --emin=0.0855 --emax=0.089 x--top_ymax=2.5e-9 --bottom_ymin=0.6 --bottom_ymax=1.4 --legend_xpos=1.01 --legend_ypos=1.05`
+
+# Phi = 7Pi/12
+
+# Phi = 2Pi/3
+
+# Phi = 3Pi/4
+
+# Phi = 5Pi/6
+
+# Phi = 11Pi/12
+
+# Phi = Pi - 0.15
 
 # ../dyson_sphere_restart.py --db_path=$DATABASE_PATH --rendezvous_file="dyson_sphere_rendezvous_10.xml" --num_particles=1e9 --threads=8

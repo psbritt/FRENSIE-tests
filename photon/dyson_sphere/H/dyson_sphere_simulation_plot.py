@@ -25,6 +25,10 @@ def plotDysonSphereSimulationSpectrum( rendezvous_file,
                                        xlims = None,
                                        legend_pos = None ):
 
+    # Activate just-in-time initialization to prevent automatic loading of the
+    # geometry and data tables
+    Utility.activateJustInTimeInitialization()
+
     # Set the database path
     Collision.FilledGeometryModel.setDefaultDatabasePath( os.environ['DATABASE_PATH'] )
     
