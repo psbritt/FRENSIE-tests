@@ -37,6 +37,6 @@ if __name__ == "__main__":
                                         Utility.doubleArrayFromString( "{1e-3, 988i, 0.0999, 9i, 0.1}" ),
                                         options.threads,
                                         options.log_file,
-                                        col_bins = [0,1,2,3,4,5,6,7,8,9,10] )
+                                        col_bins = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20] )
     
     
