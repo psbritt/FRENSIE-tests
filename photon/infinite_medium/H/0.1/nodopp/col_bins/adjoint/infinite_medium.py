@@ -26,6 +26,11 @@ if __name__ == "__main__":
         print "The database path must be specified!"
         sys.exit(1)
 
+    col_bins = [0]*81
+
+    for i in range(0,len(col_bins)):
+        col_bins[i] = i
+
     # Run the simulation
     runAdjointInfiniteMediumSimulation( options.sim_name,
                                         options.db_path,
@@ -37,6 +42,6 @@ if __name__ == "__main__":
                                         Utility.doubleArrayFromString( "{1e-3, 988i, 0.0999, 9i, 0.1}" ),
                                         options.threads,
                                         options.log_file,
-                                        col_bins = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40] )
+                                        col_bins = col_bins )
     
     
