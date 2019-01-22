@@ -60,11 +60,10 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
         
         start_index = col_bin*num_energy_bins
         end_index = start_index + num_energy_bins
-    
+    print start_index, end_index
     entity_bin_data = {"mean": [], "re": [], "e_bins": []}
 
     for i in range(start_index, end_index):
-        print i, full_entity_bin_data["mean"][i], full_entity_bin_data["re"][i]
         entity_bin_data["mean"].append( full_entity_bin_data["mean"][i] )
         entity_bin_data["re"].append( full_entity_bin_data["re"][i] )
 
@@ -72,7 +71,7 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
         entity_bin_data["e_bins"] = list(estimator.getEnergyDiscretization())
     else:
         entity_bin_data["e_bins"] = list(estimator.getSourceEnergyDiscretization())
-
+    
     # Extract the mcnp data from the output file
     mcnp_file = open( mcnp_file, "r" )
     mcnp_file_lines = mcnp_file.readlines()
@@ -80,6 +79,7 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
     mcnp_bin_data = {"e_up": [], "mean": [], "re": []}
 
     mcnp_first_nonzero_index = 0
+    first_nonzero_value_found = False
     
     for i in range(mcnp_file_start,mcnp_file_end+1):
         split_line = mcnp_file_lines[i-1].split()
@@ -87,16 +87,26 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
         mean_value = float(split_line[1])
 
         if mean_value == 0.0:
-            mcnp_first_nonzero_index += 1
+            if not first_nonzero_value_found:
+                mcnp_first_nonzero_index += 1
+            else:
+                mcnp_bin_data["e_up"].append( float(split_line[0]) )
+                mcnp_bin_data["mean"].append( mean_value )
+                mcnp_bin_data["re"].append( float(split_line[2]) )
         else:
+            first_nonzero_value_found = True
             mcnp_bin_data["e_up"].append( float(split_line[0]) )
             mcnp_bin_data["mean"].append( mean_value )
             mcnp_bin_data["re"].append( float(split_line[2]) )
-
+    print mcnp_first_nonzero_index
+    
     # Filter out zero values
     del entity_bin_data["e_bins"][0:mcnp_first_nonzero_index]
     del entity_bin_data["mean"][0:mcnp_first_nonzero_index]
     del entity_bin_data["re"][0:mcnp_first_nonzero_index]
+
+    for i in range(0,len(mcnp_bin_data["e_up"])):
+        print i, mcnp_bin_data["e_up"][i], entity_bin_data["e_bins"][i+1], mcnp_bin_data["mean"][i], entity_bin_data["mean"][i], entity_bin_data["re"][i]
 
     output_file_name = "h_infinite_medium_"
     output_file_names = []

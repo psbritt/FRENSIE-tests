@@ -33,9 +33,414 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     if options.entity_id == 1:
-        top_ylims = [0.0, 0.3]
-        bottom_ylims = [0.5, 1.5]
-        legend_pos = (0.95,0.95)
+        if options.col_bin == 1:
+            #top_ylims = [0.0, 0.007]
+            top_ylims = [0.0, 0.009]
+            bottom_ylims = [0.8,1.2]
+            legend_pos = (0.85,0.72)
+            #xlims = [0.07,0.1]
+            xlims = [0.0,0.1]
+        elif options.col_bin == 2:
+            #top_ylims = [0.0, 0.006]
+            top_ylims = [0.0, 0.009]
+            bottom_ylims = [0.8,1.2]
+            legend_pos = (0.95,0.96)
+            #xlims = [0.05,0.1]
+            xlims = [0.0,0.1]
+        elif options.col_bin == 3:
+            #top_ylims = [0.0, 0.007]
+            top_ylims = [0.0, 0.009]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,0.98)
+            #xlims = [0.04,0.1]
+            xlims = [0.0,0.1]
+        elif options.col_bin == 4:
+            #top_ylims = [0.0, 0.008]
+            top_ylims = [0.0, 0.009]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,0.98)
+            #xlims = [0.04,0.1]
+            xlims = [0.0,0.1]
+        elif options.col_bin == 5:
+            top_ylims = [0.0, 0.009]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 6:
+            top_ylims = [0.0, 0.010]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 7:
+            top_ylims = [0.0, 0.015]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 8:
+            top_ylims = [0.0, 0.015]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 9:
+            top_ylims = [0.0, 0.015]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 10:
+            top_ylims = [0.0, 0.015]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 11:
+            top_ylims = [0.0, 0.015]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 12:
+            top_ylims = [0.0, 0.015]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 13:
+            top_ylims = [0.0, 0.015]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 14:
+            top_ylims = [0.0, 0.015]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 15:
+            top_ylims = [0.0, 0.015]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 16:
+            top_ylims = [0.0, 0.015]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 17:
+            top_ylims = [0.0, 0.015]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 18:
+            top_ylims = [0.0, 0.02]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 19:
+            top_ylims = [0.0, 0.02]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 20:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 21:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 22:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 23:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 24:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 25:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 26:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 27:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 28:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 29:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 30:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 31:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 32:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 33:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 34:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 35:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 36:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 37:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 38:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 39:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 40:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 41:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 42:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 43:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 44:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 45:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 46:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 47:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 48:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 49:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 50:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 51:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 52:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 53:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 54:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 55:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 56:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 57:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 58:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 59:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 60:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 61:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 62:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 63:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 64:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 65:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 66:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 67:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 68:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 69:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 70:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 71:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 72:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 73:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 74:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 75:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 76:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 77:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 78:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 79:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
+        elif options.col_bin == 80:
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.0,2.0]
+            legend_pos = (0.95,1.01)
+            xlims = [0.0,0.1]
     elif options.entity_id == 3:
         top_ylims = [0.0, 0.15]
         bottom_ylims = [0.5, 1.5]
@@ -65,7 +470,7 @@ if __name__ == "__main__":
                                           col_bin = options.col_bin,
                                           top_ylims = top_ylims,
                                           bottom_ylims = bottom_ylims,
-                                          xlims = [0.0, 0.1],
+                                          xlims = xlims,
                                           legend_pos = legend_pos )
 
     
