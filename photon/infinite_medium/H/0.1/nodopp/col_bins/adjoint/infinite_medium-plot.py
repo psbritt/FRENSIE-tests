@@ -36,35 +36,35 @@ if __name__ == "__main__":
         if options.col_bin == 1:
             #top_ylims = [0.0, 0.007]
             top_ylims = [0.0, 0.009]
-            bottom_ylims = [0.8,1.2]
-            legend_pos = (0.85,0.72)
+            bottom_ylims = [0.9,1.1]
+            legend_pos = (1.0,1.0)
             #xlims = [0.07,0.1]
             xlims = [0.0,0.1]
         elif options.col_bin == 2:
             #top_ylims = [0.0, 0.006]
             top_ylims = [0.0, 0.009]
-            bottom_ylims = [0.8,1.2]
-            legend_pos = (0.95,0.96)
+            bottom_ylims = [0.9,1.1]
+            legend_pos = (1.0,1.0)
             #xlims = [0.05,0.1]
             xlims = [0.0,0.1]
         elif options.col_bin == 3:
             #top_ylims = [0.0, 0.007]
             top_ylims = [0.0, 0.009]
-            bottom_ylims = [0.0,2.0]
-            legend_pos = (0.95,0.98)
+            bottom_ylims = [0.9,1.1]
+            legend_pos = (1.0,1.0)
             #xlims = [0.04,0.1]
             xlims = [0.0,0.1]
         elif options.col_bin == 4:
             #top_ylims = [0.0, 0.008]
             top_ylims = [0.0, 0.009]
-            bottom_ylims = [0.0,2.0]
-            legend_pos = (0.95,0.98)
+            bottom_ylims = [0.9,1.1]
+            legend_pos = (1.0,1.0)
             #xlims = [0.04,0.1]
             xlims = [0.0,0.1]
         elif options.col_bin == 5:
             top_ylims = [0.0, 0.009]
-            bottom_ylims = [0.0,2.0]
-            legend_pos = (0.95,1.01)
+            bottom_ylims = [0.9,1.1]
+            legend_pos = (1.0,1.0)
             xlims = [0.0,0.1]
         elif options.col_bin == 6:
             top_ylims = [0.0, 0.010]
@@ -87,9 +87,9 @@ if __name__ == "__main__":
             legend_pos = (0.95,1.01)
             xlims = [0.0,0.1]
         elif options.col_bin == 10:
-            top_ylims = [0.0, 0.015]
-            bottom_ylims = [0.0,2.0]
-            legend_pos = (0.95,1.01)
+            top_ylims = [0.0, 0.025]
+            bottom_ylims = [0.9,1.1]
+            legend_pos = (1.0,1.0)
             xlims = [0.0,0.1]
         elif options.col_bin == 11:
             top_ylims = [0.0, 0.015]
@@ -138,8 +138,8 @@ if __name__ == "__main__":
             xlims = [0.0,0.1]
         elif options.col_bin == 20:
             top_ylims = [0.0, 0.025]
-            bottom_ylims = [0.0,2.0]
-            legend_pos = (0.95,1.01)
+            bottom_ylims = [0.9,1.1]
+            legend_pos = (1.0,1.0)
             xlims = [0.0,0.1]
         elif options.col_bin == 21:
             top_ylims = [0.0, 0.025]
@@ -188,8 +188,8 @@ if __name__ == "__main__":
             xlims = [0.0,0.1]
         elif options.col_bin == 30:
             top_ylims = [0.0, 0.025]
-            bottom_ylims = [0.0,2.0]
-            legend_pos = (0.95,1.01)
+            bottom_ylims = [0.9,1.1]
+            legend_pos = (1.0,1.0)
             xlims = [0.0,0.1]
         elif options.col_bin == 31:
             top_ylims = [0.0, 0.025]
@@ -238,8 +238,8 @@ if __name__ == "__main__":
             xlims = [0.0,0.1]
         elif options.col_bin == 40:
             top_ylims = [0.0, 0.025]
-            bottom_ylims = [0.0,2.0]
-            legend_pos = (0.95,1.01)
+            bottom_ylims = [0.9,1.1]
+            legend_pos = (1.0,1.0)
             xlims = [0.0,0.1]
         elif options.col_bin == 41:
             top_ylims = [0.0, 0.025]
@@ -289,7 +289,7 @@ if __name__ == "__main__":
         elif options.col_bin == 50:
             top_ylims = [0.0, 0.025]
             bottom_ylims = [0.0,2.0]
-            legend_pos = (0.95,1.01)
+            legend_pos = (1.0,1.0)
             xlims = [0.0,0.1]
         elif options.col_bin == 51:
             top_ylims = [0.0, 0.025]
@@ -339,7 +339,7 @@ if __name__ == "__main__":
         elif options.col_bin == 60:
             top_ylims = [0.0, 0.025]
             bottom_ylims = [0.0,2.0]
-            legend_pos = (0.95,1.01)
+            legend_pos = (1.0,1.0)
             xlims = [0.0,0.1]
         elif options.col_bin == 61:
             top_ylims = [0.0, 0.025]
@@ -389,7 +389,7 @@ if __name__ == "__main__":
         elif options.col_bin == 70:
             top_ylims = [0.0, 0.025]
             bottom_ylims = [0.0,2.0]
-            legend_pos = (0.95,1.01)
+            legend_pos = (1.0,1.0)
             xlims = [0.0,0.1]
         elif options.col_bin == 71:
             top_ylims = [0.0, 0.025]
@@ -439,7 +439,7 @@ if __name__ == "__main__":
         elif options.col_bin == 80:
             top_ylims = [0.0, 0.025]
             bottom_ylims = [0.0,2.0]
-            legend_pos = (0.95,1.01)
+            legend_pos = (1.0,1.0)
             xlims = [0.0,0.1]
     elif options.entity_id == 3:
         top_ylims = [0.0, 0.15]
