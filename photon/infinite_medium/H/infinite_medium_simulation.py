@@ -26,7 +26,8 @@ def runForwardInfiniteMediumSimulation( sim_name,
                                         source_energy,
                                         energy_bins,
                                         threads,
-                                        log_file = None ):
+                                        log_file = None,
+                                        use_native = False ):
 
     ## Initialize the MPI session
     session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
@@ -63,7 +64,10 @@ def runForwardInfiniteMediumSimulation( sim_name,
     scattering_center_definitions = Collision.ScatteringCenterDefinitionDatabase()
     atom_definition = scattering_center_definitions.createDefinition( "H", Data.ZAID(1000) )
 
-    atom_definition.setPhotoatomicDataProperties( atom_properties.getSharedPhotoatomicDataProperties( Data.PhotoatomicDataProperties.ACE_EPR_FILE, 12 ) )
+    if use_native:
+        atom_definition.setPhotoatomicDataProperties( atom_properties.getSharedPhotoatomicDataProperties( Data.PhotoatomicDataProperties.Native_EPR_FILE, 0 ) )
+    else:
+        atom_definition.setPhotoatomicDataProperties( atom_properties.getSharedPhotoatomicDataProperties( Data.PhotoatomicDataProperties.ACE_EPR_FILE, 12 ) )
 
     # Set the definition for material 1
     material_definitions = Collision.MaterialDefinitionDatabase()
