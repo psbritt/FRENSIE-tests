@@ -164,7 +164,7 @@ def runAdjointInfiniteMediumSimulation( sim_name,
     simulation_properties.setIncoherentAdjointModelType( incoherent_model_type )
     simulation_properties.setMinAdjointPhotonEnergy( energy_cutoff )
     simulation_properties.setMaxAdjointPhotonEnergy( source_energy )
-    simulation_properties.setCriticalAdjointPhotonLineEnergies( [0.1] )
+    simulation_properties.setCriticalAdjointPhotonLineEnergies( [source_energy] )
     simulation_properties.setAdjointPhotonRouletteThresholdWeight( 0.25 )
     simulation_properties.setAdjointPhotonRouletteSurvivalWeight( 0.5 )
     simulation_properties.setNumberOfAdjointPhotonHashGridBins( 100 )

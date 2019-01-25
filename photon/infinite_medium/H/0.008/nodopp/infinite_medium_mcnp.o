@@ -1,0 +1,136 @@
+          Code Name & Version = MCNP, 6.1.1b
+  
+     _/      _/        _/_/_/       _/      _/       _/_/_/         _/_/_/
+    _/_/  _/_/      _/             _/_/    _/       _/    _/     _/       
+   _/  _/  _/      _/             _/  _/  _/       _/_/_/       _/_/_/    
+  _/      _/      _/             _/    _/_/       _/           _/    _/   
+ _/      _/        _/_/_/       _/      _/       _/             _/_/      
+  
+  +---------------------------------------------------------------------+
+  | Copyright 2008. Los Alamos National Security, LLC.  All rights      |
+  | reserved.                                                           |
+  |   This material was produced under U.S. Government contract         |
+  | DE-AC52-06NA25396 for Los Alamos National Laboratory, which is      |
+  | operated by Los Alamos National Security, LLC, for the U.S.         |
+  | Department of Energy. The Government is granted for itself and      |
+  | others acting on its behalf a paid-up, nonexclusive, irrevocable    |
+  | worldwide license in this material to reproduce, prepare derivative |
+  | works, and perform publicly and display publicly. Beginning five    |
+  | (5) years after 2008, subject to additional five-year worldwide     |
+  | renewals, the Government is granted for itself and others acting on |
+  | its behalf a paid-up, nonexclusive, irrevocable worldwide license   |
+  | in this material to reproduce, prepare derivative works, distribute |
+  | copies to the public, perform publicly and display publicly, and to |
+  | permit others to do so. NEITHER THE UNITED STATES NOR THE UNITED    |
+  | STATES DEPARTMENT OF ENERGY, NOR LOS ALAMOS NATIONAL SECURITY, LLC, |
+  | NOR ANY OF THEIR EMPLOYEES, MAKES ANY WARRANTY, EXPRESS OR IMPLIED, |
+  | OR ASSUMES ANY LEGAL LIABILITY OR RESPONSIBILITY FOR THE ACCURACY,  |
+  | COMPLETENESS, OR USEFULNESS OF ANY INFORMATION, APPARATUS, PRODUCT, |
+  | OR PROCESS DISCLOSED, OR REPRESENTS THAT ITS USE WOULD NOT INFRINGE |
+  | PRIVATELY OWNED RIGHTS.                                             |
+  +---------------------------------------------------------------------+
+  
+1mcnp     version 6     ld=06/19/14                     01/25/19 16:22:09 
+ *************************************************************************                 probid =  01/25/19 16:22:09 
+ i=infinite_medium_mcnp.i o=infinite_medium_mcnp.o tasks 8                       
+
+ 
+  warning.  Physics models disabled.
+         1-       10.0 MeV photons in room temp water                                             
+         2-       100   1    -1.0       -10         imp:n=1                                       
+         3-       101   1    -1.0       -11 10      imp:n=1                                       
+         4-       102   1    -1.0       -12 11      imp:n=1                                       
+         5-       103   1    -1.0       -13 12      imp:n=1                                       
+         6-       104   1    -1.0       -14 13      imp:n=1                                       
+         7-       105   1    -1.0       -15 14      imp:n=1                                       
+         8-       999   0               +15         imp:n=0                                       
+         9-                                                                                       
+        10-       10   so    10.0                                                                 
+        11-       11   so    20.0                                                                 
+        12-       12   so    30.0                                                                 
+        13-       13   so    40.0                                                                 
+        14-       14   so    50.0                                                                 
+        15-       15   so    10000.0                                                              
+        16-                                                                                       
+        17-       mode p                                                                          
+        18-       nps    1e8                                                                      
+        19-       sdef   pos = 0 0 0   erg = 0.008                                                
+        20-       c                                                                               
+        21-       m1     1000.12p   1.0                                                           
+        22-       c                                                                               
+        23-       f01:p  10 11 12 13 14                                                           
+  warning.  without bremsstrahlung, flux estimates will be low.
+        24-       f02:p  10 11 12 13 14                                                           
+  warning.  without bremsstrahlung, flux estimates will be low.
+        25-       e0     1e-3 998i 0.008                                                          
+        26-       c                                                                               
+        27-       phys:p j  1  0 0  1                                                             
+  comment.  photon Doppler energy broadening turned off (phys:p).
+        28-       prdmp  j  1e7  1   1                                                            
+ 
+  comment.  photon   importances have been set equal to 1.
+ 
+  warning.     1 energy bins of tally        1 are below energy cutoff.
+1cells                                                                                                  print table 60
+
+                               atom        gram                                            neutron    photon                           
+              cell      mat   density     density     volume       mass            pieces importance importance                        
+
+        1      100        1  5.97439E-01 1.00000E+00 4.18879E+03 4.18879E+03           1  1.0000E+00 1.0000E+00                        
+        2      101        1  5.97439E-01 1.00000E+00 2.93215E+04 2.93215E+04           1  1.0000E+00 1.0000E+00                        
+        3      102        1  5.97439E-01 1.00000E+00 7.95870E+04 7.95870E+04           1  1.0000E+00 1.0000E+00                        
+        4      103        1  5.97439E-01 1.00000E+00 1.54985E+05 1.54985E+05           1  1.0000E+00 1.0000E+00                        
+        5      104        1  5.97439E-01 1.00000E+00 2.55516E+05 2.55516E+05           1  1.0000E+00 1.0000E+00                        
+        6      105        1  5.97439E-01 1.00000E+00 4.18879E+12 4.18879E+12           1  1.0000E+00 1.0000E+00                        
+        7      999        0  0.00000E+00 0.00000E+00 0.00000E+00 0.00000E+00           0  0.0000E+00 0.0000E+00                        
+
+ total                                               4.18879E+12 4.18879E+12
+
+    minimum source weight = 1.0000E+00    maximum source weight = 1.0000E+00
+
+ ***************************************************
+ * Random Number Generator  =                    1 *
+ * Random Number Seed       =       19073486328125 *
+ * Random Number Multiplier =       19073486328125 *
+ * Random Number Adder      =                    0 *
+ * Random Number Bits Used  =                   48 *
+ * Random Number Stride     =               152917 *
+ ***************************************************
+
+ 
+  comment.  threading will be used when possible in portions of mcnp6.
+ 
+  comment.  threading will be used for n/p/e table physics.
+ 
+  comment.  threading will generally not be used for model physics.
+
+         4 warning messages so far.
+1cross-section tables                                                                                   print table 100
+     XSDIR used: /home/alexr/Software/mcnpdata/xsdir_mcnp6.1
+
+     table    length
+
+                        tables from file xmc/eprdata12                                                   
+
+   1000.12p   12025  ENDF/B-VI Release 8 photo/electro-atomic and relaxation data for 1-H         mat 100      12/14/09
+                     Energy range:   1.00000E-06  to  1.00000E+05 MeV.
+
+  total       12025
+ 
+  warning.  simple physics turned on for photons > 100 mev.
+
+1particles and energy limits                                                                            print table 101
+
+                         particle      maximum       smallest      largest       always        always
+                         cutoff        particle      table         table         use table     use model
+   particle type         energy        energy        maximum       maximum       below         above
+
+    2  p    photon      1.0000E-03    1.0000E+05    1.0000E+05    1.0000E+05    1.0000E+36    1.0000E+36
+ 
+
+ ***********************************************************************************************************************
+
+ dump no.    1 on file runtpe     nps =           0     coll =              0     ctm =        0.00   nrn =             
+    0
+
+         5 warning messages so far.
