@@ -105,17 +105,11 @@ def runForwardInfiniteMediumSimulation( sim_name,
     event_handler = Event.EventHandler( model, simulation_properties )
 
     # Create the surface flux estimator
-    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, 1.0, [1, 3, 6, 9, 12], model )
+    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, 1.0, [1, 3, 5, 7, 9, 11, 13, 15, 17, 19], model )
     surface_flux_estimator.setEnergyDiscretization( energy_bins )
     surface_flux_estimator.setParticleTypes( [MonteCarlo.PHOTON] )
 
     event_handler.addEstimator( surface_flux_estimator )
-
-    # Create a surface current estimator to check for leakage
-    surface_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( 2, 1.0, [20, 21, 22, 23, 24, 25] )
-    surface_current_estimator.setParticleTypes( [MonteCarlo.PHOTON] )
-
-    event_handler.addEstimator( surface_current_estimator )
 
     ## Set up the simulation manager
     factory = Manager.ParticleSimulationManagerFactory( filled_model,
@@ -236,7 +230,7 @@ def runAdjointInfiniteMediumSimulation( sim_name,
     response = ActiveRegion.StandardParticleResponse( response_function )
 
     # Create the surface flux estimator
-    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, (source_energy - energy_cutoff), [1, 3, 6, 9, 12], model )
+    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, (source_energy - energy_cutoff), [1, 3, 5, 7, 9, 11, 13, 15, 17, 19], model )
     surface_flux_estimator.setSourceEnergyDiscretization( energy_bins )
 
     if not col_bins is None:
@@ -246,12 +240,6 @@ def runAdjointInfiniteMediumSimulation( sim_name,
     surface_flux_estimator.setParticleTypes( [MonteCarlo.ADJOINT_PHOTON] )
 
     event_handler.addEstimator( surface_flux_estimator )
-
-    # Create a surface current estimator to check for leakage
-    surface_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( 2, 1.0, [20, 21, 22, 23, 24, 25] )
-    surface_current_estimator.setParticleTypes( [MonteCarlo.ADJOINT_PHOTON] )
-    
-    event_handler.addEstimator( surface_current_estimator )
 
     ## Set up the simulation manager
     factory = Manager.ParticleSimulationManagerFactory( filled_model,

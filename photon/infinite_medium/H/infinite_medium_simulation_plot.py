@@ -35,6 +35,15 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
     
     # Reload the simulation
     manager = Manager.ParticleSimulationManagerFactory( rendezvous_file ).getManager()
+
+    # Print the leakage current
+    # estimator = manager.getEventHandler().getEstimator( 2 )
+    # print estimator.getEntityTotalProcessedData( 20 )
+    # print estimator.getEntityTotalProcessedData( 21 )
+    # print estimator.getEntityTotalProcessedData( 22 )
+    # print estimator.getEntityTotalProcessedData( 23 )
+    # print estimator.getEntityTotalProcessedData( 24 )
+    # print estimator.getEntityTotalProcessedData( 25 )
     
     # Extract the estimator of interest
     estimator = manager.getEventHandler().getEstimator( estimator_id )
