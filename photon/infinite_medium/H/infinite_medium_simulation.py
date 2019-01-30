@@ -111,6 +111,12 @@ def runForwardInfiniteMediumSimulation( sim_name,
 
     event_handler.addEstimator( surface_flux_estimator )
 
+    # Create a surface current estimator to check for leakage
+    surface_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( 2, 1.0, [20, 21, 22, 23, 24, 25] )
+    surface_current_estimator.setParticleTypes( [MonteCarlo.PHOTON] )
+
+    event_handler.addEstimator( surface_current_estimator )
+
     ## Set up the simulation manager
     factory = Manager.ParticleSimulationManagerFactory( filled_model,
                                                         source,
@@ -240,6 +246,12 @@ def runAdjointInfiniteMediumSimulation( sim_name,
     surface_flux_estimator.setParticleTypes( [MonteCarlo.ADJOINT_PHOTON] )
 
     event_handler.addEstimator( surface_flux_estimator )
+
+    # Create a surface current estimator to check for leakage
+    surface_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( 2, 1.0, [20, 21, 22, 23, 24, 25] )
+    surface_current_estimator.setParticleTypes( [MonteCarlo.ADJOINT_PHOTON] )
+    
+    event_handler.addEstimator( surface_current_estimator )
 
     ## Set up the simulation manager
     factory = Manager.ParticleSimulationManagerFactory( filled_model,
@@ -451,7 +463,7 @@ def runAdjointUniformEnergyInfiniteMediumSimulation( sim_name,
     filled_model = Collision.FilledGeometryModel( db_path, scattering_center_definitions, material_definitions, simulation_properties, model, True )
 
     ## Set up the source
-    particle_distribution = ActiveRegion.StandardParticleDistribution( "isotropic mono-energetic dist" )
+    particle_distribution = ActiveRegion.StandardParticleDistribution( "isotropic uniform energetic dist" )
 
     uniform_energy = Distribution.UniformDistribution( energy_cutoff, energy_max )
     energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( uniform_energy )

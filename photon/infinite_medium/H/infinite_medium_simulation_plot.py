@@ -40,7 +40,7 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
     estimator = manager.getEventHandler().getEstimator( estimator_id )
 
     full_entity_bin_data = estimator.getEntityBinProcessedData( entity_id )
-
+    
     num_energy_bins = 0
 
     if is_forward:
@@ -60,12 +60,14 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
         
         start_index = col_bin*num_energy_bins
         end_index = start_index + num_energy_bins
-    print start_index, end_index
-    entity_bin_data = {"mean": [], "re": [], "e_bins": []}
+        
+    entity_bin_data = {"mean": [], "re": [], "e_bins": [], "vov": [], "fom": []}
 
     for i in range(start_index, end_index):
         entity_bin_data["mean"].append( full_entity_bin_data["mean"][i] )
         entity_bin_data["re"].append( full_entity_bin_data["re"][i] )
+        entity_bin_data["vov"].append( full_entity_bin_data["vov"][i] )
+        entity_bin_data["fom"].append( full_entity_bin_data["fom"][i] )
 
     if is_forward:
         entity_bin_data["e_bins"] = list(estimator.getEnergyDiscretization())
@@ -98,15 +100,18 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
             mcnp_bin_data["e_up"].append( float(split_line[0]) )
             mcnp_bin_data["mean"].append( mean_value )
             mcnp_bin_data["re"].append( float(split_line[2]) )
-    print mcnp_first_nonzero_index
     
     # Filter out zero values
     del entity_bin_data["e_bins"][0:mcnp_first_nonzero_index]
     del entity_bin_data["mean"][0:mcnp_first_nonzero_index]
     del entity_bin_data["re"][0:mcnp_first_nonzero_index]
+    del entity_bin_data["vov"][0:mcnp_first_nonzero_index]
+    del entity_bin_data["fom"][0:mcnp_first_nonzero_index]
 
     for i in range(0,len(mcnp_bin_data["e_up"])):
-        print i, mcnp_bin_data["e_up"][i], entity_bin_data["e_bins"][i+1], mcnp_bin_data["mean"][i], entity_bin_data["mean"][i], entity_bin_data["re"][i]
+        #print i, mcnp_bin_data["e_up"][i], entity_bin_data["e_bins"][i+1], mcnp_bin_data["mean"][i], entity_bin_data["mean"][i], entity_bin_data["re"][i]
+        print i, entity_bin_data["e_bins"][i], entity_bin_data["e_bins"][i+1], entity_bin_data["mean"][i], entity_bin_data["re"][i], entity_bin_data["vov"][i], entity_bin_data["fom"][i]
+        
 
     output_file_name = "h_infinite_medium_"
     output_file_names = []
