@@ -105,7 +105,7 @@ def runForwardInfiniteMediumSimulation( sim_name,
     event_handler = Event.EventHandler( model, simulation_properties )
 
     # Create the surface flux estimator
-    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, 1.0, [1, 3, 6, 9, 12, 15, 18, 21, 24, 27], model )
+    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, 1.0, [1, 3, 6, 9, 12, 15, 18, 21, 24, 27], model, 0.1 )
     surface_flux_estimator.setEnergyDiscretization( energy_bins )
     surface_flux_estimator.setParticleTypes( [MonteCarlo.PHOTON] )
 
@@ -230,7 +230,7 @@ def runAdjointInfiniteMediumSimulation( sim_name,
     response = ActiveRegion.StandardParticleResponse( response_function )
 
     # Create the surface flux estimator
-    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, (source_energy - energy_cutoff), [1, 3, 6, 9, 12, 15, 18, 21, 24, 27], model )
+    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, (source_energy - energy_cutoff), [1, 3, 6, 9, 12, 15, 18, 21, 24, 27], model, 0.1 )
     surface_flux_estimator.setSourceEnergyDiscretization( energy_bins )
 
     if not col_bins is None:
@@ -350,7 +350,7 @@ def runForwardUniformEnergyInfiniteMediumSimulation( sim_name,
     event_handler = Event.EventHandler( model, simulation_properties )
 
     # Create the surface flux estimator
-    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, 1.0, [1, 3, 6, 9, 12], model )
+    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, 1.0, [1, 3, 6, 9, 12], model, 0.1 )
     surface_flux_estimator.setEnergyDiscretization( energy_bins )
     surface_flux_estimator.setParticleTypes( [MonteCarlo.PHOTON] )
 
@@ -473,7 +473,7 @@ def runAdjointUniformEnergyInfiniteMediumSimulation( sim_name,
     response = ActiveRegion.StandardParticleResponse( response_function )
 
     # Create the surface flux estimator
-    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, 1.0, [1, 3, 6, 9, 12], model )
+    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, 1.0, [1, 3, 6, 9, 12], model, 0.1 )
     surface_flux_estimator.setSourceEnergyDiscretization( energy_bins )
     surface_flux_estimator.setResponseFunctions( [response] )
     surface_flux_estimator.setParticleTypes( [MonteCarlo.ADJOINT_PHOTON] )

@@ -75,7 +75,7 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
     for i in range(start_index, end_index):
         entity_bin_data["mean"].append( full_entity_bin_data["mean"][i] )
         entity_bin_data["re"].append( full_entity_bin_data["re"][i] )
-        entity_bin_data["vov"].append( full_entity_bin_data["vov"][i] )
+        #entity_bin_data["vov"].append( full_entity_bin_data["vov"][i] )
         entity_bin_data["fom"].append( full_entity_bin_data["fom"][i] )
 
     if is_forward:
@@ -114,12 +114,12 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
     del entity_bin_data["e_bins"][0:mcnp_first_nonzero_index]
     del entity_bin_data["mean"][0:mcnp_first_nonzero_index]
     del entity_bin_data["re"][0:mcnp_first_nonzero_index]
-    del entity_bin_data["vov"][0:mcnp_first_nonzero_index]
+    #del entity_bin_data["vov"][0:mcnp_first_nonzero_index]
     del entity_bin_data["fom"][0:mcnp_first_nonzero_index]
 
     for i in range(0,len(mcnp_bin_data["e_up"])):
-        #print i, mcnp_bin_data["e_up"][i], entity_bin_data["e_bins"][i+1], mcnp_bin_data["mean"][i], entity_bin_data["mean"][i], entity_bin_data["re"][i]
-        print i, entity_bin_data["e_bins"][i], entity_bin_data["e_bins"][i+1], entity_bin_data["mean"][i], entity_bin_data["re"][i], entity_bin_data["vov"][i], entity_bin_data["fom"][i]
+        print i, mcnp_bin_data["e_up"][i], entity_bin_data["e_bins"][i+1], mcnp_bin_data["mean"][i], entity_bin_data["mean"][i], entity_bin_data["re"][i]
+        #print i, entity_bin_data["e_bins"][i], entity_bin_data["e_bins"][i+1], entity_bin_data["mean"][i], entity_bin_data["re"][i], entity_bin_data["vov"][i], entity_bin_data["fom"][i]
         
 
     output_file_name = "h_infinite_medium_"
