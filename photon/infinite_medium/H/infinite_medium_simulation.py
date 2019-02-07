@@ -165,8 +165,8 @@ def runAdjointInfiniteMediumSimulation( sim_name,
     simulation_properties.setMinAdjointPhotonEnergy( energy_cutoff )
     simulation_properties.setMaxAdjointPhotonEnergy( source_energy )
     simulation_properties.setCriticalAdjointPhotonLineEnergies( [source_energy] )
-    simulation_properties.setAdjointPhotonRouletteThresholdWeight( 1e-20 )
-    simulation_properties.setAdjointPhotonRouletteSurvivalWeight( 1e-18 )
+    simulation_properties.setAdjointPhotonRouletteThresholdWeight( 0.25 )
+    simulation_properties.setAdjointPhotonRouletteSurvivalWeight( 0.5 )
     simulation_properties.setNumberOfAdjointPhotonHashGridBins( 100 )
 
     # Set the number of histories to run and the number of rendezvous
