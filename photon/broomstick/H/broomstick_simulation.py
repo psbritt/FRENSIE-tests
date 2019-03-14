@@ -48,6 +48,7 @@ def runBroomstickSimulation( sim_name,
     # Set the number of histories to run and the number of rendezvous
     simulation_properties.setNumberOfHistories( num_particles )
     simulation_properties.setMinNumberOfRendezvous( 10 )
+    simulation_properties.setNumberOfSnapshotsPerBatch( 10 )
 
     ## Set up the materials
     database = Data.ScatteringCenterPropertiesDatabase( db_path )
@@ -100,10 +101,14 @@ def runBroomstickSimulation( sim_name,
     # Set the energy and collision number bins in estimator 1
     event_handler.getEstimator( 1 ).setEnergyDiscretization( energy_bins )
     event_handler.getEstimator( 1 ).setCollisionNumberDiscretization( [0, 1, 10] )
+    event_handler.getEstimator( 1 ).enableSnapshotsOnEntityBins()
+    event_handler.getEstimator( 1 ).enableSampleMomentHistogramsOnEntityBins()
 
     # Set the energy and collision number bins in estimator 2
     event_handler.getEstimator( 2 ).setEnergyDiscretization( energy_bins )
     event_handler.getEstimator( 2 ).setCollisionNumberDiscretization( [0, 1, 10] )
+    event_handler.getEstimator( 2 ).enableSnapshotsOnEntityBins()
+    event_handler.getEstimator( 2 ).enableSampleMomentHistogramsOnEntityBins()
 
     ## Set up the simulation manager
     factory = Manager.ParticleSimulationManagerFactory( filled_model,
