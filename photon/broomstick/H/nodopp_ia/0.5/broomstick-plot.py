@@ -2,50 +2,34 @@
 import sys, os
 from optparse import *
 sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
-from broomstick_simulation_plot import plotBroomstickSimulationSpectrum
+from broomstick_simulation_plot import plotBroomstickSimulationSpectrumWHvsIA
 
 if __name__ == "__main__":
 
     # Parse the command line arguments
     parser = OptionParser()
-    parser.add_option("--rendezvous_file", type="string", dest="rendezvous_file",
-                      help="the rendezvous file to load")
-    parser.add_option("--estimator_id", type="int", dest="estimator_id",
-                      help="the estimator id to use")
-    parser.add_option("--entity_id", type="int", dest="entity_id",
-                      help="the entity id to use")
-    parser.add_option("--mcnp_file", type="string", dest="mcnp_file",
-                      help="the mcnp output file to load")
-    parser.add_option("--mcnp_file_start", type="int", dest="mcnp_file_start",
-                      help="the mcnp output file start line")
-    parser.add_option("--mcnp_file_end", type="int", dest="mcnp_file_end",
-                      help="the mcnp output file end line")
-    parser.add_option("--current", action="store_true", dest="is_a_current",
-                      help="the data corresponds to a current")
-    parser.add_option("--flux", action="store_false", dest="is_a_current",
-                      help="the data corresponds to a flux")
+    parser.add_option("--wh_data_file", type="string", dest="wh_data_file",
+                      help="the wh data file to load")
+    parser.add_option("--ia_data_file", type="string", dest="ia_data_file",
+                      help="the ia data file to load")
     options,args = parser.parse_args()
 
-    if options.is_a_current:
-        top_ylims = [0.0, 60.0]
-        bottom_ylims = [0.98, 1.02]
-        legend_pos = (0.86,0.76)
-    else:
-        top_ylims = [0.0, 500000.0]
-        bottom_ylims = [0.9, 1.1]
-        legend_pos = (1.02,1.03)
-        
+    top_ylims = [0.0, 6.0]
+    bottom_ylims = [0.98, 1.02]
+    xlims = [0.16, 0.5]
+    #bottom_ylims = [0.92, 1.02]
+    #xlims = [0.099, 0.1]
+    legend_pos = (0.95,0.95)
+            
     # Plot the spectrum
-    plotBroomstickSimulationSpectrum( options.rendezvous_file,
-                                      options.estimator_id,
-                                      options.entity_id,
-                                      options.mcnp_file,
-                                      options.mcnp_file_start,
-                                      options.mcnp_file_end,
-                                      options.is_a_current,
-                                      top_ylims = top_ylims,
-                                      bottom_ylims = bottom_ylims,
-                                      xlims = [0.07, 0.1],
-                                      legend_pos = legend_pos )
+    plotBroomstickSimulationSpectrumWHvsIA( options.wh_data_file,
+                                            "FRENSIE-WH",
+                                            options.ia_data_file,
+                                            "FRENSIE-IA",
+                                            True,
+                                            top_ylims,
+                                            bottom_ylims,
+                                            xlims,
+                                            legend_pos = legend_pos )
 
     
