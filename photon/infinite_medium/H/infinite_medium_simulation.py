@@ -50,9 +50,7 @@ def runForwardInfiniteMediumSimulation( sim_name,
     # Set the number of histories to run and the number of rendezvous
     simulation_properties.setNumberOfHistories( num_particles )
     simulation_properties.setMinNumberOfRendezvous( 10 )
-
-    # Use the same surface flux estimator angle cosine cutoff as mcnp
-    simulation_properties.setSurfaceFluxEstimatorAngleCosineCutoff( 0.1 )
+    simulation_properties.setNumberOfSnapshotsPerBatch( 10 )
 
     ## Set up the materials
     database = Data.ScatteringCenterPropertiesDatabase( db_path )
@@ -105,9 +103,10 @@ def runForwardInfiniteMediumSimulation( sim_name,
     event_handler = Event.EventHandler( model, simulation_properties )
 
     # Create the surface flux estimator
-    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, 1.0, [1, 3, 6, 9, 12, 15, 18, 21, 24, 27], model, 0.1 )
+    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, 1.0, [1, 3, 6, 9, 12, 15, 18, 21, 24, 27], model )
     surface_flux_estimator.setEnergyDiscretization( energy_bins )
     surface_flux_estimator.setParticleTypes( [MonteCarlo.PHOTON] )
+    surface_flux_estimator.setCosineCutoffValue( 0.1 )
 
     event_handler.addEstimator( surface_flux_estimator )
 
@@ -122,6 +121,7 @@ def runForwardInfiniteMediumSimulation( sim_name,
 
     # Create the simulation manager
     manager = factory.getManager()
+    manager.useSingleRendezvousFile()
 
     # Allow logging on all procs
     session.restoreOutputStreams()
@@ -144,7 +144,8 @@ def runAdjointInfiniteMediumSimulation( sim_name,
                                         energy_bins,
                                         threads,
                                         log_file = None,
-                                        col_bins = None ):
+                                        col_bins = None,
+                                        second_energy_bins = None ):
 
     ## Initialize the MPI session
     session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
@@ -165,17 +166,15 @@ def runAdjointInfiniteMediumSimulation( sim_name,
     simulation_properties.setMinAdjointPhotonEnergy( energy_cutoff )
     simulation_properties.setMaxAdjointPhotonEnergy( source_energy )
     simulation_properties.setCriticalAdjointPhotonLineEnergies( [source_energy] )
-    simulation_properties.setAdjointPhotonRouletteThresholdWeight( 0.25 )
-    simulation_properties.setAdjointPhotonRouletteSurvivalWeight( 0.5 )
+    simulation_properties.setAdjointPhotonRouletteThresholdWeight( 0.0025 )
+    simulation_properties.setAdjointPhotonRouletteSurvivalWeight(  0.005 )
     simulation_properties.setNumberOfAdjointPhotonHashGridBins( 100 )
 
     # Set the number of histories to run and the number of rendezvous
     simulation_properties.setNumberOfHistories( num_particles )
     simulation_properties.setMinNumberOfRendezvous( 10 )
-
-    # Use the same surface flux estimator angle cosine cutoff as mcnp
-    simulation_properties.setSurfaceFluxEstimatorAngleCosineCutoff( 0.1 )
-
+    simulation_properties.setNumberOfSnapshotsPerBatch( 10 )
+    
     ## Set up the materials
     database = Data.ScatteringCenterPropertiesDatabase( db_path )
 
@@ -230,7 +229,7 @@ def runAdjointInfiniteMediumSimulation( sim_name,
     response = ActiveRegion.StandardParticleResponse( response_function )
 
     # Create the surface flux estimator
-    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, (source_energy - energy_cutoff), [1, 3, 6, 9, 12, 15, 18, 21, 24, 27], model, 0.1 )
+    surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 1, (source_energy - energy_cutoff), [1, 3, 6, 9, 12, 15, 18, 21, 24, 27], model )
     surface_flux_estimator.setSourceEnergyDiscretization( energy_bins )
 
     if not col_bins is None:
@@ -238,8 +237,22 @@ def runAdjointInfiniteMediumSimulation( sim_name,
     
     surface_flux_estimator.setResponseFunctions( [response] )
     surface_flux_estimator.setParticleTypes( [MonteCarlo.ADJOINT_PHOTON] )
+    surface_flux_estimator.setCosineCutoffValue( 0.1 )
 
     event_handler.addEstimator( surface_flux_estimator )
+
+    # Create the second surface eflux estimator
+    if not second_energy_bins is None:
+        second_surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( 2, (source_energy - energy_cutoff), [1, 3, 6, 9, 12, 15, 18, 21, 24, 27], model )
+        second_surface_flux_estimator.setSourceEnergyDiscretization( second_energy_bins )
+
+        second_surface_flux_estimator.setResponseFunctions( [response] )
+        second_surface_flux_estimator.setParticleTypes( [MonteCarlo.ADJOINT_PHOTON] )
+        second_surface_flux_estimator.setCosineCutoffValue( 0.1 )
+        second_surface_flux_estimator.enableSnapshotsOnEntityBins()
+        second_surface_flux_estimator.enableSampleMomentHistogramsOnEntityBins()
+
+        event_handler.addEstimator( second_surface_flux_estimator )
 
     ## Set up the simulation manager
     factory = Manager.ParticleSimulationManagerFactory( filled_model,
@@ -252,6 +265,7 @@ def runAdjointInfiniteMediumSimulation( sim_name,
 
     # Create the simulation manager
     manager = factory.getManager()
+    manager.useSingleRendezvousFile()
 
     # Allow logging on all procs
     session.restoreOutputStreams()
