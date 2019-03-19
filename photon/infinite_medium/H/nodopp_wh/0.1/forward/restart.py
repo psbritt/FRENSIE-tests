@@ -35,5 +35,4 @@ if __name__ == "__main__":
                                      options.num_particles,
                                      options.threads,
                                      options.log_file,
-                                     options.num_particles,
                                      num_rendezvous )
