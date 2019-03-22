@@ -39,7 +39,3 @@ def extractEstimatorData( rendezvous_file,
 
     for i in range(start_index, end_index):
         print energy_bins[i-start_index], energy_bins[i+1-start_index], entity_bin_data["mean"][i], entity_bin_data["re"][i], entity_bin_data["vov"][i]
-
-
-
-    

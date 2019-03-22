@@ -17,8 +17,8 @@ if __name__ == "__main__":
     top_ylims = [0.0, 60.0]
     bottom_ylims = [0.98, 1.02]
     xlims = [0.07, 0.1]
-    #bottom_ylims = [0.92, 1.02]
-    #xlims = [0.099, 0.1]
+    # bottom_ylims = [0.92, 1.02]
+    # xlims = [0.099, 0.1]
     legend_pos = (0.86,0.76)
             
     # Plot the spectrum
