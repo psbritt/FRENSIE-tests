@@ -12,6 +12,74 @@ import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
 from spectrum_plot_tools import plotSpectralDataWithErrors
 
+def loadDataFromDataFile( data_file_name ):
+
+    # Load the file
+    data_file = file( data_file_name, 'r' )
+
+    # Extract the data from the file
+    data = {"e_bins": [], "mean": [], "re": []}
+
+    first_line = True
+    e_max = 0.0
+    
+    for line in data_file:
+        if first_line:
+            first_line = False
+        else:
+            raw_line_data = line.split()
+            
+            data["e_bins"].append( float(raw_line_data[0]) )
+            e_max = float(raw_line_data[1])
+
+            data["mean"].append( float(raw_line_data[2]) )
+            data["re"].append( float(raw_line_data[3]) )
+
+    # Add the max energy
+    data["e_bins"].append( e_max )
+
+    return data
+
+def plotExtractedInfiniteMediumSimulationData( data_file_name_1,
+                                               data_name_1,
+                                               data_name_abrv_1,
+                                               data_file_name_2,
+                                               data_name_2,
+                                               data_name_abrv_2,
+                                               top_ylims = None,
+                                               bottom_ylims = None,
+                                               xlims = None,
+                                               legend_pos = None ):
+
+    # Load the first data
+    data_1 = loadDataFromDataFile( data_file_name_1 )
+    print data_1.keys()
+    
+    # Load the second data
+    data_2 = loadDataFromDataFile( data_file_name_2 )
+    print data_2.keys()
+
+    output_file_name = "h_infinite_medium_flux"
+    output_file_names = []
+    output_file_names.append( output_file_name + ".eps" )
+    output_file_names.append( output_file_name + ".png" )
+
+    # Plot the data
+    plotSpectralDataWithErrors( data_name_2,
+                                data_2,
+                                data_name_1,
+                                data_1,
+                                "Flux",
+                                log_spacing = False,
+                                per_lethargy = False,
+                                top_ylims = top_ylims,
+                                bottom_ylims = bottom_ylims,
+                                xlims = xlims,
+                                legend_pos = legend_pos,
+                                output_plot_names = output_file_names,
+                                frensie_data_abrv = data_name_abrv_2,
+                                test_data_abrv = data_name_abrv_1 )
+
 def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
                                           estimator_id,
                                           entity_id,

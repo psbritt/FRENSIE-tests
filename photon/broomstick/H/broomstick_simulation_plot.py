@@ -186,8 +186,8 @@ def plotBroomstickSimulationSpectrumWHvsIA( wh_data_file_name,
                                 xlims = xlims,
                                 legend_pos = legend_pos,
                                 output_plot_names = output_file_names,
-                                frensie_data_abrv = wh_data_abrv,
-                                test_data_abrv = ia_data_abrv )
+                                frensie_data_abrv = ia_data_abrv,
+                                test_data_abrv = wh_data_abrv )
 
 def plotBroomstickSimulationSpectrum( rendezvous_file,
                                       estimator_id,
