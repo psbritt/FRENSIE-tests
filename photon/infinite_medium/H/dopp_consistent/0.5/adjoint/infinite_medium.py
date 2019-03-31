@@ -36,6 +36,8 @@ if __name__ == "__main__":
                                         0.5,
                                         Utility.doubleArrayFromString( "{1e-3, 998i, 0.5}" ),
                                         options.threads,
-                                        options.log_file )
+                                        options.log_file,
+                                        num_rendezvous = options.num_particles/1e7 )
+                                        
     
     

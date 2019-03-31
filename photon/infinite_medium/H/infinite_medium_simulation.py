@@ -145,7 +145,8 @@ def runAdjointInfiniteMediumSimulation( sim_name,
                                         threads,
                                         log_file = None,
                                         col_bins = None,
-                                        second_energy_bins = None ):
+                                        second_energy_bins = None,
+                                        num_rendezvous = None ):
 
     ## Initialize the MPI session
     session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
@@ -172,8 +173,13 @@ def runAdjointInfiniteMediumSimulation( sim_name,
 
     # Set the number of histories to run and the number of rendezvous
     simulation_properties.setNumberOfHistories( num_particles )
-    simulation_properties.setMinNumberOfRendezvous( 10 )
-    simulation_properties.setNumberOfSnapshotsPerBatch( 10 )
+
+    if not num_rendezvous is None:
+        simulation_properties.setMinNumberOfRendezvous( int(num_rendezvous) )
+        simulation_properties.setNumberOfSnapshotsPerBatch( 1 )
+    else:
+        simulation_properties.setMinNumberOfRendezvous( 10 )
+        simulation_properties.setNumberOfSnapshotsPerBatch( 10 )
     
     ## Set up the materials
     database = Data.ScatteringCenterPropertiesDatabase( db_path )

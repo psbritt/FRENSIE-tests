@@ -37,6 +37,7 @@ if __name__ == "__main__":
                                         Utility.doubleArrayFromString( "{1e-3, 988i, 0.0999, 9i, 0.1}" ),
                                         options.threads,
                                         options.log_file,
-                                        second_energy_bins = [1e-3, 7e-3, 7.1e-3, 8e-3, 8.1e-3, 9e-3, 9.1e-3, 10e-3, 10.1e-3, 11e-3, 11.1e-3, 0.1] )
+                                        second_energy_bins = [1e-3, 7e-3, 7.1e-3, 8e-3, 8.1e-3, 9e-3, 9.1e-3, 10e-3, 10.1e-3, 11e-3, 11.1e-3, 0.1],
+                                        num_rendezvous = options.num_particles/1e7 )
     
     
