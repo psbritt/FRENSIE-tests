@@ -36,7 +36,7 @@ if __name__ == "__main__":
         legend_pos = (0.98,1.03)
     elif options.entity_id == 3:
         top_ylims = [0.0, 0.03]
-        bottom_ylims = [0.85, 1.15]
+        bottom_ylims = [0.90, 1.10]
         legend_pos = (0.99,1.05)
     elif options.entity_id == 6:
         top_ylims = [0.0, 0.03]

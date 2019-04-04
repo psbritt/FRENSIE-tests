@@ -53,11 +53,9 @@ def plotExtractedInfiniteMediumSimulationData( data_file_name_1,
 
     # Load the first data
     data_1 = loadDataFromDataFile( data_file_name_1 )
-    print data_1.keys()
     
     # Load the second data
     data_2 = loadDataFromDataFile( data_file_name_2 )
-    print data_2.keys()
 
     output_file_name = "h_infinite_medium_flux"
     output_file_names = []
