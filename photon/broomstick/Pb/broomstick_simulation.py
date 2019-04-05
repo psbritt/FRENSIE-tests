@@ -54,7 +54,7 @@ def runBroomstickSimulation( sim_name,
     database = Data.ScatteringCenterPropertiesDatabase( db_path )
 
     # Extract the properties for H from the database
-    atom_properties = database.getAtomProperties( Data.ZAID(1000) )
+    atom_properties = database.getAtomProperties( Data.ZAID(82000) )
 
     # Set the definition for H for this simulation
     scattering_center_definitions = Collision.ScatteringCenterDefinitionDatabase()

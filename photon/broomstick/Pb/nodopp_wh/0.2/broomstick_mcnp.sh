@@ -1,5 +1,5 @@
 #!/bin/bash
-# This file is named dyson_sphere_mcnp.sh
+# This file is named broomstick_mcnp.sh
 #SBATCH --partition=pre
 #SBATCH --time=1-00:00:00
 #SBATCH --ntasks=1
