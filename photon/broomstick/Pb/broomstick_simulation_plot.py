@@ -154,7 +154,7 @@ def plotBroomstickSimulationSpectrumWHvsIA( wh_data_file_name,
     ia_data = loadDataFromDataFile( ia_data_file_name )
     print ia_data.keys()
 
-    output_file_name = "h_broomstick_"
+    output_file_name = "pb_broomstick_"
     output_file_names = []
 
     if is_a_current:
@@ -233,24 +233,14 @@ def plotBroomstickSimulationSpectrum( rendezvous_file,
     
     mcnp_bin_data = {"e_up": [], "mean": [], "re": []}
 
-    mcnp_first_nonzero_index = 0
-    
     for i in range(mcnp_file_start,mcnp_file_end+1):
         split_line = mcnp_file_lines[i-1].split()
 
         mean_value = float(split_line[1])
 
-        if mean_value == 0.0:
-            mcnp_first_nonzero_index += 1
-        else:
-            mcnp_bin_data["e_up"].append( float(split_line[0]) )
-            mcnp_bin_data["mean"].append( mean_value )
-            mcnp_bin_data["re"].append( float(split_line[2]) )
-
-    # Filter out zero values
-    del entity_bin_data["e_bins"][0:mcnp_first_nonzero_index]
-    del entity_bin_data["mean"][0:mcnp_first_nonzero_index]
-    del entity_bin_data["re"][0:mcnp_first_nonzero_index]
+        mcnp_bin_data["e_up"].append( float(split_line[0]) )
+        mcnp_bin_data["mean"].append( mean_value )
+        mcnp_bin_data["re"].append( float(split_line[2]) )
 
     output_file_name = "h_broomstick_"
     output_file_names = []
