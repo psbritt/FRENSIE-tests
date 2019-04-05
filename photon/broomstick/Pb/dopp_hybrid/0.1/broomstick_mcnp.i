@@ -12,7 +12,7 @@ mode p
 nps    1e8
 sdef   pos = 0 0 -501   dir = 1  vec = 0 0 1  erg = 0.1
 c
-m1     1000.12p   2.0   8000.12p 1.0
+m1     1000.12p   1.0
 c
 f01:p  12
 f02:p  12
@@ -24,7 +24,6 @@ ft1    INC
 fu1    0 1 10
 ft2    INC
 fu2    0 1 10
-c e0     1e-3 998i 1.0
 c
-phys:p 100  1 0 0 1
+phys:p 100  1 0 0 0
 prdmp  j  1e7  1   1
