@@ -242,7 +242,7 @@ def plotBroomstickSimulationSpectrum( rendezvous_file,
         mcnp_bin_data["mean"].append( mean_value )
         mcnp_bin_data["re"].append( float(split_line[2]) )
 
-    output_file_name = "h_broomstick_"
+    output_file_name = "pb_broomstick_"
     output_file_names = []
 
     if is_a_current:
