@@ -27,7 +27,7 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     if options.is_a_current:
-        top_ylims = [0.0, 1.0]
+        top_ylims = [0.0, 0.3]
         bottom_ylims = [0.97, 1.03]
         legend_pos = (1.0,1.0)
     else:

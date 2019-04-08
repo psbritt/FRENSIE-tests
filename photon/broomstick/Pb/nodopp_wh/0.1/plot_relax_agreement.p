@@ -12,15 +12,15 @@ set ylabel "Relaxation Current Spectrum" offset 1, 0
 set format x ""
 set grid
 set yrange[0:10000]
-set xrange[0.055:0.1]
+set xrange[0.072:0.09]
 set boxwidth 0.0001
 set style fill solid
-set label 1 "KL_2" at 7.18e-2,5000 font ",8"
-set label 2 "KL_3" at 7.55e-2,8500 font ",8"
-set label 3 "KM_2" at 8.32e-2,1000 font ",8"
-set label 4 "KM_3" at 8.55e-2,2000 font ",8"
-set label 5 "KN_2" at 8.62e-2,300 font ",8"
-set label 6 "KN_3" at 8.78e-2,500 font ",8"
+set label 1 "KL_2" at 7.25e-2,5000 font ",8"
+set label 2 "KL_3" at 7.55e-2,8250 font ",8"
+set label 3 "KM_2" at 8.42e-2,900 font ",8"
+set label 4 "KM_3" at 8.53e-2,1700 font ",8"
+set label 5 "KN_2" at 8.70e-2,300 font ",8"
+set label 6 "KN_3" at 8.775e-2,500 font ",8"
 plot file1 using 3:5 with boxes lc rgb"black" title "MCNP6", file1 using 3:4 with boxes lc rgb"red" title "FRENSIE"
 #
 set tmargin at screen 0.53

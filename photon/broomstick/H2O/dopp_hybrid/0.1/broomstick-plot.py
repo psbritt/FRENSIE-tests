@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     if options.is_a_current:
         top_ylims = [0.0, 60.0]
-        bottom_ylims = [0.98, 1.02]
+        bottom_ylims = [0.94, 1.06]
         legend_pos = (0.86,0.76)
     else:
         top_ylims = [0.0, 500000.0]
@@ -45,7 +45,7 @@ if __name__ == "__main__":
                                       options.is_a_current,
                                       top_ylims = top_ylims,
                                       bottom_ylims = bottom_ylims,
-                                      xlims = [0.07, 0.1],
+                                      xlims = [0.065, 0.1],
                                       legend_pos = legend_pos )
 
     
