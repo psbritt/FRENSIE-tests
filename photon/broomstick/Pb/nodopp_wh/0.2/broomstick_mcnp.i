@@ -1,5 +1,5 @@
 10.0 MeV photons in room temp water
-100   1    -1.0       10 -11 -12           imp:n=1
+100   1    -11.34       10 -11 -12           imp:n=1
 101   0               -15 (-10:11:12)      imp:n=1
 999   0               15                   imp:n=0
 
@@ -12,7 +12,7 @@ mode p
 nps    1e9
 sdef   pos = 0 0 -501   dir = 1  vec = 0 0 1  erg = 0.2
 c
-m1     1000.12p   1.0
+m1     82000.12p   1.0
 c
 f01:p  12
 f02:p  12
