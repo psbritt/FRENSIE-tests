@@ -18,10 +18,10 @@ if __name__ == "__main__":
                       help="the consistent data file to load")
     options,args = parser.parse_args()
 
-    ylims = [0.0, 60.0]
-    xlims = [0.07, 0.1]
+    ylims = [0.00, 0.5]
+    xlims = [0.04, 0.1]
     #xlims = [0.0995, 0.1]
-    legend_pos = (0.86,0.76)
+    legend_pos = (0.5,0.99)
 
     # Plot the spectrum
     plotAllBroomstickSimulations( options.wh_data_file,

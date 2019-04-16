@@ -14,12 +14,12 @@ if __name__ == "__main__":
                       help="the ia data file to load")
     options,args = parser.parse_args()
 
-    top_ylims = [0.0, 20.0]
-    bottom_ylims = [0.98, 1.02]
-    xlims = [0.11, 0.2]
+    top_ylims = [0.0, 1.0]
+    bottom_ylims = [0.95, 1.05]
+    xlims = [0.0, 0.2]
     #bottom_ylims = [0.92, 1.02]
     #xlims = [0.099, 0.1]
-    legend_pos = (0.70,0.76)
+    legend_pos = (0.50,0.72)
             
     # Plot the spectrum
     plotBroomstickSimulationSpectrumWHvsIA( options.wh_data_file,

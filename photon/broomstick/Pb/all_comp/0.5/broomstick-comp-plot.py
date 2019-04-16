@@ -18,8 +18,8 @@ if __name__ == "__main__":
                       help="the consistent data file to load")
     options,args = parser.parse_args()
 
-    ylims = [0.0, 6.0]
-    xlims = [0.16, 0.5]
+    ylims = [0.0, 2.0]
+    xlims = [0.0, 0.5]
     #xlims = [0.0995, 0.1]
     legend_pos = (0.5,0.76)
 

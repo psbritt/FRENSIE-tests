@@ -19,9 +19,10 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     ylims = [0.0, 60.0]
-    xlims = [0.07, 0.1]
-    #xlims = [0.0995, 0.1]
+    xlims = [0.065, 0.1]
     legend_pos = (0.86,0.76)
+    # xlims = [0.095, 0.1]
+    # legend_pos = (0.75,0.76)
 
     # Plot the spectrum
     plotAllBroomstickSimulations( options.wh_data_file,

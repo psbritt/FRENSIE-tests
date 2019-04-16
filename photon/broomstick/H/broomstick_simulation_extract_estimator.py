@@ -10,6 +10,28 @@ import PyFrensie.MonteCarlo.Collision as Collision
 import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
 
+def extractEstimatorTotalData( rendezvous_file,
+                               estimator_id,
+                               entity_id ):
+
+    # Activate just-in-time initialization to prevent automatic loading of the
+    # geometry and data tables
+    Utility.activateJustInTimeInitialization()
+
+    # Set the database path
+    Collision.FilledGeometryModel.setDefaultDatabasePath( os.environ['DATABASE_PATH'] )
+    
+    # Reload the simulation
+    manager = Manager.ParticleSimulationManagerFactory( rendezvous_file ).getManager()
+
+    # Extract the estimator of interest
+    estimator = manager.getEventHandler().getEstimator( estimator_id )
+
+    # Extract the estimator data
+    entity_total_data = estimator.getEntityTotalProcessedData( entity_id )
+
+    print entity_total_data["mean"], entity_total_data["re"]
+
 def extractEstimatorData( rendezvous_file,
                           estimator_id,
                           entity_id ):

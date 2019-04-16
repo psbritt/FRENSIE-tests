@@ -27,13 +27,18 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     if options.is_a_current:
-        top_ylims = [0.0, 60.0]
-        bottom_ylims = [0.98, 1.02]
-        legend_pos = (0.86,0.76)
+        top_ylims = [0.0, 0.6]
+        bottom_ylims = [0.75, 1.25]
+        legend_pos = (0.5,0.99)
+        xlims = [0.00, 0.1]
+        # bottom_ylims = [0.75, 1.25]
+        # xlims = [0.05, 0.1]
+        # legend_pos = (0.4,1.02)
     else:
         top_ylims = [0.0, 500000.0]
         bottom_ylims = [0.9, 1.1]
         legend_pos = (1.02,1.03)
+        xlims = [0.00, 0.1]
         
     # Plot the spectrum
     plotBroomstickSimulationSpectrum( options.rendezvous_file,
@@ -45,7 +50,7 @@ if __name__ == "__main__":
                                       options.is_a_current,
                                       top_ylims = top_ylims,
                                       bottom_ylims = bottom_ylims,
-                                      xlims = [0.07, 0.1],
+                                      xlims = xlims,
                                       legend_pos = legend_pos )
 
     

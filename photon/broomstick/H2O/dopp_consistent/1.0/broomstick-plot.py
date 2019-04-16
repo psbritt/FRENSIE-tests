@@ -14,9 +14,9 @@ if __name__ == "__main__":
                       help="the ia data file to load")
     options,args = parser.parse_args()
 
-    top_ylims = [0.0, 3.5]
-    bottom_ylims = [0.98, 1.02]
-    xlims = [0.2, 1.0]
+    top_ylims = [0.0, 3.0]
+    bottom_ylims = [0.90, 1.10]
+    xlims = [0.1, 1.0]
     #bottom_ylims = [0.92, 1.04]
     #xlims = [0.099, 0.1]
     legend_pos = (0.9,1.03)

@@ -14,7 +14,7 @@ if __name__ == "__main__":
                       help="the ia data file to load")
     options,args = parser.parse_args()
 
-    top_ylims = [0.0, 1.0]
+    top_ylims = [0.0, 0.3]
     bottom_ylims = [0.97, 1.03]
     xlims = [0.0, 10.0]
     #bottom_ylims = [0.92, 1.02]

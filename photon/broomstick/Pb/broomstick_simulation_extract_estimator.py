@@ -10,6 +10,28 @@ import PyFrensie.MonteCarlo.Collision as Collision
 import PyFrensie.MonteCarlo.Event as Event
 import PyFrensie.MonteCarlo.Manager as Manager
 
+def extractEstimatorTotalData( rendezvous_file,
+                               estimator_id,
+                               entity_id ):
+
+    # Activate just-in-time initialization to prevent automatic loading of the
+    # geometry and data tables
+    Utility.activateJustInTimeInitialization()
+
+    # Set the database path
+    Collision.FilledGeometryModel.setDefaultDatabasePath( os.environ['DATABASE_PATH'] )
+    
+    # Reload the simulation
+    manager = Manager.ParticleSimulationManagerFactory( rendezvous_file ).getManager()
+
+    # Extract the estimator of interest
+    estimator = manager.getEventHandler().getEstimator( estimator_id )
+
+    # Extract the estimator data
+    entity_total_data = estimator.getEntityTotalProcessedData( entity_id )
+
+    print entity_total_data["mean"][0], entity_total_data["re"][0], entity_total_data["mean"][0]*entity_total_data["re"][0]
+
 def extractMCNPEstimatorData( mcnp_output_file,
                               mcnp_file_start,
                               mcnp_file_end,
@@ -80,6 +102,64 @@ def extractEstimatorData( rendezvous_file,
 
     for i in range(0, len(energy_bins)-1):
         print energy_bins[i], energy_bins[i+1], entity_bin_data["mean"][i+start_index], entity_bin_data["re"][i+start_index], entity_bin_data["vov"][i+start_index], (energy_bins[i+1]+energy_bins[i])/2, entity_bin_data["mean"][i+start_index]/(energy_bins[i+1]-energy_bins[i])
+
+def loadDataFromDataFile( data_file_name ):
+
+    # Load the file
+    data_file = file( data_file_name, 'r' )
+
+    # Extract the data from the file
+    data = {"e_bins": [], "mean": [], "re": []}
+
+    first_line = True
+    e_max = 0.0
+    
+    for line in data_file:
+        if first_line:
+            first_line = False
+        else:
+            raw_line_data = line.split()
+            
+            data["e_bins"].append( float(raw_line_data[0]) )
+            e_max = float(raw_line_data[1])
+
+            data["mean"].append( float(raw_line_data[2]) )
+            data["re"].append( float(raw_line_data[3]) )
+
+    # Add the max energy
+    data["e_bins"].append( e_max )
+
+    return data
+
+def extractEstimatorRelaxDataFromWHAndIAData( wh_data_file,
+                                              ia_data_file,
+                                              relax_bins ):
+    # Extract the data from the data files
+    wh_data = loadDataFromDataFile( wh_data_file )
+    energy_bins = wh_data["e_bins"]
+    
+    ia_data = loadDataFromDataFile( ia_data_file )
+
+    # Extract and print the data
+    print "#bin start (MeV), bin end (MeV), bin mid (MeV), FRENSIE IA mean/(bin width), FRENSIE WH mean/(bin width), IA/WH, IA/WH unc"
+    
+    for i in range(0,len(energy_bins)-1):
+        if i in relax_bins:
+            bin_width = energy_bins[i+1] - energy_bins[i]
+
+            ia_mean = ia_data["mean"][i]/bin_width
+            wh_mean = wh_data["mean"][i]/bin_width
+            ia_over_wh = ia_mean/wh_mean
+            
+            sigma_ia = ia_mean*ia_data["re"][i]
+            sigma_wh = wh_mean*wh_data["re"][i]
+            
+            ia_squared = ia_mean*ia_mean
+            wh_squared = wh_mean*wh_mean
+            
+            ia_over_wh_unc = m.sqrt( sigma_ia*sigma_ia + (ia_squared/wh_squared)*sigma_wh*sigma_wh )/wh_mean
+            
+            print energy_bins[i], energy_bins[i+1], (energy_bins[i]+energy_bins[i+1])/2, ia_mean, wh_mean, ia_over_wh, ia_over_wh_unc
 
 def extractEstimatorRelaxData( rendezvous_file,
                                estimator_id,
