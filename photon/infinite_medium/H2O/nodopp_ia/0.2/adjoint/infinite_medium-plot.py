@@ -43,11 +43,11 @@ if __name__ == "__main__":
             
     # Plot the spectrum
     plotExtractedInfiniteMediumSimulationData( options.forward_data_file,
-                                               "FRENSIE-Forward-WH",
-                                               "FF-WH",
+                                               "FRENSIE-Forward-IA",
+                                               "FF-IA",
                                                options.adjoint_data_file,
-                                               "FRENSIE-Adjoint-WH",
-                                               "FA-WH",
+                                               "FRENSIE-Adjoint-IA",
+                                               "FA-IA",
                                                top_ylims,
                                                bottom_ylims,
                                                xlims,

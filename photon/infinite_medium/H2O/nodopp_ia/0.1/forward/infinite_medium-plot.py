@@ -36,7 +36,7 @@ if __name__ == "__main__":
         legend_pos = (0.95,0.95)
     elif "s1" in options.wh_data_file:
         top_ylims = [0.0, 5.0]
-        bottom_ylims = [0.95, 1.05]
+        bottom_ylims = [0.90, 1.10]
         legend_pos = (0.7,0.90)
 
     xlims = [0.0, 0.1]
