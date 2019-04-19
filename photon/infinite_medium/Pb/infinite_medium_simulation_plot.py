@@ -163,31 +163,14 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
 
         mean_value = float(split_line[1])
 
-        if mean_value == 0.0:
-            if not first_nonzero_value_found:
-                mcnp_first_nonzero_index += 1
-            else:
-                mcnp_bin_data["e_up"].append( float(split_line[0]) )
-                mcnp_bin_data["mean"].append( mean_value )
-                mcnp_bin_data["re"].append( float(split_line[2]) )
-        else:
-            first_nonzero_value_found = True
-            mcnp_bin_data["e_up"].append( float(split_line[0]) )
-            mcnp_bin_data["mean"].append( mean_value )
-            mcnp_bin_data["re"].append( float(split_line[2]) )
+        mcnp_bin_data["e_up"].append( float(split_line[0]) )
+        mcnp_bin_data["mean"].append( mean_value )
+        mcnp_bin_data["re"].append( float(split_line[2]) )
     
-    # Filter out zero values
-    del entity_bin_data["e_bins"][0:mcnp_first_nonzero_index]
-    del entity_bin_data["mean"][0:mcnp_first_nonzero_index]
-    del entity_bin_data["re"][0:mcnp_first_nonzero_index]
-    #del entity_bin_data["vov"][0:mcnp_first_nonzero_index]
-    del entity_bin_data["fom"][0:mcnp_first_nonzero_index]
-
     for i in range(0,len(mcnp_bin_data["e_up"])):
         print i, mcnp_bin_data["e_up"][i], entity_bin_data["e_bins"][i+1], mcnp_bin_data["mean"][i], entity_bin_data["mean"][i], entity_bin_data["re"][i]
         #print i, entity_bin_data["e_bins"][i], entity_bin_data["e_bins"][i+1], entity_bin_data["mean"][i], entity_bin_data["re"][i], entity_bin_data["vov"][i], entity_bin_data["fom"][i]
         
-
     output_file_name = "h_infinite_medium_"
     output_file_names = []
 
