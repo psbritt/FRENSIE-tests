@@ -31,7 +31,7 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     if options.entity_id == 1:
-        top_ylims = [0.0, 0.2]
+        top_ylims = [0.0, 0.25]
         bottom_ylims = [0.95, 1.05]
         legend_pos = (0.98,1.03)
     elif options.entity_id == 3:
@@ -43,11 +43,11 @@ if __name__ == "__main__":
         bottom_ylims = [0.80, 1.20]
         legend_pos = (0.95,0.95)
     elif options.entity_id == 9:
-        top_ylims = [0.0, 0.02]
+        top_ylims = [0.0, 0.03]
         bottom_ylims = [0.75, 1.25]
         legend_pos = (0.95,0.95)
     elif options.entity_id == 12:
-        top_ylims = [0.0, 0.0075]
+        top_ylims = [0.0, 0.02]
         bottom_ylims = [0.70, 1.30]
         legend_pos = (0.95,0.95)
         
@@ -62,7 +62,7 @@ if __name__ == "__main__":
                                           options.is_forward,
                                           top_ylims = top_ylims,
                                           bottom_ylims = bottom_ylims,
-                                          xlims = [0.0, 0.1],
+                                          xlims = [0.0, 0.5],
                                           legend_pos = legend_pos )
 
     
