@@ -34,7 +34,7 @@ if __name__ == "__main__":
                                         MonteCarlo.DB_IMPULSE_INCOHERENT_ADJOINT_MODEL,
                                         1e-3,
                                         1.0,
-                                        Utility.doubleArrayFromString( "{1e-3, 998i, 1.0}" ),
+                                        Utility.doubleArrayFromString( "{1e-3, 499i, 1.0}" ),
                                         options.threads,
                                         options.log_file,
                                         num_rendezvous = options.num_particles/1e7 )

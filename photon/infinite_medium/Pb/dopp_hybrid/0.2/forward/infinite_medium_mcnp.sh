@@ -5,4 +5,4 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 
-/home/lkersting/software/mcnp6.2/bin/mcnp6 i=infinite_medium_mcnp.i o=infinite_medium_mcnp.o tasks $SLURM_CPUS_PER_TASK
+mcnp6 i=infinite_medium_mcnp.i o=infinite_medium_mcnp.o tasks $SLURM_CPUS_PER_TASK

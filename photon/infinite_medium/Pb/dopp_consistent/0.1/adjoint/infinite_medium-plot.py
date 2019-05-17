@@ -15,27 +15,28 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     if "s3" in options.forward_data_file:
-        top_ylims = [0.0, 1.2]
+        top_ylims = [0.0, 200.0]
         bottom_ylims = [0.00, 2.00]
         legend_pos = (0.58,0.75)
     elif "s6" in options.forward_data_file:
-        top_ylims = [0.0, 0.5]
+        top_ylims = [0.0, 50.0]
         bottom_ylims = [0.00, 2.00]
         legend_pos = (0.58,0.75)
     elif "s9" in options.forward_data_file:
-        top_ylims = [0.0, 0.3]
+        top_ylims = [0.0, 40.0]
         bottom_ylims = [0.00, 2.00]
         legend_pos = (0.95,0.75)
     elif "s12" in options.forward_data_file:
-        top_ylims = [0.0, 0.25]
+        top_ylims = [0.0, 10.0]
         bottom_ylims = [0.00, 2.00]
         legend_pos = (0.95,0.95)
     elif "s15" in options.forward_data_file:
-        top_ylims = [0.0, 0.20]
+        top_ylims = [0.0, 2.0]
         bottom_ylims = [0.00, 2.00]
         legend_pos = (0.95,0.95)
     elif "s1" in options.forward_data_file:
-        top_ylims = [0.0, 5.0]
+        top_ylims = [0.0, 1000.0]
+        #top_ylims = [0.0, 100000.0]
         bottom_ylims = [0.00, 2.00]
         legend_pos = (0.7,0.90)
         

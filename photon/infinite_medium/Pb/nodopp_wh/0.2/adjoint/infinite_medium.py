@@ -34,7 +34,7 @@ if __name__ == "__main__":
                                         MonteCarlo.WH_INCOHERENT_ADJOINT_MODEL,
                                         1e-3,
                                         0.2,
-                                        Utility.doubleArrayFromString( "{1e-3, 998i, 0.2}" ),
+                                        Utility.doubleArrayFromString( "{1e-3, 499i, 0.2}" ),
                                         options.threads,
                                         options.log_file )
     

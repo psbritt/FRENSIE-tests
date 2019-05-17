@@ -39,7 +39,7 @@ if __name__ == "__main__":
         bottom_ylims = [0.5, 1.50]
         legend_pos = (0.7,0.90)
         
-    xlims = [0.00, 0.11]
+    xlims = [0.00, 0.1]
             
     # Plot the spectrum
     plotExtractedInfiniteMediumSimulationData( options.forward_data_file,

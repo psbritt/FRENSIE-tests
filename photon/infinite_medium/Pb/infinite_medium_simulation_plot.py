@@ -57,6 +57,14 @@ def plotExtractedInfiniteMediumSimulationData( data_file_name_1,
     # Load the second data
     data_2 = loadDataFromDataFile( data_file_name_2 )
 
+    # for i in range(0,len(data_2["mean"])):
+    #     data_2["mean"][i] *= 0.51099891013;
+    # for i in range(0,len(data_2["e_bins"])-1):
+    #     #data_2["mean"][i] *= 0.51099891013
+        
+    #     if data_2["e_bins"][i] > 0.0718705616632476:
+    #         data_2["mean"][i] /= 2
+
     output_file_name = "h_infinite_medium_flux"
     output_file_names = []
     output_file_names.append( output_file_name + ".eps" )
