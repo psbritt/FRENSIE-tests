@@ -5,4 +5,4 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 
-mcnp6 i=infinite_medium_mcnp.i o=infinite_medium_mcnp.o tasks $SLURM_CPUS_PER_TASK
+/home/group/frensie/software/mcnp/bin/mcnp6 i=infinite_medium_mcnp.i o=infinite_medium_mcnp.o tasks $SLURM_CPUS_PER_TASK
