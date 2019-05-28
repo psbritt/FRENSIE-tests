@@ -31,11 +31,11 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     if options.entity_id == 1:
-        top_ylims = [0.0, 0.5]
+        top_ylims = [0.0, 400.0]
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.98,1.03)
     elif options.entity_id == 3:
-        top_ylims = [0.0, 0.15]
+        top_ylims = [0.0, 100.0]
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.99,1.05)
     elif options.entity_id == 6:

@@ -15,7 +15,7 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     if "s3" in options.forward_data_file:
-        top_ylims = [0.0, 0.20]
+        top_ylims = [0.0, 100.0]
         bottom_ylims = [0.50, 1.50]
         legend_pos = (0.97,0.99)
     elif "s6" in options.forward_data_file:
@@ -31,7 +31,7 @@ if __name__ == "__main__":
         bottom_ylims = [0.50, 1.50]
         legend_pos = (0.95,0.95)
     elif "s1" in options.forward_data_file:
-        top_ylims = [0.0, 0.5]
+        top_ylims = [0.0, 400.0]
         bottom_ylims = [0.50, 1.50]
         legend_pos = (1.0,0.90)
         

@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import sys, os
 from optparse import *
-sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
-from infinite_medium_simulation_plot import plotInfiniteMediumSimulationSpectrum
+sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+from cont_soil_simulation_plot import plotContSoilSimulationSpectrum
 
 if __name__ == "__main__":
 
@@ -31,23 +31,23 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     if options.entity_id == 1:
-        top_ylims = [0.0, 500.0]
+        top_ylims = [0.0, 2000.0]
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.98,1.03)
     elif options.entity_id == 3:
-        top_ylims = [0.0, 100.0]
+        top_ylims = [0.0, 1.2]
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.99,1.05)
     elif options.entity_id == 6:
-        top_ylims = [0.0, 0.2]
+        top_ylims = [0.0, 0.5]
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.95,0.95)
     elif options.entity_id == 9:
-        top_ylims = [0.0, 0.2]
+        top_ylims = [0.0, 0.3]
         bottom_ylims = [0.95, 1.05]
-        legend_pos = (0.95,0.95)
+        legend_pos = (0.95,0.75)
     elif options.entity_id == 12:
-        top_ylims = [0.0, 0.2]
+        top_ylims = [0.0, 0.25]
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.95,0.95)
         
@@ -62,7 +62,7 @@ if __name__ == "__main__":
                                           options.is_forward,
                                           top_ylims = top_ylims,
                                           bottom_ylims = bottom_ylims,
-                                          xlims = [0.0, 0.2],
+                                          xlims = [0.0, 0.1],
                                           legend_pos = legend_pos )
 
     

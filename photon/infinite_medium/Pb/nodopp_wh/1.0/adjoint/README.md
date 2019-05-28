@@ -26,3 +26,7 @@
 16. run `./infinite_medium-extract.py --rendezvous_file="../forward/infinite_medium_rendezvous.xml" --estimator_id=1 --entity_id=12 > infinite_medium_forward_e1_s12_data.out`
 17. run `./infinite_medium-plot.py --forward_data_file="infinite_medium_forward_e1_s12_data.out" --adjoint_data_file="infinite_medium_adjoint_e1_s12_data.out"`
 
+# Surface 15
+18. run `./infinite_medium-extract.py --rendezvous_file="infinite_medium_rendezvous.xml" --estimator_id=1 --entity_id=15 --adjoint > infinite_medium_adjoint_e1_s15_data.out`
+19. run `./infinite_medium-extract.py --rendezvous_file="../forward/infinite_medium_rendezvous.xml" --estimator_id=1 --entity_id=15 > infinite_medium_forward_e1_s15_data.out`
+20. run `./infinite_medium-plot.py --forward_data_file="infinite_medium_forward_e1_s15_data.out" --adjoint_data_file="infinite_medium_adjoint_e1_s15_data.out"`
