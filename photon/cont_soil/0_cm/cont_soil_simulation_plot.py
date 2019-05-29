@@ -41,15 +41,15 @@ def loadDataFromDataFile( data_file_name ):
     return data
 
 def plotExtractedContSoilSimulationData( data_file_name_1,
-                                               data_name_1,
-                                               data_name_abrv_1,
-                                               data_file_name_2,
-                                               data_name_2,
-                                               data_name_abrv_2,
-                                               top_ylims = None,
-                                               bottom_ylims = None,
-                                               xlims = None,
-                                               legend_pos = None ):
+                                         data_name_1,
+                                         data_name_abrv_1,
+                                         data_file_name_2,
+                                         data_name_2,
+                                         data_name_abrv_2,
+                                         top_ylims = None,
+                                         bottom_ylims = None,
+                                         xlims = None,
+                                         legend_pos = None ):
 
     # Load the first data
     data_1 = loadDataFromDataFile( data_file_name_1 )
@@ -75,7 +75,7 @@ def plotExtractedContSoilSimulationData( data_file_name_1,
                                 data_2,
                                 data_name_1,
                                 data_1,
-                                "Flux",
+                                "Effective Dose Rate",
                                 log_spacing = False,
                                 per_lethargy = False,
                                 top_ylims = top_ylims,
@@ -84,7 +84,8 @@ def plotExtractedContSoilSimulationData( data_file_name_1,
                                 legend_pos = legend_pos,
                                 output_plot_names = output_file_names,
                                 frensie_data_abrv = data_name_abrv_2,
-                                test_data_abrv = data_name_abrv_1 )
+                                test_data_abrv = data_name_abrv_1,
+                                y_log_spacing = True )
 
 def plotContSoilSimulationSpectrum( rendezvous_file,
                                     estimator_id,
