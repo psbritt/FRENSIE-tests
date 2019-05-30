@@ -411,7 +411,7 @@ def runAdjointSimulation( sim_name,
     simulation_properties.setMinAdjointPhotonEnergy( 1e-3 )
     
     if incoherent_model_type == MonteCarlo.DB_IMPULSE_INCOHERENT_ADJOINT_MODEL:
-        simulation_properties.setMaxAdjointPhotonEnergy( 10.0 )
+        simulation_properties.setMaxAdjointPhotonEnergy( energy_bins[-1]*1.5 )
     else:
         simulation_properties.setMaxAdjointPhotonEnergy( energy_bins[-1] )
 

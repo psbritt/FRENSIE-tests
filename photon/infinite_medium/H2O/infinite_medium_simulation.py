@@ -169,7 +169,12 @@ def runAdjointInfiniteMediumSimulation( sim_name,
     simulation_properties.setParticleMode( MonteCarlo.ADJOINT_PHOTON_MODE )
     simulation_properties.setIncoherentAdjointModelType( incoherent_model_type )
     simulation_properties.setMinAdjointPhotonEnergy( energy_cutoff )
-    simulation_properties.setMaxAdjointPhotonEnergy( source_energy )
+    
+    if incoherent_model_type == MonteCarlo.DB_IMPULSE_INCOHERENT_ADJOINT_MODEL:
+        simulation_properties.setMaxAdjointPhotonEnergy( source_energy*1.5 )
+    else:
+        simulation_properties.setMaxAdjointPhotonEnergy( source_energy )
+
     simulation_properties.setCriticalAdjointPhotonLineEnergies( [source_energy] )
     simulation_properties.setAdjointPhotonRouletteThresholdWeight( 0.0025 )
     simulation_properties.setAdjointPhotonRouletteSurvivalWeight(  0.005 )
