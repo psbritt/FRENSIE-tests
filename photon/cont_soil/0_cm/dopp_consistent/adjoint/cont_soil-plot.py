@@ -16,9 +16,9 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
 
-    top_ylims = [0.0, 1e6]
+    top_ylims = [1e-4, 1e6]
     bottom_ylims = [0.0, 2.00]
-    xlims = [0.0, 3.0]
+    xlims = [0.0, 2.5]
     legend_pos = (0.95,0.95)
         
     # Plot the spectrum

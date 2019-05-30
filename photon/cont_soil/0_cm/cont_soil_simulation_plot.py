@@ -65,7 +65,7 @@ def plotExtractedContSoilSimulationData( data_file_name_1,
     #     if data_2["e_bins"][i] > 0.0718705616632476:
     #         data_2["mean"][i] /= 2
 
-    output_file_name = "h_infinite_medium_flux"
+    output_file_name = "cont_soil_effective_dose_rate"
     output_file_names = []
     output_file_names.append( output_file_name + ".eps" )
     output_file_names.append( output_file_name + ".png" )
