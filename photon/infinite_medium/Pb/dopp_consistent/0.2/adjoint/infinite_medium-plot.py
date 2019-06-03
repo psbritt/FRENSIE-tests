@@ -31,7 +31,7 @@ if __name__ == "__main__":
         bottom_ylims = [0.5, 1.50]
         legend_pos = (0.97,0.99)
     elif "s1" in options.forward_data_file:
-        top_ylims = [0.0, 2.0]
+        top_ylims = [0.0, 250.0]
         bottom_ylims = [0.00, 2.00]
         legend_pos = (0.97,0.99)
         

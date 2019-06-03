@@ -194,7 +194,8 @@ def runForwardSimulation( sim_name,
                           threads,
                           use_energy_bins = False,
                           use_native = False,
-                          log_file = None ):
+                          log_file = None,
+                          enable_relax = True ):
 
     ## Initialize the MPI session
     session = MPI.GlobalMPISession( len(sys.argv), sys.argv )
@@ -213,6 +214,12 @@ def runForwardSimulation( sim_name,
     simulation_properties.setParticleMode( MonteCarlo.PHOTON_MODE )
     simulation_properties.setIncoherentModelType( incoherent_model_type )
     simulation_properties.setNumberOfPhotonHashGridBins( 100 )
+
+    # Enable atomic relaxation
+    if enable_relax:
+        simulation_properties.setAtomicRelaxationModeOn( MonteCarlo.PHOTON )
+    else:
+        simulation_properties.setAtomicRelaxationModeOff( MonteCarlo.PHOTON )
 
     # Set the number of histories to run and the number of rendezvous
     simulation_properties.setNumberOfHistories( num_particles )
