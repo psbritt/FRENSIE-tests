@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys, os
 from optparse import *
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '../../..'))
 from infinite_medium_extract_estimator import extractEstimatorRelaxData
 
 if __name__ == "__main__":

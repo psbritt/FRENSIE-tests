@@ -65,7 +65,7 @@ def plotExtractedInfiniteMediumSimulationData( data_file_name_1,
     #     if data_2["e_bins"][i] > 0.0718705616632476:
     #         data_2["mean"][i] /= 2
 
-    output_file_name = "h_infinite_medium_flux"
+    output_file_name = "pb_infinite_medium_flux"
     output_file_names = []
     output_file_names.append( output_file_name + ".eps" )
     output_file_names.append( output_file_name + ".png" )
@@ -179,7 +179,7 @@ def plotInfiniteMediumSimulationSpectrum( rendezvous_file,
         print i, mcnp_bin_data["e_up"][i], entity_bin_data["e_bins"][i+1], mcnp_bin_data["mean"][i], entity_bin_data["mean"][i], entity_bin_data["re"][i]
         #print i, entity_bin_data["e_bins"][i], entity_bin_data["e_bins"][i+1], entity_bin_data["mean"][i], entity_bin_data["re"][i], entity_bin_data["vov"][i], entity_bin_data["fom"][i]
         
-    output_file_name = "h_infinite_medium_"
+    output_file_name = "pb_infinite_medium_"
     output_file_names = []
 
     if is_a_current:

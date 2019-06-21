@@ -20,6 +20,7 @@ if __name__ == "__main__":
     #bottom_ylims = [0.90, 1.10]
     #xlims = [0.05, 0.1]
     legend_pos = (0.50,0.99)
+    #legend_pos = (0.40,1.02)
             
     # Plot the spectrum
     plotBroomstickSimulationSpectrumWHvsIA( options.wh_data_file,

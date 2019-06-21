@@ -164,15 +164,6 @@ def extractEstimatorRelaxData( rendezvous_file,
     # Extract the estimator data
     entity_bin_data = estimator.getEntityBinProcessedData( entity_id )
 
-    # Only take the data at the second collision number bin
-    start_index = estimator.getNumberOfBins( Event.OBSERVER_ENERGY_DIMENSION )
-    end_index = 2*start_index
-
-    entity_bin_data["mean"] = entity_bin_data["mean"][start_index:end_index]
-    entity_bin_data["re"] = entity_bin_data["re"][start_index:end_index]
-    entity_bin_data["vov"] = entity_bin_data["vov"][start_index:end_index]
-    entity_bin_data["fom"] = entity_bin_data["fom"][start_index:end_index]
-
     # Open the mcnp output file
     mcnp_file = open( mcnp_file, "r" )
     mcnp_file_lines = mcnp_file.readlines()

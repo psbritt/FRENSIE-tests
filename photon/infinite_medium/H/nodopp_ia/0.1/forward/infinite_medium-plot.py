@@ -47,7 +47,7 @@ if __name__ == "__main__":
                                                "FF-WH",
                                                options.ia_data_file,
                                                "FRENSIE-IA",
-                                               "FA-IA",
+                                               "FF-IA",
                                                top_ylims,
                                                bottom_ylims,
                                                xlims,

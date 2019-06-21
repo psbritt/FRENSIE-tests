@@ -23,8 +23,8 @@ if __name__ == "__main__":
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.95,0.95)
     elif "s9" in options.wh_data_file:
-        top_ylims = [0.0, 0.15]
-        bottom_ylims = [0.95, 1.05]
+        top_ylims = [0.0, 0.03]
+        bottom_ylims = [0.90, 1.10]
         legend_pos = (0.95,0.95)
     elif "s12" in options.wh_data_file:
         top_ylims = [0.0, 0.15]
@@ -47,7 +47,7 @@ if __name__ == "__main__":
                                                "FF-WH",
                                                options.ia_data_file,
                                                "FRENSIE-IA",
-                                               "FA-IA",
+                                               "FF-IA",
                                                top_ylims,
                                                bottom_ylims,
                                                xlims,

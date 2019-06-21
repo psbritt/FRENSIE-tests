@@ -16,16 +16,16 @@ if __name__ == "__main__":
 
     if "s3" in options.forward_data_file:
         top_ylims = [0.0, 0.4]
-        bottom_ylims = [0.0, 1.50]
-        legend_pos = (0.58,1.05)
+        bottom_ylims = [0.75, 1.25]
+        legend_pos = (0.99,1.05)
     elif "s6" in options.forward_data_file:
         top_ylims = [0.0, 0.25]
         bottom_ylims = [0.0, 1.50]
         legend_pos = (0.95,0.95)
     elif "s9" in options.forward_data_file:
-        top_ylims = [0.0, 0.25]
-        bottom_ylims = [0.0, 1.50]
-        legend_pos = (0.95,0.95)
+        top_ylims = [0.0, 0.1]
+        bottom_ylims = [0.85, 1.15]
+        legend_pos = (0.99,1.05)
     elif "s12" in options.forward_data_file:
         top_ylims = [0.0, 0.25]
         bottom_ylims = [0.0, 1.50]

@@ -31,24 +31,24 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     if options.entity_id == 1:
-        top_ylims = [0.0, 0.25]
-        bottom_ylims = [0.95, 1.05]
+        top_ylims = [0.0, 0.5]
+        bottom_ylims = [0.90, 1.10]
         legend_pos = (0.98,1.03)
     elif options.entity_id == 3:
         top_ylims = [0.0, 0.12]
-        bottom_ylims = [0.90, 1.10]
+        bottom_ylims = [0.85, 1.15]
         legend_pos = (0.99,1.05)
     elif options.entity_id == 6:
-        top_ylims = [0.0, 0.05]
-        bottom_ylims = [0.80, 1.20]
+        top_ylims = [0.0, 0.15]
+        bottom_ylims = [0.90, 1.10]
         legend_pos = (0.95,0.95)
     elif options.entity_id == 9:
         top_ylims = [0.0, 0.03]
-        bottom_ylims = [0.75, 1.25]
+        bottom_ylims = [0.90, 1.10]
         legend_pos = (0.95,0.95)
     elif options.entity_id == 12:
-        top_ylims = [0.0, 0.02]
-        bottom_ylims = [0.70, 1.30]
+        top_ylims = [0.0, 0.15]
+        bottom_ylims = [0.90, 1.10]
         legend_pos = (0.95,0.95)
         
     # Plot the spectrum

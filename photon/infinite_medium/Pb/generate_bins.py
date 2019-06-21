@@ -22,8 +22,8 @@ x_ray_lines = {"KL2": 7.3039e-2,
 sorted_x_ray_line_names = ["KL2", "KL3", "KM2", "KM3", "KM4", "KM5", "KN2", "KN3", "KN4", "KN5", "KO2", "KO3", "KO4", "KO5", "KP2", "KP3"]
 
 #energy_bins = list(Utility.doubleArrayFromString( "{1e-3, 499i, 0.1}" ))
-energy_bins = list(Utility.doubleArrayFromString( "{1e-3, 499i, 0.2}" ))
-#energy_bins = list(Utility.doubleArrayFromString( "{1e-3, 499i, 0.5}" ))
+#energy_bins = list(Utility.doubleArrayFromString( "{1e-3, 499i, 0.2}" ))
+energy_bins = list(Utility.doubleArrayFromString( "{1e-3, 499i, 0.5}" ))
 #energy_bins = list(Utility.doubleArrayFromString( "{1e-3, 499i, 1.0}" ))
 #energy_bins = list(Utility.doubleArrayFromString( "{1e-3, 499i, 10.0}" ))
 

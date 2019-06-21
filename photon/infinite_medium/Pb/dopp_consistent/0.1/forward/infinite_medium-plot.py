@@ -8,46 +8,49 @@ if __name__ == "__main__":
 
     # Parse the command line arguments
     parser = OptionParser()
-    parser.add_option("--forward_data_file", type="string", dest="forward_data_file",
-                      help="the forward data file to load")
-    parser.add_option("--adjoint_data_file", type="string", dest="adjoint_data_file",
-                      help="the adjoint data file to load")
+    parser.add_option("--dh_data_file", type="string", dest="dh_data_file",
+                      help="the wh data file to load")
+    parser.add_option("--dc_data_file", type="string", dest="dc_data_file",
+                      help="the ia data file to load")
     options,args = parser.parse_args()
 
-    if "s3" in options.forward_data_file:
-        top_ylims = [0.0, 1.2]
-        bottom_ylims = [0.50, 1.50]
-        legend_pos = (0.58,0.75)
-    elif "s6" in options.forward_data_file:
+    if "s3" in options.dh_data_file:
+        top_ylims = [0.0, 250.0]
+        #top_ylims = [0.0, 100.0]
+        bottom_ylims = [0.60, 1.40]
+        legend_pos = (0.70,1.05)
+    elif "s6" in options.dh_data_file:
         top_ylims = [0.0, 0.5]
         bottom_ylims = [0.50, 1.50]
         legend_pos = (0.58,0.75)
-    elif "s9" in options.forward_data_file:
-        top_ylims = [0.0, 0.3]
-        bottom_ylims = [0.50, 1.50]
-        legend_pos = (0.95,0.75)
-    elif "s12" in options.forward_data_file:
+    elif "s9" in options.dh_data_file:
+        top_ylims = [0.0, 50.0]
+        #top_ylims = [0.0, 15.0]
+        bottom_ylims = [0.60, 1.40]
+        legend_pos = (0.70,1.05)
+    elif "s12" in options.dh_data_file:
         top_ylims = [0.0, 0.25]
         bottom_ylims = [0.50, 1.50]
         legend_pos = (0.95,0.95)
-    elif "s15" in options.forward_data_file:
+    elif "s15" in options.dh_data_file:
         top_ylims = [0.0, 0.20]
         bottom_ylims = [0.50, 1.50]
         legend_pos = (0.95,0.95)
-    elif "s1" in options.forward_data_file:
+    elif "s1" in options.dh_data_file:
         top_ylims = [0.0, 5.0]
         bottom_ylims = [0.50, 1.50]
         legend_pos = (0.7,0.90)
         
     xlims = [0.00, 0.1]
+    #xlims = [0.095, 0.1]
             
     # Plot the spectrum
-    plotExtractedInfiniteMediumSimulationData( options.forward_data_file,
-                                               "FRENSIE-Forward-WH",
-                                               "FF-WH",
-                                               options.adjoint_data_file,
-                                               "FRENSIE-Adjoint-WH",
-                                               "FA-WH",
+    plotExtractedInfiniteMediumSimulationData( options.dh_data_file,
+                                               "FRENSIE-Dopp-Hybrid",
+                                               "FF-Hybrid",
+                                               options.dc_data_file,
+                                               "FRENSIE-Dopp-Consistent",
+                                               "FF-Cons.",
                                                top_ylims,
                                                bottom_ylims,
                                                xlims,

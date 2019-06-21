@@ -31,7 +31,7 @@ unset key
 set format x "%4.3f"
 set format y "%3.2f"
 set xlabel "Energy (MeV)"
-set ylabel "C/R"
+set ylabel "F/M"
 set yrange[0.90:1.10]
 set ytics( '' 0.90, 0.95, 1.0, 1.05, '' 1.10 )
 plot file1 using 1:6 with points lc rgb"black" pt 7 ps 0.25, file1 using 1:6:7 with error lc rgb"black" lt 1 lw 1 pt 7 ps 0.25

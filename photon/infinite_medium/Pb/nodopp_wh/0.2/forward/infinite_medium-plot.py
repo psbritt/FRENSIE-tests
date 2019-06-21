@@ -35,16 +35,16 @@ if __name__ == "__main__":
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.98,1.03)
     elif options.entity_id == 3:
-        top_ylims = [0.0, 100.0]
-        bottom_ylims = [0.90, 1.10]
+        top_ylims = [0.0, 120.0]
+        bottom_ylims = [0.70, 1.30]
         legend_pos = (0.99,1.05)
     elif options.entity_id == 6:
         top_ylims = [0.0, 0.2]
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.95,0.95)
     elif options.entity_id == 9:
-        top_ylims = [0.0, 0.2]
-        bottom_ylims = [0.95, 1.05]
+        top_ylims = [0.0, 25.0]
+        bottom_ylims = [0.80, 1.20]
         legend_pos = (0.95,0.95)
     elif options.entity_id == 12:
         top_ylims = [0.0, 0.2]

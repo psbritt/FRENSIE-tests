@@ -15,15 +15,15 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     if "s3" in options.wh_data_file:
-        top_ylims = [0.0, 0.2]
+        top_ylims = [0.0, 0.05]
         bottom_ylims = [0.90, 1.10]
-        legend_pos = (0.98,1.03)
+        legend_pos = (0.99,1.05)
     elif "s6" in options.wh_data_file:
         top_ylims = [0.0, 0.15]
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.95,1.05)
     elif "s9" in options.wh_data_file:
-        top_ylims = [0.0, 0.15]
+        top_ylims = [0.0, 0.015]
         bottom_ylims = [0.95, 1.05]
         legend_pos = (0.95,0.95)
     elif "s12" in options.wh_data_file:
@@ -47,7 +47,7 @@ if __name__ == "__main__":
                                                "FF-WH",
                                                options.ia_data_file,
                                                "FRENSIE-IA",
-                                               "FA-IA",
+                                               "FF-IA",
                                                top_ylims,
                                                bottom_ylims,
                                                xlims,

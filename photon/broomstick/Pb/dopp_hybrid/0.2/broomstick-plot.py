@@ -30,6 +30,8 @@ if __name__ == "__main__":
         top_ylims = [0.0, 1.0]
         bottom_ylims = [0.75, 1.25]
         legend_pos = (0.55,1.02)
+        # bottom_ylims = [0.80, 1.20]
+        # legend_pos = (0.55, 0.75)
     else:
         top_ylims = [0.0, 500000.0]
         bottom_ylims = [0.9, 1.1]

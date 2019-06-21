@@ -35,21 +35,28 @@ if __name__ == "__main__":
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.98,1.03)
     elif options.entity_id == 3:
-        top_ylims = [0.0, 1.2]
-        bottom_ylims = [0.90, 1.10]
-        legend_pos = (0.99,1.05)
+        #top_ylims = [0.0, 1.2]
+        top_ylims = [0.0, 0.35]
+        bottom_ylims = [0.70, 1.30]
+        #legend_pos = (0.99,1.05)
+        legend_pos = (0.80,1.0)
     elif options.entity_id == 6:
         top_ylims = [0.0, 0.5]
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.95,0.95)
     elif options.entity_id == 9:
-        top_ylims = [0.0, 0.3]
-        bottom_ylims = [0.90, 1.10]
-        legend_pos = (0.95,0.95)
+        #top_ylims = [0.0, 0.3]
+        top_ylims = [0.0, 0.12]
+        bottom_ylims = [0.80, 1.20]
+        #legend_pos = (0.98,0.75)
+        legend_pos = (0.80,1.0)
     elif options.entity_id == 12:
-        top_ylims = [0.0, 0.24]
+        top_ylims = [0.0, 0.25]
         bottom_ylims = [0.90, 1.10]
         legend_pos = (0.95,0.95)
+
+    #xlims = [0.00, 0.1]
+    xlims = [0.0988, 0.1]
         
     # Plot the spectrum
     plotInfiniteMediumSimulationSpectrum( options.rendezvous_file,
@@ -62,7 +69,7 @@ if __name__ == "__main__":
                                           options.is_forward,
                                           top_ylims = top_ylims,
                                           bottom_ylims = bottom_ylims,
-                                          xlims = [0.0, 0.1],
+                                          xlims = xlims,
                                           legend_pos = legend_pos )
 
     

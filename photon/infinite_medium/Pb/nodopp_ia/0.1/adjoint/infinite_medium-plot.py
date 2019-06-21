@@ -15,17 +15,17 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     if "s3" in options.forward_data_file:
-        top_ylims = [0.0, 200.0]
-        bottom_ylims = [0.5, 1.50]
-        legend_pos = (0.58,0.95)
+        top_ylims = [0.0, 250.0]
+        bottom_ylims = [0.70, 1.30]
+        legend_pos = (0.60,1.05)
     elif "s6" in options.forward_data_file:
         top_ylims = [0.0, 50.0]
         bottom_ylims = [0.5, 1.50]
         legend_pos = (0.58,0.75)
     elif "s9" in options.forward_data_file:
-        top_ylims = [0.0, 0.3]
-        bottom_ylims = [0.00, 1.50]
-        legend_pos = (0.95,0.75)
+        top_ylims = [0.0, 50.0]
+        bottom_ylims = [0.70, 1.30]
+        legend_pos = (0.60,1.05)
     elif "s12" in options.forward_data_file:
         top_ylims = [0.0, 0.25]
         bottom_ylims = [0.5, 1.50]
@@ -39,13 +39,13 @@ if __name__ == "__main__":
         bottom_ylims = [0.5, 1.50]
         legend_pos = (0.7,0.90)
         
-    # xlims = [0.04, 0.1]
-    xlims = [0.00, 0.1]
+    #xlims = [0.04, 0.1]
+    xlims = [0.095, 0.1]
             
     # Plot the spectrum
     plotExtractedInfiniteMediumSimulationData( options.forward_data_file,
                                                "FRENSIE-Forward-IA",
-                                               "FF-WH",
+                                               "FF-IA",
                                                options.adjoint_data_file,
                                                "FRENSIE-Adjoint-IA",
                                                "FA-IA",

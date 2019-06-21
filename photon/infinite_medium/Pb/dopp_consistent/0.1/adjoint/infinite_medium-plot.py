@@ -15,17 +15,19 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     if "s3" in options.forward_data_file:
-        top_ylims = [0.0, 200.0]
-        bottom_ylims = [0.00, 2.00]
-        legend_pos = (0.58,0.75)
+        #top_ylims = [0.0, 250.0]
+        top_ylims = [0.0, 100.0]
+        bottom_ylims = [0.60, 1.40]
+        legend_pos = (0.70,1.05)
     elif "s6" in options.forward_data_file:
         top_ylims = [0.0, 50.0]
         bottom_ylims = [0.00, 2.00]
         legend_pos = (0.58,0.75)
     elif "s9" in options.forward_data_file:
-        top_ylims = [0.0, 40.0]
-        bottom_ylims = [0.00, 2.00]
-        legend_pos = (0.95,0.75)
+        #top_ylims = [0.0, 50.0]
+        top_ylims = [0.0, 15.0]
+        bottom_ylims = [0.60, 1.40]
+        legend_pos = (0.60,1.05)
     elif "s12" in options.forward_data_file:
         top_ylims = [0.0, 10.0]
         bottom_ylims = [0.00, 2.00]
@@ -40,7 +42,8 @@ if __name__ == "__main__":
         bottom_ylims = [0.00, 2.00]
         legend_pos = (0.7,0.90)
         
-    xlims = [0.00, 0.1]
+    #xlims = [0.00, 0.1]
+    xlims = [0.095, 0.1]
             
     # Plot the spectrum
     plotExtractedInfiniteMediumSimulationData( options.forward_data_file,
