@@ -81,6 +81,7 @@ if __name__ == "__main__":
     ax[0].grid(True, linestyle=":", linewidth=1)
 
     ax[0].set_ylim( options.eff_min, options.eff_max )
+    ax[0].set_xscale( "log" )
 
     yticklabels = ax[0].yaxis.get_ticklabels()
     yticklabels[0].set_color('white')
@@ -116,6 +117,7 @@ if __name__ == "__main__":
 
     ax[1].set_xlim( energy_grid[0], energy_grid[-1] )
     ax[1].set_ylim( options.rate_min, options.rate_max )
+    ax[1].set_xscale( "log" )
 
     yticklabels = ax[1].yaxis.get_ticklabels()
     yticklabels[0].set_color('white')
