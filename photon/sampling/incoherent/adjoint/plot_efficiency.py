@@ -56,6 +56,15 @@ if __name__ == "__main__":
             three_branch_inv_eff_values.append( float(split_line[5]) )
             three_branch_inv_sample_rate_values.append( float(split_line[6]) )
 
+    # Calculate the relative sample rate
+    two_branch_rel_sample_rate_values = [1.0]*len(two_branch_sample_rate_values)
+    three_branch_lin_rel_sample_rate_values = [0.0]*len(three_branch_lin_sample_rate_values)
+    three_branch_inv_rel_sample_rate_values = [0.0]*len(three_branch_inv_sample_rate_values)
+
+    for i in range(0,len(two_branch_rel_sample_rate_values)):
+        three_branch_lin_rel_sample_rate_values[i] = three_branch_lin_sample_rate_values[i]/two_branch_sample_rate_values[i]
+        three_branch_inv_rel_sample_rate_values[i] = three_branch_inv_sample_rate_values[i]/two_branch_sample_rate_values[i]
+
     edge_thickness = 1.1
 
     # Plot the efficiencies and sampling rates
@@ -96,21 +105,21 @@ if __name__ == "__main__":
         ax[0].spines[axis].set_linewidth(edge_thickness)
 
     # Set up the bottom subplot
-    line4, = ax[1].plot( energy_grid, two_branch_sample_rate_values, label="Two Branch" )
+    line4, = ax[1].plot( energy_grid, two_branch_rel_sample_rate_values, label="Two Branch" )
     line4.set_color("black")
     line4.set_linewidth( 1 )
 
-    line5, = ax[1].plot( energy_grid, three_branch_lin_sample_rate_values, label="Three Branch Lin")
+    line5, = ax[1].plot( energy_grid, three_branch_lin_rel_sample_rate_values, label="Three Branch Lin")
     line5.set_dashes([2, 1, 2, 1])
     line5.set_color("red")
     line5.set_linewidth( 1 )
 
-    line6, = ax[1].plot( energy_grid, three_branch_inv_sample_rate_values, label="Three Branch Inv")
+    line6, = ax[1].plot( energy_grid, three_branch_inv_rel_sample_rate_values, label="Three Branch Inv")
     line6.set_dashes([1, 1, 1, 1])
     line6.set_color("blue")
     line6.set_linewidth( 1 )
 
-    ax[1].set_ylabel( "Samples/s" )
+    ax[1].set_ylabel( "Relative Sample Rate\n(Compared to Two Branch)" )
     ax[1].set_xlabel( "Energy (MeV)" )
     ax[1].grid(True, linestyle=":", linewidth=1)
     ax[1].legend(frameon=False, bbox_to_anchor=[options.legend_x,options.legend_y])
