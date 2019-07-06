@@ -62,7 +62,7 @@ if __name__ == "__main__":
     ax.set_ylabel( r"Occupation Number" )
     #ax.set_ylim( 1e-6, 2e2 )
     #ax.set_yscale( "log" )
-    ax.set_xlabel( r"$p_z$ ($m_ec$)" )
+    ax.set_xlabel( r"$\frac{p_z}{m_ec}$" )
     ax.set_xlim( -1.0, 1.0 )
     ax.grid( True, linestyle=':', linewidth=1 )
     ax.legend( frameon=True )

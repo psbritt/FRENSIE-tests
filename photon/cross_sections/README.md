@@ -38,5 +38,10 @@
 1. run `./plot_adjoint_wh_ia_incoh.py --db_path=$DATABASE_PATH --atomic_number=1 --max_energy=0.1 --ratio_min=0.70 --ratio_max=1.0 --legend_ypos=1.02`
 2. run `./plot_adjoint_wh_ia_incoh_pdf.py --db_path=$DATABASE_PATH --atomic_number=1 --max_energy=0.1 --ratio_min=0.70 --ratio_max=1.0 --legend_ypos=1.02`
 
-# Ploat the adjoint occupation number arg ranges
+# Plot the adjoint occupation number arg ranges
 1. run './plot_adjoint_occupation_number_args.py --db_path=$DATABASE_PATH --atomic_number=82 --max_energy=1.0 --energies="0.1, 0.25, 0.75" --emax_label_x=-0.6 --emax_label_y=0.8
+
+# Plot the adjoint weight factor
+1. run `./plot_adjoint_weight_factor.py --db_path=$DATABASE_PATH --e_max=0.1`
+2. run `./plot_adjoint_weight_factor.py --db_path=$DATABASE_PATH --e_max=1.0`
+3. run `./plot_adjoint_weight_factor.py --db_path=$DATABASE_PATH --e_max=10.0`
