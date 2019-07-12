@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys, os
 import math as m
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import os.path as path
 from optparse import *
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
@@ -59,7 +59,7 @@ if __name__ == "__main__":
         sys.exit(1)
 
     # Generate the energy grid that will be used to evaluate the efficiencies
-    energy_grid = Utility.doubleArrayFromString( "{1e-3, "+ str(options.num_energies-1)+ "i," + str(options.max_energy) + "}" )
+    energy_grid = Utility.doubleArrayFromString( "{1e-3, "+ str(options.num_energies-1)+ "l," + str(options.max_energy) + "}" )
     energy_grid[-1] = energy_grid[-1] - (energy_grid[-1] - energy_grid[-2])/2
     
     two_branch_eff_values = [0.0]*len(energy_grid)

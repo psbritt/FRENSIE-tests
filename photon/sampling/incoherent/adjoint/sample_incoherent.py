@@ -1,7 +1,7 @@
 import numpy
 import time
 import math as m
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import PyFrensie.Utility as Utility
 import PyFrensie.MonteCarlo.Photon as Photon
 
@@ -77,13 +77,13 @@ def sampleAngleAndPlot( native_data,
     print "samples per second:", samples_per_sec
     print "efficiency:", efficiency
         
-    line1, = plt.plot( mu, pdf, label="Exact PDF" )
-    line1.set_color( "blue" )
-    line1.set_linewidth( 1 )
+    # line1, = plt.plot( mu, pdf, label="Exact PDF" )
+    # line1.set_color( "blue" )
+    # line1.set_linewidth( 1 )
     
-    plt.hist( sampled_mus, bins=150, normed=True, color=[0.59, 0.98, 0.59], label="Sampled PDF" )
-    plt.legend( frameon=False, bbox_to_anchor=legend_pos )
-    plt.xlabel( "Scattering Angle Cosine (Mu)")
-    plt.ylabel( "WH Incoherent PDF" )
-    plt.savefig("incoh_sampling_pdf.eps")
-    plt.show()
+    # plt.hist( sampled_mus, bins=150, normed=True, color=[0.59, 0.98, 0.59], label="Sampled PDF" )
+    # plt.legend( frameon=False, bbox_to_anchor=legend_pos )
+    # plt.xlabel( "Scattering Angle Cosine (Mu)")
+    # plt.ylabel( "WH Incoherent PDF" )
+    # plt.savefig("incoh_sampling_pdf.eps")
+    # plt.show()
