@@ -15,10 +15,10 @@ if __name__ == "__main__":
     options,args = parser.parse_args()
 
     top_ylims = [0.0, 1.0]
-    bottom_ylims = [0.95, 1.05]
-    xlims = [0.0, 0.2]
-    #bottom_ylims = [0.92, 1.02]
-    #xlims = [0.175, 0.2]
+    # bottom_ylims = [0.95, 1.05]
+    # xlims = [0.0, 0.2]
+    bottom_ylims = [0.92, 1.06]
+    xlims = [0.175, 0.2]
     legend_pos = (0.50,0.72)
             
     # Plot the spectrum
