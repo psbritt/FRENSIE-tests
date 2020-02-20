@@ -116,10 +116,26 @@ def runSimulation( threads, histories, time ):
   else:
     print "ERROR: energy ", energy, " not supported!"
 
+  ## -------------------------- Track Length Flux --------------------------- ##
+
+  # Setup a track length flux estimator
+  estimator_id = 1
+  cell_ids = [1]
+  track_flux_estimator = Event.WeightMultipliedCellTrackLengthFluxEstimator( estimator_id, 1.0, cell_ids, geom_model )
+
+  # Set the particle type
+  track_flux_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+
+  # Set the energy bins
+  track_flux_estimator.setEnergyDiscretization( bins )
+
+  # Add the estimator to the event handler
+  event_handler.addEstimator( track_flux_estimator )
+
   ## ------------------------ Surface Flux Estimator ------------------------ ##
 
   # Setup a surface flux estimator
-  estimator_id = 1
+  estimator_id = 2
   surface_ids = [1]
   surface_flux_estimator = Event.WeightMultipliedSurfaceFluxEstimator( estimator_id, 1.0, surface_ids, geom_model )
 
@@ -131,6 +147,22 @@ def runSimulation( threads, histories, time ):
 
   # Add the estimator to the event handler
   event_handler.addEstimator( surface_flux_estimator )
+
+  ## ---------------------- Surface Current Estimator ----------------------- ##
+
+  # Setup a surface current estimator
+  estimator_id = 3
+  surface_ids = [1]
+  surface_current_estimator = Event.WeightMultipliedSurfaceCurrentEstimator( estimator_id, 1.0, surface_ids )
+
+  # Set the particle type
+  surface_current_estimator.setParticleTypes( [MonteCarlo.ELECTRON] )
+
+  # Set the energy bins
+  surface_current_estimator.setEnergyDiscretization( bins )
+
+  # Add the estimator to the event handler
+  event_handler.addEstimator( surface_current_estimator )
 
   ##--------------------------------------------------------------------------##
   ## ----------------------- SIMULATION MANAGER SETUP ----------------------- ##
@@ -259,9 +291,6 @@ def setSimulationProperties( histories, time ):
 
   ## -------------------------- ELECTRON PROPERTIES ------------------------- ##
 
-  # Turn off Atomic Relaxation
-  properties.setAtomicRelaxationModeOff( MonteCarlo.ELECTRON )
-
   # Turn certain reactions off
   # properties.setElasticModeOff()
   # properties.setElectroionizationModeOff()
@@ -343,7 +372,17 @@ def processDataFromRendezvous( rendezvous_file ):
 ##----------------------------------------------------------------------------##
 def processData( event_handler, filename, title ):
 
-  # Process surface flux data
-  surface_flux = event_handler.getEstimator( 1 )
+  # Process track flux data
+  track_flux = event_handler.getEstimator( 1 )
+  ids = list( track_flux.getEntityIds() )
+  setup.processTrackFluxEnergyBinData( track_flux, ids[0], filename, title )
+
+  # Process track flux data
+  surface_flux = event_handler.getEstimator( 2 )
   ids = list( surface_flux.getEntityIds() )
   setup.processSurfaceFluxEnergyBinData( surface_flux, ids[0], filename, title )
+
+  # Process track flux data
+  surface_current = event_handler.getEstimator( 3 )
+  ids = list( surface_current.getEntityIds() )
+  setup.processSurfaceCurrentEnergyBinData( surface_current, ids[0], filename, title )

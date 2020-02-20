@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 from os import path
 import sys
-import numpy as np
+import numpy
 import datetime
 import getpass
 
@@ -369,10 +369,6 @@ def processTrackFluxEnergyBinData( estimator, est_id, filename, title ):
   header = "# Energy (MeV)\tTrack Flux (#/cm$^2$)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  # Insert a zero flux for below the firest bin boundary
-  flux = np.insert( flux, 0, 0.0)
-  rel_error = np.insert( rel_error, 0, 0.0)
-
   for i in range(0, len(flux)):
     data = str(energy_bins[i]) + '\t' + str(flux[i]) + '\t' + str(rel_error[i]) + '\n'
     out_file.write(data)
@@ -400,10 +396,6 @@ def processSurfaceFluxEnergyBinData( estimator, est_id, filename, title ):
   # Write the header to the file
   header = "# Energy (MeV)\tSurface Flux (#/cm$^2$)\tError\t"+str(today)+"\n"
   out_file.write(header)
-
-  # Insert a zero flux for below the firest bin boundary
-  flux = np.insert( flux, 0, 0.0)
-  rel_error = np.insert( rel_error, 0, 0.0)
 
   for i in range(0, len(flux)):
     data = str(energy_bins[i]) + '\t' + str(flux[i]) + '\t' + str(rel_error[i]) + '\n'
@@ -433,10 +425,6 @@ def processSurfaceCurrentEnergyBinData( estimator, est_id, filename, title ):
   header = "# Energy (MeV)\tSurface Current (#)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  # Insert a zero current for below the firest bin boundary
-  current = np.insert( current, 0, 0.0)
-  rel_error = np.insert( rel_error, 0, 0.0)
-
   for i in range(0, len(current)):
     data = str(energy_bins[i]) + '\t' + str(current[i]) + '\t' + str(rel_error[i]) + '\n'
     out_file.write(data)
@@ -464,10 +452,6 @@ def processSurfaceCurrentCosineBinData( estimator, est_id, filename, title ):
   # Write the header to the file
   header = "# Cosine \tSurface Current (#)\tError\t"+str(today)+"\n"
   out_file.write(header)
-
-  # Insert a zero current for below the firest bin boundary
-  current= np.insert( current, 0, 0.0)
-  rel_error = np.insert( rel_error, 0, 0.0)
 
   for i in range(0, len(current)):
     data = str(cosine_bins[i]) + '\t' + str(current[i]) + '\t' + str(rel_error[i]) + '\n'
@@ -497,10 +481,6 @@ def processTrackFluxSourceEnergyBinData( estimator, est_id, filename, title ):
   header = "# Source Energy (MeV)\tTrack Flux (#/cm$^2$)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  # Insert a zero flux for below the firest bin boundary
-  flux = np.insert( flux, 0, 0.0)
-  rel_error = np.insert( rel_error, 0, 0.0)
-
   for i in range(0, len(flux)):
     data = str(energy_bins[i]) + '\t' + str(flux[i]) + '\t' + str(rel_error[i]) + '\n'
     out_file.write(data)
@@ -529,12 +509,8 @@ def processSurfaceFluxSourceEnergyBinData( estimator, est_id, filename, title ):
   header = "# Source Energy (MeV)\tSurface Flux (#/cm$^2$)\tError\t"+str(today)+"\n"
   out_file.write(header)
 
-  # Insert a zero flux for below the firest bin boundary
-  flux = np.insert( flux, 0, 0.0)
-  rel_error = np.insert( rel_error, 0, 0.0)
-
-  # Write data to file
   for i in range(0, len(flux)):
+
     data = str(energy_bins[i]) + '\t' + str(flux[i]) + '\t' + str(rel_error[i]) + '\n'
     out_file.write(data)
   out_file.close()
@@ -561,10 +537,6 @@ def processSurfaceCurrentSourceEnergyBinData( estimator, est_id, filename, title
   # Write the header to the file
   header = "# Source Energy (MeV)\tSurface Current (#)\tError\t"+str(today)+"\n"
   out_file.write(header)
-
-  # Insert a zero current for below the firest bin boundary
-  current = np.insert( current, 0, 0.0)
-  rel_error = np.insert( rel_error, 0, 0.0)
 
   for i in range(0, len(current)):
     data = str(energy_bins[i]) + '\t' + str(current[i]) + '\t' + str(rel_error[i]) + '\n'

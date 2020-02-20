@@ -32,8 +32,6 @@ if [ "$#" -eq 1 ]; then
   echo "Restarting Facemc McLaughlin test for ${HISTORIES} particles with ${SLURM_NTASKS} MPI processes with ${SLURM_CPUS_PER_TASK} OpenMP threads each!"
   mpiexec -n ${SLURM_NTASKS} python -c "import mclaughlin; mclaughlin.runSimulationFromRendezvous(${SLURM_CPUS_PER_TASK}, ${HISTORIES}, ${TIME}, \"${RENDEZVOUS}\" )"
 
-  directory="$(dirname "${RENDEZVOUS}")/"
-
 # Run new simulation
 else
 
@@ -81,7 +79,7 @@ else
 
   elif [ "${MATERIAL}" = "polyethylene" ]; then
     # Set the source energy
-    ENERGY=2.0
+    ENERGY=0.1
     # Set the subzone width (cm)
     SUBZONE_WIDTH=0.022
     # Set the material density (g/cm3)
