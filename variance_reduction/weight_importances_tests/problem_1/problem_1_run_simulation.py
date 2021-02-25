@@ -3,7 +3,7 @@ import os
 import sys
 from argparse import *
 import PyFrensie.Geometry as Geometry
-import PyFrensie.Geometry.ROOT as ROOT
+import PyFrensie.Geometry.DagMC as DagMC
 import PyFrensie.Utility as Utility
 import PyFrensie.Utility.MPI as MPI
 import PyFrensie.Utility.Prng as Prng
@@ -19,17 +19,17 @@ import PyFrensie.Data.Native as Native
 
 ##---------------------------------------------------------------------------##
 ## Set up and run the forward simulation
-def runForwardSimulation( sim_name,
+def simulate( sim_name,
                           db_path,
                           num_particles,
                           threads,
-                          session,
                           model,
-                          response_distribution,
-                          source_distribution,
+                          source,
+                          weight_importance_mesh,
                           geometry_mesh,
-                          source_mesh,
-                          response_mesh):       
+                          detector_mesh,
+                          geometry_mesh_observer_energy_discretization,
+                          detector_energy_discretization):       
         
     ## Set the simulation properties
     simulation_properties = MonteCarlo.SimulationProperties()
@@ -41,6 +41,7 @@ def runForwardSimulation( sim_name,
     simulation_properties.setNumberOfHistories( num_particles )
     simulation_properties.setMinNumberOfRendezvous( 1 )
     simulation_properties.setNumberOfSnapshotsPerBatch( 1 )
+    simulation_properties.setNumberOfPhotonHashGridBins( 100 )
     
     ## Set up the materials
     database = Data.ScatteringCenterPropertiesDatabase( db_path )
@@ -48,15 +49,19 @@ def runForwardSimulation( sim_name,
     # Extract the properties for H from the database
     H_properties = database.getAtomProperties( Data.ZAID(1000) )
     
+    # Extract the properties for Pb from the database
+    Pb_properties = database.getAtomProperties( Data.ZAID(82000) )
+    
     # Extract the properties for K from the database
     K_properties = database.getAtomProperties( Data.ZAID(19000) )
     
     # Extract the properties for Ge from the database
     Ge_properties = database.getAtomProperties( Data.ZAID(32000) )
     
-    # Set the definition for H, K, Ge for this simulation
+    # Set the definition for H, Pb, K, Ge for this simulation
     scattering_center_definitions = Collision.ScatteringCenterDefinitionDatabase()
     H_definition = scattering_center_definitions.createDefinition( "H", Data.ZAID(1000) )
+    Pb_definition = scattering_center_definitions.createDefinition( "Pb", Data.ZAID(82000) )
     K_definition = scattering_center_definitions.createDefinition( "K", Data.ZAID(19000) )
     Ge_definition = scattering_center_definitions.createDefinition( "Ge", Data.ZAID(32000) )
     
@@ -64,14 +69,19 @@ def runForwardSimulation( sim_name,
     file_version = 0
     
     H_definition.setPhotoatomicDataProperties( H_properties.getSharedPhotoatomicDataProperties( data_file_type, file_version) )
+    
+    Pb_definition.setPhotoatomicDataProperties( Pb_properties.getSharedPhotoatomicDataProperties( data_file_type, file_version) )
+    
     K_definition.setPhotoatomicDataProperties( K_properties.getSharedPhotoatomicDataProperties( data_file_type, file_version) )
+    
     Ge_definition.setPhotoatomicDataProperties( Ge_properties.getSharedPhotoatomicDataProperties( data_file_type, file_version) )
     
     # Set the definition for materials
     material_definitions = Collision.MaterialDefinitionDatabase()
     material_definitions.addDefinition( "H", 1, ["H"], [1.0] )
-    material_definitions.addDefinition( "K", 2, ["K"], [1.0] )
-    material_definitions.addDefinition( "Ge", 3, ["Ge"], [1.0] )
+    material_definitions.addDefinition( "Pb", 2, ["Pb"], [1.0] )
+    material_definitions.addDefinition( "K", 3, ["K"], [1.0] )
+    material_definitions.addDefinition( "Ge", 4, ["Ge"], [1.0] )
     
     filled_model = Collision.FilledGeometryModel( db_path, scattering_center_definitions, material_definitions, simulation_properties, model, True )
     
@@ -79,46 +89,24 @@ def runForwardSimulation( sim_name,
     event_handler = Event.EventHandler( model, simulation_properties )
     
     # Detector Collision Estimator (main estimator, not VR producing estimator)
-    forward_estimator_id = 0
-    forward_estimator_cell_id = [3]
+    event_handler.getEstimator( 1 ).setEnergyDiscretization( [ detector_energy_discretization[0], detector_energy_discretization[-1] ] )
     
-    forward_collision_flux_estimator = Event.WeightMultipliedCellCollisionFluxEstimator( forward_estimator_id, 1.0, forward_estimator_cell_id, model)
+    # Mesh estimator (weight importance mesh producing estimator)
+    mesh_estimator = Event.WeightMultipliedMeshTrackLengthFluxEstimator(2, 1.0, geometry_mesh)
     
-    forward_collision_flux_estimator.setParticleTypes( [MonteCarlo.PHOTON] )
+    mesh_estimator.setDirectionDiscretization( Event.PQLA, 2, False)
+    mesh_estimator.setEnergyDiscretization( geometry_mesh_observer_energy_discretization )
+    mesh_estimator.setParticleTypes( [MonteCarlo.PHOTON] )
+    event_handler.addEstimator(mesh_estimator)
     
-    response_function = ActiveRegion.EnergyParticleResponseFunction( response_distribution )
+    # Detector mesh estimator (for adjoint source biasing)
+    mesh_detector_estimator = Event.WeightMultipliedMeshTrackLengthFluxEstimator(3, 1.0, detector_mesh)
     
-    response = ActiveRegion.StandardParticleResponse( response_function )
-    
-    forward_collision_flux_estimator.setResponseFunctions( [response] )
-    
-    event_handler.addEstimator(forward_collision_flux_estimator)
-    
-    # Source
-    particle_distribution = ActiveRegion.StandardParticleDistribution( "source distribution" )
-    
-    energy_dimension_dist = ActiveRegion.IndependentEnergyDimensionDistribution( source_distribution)
-    
-    particle_distribution.setDimensionDistribution( energy_dimension_dist )
-    
-    uniform_x_position_distribution = Distribution.UniformDistribution( -905, -895 )
-    uniform_y_z_position_distribution = Distribution.UniformDistribution( -5, 5 )
-    
-    x_position_dimension_dist = ActiveRegion.IndependentPrimarySpatialDimensionDistribution( uniform_x_position_distribution )
-    y_position_dimension_dist = ActiveRegion.IndependentSecondarySpatialDimensionDistribution( uniform_y_z_position_distribution )
-    z_position_dimension_dist = ActiveRegion.IndependentTertiarySpatialDimensionDistribution( uniform_y_z_position_distribution )
-    
-    particle_distribution.setDimensionDistribution( x_position_dimension_dist )
-    particle_distribution.setDimensionDistribution( y_position_dimension_dist )
-    particle_distribution.setDimensionDistribution( z_position_dimension_dist )
-    
-    particle_distribution.constructDimensionDistributionDependencyTree()
-    
-    photon_distribution = ActiveRegion.StandardPhotonSourceComponent( 0, 1.0, model, particle_distribution )
-    
-    # Assign the photon source component to the source
-    source = ActiveRegion.StandardParticleSource( [photon_distribution] )
-    
+    mesh_detector_estimator.setDirectionDiscretization( Event.PQLA, 2, False )
+    mesh_detector_estimator.setEnergyDiscretization( detector_energy_discretization )
+    mesh_detector_estimator.setParticleTypes( [MonteCarlo.PHOTON] )
+    event_handler.addEstimator( mesh_detector_estimator )
+
     # Set up the simulation manager
     factory = Manager.ParticleSimulationManagerFactory( filled_model,
                                                         source,
@@ -129,13 +117,14 @@ def runForwardSimulation( sim_name,
                                                         threads )
                                                         
     # Create the simulation manager
+    #factory.setPopulationControl( weight_importance_mesh )
     manager = factory.getManager()
     manager.useSingleRendezvousFile()
     
     ## Run the simulation
-    if session.size() == 1:
-        manager.runInterruptibleSimulation()
-    else:
-        manager.runSimulation()
-        
+    manager.runSimulation()
+
+    return manager.getEventHandler().getEstimator(1),\
+           manager.getEventHandler().getEstimator(2),\
+           manager.getEventHandler().getEstimator(3)
 
