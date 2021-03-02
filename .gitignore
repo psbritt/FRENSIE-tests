@@ -27,6 +27,7 @@
 *.inpm
 *.pyc
 *.tar.gz
+*.xml
 runtp*
 mcta*
 dyson_sphere.h5m

@@ -1,30 +1,17 @@
-import numpy
 import os
 import sys
-import math
 from argparse import *
 from problem_1_run_simulation import simulate
 from estimators import *
-import PyFrensie.Geometry as Geometry
 import PyFrensie.Geometry.DagMC as DagMC
-import PyFrensie.Utility as Utility
 import PyFrensie.Utility.Mesh as Mesh
-import PyFrensie.Utility.MPI as MPI
-import PyFrensie.Utility.Prng as Prng
-import PyFrensie.Utility.Coordinate as Coordinate
 import PyFrensie.Utility.Distribution as Distribution
 import PyFrensie.Utility.DirectionDiscretization as DirectionDiscretization
-import PyFrensie.MonteCarlo as MonteCarlo
-import PyFrensie.MonteCarlo.Collision as Collision
 import PyFrensie.MonteCarlo.ActiveRegion as ActiveRegion
 import PyFrensie.MonteCarlo.Event as Event
-import PyFrensie.MonteCarlo.Manager as Manager
 import PyFrensie.Data as Data
-import PyFrensie.Data.Native as Native
-
-#Class that contains and processes the relevant statistical data for the estimator of collision estimator results
-
-
+import PyFrensie.MonteCarlo.Collision as Collision
+import PyFrensie.MonteCarlo as MonteCarlo
 
 def initializeModelProperties(geometry_file_name):
   model_properties = DagMC.DagMCModelProperties(geometry_file_name)
@@ -35,6 +22,73 @@ def initializeModelProperties(geometry_file_name):
   model_properties.useFastIdLookup()
   model = DagMC.DagMCModel( model_properties )
   return model
+
+def fillGeometryModel(db_path, model, num_particles, forward_adjoint_string):
+    ## Set the simulation properties
+    simulation_properties = MonteCarlo.SimulationProperties()
+
+    # simulate adjoint or forward photons
+    data_file_type = None
+    if forward_adjoint_string == "forward":
+      simulation_properties.setParticleMode( MonteCarlo.PHOTON_MODE )
+      data_file_type = Data.PhotoatomicDataProperties.Native_EPR_FILE
+    else:
+      simulation_properties.setParticleMode( MonteCarlo.ADJOINT_PHOTON_MODE )
+      data_file_type = Data.AdjointPhotoatomicDataProperties.Native_EPR_FILE
+    
+    # Set the number of histories to run and the number of rendezvous
+    simulation_properties.setNumberOfHistories( num_particles )
+    simulation_properties.setMinNumberOfRendezvous( 1 )
+    simulation_properties.setNumberOfSnapshotsPerBatch( 1 )
+    simulation_properties.setNumberOfPhotonHashGridBins( 100 )
+    
+    ## Set up the materials
+    database = Data.ScatteringCenterPropertiesDatabase( db_path )
+    
+    # Extract the properties for H from the database
+    H_properties = database.getAtomProperties( Data.ZAID(1000) )
+    
+    # Extract the properties for Pb from the database
+    Pb_properties = database.getAtomProperties( Data.ZAID(82000) )
+    
+    # Extract the properties for K from the database
+    K_properties = database.getAtomProperties( Data.ZAID(19000) )
+    
+    # Extract the properties for Ge from the database
+    Ge_properties = database.getAtomProperties( Data.ZAID(32000) )
+    
+    # Set the definition for H, Pb, K, Ge for this simulation
+    scattering_center_definitions = Collision.ScatteringCenterDefinitionDatabase()
+    H_definition = scattering_center_definitions.createDefinition( "H", Data.ZAID(1000) )
+    Pb_definition = scattering_center_definitions.createDefinition( "Pb", Data.ZAID(82000) )
+    K_definition = scattering_center_definitions.createDefinition( "K", Data.ZAID(19000) )
+    Ge_definition = scattering_center_definitions.createDefinition( "Ge", Data.ZAID(32000) )
+    
+    
+    file_version = 0
+    
+    if forward_adjoint_string == "forward":
+      H_definition.setPhotoatomicDataProperties( H_properties.getSharedPhotoatomicDataProperties( data_file_type, file_version) )
+      Pb_definition.setPhotoatomicDataProperties( Pb_properties.getSharedPhotoatomicDataProperties( data_file_type, file_version) )
+      K_definition.setPhotoatomicDataProperties( K_properties.getSharedPhotoatomicDataProperties( data_file_type, file_version) )
+      Ge_definition.setPhotoatomicDataProperties( Ge_properties.getSharedPhotoatomicDataProperties( data_file_type, file_version) )
+    else:
+      H_definition.setAdjointPhotoatomicDataProperties( H_properties.getSharedAdjointPhotoatomicDataProperties( data_file_type, file_version) )
+      Pb_definition.setAdjointPhotoatomicDataProperties( Pb_properties.getSharedAdjointPhotoatomicDataProperties( data_file_type, file_version) )
+      K_definition.setAdjointPhotoatomicDataProperties( K_properties.getSharedAdjointPhotoatomicDataProperties( data_file_type, file_version) )
+      Ge_definition.setAdjointPhotoatomicDataProperties( Ge_properties.getSharedAdjointPhotoatomicDataProperties( data_file_type, file_version) )
+    
+    # Set the definition for materials
+    material_definitions = Collision.MaterialDefinitionDatabase()
+    material_definitions.addDefinition( "H", 1, ["H"], [1.0] )
+    material_definitions.addDefinition( "Pb", 2, ["Pb"], [1.0] )
+    material_definitions.addDefinition( "K", 3, ["K"], [1.0] )
+    material_definitions.addDefinition( "Ge", 4, ["Ge"], [1.0] )
+    
+    filled_model = Collision.FilledGeometryModel( db_path, scattering_center_definitions, material_definitions, simulation_properties, model, True )
+
+    return filled_model, simulation_properties
+
 
 #Assumes equal x, y, z size for elements
 def initializeMesh(mesh_increment, \
@@ -57,7 +111,22 @@ def initializeMesh(mesh_increment, \
   mesh = Mesh.StructuredHexMesh( x_planes, y_planes, z_planes )
 
   return mesh
-  
+
+def setSimProperties(num_particles, particle_type):
+      ## Set the simulation properties
+    simulation_properties = MonteCarlo.SimulationProperties()
+
+    # Simulate photons only
+    simulation_properties.setParticleMode( particle_type )
+    
+    # Set the number of histories to run and the number of rendezvous
+    simulation_properties.setNumberOfHistories( num_particles )
+    simulation_properties.setMinNumberOfRendezvous( 1 )
+    simulation_properties.setNumberOfSnapshotsPerBatch( 1 )
+    simulation_properties.setNumberOfPhotonHashGridBins( 100 )
+
+    return simulation_properties
+
 if __name__ == "__main__":
     #--------------------------------------------------------------------------------#
     # SIMULATION PARAMETERS
@@ -66,12 +135,17 @@ if __name__ == "__main__":
     print(db_path)
     sim_name = "problem_1"
     num_particles = 1e2
-    threads = 8
+    threads = 1
     num_iterations = 1
     
     if db_path is None:
         print('The database path must be specified!')
         sys.exit(1)
+    #--------------------------------------------------------------------------------#
+    # SIMULATION PROPERTIES
+    #--------------------------------------------------------------------------------#
+    forward_simulation_properties = setSimProperties(num_particles, MonteCarlo.PHOTON)
+    adjoint_simulation_properties = setSimProperties(num_particles, MonteCarlo.ADJOINT_PHOTON)
 
     #--------------------------------------------------------------------------------#
     # MODELS
@@ -83,6 +157,9 @@ if __name__ == "__main__":
     # Adjoint model
     adjoint_model = initializeModelProperties("problem_1_adjoint.h5m")
 
+    #Filled models
+    forward_filled_model, forward_simulation_properties = fillGeometryModel( db_path, forward_model, num_particles, "forward" )
+    adjoint_filled_model, adjoint_simulation_properties = fillGeometryModel( db_path, adjoint_model, num_particles, "adjoint")
     #--------------------------------------------------------------------------------#
     # MESH FORMATION
     #--------------------------------------------------------------------------------#
@@ -169,23 +246,6 @@ if __name__ == "__main__":
                                                                                       raw_source_energy_distribution_values )
 
     #--------------------------------------------------------------------------------#
-    # INITIAL FORWARD SOURCE
-    #--------------------------------------------------------------------------------#
-
-    # Only needs mesh and energy - direction is isotropic by default
-    forward_source_mesh_distribution = ActiveRegion.IndependentSpatialIndexDimensionDistribution( real_forward_source_raw_mesh_distribution )
-    forward_source_energy_distribution = ActiveRegion.IndependentEnergyDimensionDistribution( real_forward_source_raw_energy_distribution )
-
-    forward_source_particle_distribution = ActiveRegion.StandardParticleDistribution( "Initial forward source" )
-    forward_source_particle_distribution.setMeshIndexDimensionDistribution( forward_source_mesh_distribution, source_mesh )
-    forward_source_particle_distribution.setDimensionDistribution( forward_source_energy_distribution )
-    forward_source_particle_distribution.constructDimensionDistributionDependencyTree()
-
-    forward_source_component = ActiveRegion.StandardPhotonSourceComponent( 1, 1.0, forward_model, forward_source_particle_distribution )
-
-    forward_source = ActiveRegion.StandardParticleSource( [forward_source_component] )
-
-    #--------------------------------------------------------------------------------#
     # ADJOINT SOURCE DISTRIBUTIONS / FORWARD ESTIMATOR DISCRETIZATIONS
     #--------------------------------------------------------------------------------#
 
@@ -244,29 +304,15 @@ if __name__ == "__main__":
                                                                   direction_discretization.getNumberOfTriangles(),\
                                                                   len(geometry_mesh_observer_energy_discretization)-1 )
     
-    # Initialize source mesh estimators of estimators
-    forward_source_mesh_estimator = meshVREstimatorOfEstimators(number_of_forward_source_mesh_elements,
-                                                                direction_discretization.getNumberOfTriangles(),
-                                                                len(raw_source_energy_distribution_values))
-    adjoint_source_mesh_estimator = meshVREstimatorOfEstimators(number_of_adjoint_source_mesh_elements,
+    # Initialize response mesh estimators of estimators
+    forward_response_mesh_estimator = meshVREstimatorOfEstimators(number_of_adjoint_source_mesh_elements,
                                                                 direction_discretization.getNumberOfTriangles(),
                                                                 len(raw_detector_energy_distribution_values))
+    adjoint_response_mesh_estimator = meshVREstimatorOfEstimators(number_of_forward_source_mesh_elements,
+                                                                direction_discretization.getNumberOfTriangles(),
+                                                                len(raw_source_energy_distribution_values))
 
-    #--------------------------------------------------------------------------------#
-    # FORWARD WEIGHT IMPORTANCE MESH INITIALIZATION
-    #--------------------------------------------------------------------------------#
 
-    # Initial weight-importance mesh for first forward simulation
-    forward_weight_importance_dictionary = forward_geometry_mesh_estimator.getFlatDictionary( 1 )
-
-    forward_weight_importance_map = Event.ImportanceMap( forward_weight_importance_dictionary )
-
-    forward_weight_importance_mesh = Event.WeightImportanceMesh()
-
-    forward_weight_importance_mesh.setMesh( geometry_mesh )
-    forward_weight_importance_mesh.setDirectionDiscretization( Event.PQLA, 2, True )
-    forward_weight_importance_mesh.setEnergyDiscretization( geometry_mesh_observer_energy_discretization )
-    forward_weight_importance_mesh.setWeightImportanceMap(forward_weight_importance_map)
 
     #--------------------------------------------------------------------------------#
     # ITERATIONS
@@ -274,29 +320,54 @@ if __name__ == "__main__":
 
     for i in range(num_iterations):
         print("On forward/adjoint iteration ", i)
-        cell_collision_estimator, geometry_mesh_estimator, detector_mesh_estimator = simulate( sim_name, \
-                                                                                          db_path, \
-                                                                                          num_particles, \
-                                                                                          threads, \
-                                                                                          forward_model, \
-                                                                                          forward_source,
-                                                                                          forward_weight_importance_mesh,
-                                                                                          geometry_mesh, \
-                                                                                          response_mesh, \
-                                                                                          geometry_mesh_observer_energy_discretization, \
-                                                                                          raw_detector_energy_distribution_bounds)
-        #forward_collision_mean_estimator.processEstimator(cell_collision_estimator.getTotalProcessedData())
+        cell_collision_estimator_data, geometry_mesh_estimator_data, detector_mesh_estimator_data = simulate( sim_name + "_forward",
+                                                                                                              forward_simulation_properties,
+                                                                                                              threads,
+                                                                                                              forward_model,
+                                                                                                              forward_filled_model,
+                                                                                                              direction_discretization,
+                                                                                                              forward_geometry_mesh_estimator,
+                                                                                                              adjoint_response_mesh_estimator,
+                                                                                                              geometry_mesh,
+                                                                                                              source_mesh,
+                                                                                                              raw_source_mesh_distribution_bounds,
+                                                                                                              response_mesh,
+                                                                                                              geometry_mesh_observer_energy_discretization,
+                                                                                                              raw_source_energy_distribution_bounds,
+                                                                                                              raw_detector_energy_distribution_bounds,
+                                                                                                              raw_source_direction_distribution_bounds,
+                                                                                                              real_forward_source_raw_mesh_distribution,
+                                                                                                              real_forward_source_raw_direction_distribution,
+                                                                                                              real_forward_source_raw_energy_distribution,
+                                                                                                              MonteCarlo.PHOTON)
 
-        #adjoint_cell_collision_estimator, adjoint_geometry_mesh_estimator, source_mesh_estimator = simulate( sim_name, \
-        #                                                                                                db_path, \
-        #                                                                                                num_particles, \
-        #                                                                                                threads, \
-        #                                                                                                adjoint_model, \
-        #                                                                                                adjoint_source, \
-        #                                                                                                adjoint_weight_importance_mesh, \
-        #                                                                                                geometry_mesh, \
-        #                                                                                                source_mesh, \
-        #                                                                                                geometry_mesh_observer_energy_discretization, \
-        #                                                                                                raw_source_energy_distribution_bounds )
-        #adjoint_collision_mean_estimator.processEstimator(cell_collision_estimator.getTotalProcessedData())
+        forward_collision_mean_estimator.processEstimator( cell_collision_estimator_data )
+        forward_response_mesh_estimator.processEstimator( detector_mesh_estimator_data )
+        forward_geometry_mesh_estimator.processEstimator( geometry_mesh_estimator_data )
+
+        #
+        adjoint_cell_collision_estimator_data, adjoint_geometry_mesh_estimator_data, source_mesh_estimator_data = simulate( sim_name + "_adjoint",
+                                                                                                              adjoint_simulation_properties,
+                                                                                                              threads,
+                                                                                                              adjoint_model,
+                                                                                                              adjoint_filled_model,
+                                                                                                              direction_discretization,
+                                                                                                              adjoint_geometry_mesh_estimator,
+                                                                                                              forward_response_mesh_estimator,
+                                                                                                              geometry_mesh,
+                                                                                                              response_mesh,
+                                                                                                              raw_detector_mesh_distribution_bounds,
+                                                                                                              source_mesh,
+                                                                                                              geometry_mesh_observer_energy_discretization,
+                                                                                                              raw_detector_energy_distribution_bounds,
+                                                                                                              raw_source_energy_distribution_bounds,
+                                                                                                              raw_detector_direction_distribution_bounds,
+                                                                                                              real_adjoint_source_raw_mesh_distribution,
+                                                                                                              real_adjoint_source_raw_direction_distribution,
+                                                                                                              real_adjoint_source_raw_energy_distribution,
+                                                                                                              MonteCarlo.ADJOINT_PHOTON)
+
+        adjoint_collision_mean_estimator.processEstimator( adjoint_cell_collision_estimator_data )
+        adjoint_response_mesh_estimator.processEstimator( source_mesh_estimator_data )
+        adjoint_geometry_mesh_estimator.processEstimator( adjoint_geometry_mesh_estimator_data )
 
